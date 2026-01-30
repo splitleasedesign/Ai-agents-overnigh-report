@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Proposals - Kanban View | Split Lease</title>
+    <style>
+        :root {
+            --color-primary: #31135D;
+            --color-primary-dark: #23083D;
+            --color-primary-light: #7B4FB5;
+            --color-primary-bg: #ECE8F7;
+            --color-success: #00C853;
+            --color-success-bg: #E8F5E9;
+            --color-warning: #FFC107;
+            --color-warning-bg: #FFF8E1;
+            --color-error: #D32F2F;
+            --color-error-bg: #FFEBEE;
+            --color-info: #2196F3;
+            --color-info-bg: #E3F2FD;
+            --color-neutral-100: #F0F0F0;
+            --color-neutral-200: #E0E0E0;
+            --color-neutral-600: #666666;
+            --color-neutral-900: #1A1A1A;
+            --color-white: #FFFFFF;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--color-neutral-100);
+            color: var(--color-neutral-900);
+            line-height: 1.5;
+        }
+
+        /* Header */
+        .header {
+            background: var(--color-primary);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .header-nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--color-primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main {
+            padding: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--color-neutral-600);
+            margin-top: 4px;
+        }
+
+        /* View Toggle - NEW */
+        .view-toggle {
+            display: flex;
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 4px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            border: none;
+            background: none;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--color-neutral-600);
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .view-btn.active {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        /* Listing Filter Tabs */
+        .listing-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .listing-tab {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 24px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .listing-tab:hover {
+            border-color: var(--color-primary-light);
+        }
+
+        .listing-tab.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .listing-tab .count {
+            background: var(--color-primary-bg);
+            color: var(--color-primary);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .listing-tab.active .count {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        /* Kanban Board - NEW VIEW */
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            min-height: 600px;
+        }
+
+        .kanban-column {
+            background: var(--color-neutral-100);
+            border-radius: var(--radius-md);
+            padding: 16px;
+        }
+
+        .column-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid;
+        }
+
+        .column-header.action-needed { border-color: var(--color-warning); }
+        .column-header.in-review { border-color: var(--color-info); }
+        .column-header.approved { border-color: var(--color-success); }
+        .column-header.completed { border-color: var(--color-primary); }
+
+        .column-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .column-title .icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: white;
+        }
+
+        .column-title .icon.warning { background: var(--color-warning); }
+        .column-title .icon.info { background: var(--color-info); }
+        .column-title .icon.success { background: var(--color-success); }
+        .column-title .icon.primary { background: var(--color-primary); }
+
+        .column-count {
+            background: white;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-neutral-600);
+        }
+
+        /* Proposal Cards */
+        .proposal-card {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .proposal-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .proposal-card.urgent {
+            border-left: 4px solid var(--color-warning);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .guest-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .guest-info {
+            flex: 1;
+        }
+
+        .guest-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .verified-badge {
+            background: var(--color-success-bg);
+            color: var(--color-success);
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .guest-time {
+            font-size: 12px;
+            color: var(--color-neutral-600);
+        }
+
+        .card-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: var(--color-neutral-100);
+            border-radius: var(--radius-sm);
+        }
+
+        .detail-item {
+            font-size: 12px;
+        }
+
+        .detail-label {
+            color: var(--color-neutral-600);
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .card-earnings {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid var(--color-neutral-200);
+        }
+
+        .earnings-label {
+            font-size: 12px;
+            color: var(--color-neutral-600);
+        }
+
+        .earnings-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--color-success);
+        }
+
+        /* Quick Actions */
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn.accept {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .action-btn.accept:hover {
+            background: #00A344;
+        }
+
+        .action-btn.decline {
+            background: var(--color-neutral-100);
+            color: var(--color-neutral-600);
+        }
+
+        .action-btn.decline:hover {
+            background: var(--color-error-bg);
+            color: var(--color-error);
+        }
+
+        .action-btn.message {
+            background: var(--color-primary-bg);
+            color: var(--color-primary);
+        }
+
+        /* Summary Stats Bar - NEW */
+        .summary-bar {
+            display: flex;
+            gap: 24px;
+            background: white;
+            padding: 16px 24px;
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .summary-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .summary-icon.warning { background: var(--color-warning-bg); }
+        .summary-icon.info { background: var(--color-info-bg); }
+        .summary-icon.success { background: var(--color-success-bg); }
+
+        .summary-text .value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .summary-text .label {
+            font-size: 12px;
+            color: var(--color-neutral-600);
+        }
+
+        .summary-divider {
+            width: 1px;
+            background: var(--color-neutral-200);
+        }
+
+        /* Progress Dots */
+        .progress-dots {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--color-neutral-200);
+        }
+
+        .dot.completed { background: var(--color-success); }
+        .dot.current { background: var(--color-primary); }
+
+        /* Footer note */
+        .design-note {
+            text-align: center;
+            padding: 40px;
+            color: var(--color-neutral-600);
+            font-size: 12px;
+            border-top: 1px solid var(--color-neutral-200);
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/>
+                <path d="M8 12h8M12 8v8" stroke="white" stroke-width="2"/>
+            </svg>
+            Split Lease
+        </div>
+        <nav class="header-nav">
+            <a href="#">Host Overview</a>
+            <a href="#">Messages</a>
+            <div class="avatar">R</div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Proposals Dashboard</h1>
+                <p class="page-subtitle">Manage incoming booking requests across all your listings</p>
+            </div>
+            <div class="view-toggle">
+                <button class="view-btn">List</button>
+                <button class="view-btn active">Kanban</button>
+            </div>
+        </div>
+
+        <!-- Summary Bar - NEW -->
+        <div class="summary-bar">
+            <div class="summary-item">
+                <div class="summary-icon warning">!</div>
+                <div class="summary-text">
+                    <div class="value">2</div>
+                    <div class="label">Need Action</div>
+                </div>
+            </div>
+            <div class="summary-divider"></div>
+            <div class="summary-item">
+                <div class="summary-icon info">&#128221;</div>
+                <div class="summary-text">
+                    <div class="value">1</div>
+                    <div class="label">In Review</div>
+                </div>
+            </div>
+            <div class="summary-divider"></div>
+            <div class="summary-item">
+                <div class="summary-icon success">&#10003;</div>
+                <div class="summary-text">
+                    <div class="value">$4,768</div>
+                    <div class="label">Potential Earnings</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Listing Filter Tabs -->
+        <div class="listing-tabs">
+            <button class="listing-tab active">
+                All Listings <span class="count">3</span>
+            </button>
+            <button class="listing-tab">
+                Sunny Private Room <span class="count">2</span>
+            </button>
+            <button class="listing-tab">
+                1BR Entire Place <span class="count">1</span>
+            </button>
+            <button class="listing-tab">
+                1BR Private Room <span class="count">0</span>
+            </button>
+        </div>
+
+        <!-- Kanban Board - NEW VIEW -->
+        <div class="kanban-board">
+            <!-- Action Needed Column -->
+            <div class="kanban-column">
+                <div class="column-header action-needed">
+                    <div class="column-title">
+                        <span class="icon warning">!</span>
+                        Action Needed
+                    </div>
+                    <span class="column-count">2</span>
+                </div>
+
+                <div class="proposal-card urgent">
+                    <div class="card-header">
+                        <div class="guest-avatar">L</div>
+                        <div class="guest-info">
+                            <div class="guest-name">
+                                Leo Di Caprio
+                                <span class="verified-badge">Verified</span>
+                            </div>
+                            <div class="guest-time">Submitted 24 days ago</div>
+                        </div>
+                    </div>
+                    <div class="card-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Schedule</div>
+                            <div class="detail-value">Tue-Thu</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Duration</div>
+                            <div class="detail-value">4 weeks</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Move-in</div>
+                            <div class="detail-value">Jan 26</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Nights/wk</div>
+                            <div class="detail-value">3 nights</div>
+                        </div>
+                    </div>
+                    <div class="progress-dots">
+                        <span class="dot completed"></span>
+                        <span class="dot current"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                    <div class="card-earnings">
+                        <span class="earnings-label">Your Earnings</span>
+                        <span class="earnings-value">$972</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="action-btn accept">Accept</button>
+                        <button class="action-btn decline">Decline</button>
+                    </div>
+                </div>
+
+                <div class="proposal-card">
+                    <div class="card-header">
+                        <div class="guest-avatar">S</div>
+                        <div class="guest-info">
+                            <div class="guest-name">Sarah Johnson</div>
+                            <div class="guest-time">Submitted 3 days ago</div>
+                        </div>
+                    </div>
+                    <div class="card-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Schedule</div>
+                            <div class="detail-value">Mon-Fri</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Duration</div>
+                            <div class="detail-value">8 weeks</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Move-in</div>
+                            <div class="detail-value">Feb 3</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Nights/wk</div>
+                            <div class="detail-value">4 nights</div>
+                        </div>
+                    </div>
+                    <div class="card-earnings">
+                        <span class="earnings-label">Your Earnings</span>
+                        <span class="earnings-value">$2,560</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="action-btn accept">Accept</button>
+                        <button class="action-btn decline">Decline</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- In Review Column -->
+            <div class="kanban-column">
+                <div class="column-header in-review">
+                    <div class="column-title">
+                        <span class="icon info">&#128221;</span>
+                        In Progress
+                    </div>
+                    <span class="column-count">1</span>
+                </div>
+
+                <div class="proposal-card">
+                    <div class="card-header">
+                        <div class="guest-avatar">R</div>
+                        <div class="guest-info">
+                            <div class="guest-name">Rod testing</div>
+                            <div class="guest-time">Pending response</div>
+                        </div>
+                    </div>
+                    <div class="card-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Schedule</div>
+                            <div class="detail-value">Mon-Fri</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Duration</div>
+                            <div class="detail-value">13 weeks</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Move-in</div>
+                            <div class="detail-value">Feb 10</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Nights/wk</div>
+                            <div class="detail-value">4 nights</div>
+                        </div>
+                    </div>
+                    <div class="progress-dots">
+                        <span class="dot completed"></span>
+                        <span class="dot completed"></span>
+                        <span class="dot current"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                    <div class="card-earnings">
+                        <span class="earnings-label">Your Earnings</span>
+                        <span class="earnings-value">$3,796</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="action-btn message">Message</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Approved Column -->
+            <div class="kanban-column">
+                <div class="column-header approved">
+                    <div class="column-title">
+                        <span class="icon success">&#10003;</span>
+                        Approved
+                    </div>
+                    <span class="column-count">0</span>
+                </div>
+                <div style="text-align: center; padding: 40px 20px; color: var(--color-neutral-600); font-size: 13px;">
+                    No approved proposals yet.<br>
+                    Accepted proposals will appear here.
+                </div>
+            </div>
+
+            <!-- Active Leases Column -->
+            <div class="kanban-column">
+                <div class="column-header completed">
+                    <div class="column-title">
+                        <span class="icon primary">&#127968;</span>
+                        Active Leases
+                    </div>
+                    <span class="column-count">0</span>
+                </div>
+                <div style="text-align: center; padding: 40px 20px; color: var(--color-neutral-600); font-size: 13px;">
+                    No active leases.<br>
+                    Confirmed leases will appear here.
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="design-note">
+        <strong>Paula Scher Design Mockup</strong><br>
+        Host Proposals - Kanban View - 2026-01-30<br>
+        Key additions: Kanban workflow view, Summary stats bar, Visual progress indicators, Quick action buttons
+    </div>
+</body>
+</html>

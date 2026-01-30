@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works Section - Split Lease</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f9fafb;
+            min-height: 100vh;
+            padding: 60px 20px;
+        }
+
+        .section {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-eyebrow {
+            font-size: 14px;
+            font-weight: 600;
+            color: #667eea;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: #6b7280;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            position: relative;
+        }
+
+        /* Connecting line */
+        .steps-grid::before {
+            content: '';
+            position: absolute;
+            top: 60px;
+            left: calc(16.66% + 60px);
+            right: calc(16.66% + 60px);
+            height: 2px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            opacity: 0.3;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .step-icon {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-card:hover .step-icon {
+            animation: iconFloat 2s ease-in-out infinite;
+        }
+
+        .step-icon svg {
+            width: 48px;
+            height: 48px;
+            color: #667eea;
+        }
+
+        /* Step 1 - Calendar icon decoration */
+        .step-1 .step-icon::before {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 50%;
+            top: 10px;
+            right: 10px;
+        }
+
+        /* Step 2 - Dollar sign decoration */
+        .step-2 .step-icon::before {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            bottom: 15px;
+            left: 15px;
+        }
+
+        /* Step 3 - Home decoration */
+        .step-3 .step-icon::before {
+            content: '';
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            background: rgba(236, 72, 153, 0.1);
+            border-radius: 50%;
+            top: 15px;
+            left: 15px;
+        }
+
+        .step-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+
+        .step-description {
+            font-size: 15px;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .step-highlight {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        /* Bottom CTA */
+        .cta-container {
+            text-align: center;
+            margin-top: 48px;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .cta-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Testimonial snippet */
+        .testimonial {
+            max-width: 500px;
+            margin: 32px auto 0;
+            text-align: center;
+        }
+
+        .testimonial-text {
+            font-size: 15px;
+            color: #6b7280;
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .testimonial-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
+        }
+
+        .testimonial-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .testimonial-role {
+            font-size: 13px;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .steps-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .steps-grid::before {
+                display: none;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="section">
+        <div class="section-header">
+            <div class="section-eyebrow">How It Works</div>
+            <h2 class="section-title">Your NYC home base, simplified</h2>
+            <p class="section-subtitle">
+                Split Lease lets you pay for only the nights you need.
+                Same space every visit. Leave your belongings. Save 45%.
+            </p>
+        </div>
+
+        <div class="steps-grid">
+            <div class="step-card step-1">
+                <div class="step-number">1</div>
+                <div class="step-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <h3 class="step-title">Choose Your Schedule</h3>
+                <p class="step-description">
+                    Select <span class="step-highlight">Mon-Fri</span>, weekends, or any custom pattern.
+                    Your space stays yours on those exact days.
+                </p>
+            </div>
+
+            <div class="step-card step-2">
+                <div class="step-number">2</div>
+                <div class="step-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h3 class="step-title">Pay Only For Your Nights</h3>
+                <p class="step-description">
+                    Why pay for 30 nights when you need 15?
+                    Split the cost with another guest and <span class="step-highlight">save 45%</span> vs Airbnb.
+                </p>
+            </div>
+
+            <div class="step-card step-3">
+                <div class="step-number">3</div>
+                <div class="step-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                </div>
+                <h3 class="step-title">Leave Your Stuff</h3>
+                <p class="step-description">
+                    Toothbrush, work clothes, second monitor—leave it all.
+                    Your space is <span class="step-highlight">ready when you return</span>.
+                </p>
+            </div>
+        </div>
+
+        <div class="cta-container">
+            <a href="/search" class="cta-btn">
+                Find Your Home Base
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+            </a>
+
+            <div class="testimonial">
+                <p class="testimonial-text">
+                    "Same apartment in Chelsea, same desk setup, same coffee shop downstairs.
+                    My clients think I live here."
+                </p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar"></div>
+                    <div>
+                        <div class="testimonial-name">Maria S.</div>
+                        <div class="testimonial-role">Management Consultant</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

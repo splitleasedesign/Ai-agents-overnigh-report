@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Split Lease Homepage - Dual Hero Mockup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #f8f7fc 0%, #f0eef8 100%);
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #31135D;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: #31135D;
+      border-radius: 8px;
+    }
+
+    .nav {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav a {
+      color: #31135D;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .nav-cta {
+      background: #31135D;
+      color: white !important;
+      padding: 0.75rem 1.5rem;
+      border-radius: 100px;
+    }
+
+    /* Hero Section */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      min-height: calc(100vh - 80px);
+    }
+
+    .hero-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Guest Panel (Left) */
+    .hero-guest {
+      background: linear-gradient(135deg, #31135D 0%, #4a2080 100%);
+      color: white;
+    }
+
+    .hero-guest::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    }
+
+    /* Host Panel (Right) */
+    .hero-host {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      color: white;
+    }
+
+    .hero-host::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 100%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-subtitle {
+      font-size: 1.15rem;
+      line-height: 1.6;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+      max-width: 400px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-stat {
+      background: rgba(255,255,255,0.15);
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(10px);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .hero-stat-label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: white;
+      color: #31135D;
+      padding: 1rem 2rem;
+      border-radius: 100px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-host .hero-cta {
+      color: #047857;
+    }
+
+    .hero-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .hero-cta svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Floating Elements */
+    .floating-card {
+      position: absolute;
+      background: white;
+      border-radius: 16px;
+      padding: 1rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      z-index: 2;
+    }
+
+    .guest-card-1 {
+      bottom: 15%;
+      right: 10%;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .guest-card-1 img {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    .guest-card-1 .text {
+      color: #1a1a1a;
+    }
+
+    .guest-card-1 .name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .guest-card-1 .location {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .host-card-1 {
+      bottom: 15%;
+      left: 10%;
+      text-align: center;
+    }
+
+    .host-card-1 .amount {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #059669;
+    }
+
+    .host-card-1 .label {
+      font-size: 0.75rem;
+      color: #666;
+    }
+
+    /* Divider */
+    .hero-divider {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      z-index: 10;
+    }
+
+    .hero-divider span {
+      font-weight: 700;
+      color: #31135D;
+      font-size: 0.85rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-panel {
+        padding: 3rem 2rem;
+        min-height: 50vh;
+      }
+
+      .hero-title {
+        font-size: 2rem;
+      }
+
+      .hero-divider {
+        display: none;
+      }
+
+      .floating-card {
+        display: none;
+      }
+    }
+
+    /* Annotation */
+    .annotation {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a1a;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      z-index: 100;
+      max-width: 90%;
+      text-align: center;
+    }
+
+    .annotation strong {
+      color: #10B981;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon"></div>
+      Split Lease
+    </div>
+    <nav class="nav">
+      <a href="#">How It Works</a>
+      <a href="#">Help Center</a>
+      <a href="#">Sign In</a>
+      <a href="#" class="nav-cta">Get Started</a>
+    </nav>
+  </header>
+
+  <!-- Dual Hero -->
+  <section class="hero">
+    <!-- Guest Panel -->
+    <div class="hero-panel hero-guest">
+      <span class="hero-badge">For NYC Renters</span>
+      <h1 class="hero-title">Find Your<br>NYC Home Base</h1>
+      <p class="hero-subtitle">Flexible rentals for repeat stays. Same space every visit. Store your belongings. 45% less than Airbnb.</p>
+
+      <div class="hero-stat">
+        <div class="hero-stat-value">$18K</div>
+        <div class="hero-stat-label">Average yearly savings vs hotels</div>
+      </div>
+
+      <a href="/search" class="hero-cta">
+        Explore Rentals
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+
+      <!-- Floating Card -->
+      <div class="floating-card guest-card-1">
+        <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=100&h=100&fit=crop" alt="Apartment">
+        <div class="text">
+          <div class="name">Midtown Studio</div>
+          <div class="location">Available Mon-Fri</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="hero-divider">
+      <span>OR</span>
+    </div>
+
+    <!-- Host Panel -->
+    <div class="hero-panel hero-host">
+      <span class="hero-badge">For Property Owners</span>
+      <h1 class="hero-title">Turn Empty Nights<br>Into Income</h1>
+      <p class="hero-subtitle">List your property on Split Lease. Earn when you're away. Keep access when you need it. No booking fees.</p>
+
+      <div class="hero-stat">
+        <div class="hero-stat-value">$2,400+</div>
+        <div class="hero-stat-label">Average monthly host earnings in NYC</div>
+      </div>
+
+      <a href="/list-with-us" class="hero-cta">
+        See What You Could Earn
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+
+      <!-- Floating Card -->
+      <div class="floating-card host-card-1">
+        <div class="amount">$3,200</div>
+        <div class="label">This month's earnings</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Annotation -->
+  <div class="annotation">
+    <strong>MOCKUP:</strong> Dual Hero Design - Hosts see earnings CTA above fold. Compare to current guest-only hero.
+  </div>
+</body>
+</html>

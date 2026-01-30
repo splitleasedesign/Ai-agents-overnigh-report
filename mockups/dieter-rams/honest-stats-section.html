@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Honest Statistics Display - Only Claims We Can Prove</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: #fff;
+    }
+
+    .honest-stats-section {
+      padding: 60px 20px;
+      background: #f8f9fa;
+    }
+
+    .honest-stats-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .honest-stats-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .honest-stats-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin: 0 0 12px 0;
+    }
+
+    .honest-stats-subtitle {
+      font-size: 14px;
+      color: #666;
+      margin: 0;
+    }
+
+    .honest-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+    }
+
+    .honest-stat-card {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      text-align: center;
+      border: 1px solid #e5e5e5;
+    }
+
+    .honest-stat-value {
+      font-size: 36px;
+      font-weight: 700;
+      color: #4B47CE;
+      margin-bottom: 8px;
+    }
+
+    .honest-stat-label {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .honest-stat-source {
+      font-size: 11px;
+      color: #999;
+      font-style: italic;
+    }
+
+    .honest-stat-source a {
+      color: #4B47CE;
+      text-decoration: none;
+    }
+
+    .honest-stat-source a:hover {
+      text-decoration: underline;
+    }
+
+    .honest-disclaimer {
+      text-align: center;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #e5e5e5;
+    }
+
+    .honest-disclaimer p {
+      font-size: 12px;
+      color: #999;
+      margin: 0;
+    }
+
+    /* Placeholder styling for values that need real data */
+    .placeholder-value {
+      background: linear-gradient(90deg, #e5e5e5 25%, #f0f0f0 50%, #e5e5e5 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 4px;
+      display: inline-block;
+      min-width: 80px;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+  </style>
+</head>
+<body>
+  <section class="honest-stats-section">
+    <div class="honest-stats-container">
+      <div class="honest-stats-header">
+        <h2 class="honest-stats-title">Platform Metrics</h2>
+        <p class="honest-stats-subtitle">Verified data from our platform</p>
+      </div>
+
+      <div class="honest-stats-grid">
+        <!-- Only include stats that can be verified from database -->
+        <div class="honest-stat-card">
+          <div class="honest-stat-value">[Real #]</div>
+          <div class="honest-stat-label">Verified Hosts</div>
+          <div class="honest-stat-source">From platform data</div>
+        </div>
+
+        <div class="honest-stat-card">
+          <div class="honest-stat-value">[Real #]</div>
+          <div class="honest-stat-label">Active Listings</div>
+          <div class="honest-stat-source">From platform data</div>
+        </div>
+
+        <div class="honest-stat-card">
+          <div class="honest-stat-value">[Real #]</div>
+          <div class="honest-stat-label">Completed Stays</div>
+          <div class="honest-stat-source">From platform data</div>
+        </div>
+
+        <!-- Calculated metric - needs methodology -->
+        <div class="honest-stat-card">
+          <div class="honest-stat-value">$[X]</div>
+          <div class="honest-stat-label">Avg Monthly Savings</div>
+          <div class="honest-stat-source">
+            <a href="/methodology">See calculation</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="honest-disclaimer">
+        <p>Statistics updated monthly. Last update: January 2026.</p>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

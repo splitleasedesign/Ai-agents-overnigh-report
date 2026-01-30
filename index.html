@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Design Team — Work Log | Split Lease</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #31135D;
+            --primary-light: #7B4FB5;
+            --primary-bg: #F7F2FA;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: white;
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            border-bottom: 1px solid var(--gray-200);
+            padding: 40px 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--gray-900);
+        }
+
+        .header .meta {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .header .summary {
+            margin-top: 24px;
+            padding: 20px;
+            background: var(--gray-50);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--gray-700);
+        }
+
+        .header .summary strong {
+            color: var(--gray-900);
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 32px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+
+        .stat strong {
+            font-size: 20px;
+            color: var(--primary);
+            display: block;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Agent Section */
+        .agent-section {
+            margin-bottom: 60px;
+            padding-bottom: 60px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .agent-section:last-child {
+            border-bottom: none;
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .agent-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .agent-info h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .agent-info .domain {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .agent-info .task {
+            font-size: 13px;
+            color: var(--gray-600);
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        /* Mockup Card */
+        .mockup-card {
+            margin-bottom: 40px;
+        }
+
+        .mockup-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mockup-label .tag {
+            font-size: 11px;
+            padding: 3px 8px;
+            background: var(--gray-100);
+            color: var(--gray-600);
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .mockup-label .tag.issue {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .mockup-preview {
+            width: 100%;
+            height: 500px;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            background: var(--gray-50);
+            display: block;
+        }
+
+        .mockup-description {
+            margin-top: 12px;
+            font-size: 13px;
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+
+        .mockup-link {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .mockup-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Findings */
+        .findings {
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 32px;
+        }
+
+        .findings h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 12px;
+        }
+
+        .findings ul {
+            list-style: none;
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+
+        .findings li {
+            padding: 6px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .findings li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--gray-400);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid var(--gray-200);
+            color: var(--gray-500);
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mockup-preview {
+                height: 350px;
+            }
+
+            .stats-row {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <h1>AI Design Team — Work Log</h1>
+        <p class="meta">January 29–30, 2026 • Split Lease</p>
+
+        <div class="summary">
+            <strong>Overview:</strong> Ten AI agents analyzed the Split Lease platform across multiple domains including usability, trust, mobile experience, and visual hierarchy. This document contains the HTML mockups produced during this analysis period.
+        </div>
+
+        <div class="stats-row">
+            <div class="stat">
+                <strong>26</strong>
+                HTML mockups
+            </div>
+            <div class="stat">
+                <strong>7</strong>
+                Agents active
+            </div>
+            <div class="stat">
+                <strong>5</strong>
+                Reports generated
+            </div>
+            <div class="stat">
+                <strong>~8M</strong>
+                Tokens processed
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- Paula Scher -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #EC4899;">PS</div>
+                <div class="agent-info">
+                    <h2>Paula Scher</h2>
+                    <div class="domain">Host Acquisition & Marketing</div>
+                    <div class="task">Analyzed host-facing pages and identified gaps in the acquisition funnel. Created mockups for dashboard improvements and host-focused landing pages.</div>
+                </div>
+            </div>
+
+            <div class="findings">
+                <h4>Observations</h4>
+                <ul>
+                    <li>Homepage currently shows no host-focused content above the fold</li>
+                    <li>Earnings calculator exists but is positioned below fold on list-with-us page</li>
+                    <li>Host Overview page lacks aggregate metrics (earnings, occupancy, proposal counts)</li>
+                    <li>Guest proposals page missing visual timeline and cost breakdown</li>
+                </ul>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Host Overview Dashboard
+                    <span class="tag">New component</span>
+                </div>
+                <iframe class="mockup-preview" src="mockups/paula-scher/mockup-host-overview-dashboard.html"></iframe>
+                <p class="mockup-description">Dashboard component showing aggregate metrics: monthly earnings, occupancy rate, pending proposals, and per-listing performance indicators.</p>
+                <a href="mockups/paula-scher/mockup-host-overview-dashboard.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Proposals Kanban View
+                    <span class="tag">New component</span>
+                </div>
+                <iframe class="mockup-preview" src="mockups/paula-scher/mockup-proposals-kanban.html"></iframe>
+                <p class="mockup-description">Alternative view for host proposals using kanban board layout. Columns: Action Needed, In Progress, Approved, Active Leases.</p>
+                <a href="mockups/paula-scher/mockup-proposals-kanban.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Guest Lease Timeline
+                    <span class="tag">New component</span>
+                </div>
+                <iframe class="mockup-preview" src="mockups/paula-scher/mockup-guest-lease-timeline.html"></iframe>
+                <p class="mockup-description">Visual timeline for guest proposal status with progress steps, calendar preview, and itemized cost breakdown.</p>
+                <a href="mockups/paula-scher/mockup-guest-lease-timeline.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Homepage Dual Hero
+                    <span class="tag issue">Addresses gap</span>
+                </div>
+                <iframe class="mockup-preview" src="mockups/paula-scher/mockup-homepage-dual-hero.html"></iframe>
+                <p class="mockup-description">Revised homepage hero with side-by-side sections for guests and hosts. Adds host entry point above fold.</p>
+                <a href="mockups/paula-scher/mockup-homepage-dual-hero.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Earnings Calculator Widget
+                    <span class="tag issue">Addresses gap</span>
+                </div>
+                <iframe class="mockup-preview" src="mockups/paula-scher/mockup-earnings-calculator-widget.html"></iframe>
+                <p class="mockup-description">Standalone earnings calculator component. Shows estimated monthly income based on location and availability before requiring signup.</p>
+                <a href="mockups/paula-scher/mockup-earnings-calculator-widget.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    List With Us Page Redesign
+                </div>
+                <iframe class="mockup-preview" src="mockups/paula-scher/mockup-list-with-us-redesign.html"></iframe>
+                <p class="mockup-description">Revised host landing page with earnings calculator above fold, trust indicators, and structured value proposition.</p>
+                <a href="mockups/paula-scher/mockup-list-with-us-redesign.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+        </section>
+
+        <!-- Don Norman -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #31135D;">DN</div>
+                <div class="agent-info">
+                    <h2>Don Norman</h2>
+                    <div class="domain">Psychology of Design</div>
+                    <div class="task">Conducted usability analysis of the proposal flow. Created 114-item test checklist and identified friction points in day selection, error handling, and pricing display.</div>
+                </div>
+            </div>
+
+            <div class="findings">
+                <h4>Observations</h4>
+                <ul>
+                    <li>Day selector uses single letters (M, T, W, T, F, S, S) causing Tuesday/Thursday ambiguity</li>
+                    <li>Session expiry occurs without notification or draft preservation</li>
+                    <li>Error messages lack retry actions and clear recovery paths</li>
+                    <li>Pricing breakdown shows 15 separate fields, exceeding cognitive load thresholds</li>
+                </ul>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Day Selector Revision
+                    <span class="tag issue">Addresses ambiguity</span>
+                </div>
+                <iframe class="mockup-preview" src="mockups/don-norman/mockup-1-day-selector.html"></iframe>
+                <p class="mockup-description">Revised day selector using three-letter abbreviations (Mon, Tue, Wed, Thu, Fri, Sat, Sun) to eliminate T/T confusion.</p>
+                <a href="mockups/don-norman/mockup-1-day-selector.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Error States
+                    <span class="tag issue">Addresses recovery</span>
+                </div>
+                <iframe class="mockup-preview" src="mockups/don-norman/mockup-2-error-states.html"></iframe>
+                <p class="mockup-description">Error message components with three required elements: what happened, why it happened, and actionable next step with retry button.</p>
+                <a href="mockups/don-norman/mockup-2-error-states.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Pricing Display (Mobile)
+                </div>
+                <iframe class="mockup-preview" src="mockups/don-norman/mockup-3-pricing-mobile.html"></iframe>
+                <p class="mockup-description">Simplified pricing component showing two primary numbers (first payment, monthly rate) with expandable breakdown for details.</p>
+                <a href="mockups/don-norman/mockup-3-pricing-mobile.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+        </section>
+
+        <!-- Dieter Rams -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #059669;">DR</div>
+                <div class="agent-info">
+                    <h2>Dieter Rams</h2>
+                    <div class="domain">Trust & Safety</div>
+                    <div class="task">Audited trust claims across the platform. Inventoried 35+ claims and flagged 4 requiring verification or removal. Created templates for honest trust signals.</div>
+                </div>
+            </div>
+
+            <div class="findings">
+                <h4>Observations</h4>
+                <ul>
+                    <li>GuestSuccessPage contains testimonials with stock photography</li>
+                    <li>"24/7 Support" claim appears without evidence of round-the-clock staffing</li>
+                    <li>Statistics ("less than 2% used guarantee") lack source attribution</li>
+                    <li>$1M host guarantee does not disclose underwriter or claim process</li>
+                </ul>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Trust Badge Component
+                </div>
+                <iframe class="mockup-preview" src="mockups/dieter-rams/trust-badge-component.html"></iframe>
+                <p class="mockup-description">Verification badge component displaying email, phone, government ID, and LinkedIn verification status.</p>
+                <a href="mockups/dieter-rams/trust-badge-component.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Testimonial Template
+                    <span class="tag issue">Replaces stock photos</span>
+                </div>
+                <iframe class="mockup-preview" src="mockups/dieter-rams/real-testimonial-template.html"></iframe>
+                <p class="mockup-description">Template for testimonials requiring real photo, full name, verifiable stay details, and consent documentation.</p>
+                <a href="mockups/dieter-rams/real-testimonial-template.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Support Hours Display
+                    <span class="tag issue">Replaces 24/7 claim</span>
+                </div>
+                <iframe class="mockup-preview" src="mockups/dieter-rams/honest-support-hours.html"></iframe>
+                <p class="mockup-description">Component displaying actual support hours and expected response times instead of unverified availability claims.</p>
+                <a href="mockups/dieter-rams/honest-support-hours.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Guarantee Disclosure
+                </div>
+                <iframe class="mockup-preview" src="mockups/dieter-rams/honest-guarantee-disclosure.html"></iframe>
+                <p class="mockup-description">Plain-language disclosure component for host guarantee including coverage limits, underwriter, and claim submission process.</p>
+                <a href="mockups/dieter-rams/honest-guarantee-disclosure.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Statistics Display
+                </div>
+                <iframe class="mockup-preview" src="mockups/dieter-rams/honest-stats-section.html"></iframe>
+                <p class="mockup-description">Template for displaying platform statistics with required source attribution and last-updated timestamp.</p>
+                <a href="mockups/dieter-rams/honest-stats-section.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+        </section>
+
+        <!-- Massimo Vignelli -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #8B5CF6;">MV</div>
+                <div class="agent-info">
+                    <h2>Massimo Vignelli</h2>
+                    <div class="domain">Search & Listings</div>
+                    <div class="task">Analyzed visual hierarchy on search and listing pages. Documented 10 hierarchy issues in property cards. Created card variations and page layout improvements.</div>
+                </div>
+            </div>
+
+            <div class="findings">
+                <h4>Observations</h4>
+                <ul>
+                    <li>Price is positioned 5 levels down in card hierarchy, reducing scannability</li>
+                    <li>Property cards display price in two separate locations</li>
+                    <li>Location text appears before listing title, contrary to scanning patterns</li>
+                    <li>Metadata uses text labels instead of icons for beds, baths, guests</li>
+                </ul>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Property Card Variations
+                </div>
+                <iframe class="mockup-preview" src="mockups/massimo-vignelli/card-variations.html"></iframe>
+                <p class="mockup-description">Three card design variations for comparison. Variation A (Price-First) recommended for improved scannability.</p>
+                <a href="mockups/massimo-vignelli/card-variations.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Search Page Layout
+                </div>
+                <iframe class="mockup-preview" src="mockups/massimo-vignelli/search-layout.html"></iframe>
+                <p class="mockup-description">Revised search page layout with inline filter pills, improved card grid spacing, and map integration.</p>
+                <a href="mockups/massimo-vignelli/search-layout.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Listing Detail Page
+                </div>
+                <iframe class="mockup-preview" src="mockups/massimo-vignelli/listing-page-redesign.html"></iframe>
+                <p class="mockup-description">Revised listing detail page with improved section hierarchy, trust indicators, and pricing clarity.</p>
+                <a href="mockups/massimo-vignelli/listing-page-redesign.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+        </section>
+
+        <!-- Charles Eames -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #F97316;">CE</div>
+                <div class="agent-info">
+                    <h2>Charles Eames</h2>
+                    <div class="domain">Design Systems</div>
+                    <div class="task">Created reusable components for empty states, onboarding modals, and educational tooltips. Focused on first-time user experience patterns.</div>
+                </div>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Welcome Modal
+                </div>
+                <iframe class="mockup-preview" src="mockups/charles-eames/01-welcome-modal.html"></iframe>
+                <p class="mockup-description">First-time user welcome modal with feature overview and navigation guidance.</p>
+                <a href="mockups/charles-eames/01-welcome-modal.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Empty State: Favorites
+                </div>
+                <iframe class="mockup-preview" src="mockups/charles-eames/02-empty-state-favorites.html"></iframe>
+                <p class="mockup-description">Empty state component for favorites page with illustration and action prompt.</p>
+                <a href="mockups/charles-eames/02-empty-state-favorites.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Empty State: Host Proposals
+                </div>
+                <iframe class="mockup-preview" src="mockups/charles-eames/03-empty-state-host-proposals.html"></iframe>
+                <p class="mockup-description">Empty state for hosts with no proposals, including guidance on improving listing visibility.</p>
+                <a href="mockups/charles-eames/03-empty-state-host-proposals.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Schedule Selector Tooltip
+                </div>
+                <iframe class="mockup-preview" src="mockups/charles-eames/04-schedule-selector-tooltip.html"></iframe>
+                <p class="mockup-description">Contextual tooltip explaining split schedule functionality for first-time users.</p>
+                <a href="mockups/charles-eames/04-schedule-selector-tooltip.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    How It Works Section
+                </div>
+                <iframe class="mockup-preview" src="mockups/charles-eames/05-how-it-works-section.html"></iframe>
+                <p class="mockup-description">Step-by-step explanation component for guest and host flows.</p>
+                <a href="mockups/charles-eames/05-how-it-works-section.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+        </section>
+
+        <!-- Milton Glaser -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #EF4444;">MG</div>
+                <div class="agent-info">
+                    <h2>Milton Glaser</h2>
+                    <div class="domain">Brand Voice & Copy</div>
+                    <div class="task">Audited modal copy for tone consistency. Revised success, error, and confirmation modals to align with brand voice guidelines.</div>
+                </div>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Proposal Success Modal
+                </div>
+                <iframe class="mockup-preview" src="mockups/milton-glaser/modal-proposal-success-redesign.html"></iframe>
+                <p class="mockup-description">Success state modal with revised copy, clear next steps, and appropriate tone.</p>
+                <a href="mockups/milton-glaser/modal-proposal-success-redesign.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Error Overlay Modal
+                </div>
+                <iframe class="mockup-preview" src="mockups/milton-glaser/modal-error-overlay-redesign.html"></iframe>
+                <p class="mockup-description">Error modal with empathetic copy, clear explanation, and recovery options.</p>
+                <a href="mockups/milton-glaser/modal-error-overlay-redesign.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Cancel Proposal Modal
+                </div>
+                <iframe class="mockup-preview" src="mockups/milton-glaser/modal-cancel-proposal-redesign.html"></iframe>
+                <p class="mockup-description">Confirmation modal for destructive action with clear consequences and alternative options.</p>
+                <a href="mockups/milton-glaser/modal-cancel-proposal-redesign.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+        </section>
+
+        <!-- Jony Ive -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #6366F1;">JI</div>
+                <div class="agent-info">
+                    <h2>Jony Ive</h2>
+                    <div class="domain">Mobile Experience</div>
+                    <div class="task">Conducted mobile touch target audit across 8 pages. Measured compliance with 44px minimum standard. Average compliance: 25%.</div>
+                </div>
+            </div>
+
+            <div class="findings">
+                <h4>Touch Target Measurements</h4>
+                <ul>
+                    <li>Day selector buttons: 30px (requires 44px)</li>
+                    <li>Message button: 27px (requires 44px)</li>
+                    <li>Profile button: 27px (requires 44px)</li>
+                    <li>Header navigation: 28px (requires 44px)</li>
+                    <li>Footer links: 19px (requires 44px)</li>
+                </ul>
+            </div>
+
+            <div class="mockup-card">
+                <div class="mockup-label">
+                    Mobile Touch Target Fixes
+                    <span class="tag issue">CSS corrections</span>
+                </div>
+                <iframe class="mockup-preview" src="mockups/jony-ive/mobile-fixes-mockups.html"></iframe>
+                <p class="mockup-description">CSS modifications to bring touch targets to 44px minimum. Includes before/after comparisons.</p>
+                <a href="mockups/jony-ive/mobile-fixes-mockups.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Generated January 30, 2026</p>
+        <p>Split Lease AI Design Team</p>
+    </footer>
+</body>
+</html>

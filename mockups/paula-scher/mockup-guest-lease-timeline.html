@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Proposals - Timeline View | Split Lease</title>
+    <style>
+        :root {
+            --color-primary: #31135D;
+            --color-primary-dark: #23083D;
+            --color-primary-light: #7B4FB5;
+            --color-primary-bg: #ECE8F7;
+            --color-success: #00C853;
+            --color-success-bg: #E8F5E9;
+            --color-warning: #FFC107;
+            --color-warning-bg: #FFF8E1;
+            --color-error: #D32F2F;
+            --color-error-bg: #FFEBEE;
+            --color-info: #2196F3;
+            --color-info-bg: #E3F2FD;
+            --color-neutral-100: #F0F0F0;
+            --color-neutral-200: #E0E0E0;
+            --color-neutral-300: #CCCCCC;
+            --color-neutral-600: #666666;
+            --color-neutral-900: #1A1A1A;
+            --color-white: #FFFFFF;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--color-neutral-100);
+            color: var(--color-neutral-900);
+            line-height: 1.5;
+        }
+
+        /* Header */
+        .header {
+            background: var(--color-primary);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .header-nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--color-primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--color-neutral-600);
+        }
+
+        /* Status Summary Cards - NEW */
+        .status-summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .status-card {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 16px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .status-card:hover {
+            border-color: var(--color-primary-light);
+        }
+
+        .status-card.active {
+            border-color: var(--color-primary);
+        }
+
+        .status-count {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .status-count.pending { color: var(--color-warning); }
+        .status-count.review { color: var(--color-info); }
+        .status-count.accepted { color: var(--color-success); }
+        .status-count.active { color: var(--color-primary); }
+
+        .status-label {
+            font-size: 12px;
+            color: var(--color-neutral-600);
+            margin-top: 4px;
+        }
+
+        /* Upcoming Stay Banner - NEW */
+        .upcoming-banner {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            color: white;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .upcoming-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .upcoming-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .upcoming-details h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .upcoming-details p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .countdown {
+            text-align: center;
+        }
+
+        .countdown-number {
+            font-size: 40px;
+            font-weight: 700;
+        }
+
+        .countdown-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* Proposal List */
+        .proposals-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title .count {
+            background: var(--color-primary-bg);
+            color: var(--color-primary);
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        /* Proposal Card - IMPROVED */
+        .proposal-card {
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .proposal-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .proposal-card.expanded {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .proposal-header {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            cursor: pointer;
+            gap: 16px;
+        }
+
+        .listing-thumb {
+            width: 80px;
+            height: 60px;
+            border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, var(--color-primary-bg) 0%, var(--color-neutral-200) 100%);
+            overflow: hidden;
+        }
+
+        .listing-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .proposal-info {
+            flex: 1;
+        }
+
+        .proposal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 4px;
+        }
+
+        .proposal-meta {
+            font-size: 13px;
+            color: var(--color-neutral-600);
+        }
+
+        .proposal-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .proposal-status.review-offer {
+            background: var(--color-warning-bg);
+            color: #B8860B;
+        }
+
+        .proposal-status.host-review {
+            background: var(--color-info-bg);
+            color: var(--color-info);
+        }
+
+        .proposal-status.accepted {
+            background: var(--color-success-bg);
+            color: var(--color-success);
+        }
+
+        .expand-icon {
+            color: var(--color-neutral-600);
+            transition: transform 0.2s;
+        }
+
+        .proposal-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Expanded Content */
+        .proposal-details {
+            display: none;
+            padding: 0 16px 16px;
+            border-top: 1px solid var(--color-neutral-200);
+        }
+
+        .proposal-card.expanded .proposal-details {
+            display: block;
+        }
+
+        /* Progress Timeline - NEW */
+        .progress-timeline {
+            display: flex;
+            justify-content: space-between;
+            padding: 24px 0;
+            position: relative;
+        }
+
+        .progress-timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--color-neutral-200);
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+
+        .timeline-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--color-neutral-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .step-dot.completed {
+            background: var(--color-success);
+            border-color: var(--color-success);
+            color: white;
+        }
+
+        .step-dot.current {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(49, 19, 93, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(49, 19, 93, 0); }
+        }
+
+        .step-label {
+            font-size: 11px;
+            color: var(--color-neutral-600);
+            text-align: center;
+        }
+
+        .step-label.completed { color: var(--color-success); font-weight: 600; }
+        .step-label.current { color: var(--color-primary); font-weight: 600; }
+
+        /* Lease Calendar Preview - NEW */
+        .lease-calendar {
+            background: var(--color-neutral-100);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .calendar-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .calendar-nav button {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .calendar-weeks {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .calendar-week {
+            display: flex;
+            gap: 4px;
+        }
+
+        .calendar-day {
+            flex: 1;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            border-radius: 4px;
+            background: white;
+            color: var(--color-neutral-600);
+        }
+
+        .calendar-day.header {
+            background: transparent;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            font-size: 10px;
+        }
+
+        .calendar-day.booked {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .calendar-day.checkout {
+            background: var(--color-primary-light);
+            color: white;
+        }
+
+        /* Details Grid */
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .detail-item {
+            text-align: center;
+        }
+
+        .detail-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .detail-label {
+            font-size: 11px;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+        }
+
+        /* Cost Breakdown - NEW */
+        .cost-breakdown {
+            padding: 16px 0;
+        }
+
+        .cost-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .cost-row.total {
+            border-top: 2px solid var(--color-neutral-200);
+            margin-top: 8px;
+            padding-top: 16px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .cost-row.total .cost-value {
+            color: var(--color-primary);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-neutral-600);
+            border: 2px solid var(--color-neutral-200);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        /* Footer note */
+        .design-note {
+            text-align: center;
+            padding: 40px;
+            color: var(--color-neutral-600);
+            font-size: 12px;
+            border-top: 1px solid var(--color-neutral-200);
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/>
+                <path d="M8 12h8M12 8v8" stroke="white" stroke-width="2"/>
+            </svg>
+            Split Lease
+        </div>
+        <nav class="header-nav">
+            <a href="#">Explore Rentals</a>
+            <a href="#">Messages</a>
+            <div class="avatar">R</div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Your Proposals</h1>
+            <p class="page-subtitle">Track your booking requests and upcoming stays</p>
+        </div>
+
+        <!-- Status Summary - NEW -->
+        <div class="status-summary">
+            <div class="status-card">
+                <div class="status-count pending">2</div>
+                <div class="status-label">Host Review</div>
+            </div>
+            <div class="status-card active">
+                <div class="status-count review">3</div>
+                <div class="status-label">Review Offer</div>
+            </div>
+            <div class="status-card">
+                <div class="status-count accepted">0</div>
+                <div class="status-label">Accepted</div>
+            </div>
+            <div class="status-card">
+                <div class="status-count active">0</div>
+                <div class="status-label">Active Leases</div>
+            </div>
+        </div>
+
+        <!-- Upcoming Stay Banner - NEW -->
+        <div class="upcoming-banner">
+            <div class="upcoming-content">
+                <div class="upcoming-icon">&#127968;</div>
+                <div class="upcoming-details">
+                    <h3>1 Bedroom Entire Place in Manhattan</h3>
+                    <p>Your next stay begins February 17, 2026</p>
+                </div>
+            </div>
+            <div class="countdown">
+                <div class="countdown-number">18</div>
+                <div class="countdown-label">days until move-in</div>
+            </div>
+        </div>
+
+        <!-- Proposals List -->
+        <div class="proposals-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    Your Proposals
+                    <span class="count">5</span>
+                </h2>
+            </div>
+
+            <!-- Proposal Card 1 - Expanded -->
+            <div class="proposal-card expanded">
+                <div class="proposal-header">
+                    <div class="listing-thumb"></div>
+                    <div class="proposal-info">
+                        <div class="proposal-title">1 Bedroom Entire Place in Manhattan</div>
+                        <div class="proposal-meta">5 days/week &middot; 13 weeks &middot; Starting Feb 17</div>
+                    </div>
+                    <span class="proposal-status review-offer">Review Offer</span>
+                    <span class="expand-icon">&#9660;</span>
+                </div>
+
+                <div class="proposal-details">
+                    <!-- Progress Timeline -->
+                    <div class="progress-timeline">
+                        <div class="timeline-step">
+                            <div class="step-dot completed">&#10003;</div>
+                            <div class="step-label completed">Submitted</div>
+                        </div>
+                        <div class="timeline-step">
+                            <div class="step-dot completed">&#10003;</div>
+                            <div class="step-label completed">Application</div>
+                        </div>
+                        <div class="timeline-step">
+                            <div class="step-dot completed">&#10003;</div>
+                            <div class="step-label completed">Review</div>
+                        </div>
+                        <div class="timeline-step">
+                            <div class="step-dot current">4</div>
+                            <div class="step-label current">Accepted</div>
+                        </div>
+                        <div class="timeline-step">
+                            <div class="step-dot">5</div>
+                            <div class="step-label">Signing</div>
+                        </div>
+                        <div class="timeline-step">
+                            <div class="step-dot">6</div>
+                            <div class="step-label">Active</div>
+                        </div>
+                    </div>
+
+                    <!-- Details Grid -->
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <div class="detail-value">Feb 17</div>
+                            <div class="detail-label">Move-in</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-value">13 wks</div>
+                            <div class="detail-label">Duration</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-value">Mon-Fri</div>
+                            <div class="detail-label">Schedule</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-value">4 nights</div>
+                            <div class="detail-label">Per Week</div>
+                        </div>
+                    </div>
+
+                    <!-- Lease Calendar Preview - NEW -->
+                    <div class="lease-calendar">
+                        <div class="calendar-header">
+                            <div class="calendar-title">Your Lease Schedule Preview</div>
+                            <div class="calendar-nav">
+                                <button>&lt;</button>
+                                <span style="font-size: 13px; font-weight: 600;">February 2026</span>
+                                <button>&gt;</button>
+                            </div>
+                        </div>
+                        <div class="calendar-weeks">
+                            <div class="calendar-week">
+                                <div class="calendar-day header">Sun</div>
+                                <div class="calendar-day header">Mon</div>
+                                <div class="calendar-day header">Tue</div>
+                                <div class="calendar-day header">Wed</div>
+                                <div class="calendar-day header">Thu</div>
+                                <div class="calendar-day header">Fri</div>
+                                <div class="calendar-day header">Sat</div>
+                            </div>
+                            <div class="calendar-week">
+                                <div class="calendar-day">15</div>
+                                <div class="calendar-day">16</div>
+                                <div class="calendar-day booked">17</div>
+                                <div class="calendar-day booked">18</div>
+                                <div class="calendar-day booked">19</div>
+                                <div class="calendar-day checkout">20</div>
+                                <div class="calendar-day">21</div>
+                            </div>
+                            <div class="calendar-week">
+                                <div class="calendar-day">22</div>
+                                <div class="calendar-day booked">23</div>
+                                <div class="calendar-day booked">24</div>
+                                <div class="calendar-day booked">25</div>
+                                <div class="calendar-day booked">26</div>
+                                <div class="calendar-day checkout">27</div>
+                                <div class="calendar-day">28</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 16px; margin-top: 12px; font-size: 11px; color: var(--color-neutral-600);">
+                            <span><span style="display: inline-block; width: 12px; height: 12px; background: var(--color-primary); border-radius: 2px; margin-right: 4px;"></span> Your nights</span>
+                            <span><span style="display: inline-block; width: 12px; height: 12px; background: var(--color-primary-light); border-radius: 2px; margin-right: 4px;"></span> Checkout day</span>
+                        </div>
+                    </div>
+
+                    <!-- Cost Breakdown -->
+                    <div class="cost-breakdown">
+                        <div class="cost-row">
+                            <span>$204.12/night &times; 4 nights &times; 13 weeks</span>
+                            <span>$10,614.00</span>
+                        </div>
+                        <div class="cost-row">
+                            <span>Damage deposit (refundable)</span>
+                            <span>$500.00</span>
+                        </div>
+                        <div class="cost-row total">
+                            <span>Estimated Total</span>
+                            <span class="cost-value">$11,114.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="action-buttons">
+                        <button class="btn btn-primary">Finalize & Sign Lease</button>
+                        <button class="btn btn-secondary">Message Host</button>
+                        <button class="btn btn-secondary">View Listing</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proposal Card 2 -->
+            <div class="proposal-card">
+                <div class="proposal-header">
+                    <div class="listing-thumb"></div>
+                    <div class="proposal-info">
+                        <div class="proposal-title">Sunny Private Room Near Central Park</div>
+                        <div class="proposal-meta">5 days/week &middot; 13 weeks &middot; Starting Feb 10</div>
+                    </div>
+                    <span class="proposal-status review-offer">Review Offer</span>
+                    <span class="expand-icon">&#9660;</span>
+                </div>
+            </div>
+
+            <!-- Proposal Card 3 -->
+            <div class="proposal-card">
+                <div class="proposal-header">
+                    <div class="listing-thumb"></div>
+                    <div class="proposal-info">
+                        <div class="proposal-title">1 Bedroom Private Room in Manhattan</div>
+                        <div class="proposal-meta">5 days/week &middot; 13 weeks &middot; Starting Feb 24</div>
+                    </div>
+                    <span class="proposal-status host-review">Host Review</span>
+                    <span class="expand-icon">&#9660;</span>
+                </div>
+            </div>
+
+            <!-- Proposal Card 4 -->
+            <div class="proposal-card">
+                <div class="proposal-header">
+                    <div class="listing-thumb"></div>
+                    <div class="proposal-info">
+                        <div class="proposal-title">Test</div>
+                        <div class="proposal-meta">5 days/week &middot; 13 weeks &middot; Starting Mar 1</div>
+                    </div>
+                    <span class="proposal-status host-review">Host Review</span>
+                    <span class="expand-icon">&#9660;</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="design-note">
+        <strong>Paula Scher Design Mockup</strong><br>
+        Guest Proposals - Timeline & Calendar View - 2026-01-30<br>
+        Key additions: Status summary cards, Upcoming stay banner with countdown, Visual progress timeline, Lease calendar preview, Cost breakdown
+    </div>
+</body>
+</html>

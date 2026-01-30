@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empty State - Favorites - Split Lease</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f9fafb;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .empty-state {
+            max-width: 560px;
+            width: 100%;
+            text-align: center;
+            padding: 48px 32px;
+        }
+
+        .illustration {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 32px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .heart-main {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .heart-main svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 4px 12px rgba(236, 72, 153, 0.3));
+        }
+
+        .floating-card {
+            position: absolute;
+            width: 60px;
+            height: 80px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .floating-card-1 {
+            top: 10px;
+            left: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .floating-card-2 {
+            top: 20px;
+            right: 10px;
+            animation: float 3s ease-in-out infinite 0.5s;
+        }
+
+        .floating-card-3 {
+            bottom: 10px;
+            left: 30px;
+            animation: float 3s ease-in-out infinite 1s;
+        }
+
+        .card-image {
+            height: 40px;
+            background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);
+        }
+
+        .card-lines {
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .card-line {
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+        }
+
+        .card-line:last-child {
+            width: 60%;
+        }
+
+        .card-heart {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 16px;
+            height: 16px;
+            color: #f9fafb;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+        }
+
+        .btn-secondary:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        .divider-text {
+            font-size: 13px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tips {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .tip {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: left;
+            border: 1px solid #f3f4f6;
+            transition: all 0.2s ease;
+        }
+
+        .tip:hover {
+            border-color: #e5e7eb;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .tip-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .tip-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .tip-icon.pink {
+            background: #fce7f3;
+            color: #ec4899;
+        }
+
+        .tip-icon.purple {
+            background: #ede9fe;
+            color: #8b5cf6;
+        }
+
+        .tip h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .tip p {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 480px) {
+            .tips {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="empty-state">
+        <div class="illustration">
+            <div class="floating-card floating-card-1">
+                <div class="card-image"></div>
+                <div class="card-lines">
+                    <div class="card-line"></div>
+                    <div class="card-line"></div>
+                </div>
+                <svg class="card-heart" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+            </div>
+
+            <div class="floating-card floating-card-2">
+                <div class="card-image" style="background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);"></div>
+                <div class="card-lines">
+                    <div class="card-line"></div>
+                    <div class="card-line"></div>
+                </div>
+                <svg class="card-heart" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+            </div>
+
+            <div class="floating-card floating-card-3">
+                <div class="card-image" style="background: linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 100%);"></div>
+                <div class="card-lines">
+                    <div class="card-line"></div>
+                    <div class="card-line"></div>
+                </div>
+                <svg class="card-heart" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+            </div>
+
+            <div class="heart-main">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ec4899">
+                    <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+                </svg>
+            </div>
+        </div>
+
+        <h1>No favorites yet</h1>
+        <p class="subtitle">
+            Save listings you love by tapping the heart icon.<br>
+            Build your shortlist before you commit.
+        </p>
+
+        <div class="action-buttons">
+            <a href="/search" class="btn btn-primary">Explore Rentals</a>
+            <a href="/faq" class="btn btn-secondary">How it works</a>
+        </div>
+
+        <div class="divider">
+            <div class="divider-line"></div>
+            <span class="divider-text">Quick tips</span>
+            <div class="divider-line"></div>
+        </div>
+
+        <div class="tips">
+            <div class="tip">
+                <div class="tip-icon pink">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                </div>
+                <h3>Tap the heart to save</h3>
+                <p>You'll find the heart icon on every listing card and detail page.</p>
+            </div>
+            <div class="tip">
+                <div class="tip-icon purple">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <h3>Set your schedule first</h3>
+                <p>Select your days on the search page to see accurate pricing for your schedule.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

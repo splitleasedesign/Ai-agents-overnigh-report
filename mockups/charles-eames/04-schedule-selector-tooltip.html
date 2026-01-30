@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Selector Tooltip - Split Lease</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #1a1a2e;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .demo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .schedule-selector {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+        }
+
+        .selector-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .selector-header h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .help-trigger {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #6b7280;
+            transition: all 0.2s ease;
+        }
+
+        .help-trigger:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .days-grid {
+            display: flex;
+            gap: 8px;
+        }
+
+        .day-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: #6b7280;
+            transition: all 0.2s ease;
+        }
+
+        .day-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .day-btn.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+            color: white;
+        }
+
+        .summary {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #f3f4f6;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .summary strong {
+            color: #1f2937;
+        }
+
+        /* Tooltip Styles */
+        @keyframes tooltipSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: calc(100% + 16px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 340px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: tooltipSlideIn 0.3s ease-out;
+            overflow: hidden;
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 16px;
+            background: white;
+            transform: translateX(-50%) rotate(45deg);
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .tooltip-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tooltip-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tooltip-icon svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        .tooltip-header-text h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 2px;
+        }
+
+        .tooltip-header-text p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .tooltip-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .tooltip-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .tooltip-close svg {
+            width: 16px;
+            height: 16px;
+            color: white;
+        }
+
+        .tooltip-body {
+            padding: 20px;
+        }
+
+        .tooltip-body p {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .example-box {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .example-icon {
+            width: 32px;
+            height: 32px;
+            background: #fef3c7;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .example-icon svg {
+            width: 16px;
+            height: 16px;
+            color: #d97706;
+        }
+
+        .example-text {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .example-text strong {
+            color: #1f2937;
+        }
+
+        .tooltip-footer {
+            padding: 16px 20px;
+            border-top: 1px solid #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dont-show {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #6b7280;
+            cursor: pointer;
+        }
+
+        .dont-show input {
+            width: 16px;
+            height: 16px;
+            accent-color: #667eea;
+        }
+
+        .got-it-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .got-it-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Step indicator */
+        .step-indicator {
+            display: flex;
+            gap: 6px;
+            margin-top: 12px;
+            justify-content: center;
+        }
+
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #e5e7eb;
+        }
+
+        .step-dot.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* Additional page context for demo */
+        .page-context {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+        }
+
+        .page-context h2 {
+            color: white;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="page-context">
+            <h2>First-Time User Tooltip</h2>
+            <p>Appears once when users first interact with the schedule selector</p>
+        </div>
+
+        <div class="schedule-selector">
+            <!-- Tooltip -->
+            <div class="tooltip">
+                <button class="tooltip-close">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <div class="tooltip-header">
+                    <div class="tooltip-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div class="tooltip-header-text">
+                        <h4>Your Weekly Schedule</h4>
+                        <p>Select the days you'll be in NYC</p>
+                    </div>
+                </div>
+                <div class="tooltip-body">
+                    <p>
+                        Split Lease lets you pay only for the nights you need.
+                        Select your days and we'll show listings available on your exact schedule
+                        with accurate pricing.
+                    </p>
+                    <div class="example-box">
+                        <div class="example-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div class="example-text">
+                            <strong>Example:</strong> A Mon-Fri commuter selects 5 days
+                            and sees per-night pricing for those 5 nights only.
+                        </div>
+                    </div>
+                </div>
+                <div class="tooltip-footer">
+                    <label class="dont-show">
+                        <input type="checkbox" />
+                        Don't show again
+                    </label>
+                    <button class="got-it-btn">Got it!</button>
+                </div>
+                <div class="step-indicator">
+                    <div class="step-dot active"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                </div>
+            </div>
+
+            <!-- Schedule Selector Component -->
+            <div class="selector-header">
+                <h3>Select your days</h3>
+                <button class="help-trigger">?</button>
+            </div>
+            <div class="days-grid">
+                <button class="day-btn">Sun</button>
+                <button class="day-btn selected">Mon</button>
+                <button class="day-btn selected">Tue</button>
+                <button class="day-btn selected">Wed</button>
+                <button class="day-btn selected">Thu</button>
+                <button class="day-btn selected">Fri</button>
+                <button class="day-btn">Sat</button>
+            </div>
+            <div class="summary">
+                <strong>5 nights selected</strong> · Mon-Fri
+            </div>
+        </div>
+    </div>
+</body>
+</html>

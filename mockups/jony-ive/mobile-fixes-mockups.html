@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jony Ive - Mobile Fixes Mockups</title>
+  <style>
+    :root {
+      --primary: #5B21B6;
+      --primary-light: #7C3AED;
+      --gray-100: #F3F4F6;
+      --gray-200: #E5E7EB;
+      --gray-600: #4B5563;
+      --gray-900: #111827;
+      --min-touch: 44px;
+      --comfortable-touch: 48px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    .section {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: 8px;
+    }
+
+    .section-subtitle {
+      font-size: 14px;
+      color: var(--gray-600);
+      margin-bottom: 16px;
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .comparison-item {
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    .before {
+      background: #FEE2E2;
+      border: 2px solid #EF4444;
+    }
+
+    .after {
+      background: #D1FAE5;
+      border: 2px solid #10B981;
+    }
+
+    .label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .before .label { color: #DC2626; }
+    .after .label { color: #059669; }
+
+    /* ==========================================
+       FIX 1: Day Selector Buttons
+       Current: 30x30px | Required: 44x44px
+       ========================================== */
+
+    .day-selector-before {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+    }
+
+    .day-selector-before button {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+      background: white;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .day-selector-before button.selected {
+      background: var(--primary);
+      color: white;
+    }
+
+    .day-selector-after {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .day-selector-after button {
+      /* FIXED: Now meets 44px minimum */
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+      background: white;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      /* Visual feedback for touch */
+      transition: transform 0.1s ease;
+    }
+
+    .day-selector-after button:active {
+      transform: scale(0.95);
+    }
+
+    .day-selector-after button.selected {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* ==========================================
+       FIX 2: Message/Profile Buttons
+       Current: 90x27px | Required: 90x48px
+       ========================================== */
+
+    .host-buttons-before {
+      display: flex;
+      gap: 8px;
+    }
+
+    .host-buttons-before button {
+      padding: 4px 12px;
+      height: 27px;
+      border-radius: 6px;
+      border: 1px solid var(--primary);
+      background: white;
+      color: var(--primary);
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .host-buttons-after {
+      display: flex;
+      gap: 8px;
+    }
+
+    .host-buttons-after button {
+      /* FIXED: Now meets 48px comfortable touch target */
+      padding: 12px 16px;
+      min-height: 48px;
+      border-radius: 8px;
+      border: 2px solid var(--primary);
+      background: white;
+      color: var(--primary);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .host-buttons-after button:active {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* ==========================================
+       FIX 3: Favorite Heart Button
+       Current: 32x32px | Required: 44x44px
+       ========================================== */
+
+    .favorite-before {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.9);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .favorite-after {
+      /* FIXED: Larger touch target with same visual size */
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.9);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* Icon stays same size, tap area is larger */
+    }
+
+    .favorite-after svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ==========================================
+       FIX 4: Footer Links
+       Current: 80x19px | Required: padding for 44px tap
+       ========================================== */
+
+    .footer-before a {
+      font-size: 14px;
+      color: var(--gray-600);
+      text-decoration: none;
+      /* No padding = small tap area */
+    }
+
+    .footer-after a {
+      font-size: 14px;
+      color: var(--gray-600);
+      text-decoration: none;
+      /* FIXED: Invisible padding creates 44px tap target */
+      padding: 12px 8px;
+      margin: -12px -8px;
+      display: inline-block;
+    }
+
+    /* ==========================================
+       FIX 5: Bottom Navigation (New Component)
+       Recommendation: Add for thumb-zone optimization
+       ========================================== */
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0;
+      padding-bottom: calc(8px + env(safe-area-inset-bottom));
+    }
+
+    .bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      /* Each item is at least 44px */
+      min-width: 64px;
+      min-height: 44px;
+      padding: 4px 8px;
+      color: var(--gray-600);
+      text-decoration: none;
+      font-size: 10px;
+    }
+
+    .bottom-nav-item.active {
+      color: var(--primary);
+    }
+
+    .bottom-nav-item svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* Measurement overlay */
+    .measurement {
+      font-size: 10px;
+      color: var(--gray-600);
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .measurement .size {
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+
+    .measurement .status {
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 9px;
+      margin-left: 4px;
+    }
+
+    .measurement .fail {
+      background: #FEE2E2;
+      color: #DC2626;
+    }
+
+    .measurement .pass {
+      background: #D1FAE5;
+      color: #059669;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 style="font-size: 24px; margin-bottom: 8px;">Jony Ive - Mobile Fixes</h1>
+  <p style="color: #666; margin-bottom: 24px;">Touch target improvements for Split Lease mobile experience</p>
+
+  <!-- FIX 1: Day Selector -->
+  <div class="section">
+    <h2 class="section-title">Fix 1: Day Selector Buttons</h2>
+    <p class="section-subtitle">The subway test: Can you tap accurately while the train is moving?</p>
+
+    <div class="comparison">
+      <div class="comparison-item before">
+        <div class="label">Before (30x30px)</div>
+        <div class="day-selector-before">
+          <button>S</button>
+          <button class="selected">M</button>
+          <button class="selected">T</button>
+          <button class="selected">W</button>
+          <button class="selected">T</button>
+          <button class="selected">F</button>
+          <button>S</button>
+        </div>
+        <div class="measurement">
+          <span class="size">30x30px</span>
+          <span class="status fail">FAIL</span>
+        </div>
+      </div>
+
+      <div class="comparison-item after">
+        <div class="label">After (44x44px)</div>
+        <div class="day-selector-after">
+          <button>S</button>
+          <button class="selected">M</button>
+          <button class="selected">T</button>
+          <button class="selected">W</button>
+          <button class="selected">T</button>
+          <button class="selected">F</button>
+          <button>S</button>
+        </div>
+        <div class="measurement">
+          <span class="size">44x44px</span>
+          <span class="status pass">PASS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIX 2: Host Buttons -->
+  <div class="section">
+    <h2 class="section-title">Fix 2: Message/Profile Buttons</h2>
+    <p class="section-subtitle">Primary conversion actions need comfortable tap targets</p>
+
+    <div class="comparison">
+      <div class="comparison-item before">
+        <div class="label">Before (27px height)</div>
+        <div class="host-buttons-before">
+          <button>Message</button>
+          <button>Profile</button>
+        </div>
+        <div class="measurement">
+          <span class="size">90x27px</span>
+          <span class="status fail">FAIL</span>
+        </div>
+      </div>
+
+      <div class="comparison-item after">
+        <div class="label">After (48px height)</div>
+        <div class="host-buttons-after">
+          <button>Message</button>
+          <button>Profile</button>
+        </div>
+        <div class="measurement">
+          <span class="size">100x48px</span>
+          <span class="status pass">PASS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIX 3: Favorite Heart -->
+  <div class="section">
+    <h2 class="section-title">Fix 3: Favorite Heart Button</h2>
+    <p class="section-subtitle">Increase tap area while keeping visual size</p>
+
+    <div class="comparison">
+      <div class="comparison-item before">
+        <div class="label">Before (32x32px)</div>
+        <div style="display: flex; justify-content: center;">
+          <button class="favorite-before">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="measurement">
+          <span class="size">32x32px</span>
+          <span class="status fail">FAIL</span>
+        </div>
+      </div>
+
+      <div class="comparison-item after">
+        <div class="label">After (44x44px)</div>
+        <div style="display: flex; justify-content: center;">
+          <button class="favorite-after">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="measurement">
+          <span class="size">44x44px</span>
+          <span class="status pass">PASS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIX 4: Footer Links -->
+  <div class="section">
+    <h2 class="section-title">Fix 4: Footer Links</h2>
+    <p class="section-subtitle">Add invisible padding for larger tap targets</p>
+
+    <div class="comparison">
+      <div class="comparison-item before">
+        <div class="label">Before (19px height)</div>
+        <div class="footer-before" style="display: flex; gap: 16px; justify-content: center;">
+          <a href="#">Terms of Use</a>
+          <span>|</span>
+          <a href="#">Privacy Policy</a>
+        </div>
+        <div class="measurement">
+          <span class="size">80x19px tap area</span>
+          <span class="status fail">FAIL</span>
+        </div>
+      </div>
+
+      <div class="comparison-item after">
+        <div class="label">After (44px tap area)</div>
+        <div class="footer-after" style="display: flex; gap: 16px; justify-content: center;">
+          <a href="#">Terms of Use</a>
+          <span>|</span>
+          <a href="#">Privacy Policy</a>
+        </div>
+        <div class="measurement">
+          <span class="size">96x43px tap area</span>
+          <span class="status pass">PASS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW: Bottom Navigation -->
+  <div class="section">
+    <h2 class="section-title">New: Bottom Navigation</h2>
+    <p class="section-subtitle">Thumb-zone optimized navigation (like Airbnb)</p>
+
+    <div style="background: #f5f5f5; border-radius: 8px; padding: 20px; position: relative; height: 150px;">
+      <p style="text-align: center; color: #999; font-size: 12px;">Page content here...</p>
+
+      <nav class="bottom-nav" style="position: absolute; bottom: 0; left: 0; right: 0; border-radius: 0 0 8px 8px;">
+        <a href="#" class="bottom-nav-item active">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+          </svg>
+          <span>Explore</span>
+        </a>
+        <a href="#" class="bottom-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <span>Saved</span>
+        </a>
+        <a href="#" class="bottom-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span>Messages</span>
+        </a>
+        <a href="#" class="bottom-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span>Profile</span>
+        </a>
+      </nav>
+    </div>
+    <div class="measurement" style="margin-top: 12px;">
+      <span class="size">Each item: 64x52px</span>
+      <span class="status pass">PASS</span>
+      - In easy thumb zone (bottom of screen)
+    </div>
+  </div>
+
+  <!-- CSS Code Snippets -->
+  <div class="section">
+    <h2 class="section-title">Implementation CSS</h2>
+    <p class="section-subtitle">Copy these styles to fix touch targets</p>
+
+    <pre style="background: #1e1e1e; color: #d4d4d4; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 12px;">
+<code>/* Day Selector Fix */
+.day-selector button {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* Host Buttons Fix */
+.host-action-button {
+  min-height: 48px;
+  padding: 12px 16px;
+}
+
+/* Favorite Heart Fix */
+.favorite-button {
+  width: 44px;
+  height: 44px;
+}
+
+/* Footer Links Fix */
+.footer-link {
+  padding: 12px 8px;
+  margin: -12px -8px;
+  display: inline-block;
+}
+
+/* Minimum touch target utility */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+}</code></pre>
+  </div>
+
+</body>
+</html>

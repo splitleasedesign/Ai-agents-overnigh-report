@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Split Lease - Earnings Calculator Widget Mockup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f8f7fc;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .calculator-widget {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(49, 19, 93, 0.15);
+      overflow: hidden;
+      max-width: 480px;
+      width: 100%;
+    }
+
+    .calculator-header {
+      background: linear-gradient(135deg, #31135D 0%, #4a2080 100%);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .calculator-header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .calculator-header p {
+      opacity: 0.8;
+      font-size: 0.95rem;
+    }
+
+    .calculator-body {
+      padding: 2rem;
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #31135D;
+      margin-bottom: 0.5rem;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: #31135D;
+    }
+
+    .input-field::placeholder {
+      color: #9ca3af;
+    }
+
+    /* Schedule Selector */
+    .schedule-selector {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .schedule-option {
+      flex: 1;
+      min-width: 80px;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      background: white;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .schedule-option:hover {
+      border-color: #31135D;
+    }
+
+    .schedule-option.active {
+      background: #31135D;
+      border-color: #31135D;
+      color: white;
+    }
+
+    .schedule-option .label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      display: block;
+    }
+
+    .schedule-option .nights {
+      font-size: 0.65rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+
+    /* Results */
+    .results {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      border-radius: 16px;
+      padding: 1.5rem;
+      color: white;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .results-label {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      margin-bottom: 0.5rem;
+    }
+
+    .results-amount {
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .results-period {
+      font-size: 1rem;
+      opacity: 0.8;
+      margin-top: 0.25rem;
+    }
+
+    .results-breakdown {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .breakdown-item {
+      text-align: center;
+    }
+
+    .breakdown-value {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .breakdown-label {
+      font-size: 0.7rem;
+      opacity: 0.7;
+    }
+
+    /* CTA */
+    .calculator-cta {
+      display: block;
+      width: 100%;
+      background: #31135D;
+      color: white;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .calculator-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(49, 19, 93, 0.3);
+    }
+
+    /* Trust Badge */
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      background: #f8f7fc;
+      color: #6b7280;
+      font-size: 0.8rem;
+    }
+
+    .trust-badge svg {
+      width: 16px;
+      height: 16px;
+      color: #059669;
+    }
+
+    /* Comparison */
+    .comparison {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .comparison-item {
+      flex: 1;
+      padding: 1rem;
+      background: #f8f7fc;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .comparison-platform {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-bottom: 0.25rem;
+    }
+
+    .comparison-amount {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .comparison-item.highlight {
+      background: rgba(5, 150, 105, 0.1);
+      border: 2px solid #059669;
+    }
+
+    .comparison-item.highlight .comparison-amount {
+      color: #059669;
+    }
+
+    .comparison-badge {
+      background: #059669;
+      color: white;
+      font-size: 0.65rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      margin-top: 0.25rem;
+      display: inline-block;
+    }
+
+    /* Annotation */
+    .annotation {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a1a;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      z-index: 100;
+      max-width: 90%;
+      text-align: center;
+    }
+
+    .annotation strong {
+      color: #10B981;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator-widget">
+    <div class="calculator-header">
+      <h2>What Could You Earn?</h2>
+      <p>Enter your neighborhood to see potential earnings</p>
+    </div>
+
+    <div class="calculator-body">
+      <div class="input-group">
+        <label class="input-label">Your NYC Neighborhood</label>
+        <input type="text" class="input-field" placeholder="e.g. Midtown, Williamsburg, Upper West Side" value="Midtown Manhattan">
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Which nights would you share?</label>
+        <div class="schedule-selector">
+          <div class="schedule-option">
+            <span class="label">Weeknights</span>
+            <span class="nights">Mon-Fri</span>
+          </div>
+          <div class="schedule-option active">
+            <span class="label">Weekends</span>
+            <span class="nights">Fri-Sun</span>
+          </div>
+          <div class="schedule-option">
+            <span class="label">Full Week</span>
+            <span class="nights">All 7</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Space Type</label>
+        <div class="schedule-selector">
+          <div class="schedule-option active">
+            <span class="label">Entire Place</span>
+          </div>
+          <div class="schedule-option">
+            <span class="label">Private Room</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="results">
+        <div class="results-label">Estimated Monthly Earnings</div>
+        <div class="results-amount">$2,847</div>
+        <div class="results-period">sharing weekends only</div>
+
+        <div class="results-breakdown">
+          <div class="breakdown-item">
+            <div class="breakdown-value">$237</div>
+            <div class="breakdown-label">per night avg</div>
+          </div>
+          <div class="breakdown-item">
+            <div class="breakdown-value">12</div>
+            <div class="breakdown-label">nights/month</div>
+          </div>
+          <div class="breakdown-item">
+            <div class="breakdown-value">$34K</div>
+            <div class="breakdown-label">yearly potential</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="comparison">
+        <div class="comparison-item">
+          <div class="comparison-platform">Airbnb (same nights)</div>
+          <div class="comparison-amount">$2,150</div>
+        </div>
+        <div class="comparison-item highlight">
+          <div class="comparison-platform">Split Lease</div>
+          <div class="comparison-amount">$2,847</div>
+          <span class="comparison-badge">+32% more</span>
+        </div>
+      </div>
+
+      <button class="calculator-cta">
+        Start Listing - It's Free
+      </button>
+    </div>
+
+    <div class="trust-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+      </svg>
+      $1M Host Protection Included
+    </div>
+  </div>
+
+  <!-- Annotation -->
+  <div class="annotation">
+    <strong>MOCKUP:</strong> Embeddable Earnings Calculator Widget - Shows instant estimates before any signup. Like Airbnb's "What's My Place Worth" tool.
+  </div>
+</body>
+</html>

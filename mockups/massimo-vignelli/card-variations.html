@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Split Lease Card Redesign — 3 Variations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f5f5f5;
+      padding: 40px;
+      color: #222;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #31135D;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 40px;
+    }
+
+    .section {
+      margin-bottom: 60px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #31135D;
+    }
+
+    .section-desc {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+    }
+
+    /* ========================================
+       VARIATION A: PRICE-FIRST CARD
+       Priority: Photo → Price → Title → Meta
+       ======================================== */
+    .card-a {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      transition: box-shadow 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+
+    .card-a:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      transform: translateY(-2px);
+    }
+
+    .card-a .image-container {
+      position: relative;
+      aspect-ratio: 16/9;
+      background: #e0e0e0;
+      overflow: hidden;
+    }
+
+    .card-a .image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .card-a .price-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: #31135D;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .card-a .price-badge span {
+      font-size: 12px;
+      font-weight: 400;
+      opacity: 0.9;
+    }
+
+    .card-a .favorite-btn {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: white;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .card-a .content {
+      padding: 16px;
+    }
+
+    .card-a .title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .card-a .location {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-a .meta {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: #444;
+    }
+
+    .card-a .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-a .meta-item svg {
+      width: 16px;
+      height: 16px;
+      color: #31135D;
+    }
+
+    .card-a .trust-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #eee;
+    }
+
+    .card-a .rating {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .card-a .rating svg {
+      width: 14px;
+      height: 14px;
+      fill: #31135D;
+    }
+
+    .card-a .verified {
+      font-size: 12px;
+      color: #666;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-a .verified svg {
+      width: 14px;
+      height: 14px;
+      color: #10B981;
+    }
+
+    /* ========================================
+       VARIATION B: COMPACT CARD
+       Minimal design, maximum scannability
+       ======================================== */
+    .card-b {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      transition: box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+    .card-b:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .card-b .image-container {
+      aspect-ratio: 1;
+      background: #e0e0e0;
+      overflow: hidden;
+    }
+
+    .card-b .image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .card-b .content {
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card-b .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .card-b .title {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.3;
+      max-width: 70%;
+    }
+
+    .card-b .price {
+      font-size: 16px;
+      font-weight: 700;
+      color: #31135D;
+      text-align: right;
+    }
+
+    .card-b .price span {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      color: #888;
+    }
+
+    .card-b .location {
+      font-size: 13px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .card-b .meta {
+      display: flex;
+      gap: 12px;
+      font-size: 13px;
+      color: #555;
+    }
+
+    .card-b .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .card-b .bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .card-b .host {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #888;
+    }
+
+    .card-b .host-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #ddd;
+    }
+
+    .card-b .rating {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .card-b .rating svg {
+      width: 12px;
+      height: 12px;
+      fill: #31135D;
+    }
+
+    /* ========================================
+       VARIATION C: AIRBNB-STYLE CARD
+       Photo-led with clean info below
+       ======================================== */
+    .card-c {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+
+    .card-c:hover {
+      transform: scale(1.02);
+    }
+
+    .card-c .image-container {
+      position: relative;
+      aspect-ratio: 4/3;
+      background: #e0e0e0;
+      overflow: hidden;
+      border-radius: 20px;
+    }
+
+    .card-c .image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .card-c .favorite-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255,255,255,0.9);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+    }
+
+    .card-c .image-dots {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 4px;
+    }
+
+    .card-c .image-dots .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+    }
+
+    .card-c .image-dots .dot.active {
+      background: white;
+    }
+
+    .card-c .content {
+      padding: 12px 4px;
+    }
+
+    .card-c .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 4px;
+    }
+
+    .card-c .location {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .card-c .rating {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+    }
+
+    .card-c .rating svg {
+      width: 12px;
+      height: 12px;
+      fill: #222;
+    }
+
+    .card-c .title {
+      font-size: 14px;
+      color: #717171;
+      margin-bottom: 4px;
+    }
+
+    .card-c .meta {
+      font-size: 14px;
+      color: #717171;
+      margin-bottom: 8px;
+    }
+
+    .card-c .price-row {
+      font-size: 15px;
+    }
+
+    .card-c .price-row strong {
+      font-weight: 600;
+    }
+
+    .card-c .price-row span {
+      color: #717171;
+    }
+
+    /* ========================================
+       CURRENT (FOR COMPARISON)
+       ======================================== */
+    .card-current {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-current .image-container {
+      position: relative;
+      height: 200px;
+      background: #e0e0e0;
+    }
+
+    .card-current .content {
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 1fr 100px;
+      gap: 16px;
+    }
+
+    .card-current .main-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .card-current .location-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #f0f0f0;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      color: #31135D;
+      width: fit-content;
+    }
+
+    .card-current .title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .card-current .meta {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .card-current .inline-price {
+      font-size: 14px;
+      margin: 8px 0;
+    }
+
+    .card-current .actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .card-current .btn {
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .card-current .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .card-current .btn-primary {
+      background: #31135D;
+      color: white;
+    }
+
+    .card-current .host {
+      font-size: 13px;
+      color: #666;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .card-current .sidebar {
+      text-align: center;
+      padding: 12px;
+      background: #fafafa;
+      border-radius: 8px;
+    }
+
+    .card-current .sidebar .price {
+      font-size: 20px;
+      font-weight: 700;
+      color: #31135D;
+    }
+
+    .card-current .sidebar .label {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .card-current .sidebar .availability {
+      font-size: 11px;
+      color: #10B981;
+      margin-top: 8px;
+    }
+
+    /* Labels */
+    .label-tag {
+      display: inline-block;
+      background: #31135D;
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+
+    .label-tag.current {
+      background: #dc2626;
+    }
+
+    .label-tag.variation {
+      background: #10B981;
+    }
+
+    .comparison-note {
+      background: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      padding: 12px 16px;
+      font-size: 14px;
+      margin-bottom: 24px;
+      border-radius: 0 8px 8px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Split Lease Card Redesign</h1>
+  <p class="subtitle">3 variations addressing information hierarchy problems</p>
+
+  <!-- CURRENT DESIGN -->
+  <div class="section">
+    <h2 class="section-title">Current Design (Problems)</h2>
+    <p class="section-desc">Location first, price buried, duplicate pricing, text-heavy meta, action button clutter</p>
+
+    <div class="comparison-note">
+      <strong>Issues:</strong> Price appears in 2 places. Location shown before title. No trust signals. Meta is all text (slow to scan). "Create Proposal" button is premature.
+    </div>
+
+    <div class="cards-grid">
+      <div class="card-current">
+        <span class="label-tag current">CURRENT</span>
+        <div class="image-container">
+          <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600" alt="Apartment">
+        </div>
+        <div class="content">
+          <div class="main-info">
+            <div class="location-pill">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              Williamsburg, Brooklyn
+            </div>
+            <div class="title">Sunny 2BR with Manhattan Views</div>
+            <div class="meta">Entire Place | 4 guests | 2 bedrooms | 1 bath</div>
+            <div class="inline-price"><strong>$145.00</strong> / night <span style="color:#888">from $125/night</span></div>
+            <div class="actions">
+              <button class="btn btn-secondary">Message</button>
+              <button class="btn btn-primary">Create Proposal</button>
+            </div>
+            <div class="host">
+              <div style="width:28px;height:28px;background:#ddd;border-radius:50%"></div>
+              Hosted by Sarah
+            </div>
+          </div>
+          <div class="sidebar">
+            <div class="price">$145.00</div>
+            <div class="label">/night</div>
+            <div class="label">for 4 nights/week</div>
+            <div class="availability">Available in 1 week</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VARIATION A -->
+  <div class="section">
+    <h2 class="section-title">Variation A: Price-First Card</h2>
+    <p class="section-desc">Price badge on image, title first, icon-based meta, trust signals visible</p>
+
+    <div class="cards-grid">
+      <div class="card-a">
+        <span class="label-tag variation">VARIATION A</span>
+        <div class="image-container">
+          <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600" alt="Apartment">
+          <button class="favorite-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <div class="price-badge">$145<span>/night</span></div>
+        </div>
+        <div class="content">
+          <h3 class="title">Sunny 2BR with Manhattan Views</h3>
+          <div class="location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Williamsburg, Brooklyn
+          </div>
+          <div class="meta">
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
+              2 beds
+            </span>
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-.5C4.683 3 4 3.683 4 4.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/><line x1="10" y1="5" x2="8" y2="7"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M7 19v2"/><path d="M17 19v2"/></svg>
+              1 bath
+            </span>
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              4 guests
+            </span>
+          </div>
+          <div class="trust-row">
+            <div class="rating">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              4.8 (23)
+            </div>
+            <div class="verified">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              Verified Host
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-a">
+        <div class="image-container">
+          <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600" alt="Apartment">
+          <button class="favorite-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <div class="price-badge">$189<span>/night</span></div>
+        </div>
+        <div class="content">
+          <h3 class="title">Modern Loft in DUMBO</h3>
+          <div class="location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            DUMBO, Brooklyn
+          </div>
+          <div class="meta">
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
+              1 bed
+            </span>
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-.5C4.683 3 4 3.683 4 4.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/><line x1="10" y1="5" x2="8" y2="7"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+              1 bath
+            </span>
+            <span class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              2 guests
+            </span>
+          </div>
+          <div class="trust-row">
+            <div class="rating">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              4.9 (47)
+            </div>
+            <div class="verified">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              Verified Host
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VARIATION B -->
+  <div class="section">
+    <h2 class="section-title">Variation B: Compact Horizontal Card</h2>
+    <p class="section-desc">Maximum information density, efficient use of space, ideal for list view</p>
+
+    <div class="cards-grid">
+      <div class="card-b">
+        <span class="label-tag variation">VARIATION B</span>
+        <div class="image-container">
+          <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400" alt="Apartment">
+        </div>
+        <div class="content">
+          <div>
+            <div class="top-row">
+              <div class="title">Sunny 2BR with Manhattan Views</div>
+              <div class="price">$145<span>/night</span></div>
+            </div>
+            <div class="location">Williamsburg, Brooklyn</div>
+          </div>
+          <div class="bottom-row">
+            <div class="meta">
+              <span class="meta-item">2 bd</span>
+              <span class="meta-item">1 ba</span>
+              <span class="meta-item">4 guests</span>
+            </div>
+            <div class="rating">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              4.8
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-b">
+        <div class="image-container">
+          <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400" alt="Apartment">
+        </div>
+        <div class="content">
+          <div>
+            <div class="top-row">
+              <div class="title">Modern Loft in DUMBO</div>
+              <div class="price">$189<span>/night</span></div>
+            </div>
+            <div class="location">DUMBO, Brooklyn</div>
+          </div>
+          <div class="bottom-row">
+            <div class="meta">
+              <span class="meta-item">1 bd</span>
+              <span class="meta-item">1 ba</span>
+              <span class="meta-item">2 guests</span>
+            </div>
+            <div class="rating">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              4.9
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VARIATION C -->
+  <div class="section">
+    <h2 class="section-title">Variation C: Airbnb-Style Card</h2>
+    <p class="section-desc">Photo-led design, minimal chrome, clean typography, maximum whitespace</p>
+
+    <div class="cards-grid">
+      <div class="card-c">
+        <span class="label-tag variation">VARIATION C</span>
+        <div class="image-container">
+          <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600" alt="Apartment">
+          <button class="favorite-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <div class="image-dots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+        <div class="content">
+          <div class="top-row">
+            <div class="location">Williamsburg, Brooklyn</div>
+            <div class="rating">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              4.8
+            </div>
+          </div>
+          <div class="title">Sunny 2BR with Manhattan Views</div>
+          <div class="meta">2 beds · 1 bath · 4 guests</div>
+          <div class="price-row"><strong>$145</strong> <span>night</span></div>
+        </div>
+      </div>
+
+      <div class="card-c">
+        <div class="image-container">
+          <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600" alt="Apartment">
+          <button class="favorite-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <div class="image-dots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+        <div class="content">
+          <div class="top-row">
+            <div class="location">DUMBO, Brooklyn</div>
+            <div class="rating">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              4.9
+            </div>
+          </div>
+          <div class="title">Modern Loft in DUMBO</div>
+          <div class="meta">1 bed · 1 bath · 2 guests</div>
+          <div class="price-row"><strong>$189</strong> <span>night</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECOMMENDATION -->
+  <div class="section" style="background:#f0fdf4; padding:24px; border-radius:12px; border:2px solid #10B981;">
+    <h2 class="section-title" style="color:#065f46;">Recommendation: Variation A</h2>
+    <p class="section-desc" style="color:#047857;">
+      <strong>Why Variation A?</strong>
+    </p>
+    <ul style="color:#047857; padding-left:20px; line-height:1.8;">
+      <li>Price badge on image = immediately visible without reading card</li>
+      <li>Title-first hierarchy matches user mental model</li>
+      <li>Icon-based meta = scannable at a glance</li>
+      <li>Trust signals (rating + verified) visible on card</li>
+      <li>No action button clutter — clicking card = primary action</li>
+      <li>Fixed 16:9 aspect ratio = visual consistency in grid</li>
+    </ul>
+    <p style="color:#047857; margin-top:16px;">
+      <strong>Implementation effort:</strong> Medium (restructure content order, add price badge, add icons, add trust row)
+    </p>
+  </div>
+</body>
+</html>

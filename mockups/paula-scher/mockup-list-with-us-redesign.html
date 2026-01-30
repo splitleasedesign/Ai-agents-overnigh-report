@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Split Lease - List With Us Redesign Mockup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: white;
+      color: #1a1a1a;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #31135D;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: #31135D;
+      border-radius: 8px;
+    }
+
+    /* Hero - EARNINGS FIRST */
+    .hero {
+      background: linear-gradient(135deg, #31135D 0%, #4a2080 100%);
+      color: white;
+      padding: 4rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      padding: 0.5rem 1rem;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+    }
+
+    /* Inline Calculator */
+    .inline-calculator {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 500px;
+      margin: 0 auto;
+      text-align: left;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .calc-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .calc-input-group {
+      flex: 1;
+    }
+
+    .calc-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #31135D;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .calc-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 0.95rem;
+    }
+
+    .calc-input:focus {
+      outline: none;
+      border-color: #31135D;
+    }
+
+    .calc-select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      background: white;
+      cursor: pointer;
+    }
+
+    .calc-result {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      border-radius: 12px;
+      padding: 1.5rem;
+      color: white;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .calc-result-label {
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
+    .calc-result-amount {
+      font-size: 2.5rem;
+      font-weight: 800;
+    }
+
+    .calc-result-period {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .calc-cta {
+      width: 100%;
+      background: #31135D;
+      color: white;
+      border: none;
+      padding: 1rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    /* Trust Section - RIGHT AFTER HERO */
+    .trust-section {
+      background: #f8f7fc;
+      padding: 3rem 2rem;
+    }
+
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .trust-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .trust-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(5, 150, 105, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+    }
+
+    .trust-icon svg {
+      width: 24px;
+      height: 24px;
+      color: #059669;
+    }
+
+    .trust-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 0.5rem;
+    }
+
+    .trust-card p {
+      font-size: 0.9rem;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    /* Testimonials - SOCIAL PROOF */
+    .testimonials {
+      padding: 4rem 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-header h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #1a1a1a;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-header p {
+      color: #6b7280;
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .testimonial-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+
+    .testimonial-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .testimonial-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .testimonial-name {
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .testimonial-location {
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+
+    .testimonial-stars {
+      color: #fbbf24;
+      margin-bottom: 0.75rem;
+    }
+
+    .testimonial-text {
+      color: #4b5563;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .testimonial-earnings {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .earnings-badge {
+      background: rgba(5, 150, 105, 0.1);
+      color: #059669;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+    }
+
+    /* How It Works - SIMPLIFIED */
+    .how-it-works {
+      background: #1a1a1a;
+      color: white;
+      padding: 4rem 2rem;
+    }
+
+    .how-it-works .section-header h2 {
+      color: white;
+    }
+
+    .how-it-works .section-header p {
+      color: rgba(255,255,255,0.7);
+    }
+
+    .steps {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .step {
+      text-align: center;
+      max-width: 250px;
+    }
+
+    .step-number {
+      width: 60px;
+      height: 60px;
+      background: #31135D;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin: 0 auto 1rem;
+    }
+
+    .step h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .step p {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* Final CTA */
+    .final-cta {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      padding: 4rem 2rem;
+      text-align: center;
+      color: white;
+    }
+
+    .final-cta h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .final-cta p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: white;
+      color: #047857;
+      padding: 1rem 2.5rem;
+      border-radius: 100px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    /* Annotation */
+    .annotation {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a1a;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      z-index: 100;
+      max-width: 90%;
+      text-align: center;
+    }
+
+    .annotation strong {
+      color: #10B981;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .calc-row {
+        flex-direction: column;
+      }
+
+      .steps {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon"></div>
+      Split Lease
+    </div>
+  </header>
+
+  <!-- Hero with Inline Calculator -->
+  <section class="hero">
+    <div class="hero-content">
+      <span class="hero-badge">Turn Unused Nights Into Income</span>
+      <h1>See What Your Space Could Earn</h1>
+      <p class="hero-subtitle">Calculate your potential earnings in 30 seconds</p>
+
+      <div class="inline-calculator">
+        <div class="calc-row">
+          <div class="calc-input-group">
+            <label class="calc-label">NYC Neighborhood</label>
+            <input type="text" class="calc-input" placeholder="Enter neighborhood" value="Midtown">
+          </div>
+          <div class="calc-input-group">
+            <label class="calc-label">Space Type</label>
+            <select class="calc-select">
+              <option>Entire Place</option>
+              <option>Private Room</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="calc-row">
+          <div class="calc-input-group">
+            <label class="calc-label">Available Nights</label>
+            <select class="calc-select">
+              <option>Weeknights (Mon-Fri)</option>
+              <option>Weekends (Fri-Sun)</option>
+              <option>Full Week</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="calc-result">
+          <div class="calc-result-label">Your Estimated Monthly Earnings</div>
+          <div class="calc-result-amount">$3,420</div>
+          <div class="calc-result-period">sharing weeknights in Midtown</div>
+        </div>
+
+        <button class="calc-cta">Start Your Free Listing</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust Section -->
+  <section class="trust-section">
+    <div class="trust-grid">
+      <div class="trust-card">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <h3>$1M Host Protection</h3>
+        <p>Every booking includes comprehensive damage and liability coverage</p>
+      </div>
+
+      <div class="trust-card">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <h3>Zero Host Fees</h3>
+        <p>We only charge guests. You keep 100% of your listed rate</p>
+      </div>
+
+      <div class="trust-card">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+          </svg>
+        </div>
+        <h3>Verified Guests</h3>
+        <p>Background checks and ID verification on every booking</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials">
+    <div class="section-header">
+      <h2>Hosts Love Split Lease</h2>
+      <p>Join hundreds of NYC hosts earning extra income</p>
+    </div>
+
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-header">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" alt="Brad" class="testimonial-avatar">
+          <div>
+            <div class="testimonial-name">Brad M.</div>
+            <div class="testimonial-location">Midtown Manhattan</div>
+          </div>
+        </div>
+        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="testimonial-text">"I travel for work Mon-Thu every week. Split Lease lets me rent those nights to business travelers. It's like having a roommate who's never there when I am."</p>
+        <div class="testimonial-earnings">
+          <span class="earnings-badge">Earns $2,800/month</span>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-header">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" alt="Sarah" class="testimonial-avatar">
+          <div>
+            <div class="testimonial-name">Sarah K.</div>
+            <div class="testimonial-location">Williamsburg, Brooklyn</div>
+          </div>
+        </div>
+        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="testimonial-text">"Way better than Airbnb for my situation. I needed consistent income without the hassle of new guests every few days. My Split Lease guest has been with me 6 months."</p>
+        <div class="testimonial-earnings">
+          <span class="earnings-badge">Earns $3,200/month</span>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-header">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" alt="Marcus" class="testimonial-avatar">
+          <div>
+            <div class="testimonial-name">Marcus T.</div>
+            <div class="testimonial-location">Upper West Side</div>
+          </div>
+        </div>
+        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="testimonial-text">"The $1M protection gave me peace of mind. And unlike other platforms, I'm not paying 15% of my earnings in fees. The math just works better."</p>
+        <div class="testimonial-earnings">
+          <span class="earnings-badge">Earns $4,100/month</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works">
+    <div class="section-header">
+      <h2>Simple. Fast. Profitable.</h2>
+      <p>Start earning in under 5 minutes</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Add Your Space</h3>
+        <p>Photos, location, and availability. Takes about 5 minutes.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Set Your Price</h3>
+        <p>Our smart pricing helps you maximize earnings.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Get Booked</h3>
+        <p>Verified guests book your available nights. You get paid.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta">
+    <h2>Ready to Start Earning?</h2>
+    <p>Your space is worth more than you think</p>
+    <a href="/self-listing-v2" class="cta-button">
+      Create Your Free Listing
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </a>
+  </section>
+
+  <!-- Annotation -->
+  <div class="annotation">
+    <strong>MOCKUP:</strong> Restructured List-With-Us page. Order: 1. Earnings Calculator 2. Trust/Guarantee 3. Testimonials 4. How It Works 5. CTA
+  </div>
+</body>
+</html>

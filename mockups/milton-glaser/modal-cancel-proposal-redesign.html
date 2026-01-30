@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cancel Proposal Modal Redesign - Milton Glaser Audit</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      padding: 40px;
+      min-height: 100vh;
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .column {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .column h2 {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #666;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .column.current h2 { color: #dc3545; }
+    .column.proposed h2 { color: #16a34a; }
+
+    /* Modal Simulation */
+    .modal-preview {
+      background: rgba(0,0,0,0.5);
+      border-radius: 12px;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .cancel-modal {
+      background: white;
+      border-radius: 16px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .modal-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .modal-subtitle {
+      font-size: 13px;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    .close-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-radius: 8px;
+      color: #666;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .modal-message {
+      font-size: 15px;
+      color: #333;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .reason-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .reason-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #333;
+      transition: all 0.15s;
+    }
+
+    .reason-option:hover {
+      border-color: #31135D;
+      background: #f8f6fc;
+    }
+
+    .reason-option.selected {
+      border-color: #31135D;
+      background: #f8f6fc;
+    }
+
+    .reason-option input {
+      accent-color: #31135D;
+    }
+
+    .modal-footer {
+      padding: 16px 20px 20px;
+      display: flex;
+      gap: 12px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 14px 20px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .btn-secondary {
+      background: white;
+      border: 1px solid #e5e5e5;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background: #f8f8f8;
+    }
+
+    .btn-danger {
+      background: white;
+      border: 2px solid #dc3545;
+      color: #dc3545;
+    }
+
+    .btn-danger:hover {
+      background: #dc3545;
+      color: white;
+    }
+
+    /* Annotations */
+    .annotation {
+      margin-top: 20px;
+      padding: 16px;
+      background: #fafafa;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .annotation h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .annotation ul {
+      padding-left: 20px;
+      color: #555;
+    }
+
+    .annotation li {
+      margin-bottom: 6px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge.issue { background: #fee2e2; color: #dc2626; }
+    .badge.fix { background: #dcfce7; color: #16a34a; }
+
+    /* Element Trace Table */
+    .element-trace {
+      margin-top: 24px;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .element-trace table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .element-trace th {
+      background: #f8f8f8;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .element-trace td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #f0f0f0;
+      color: #555;
+    }
+
+    .element-trace tr:last-child td {
+      border-bottom: none;
+    }
+
+    .aligned { color: #16a34a; }
+    .misaligned { color: #dc2626; }
+
+    @media (max-width: 900px) {
+      .comparison {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1 style="text-align: center; margin-bottom: 40px; color: #333; font-size: 24px;">
+    Cancel Proposal Modal — Copy Refinements
+  </h1>
+
+  <div class="comparison">
+    <!-- CURRENT -->
+    <div class="column current">
+      <h2>Current Implementation</h2>
+
+      <div class="modal-preview">
+        <div class="cancel-modal">
+          <div class="modal-header">
+            <div class="modal-header-left">
+              <svg class="modal-icon" viewBox="0 0 24 24" fill="none" stroke="#dc3545" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              <div>
+                <div class="modal-title">Cancel Proposal</div>
+                <div class="modal-subtitle">This action is irreversible</div>
+              </div>
+            </div>
+            <button class="close-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p class="modal-message">Are you sure you want to cancel your proposal for Sunny Harlem Studio?</p>
+            <div class="reason-group">
+              <label class="reason-option">
+                <input type="radio" name="reason-current">
+                Found another property
+              </label>
+              <label class="reason-option">
+                <input type="radio" name="reason-current">
+                Changed move-in dates
+              </label>
+              <label class="reason-option">
+                <input type="radio" name="reason-current">
+                Other
+              </label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary">Go Back</button>
+            <button class="btn btn-danger">Yes, Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <h4>Issues Found <span class="badge issue">2 Problems</span></h4>
+        <ul>
+          <li><strong>"This action is irreversible"</strong> — Scary language, sounds like deleting an account</li>
+          <li><strong>"Yes, Cancel" button</strong> — Confusing! "Cancel" appears twice with different meanings</li>
+        </ul>
+      </div>
+
+      <div class="element-trace">
+        <table>
+          <tr>
+            <th>Element</th>
+            <th>User Sees</th>
+            <th>Emotional State</th>
+            <th>Aligned?</th>
+          </tr>
+          <tr>
+            <td>Icon</td>
+            <td>Warning triangle</td>
+            <td>Alarmed</td>
+            <td class="aligned">✓</td>
+          </tr>
+          <tr>
+            <td>Title</td>
+            <td>"Cancel Proposal"</td>
+            <td>Clear intent</td>
+            <td class="aligned">✓</td>
+          </tr>
+          <tr>
+            <td>Subtitle</td>
+            <td>"irreversible"</td>
+            <td>Scared, hesitant</td>
+            <td class="misaligned">❌</td>
+          </tr>
+          <tr>
+            <td>Question</td>
+            <td>"Are you sure..."</td>
+            <td>Second-guessing</td>
+            <td class="aligned">✓</td>
+          </tr>
+          <tr>
+            <td>Buttons</td>
+            <td>"Go Back" / "Yes, Cancel"</td>
+            <td>Confused by "Cancel"</td>
+            <td class="misaligned">❌</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- PROPOSED -->
+    <div class="column proposed">
+      <h2>Proposed Refinements</h2>
+
+      <div class="modal-preview">
+        <div class="cancel-modal">
+          <div class="modal-header">
+            <div class="modal-header-left">
+              <svg class="modal-icon" viewBox="0 0 24 24" fill="none" stroke="#dc3545" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              <div>
+                <div class="modal-title">Cancel Proposal</div>
+                <div class="modal-subtitle">This can't be undone</div>
+              </div>
+            </div>
+            <button class="close-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p class="modal-message">Cancel your proposal for <strong>Sunny Harlem Studio</strong>? The host will be notified.</p>
+            <div class="reason-group">
+              <label class="reason-option">
+                <input type="radio" name="reason-proposed">
+                Found another place
+              </label>
+              <label class="reason-option">
+                <input type="radio" name="reason-proposed">
+                My plans changed
+              </label>
+              <label class="reason-option">
+                <input type="radio" name="reason-proposed">
+                Something else
+              </label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary">Keep Proposal</button>
+            <button class="btn btn-danger">Cancel Proposal</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <h4>Improvements Made <span class="badge fix">4 Fixes</span></h4>
+        <ul>
+          <li><strong>"This can't be undone"</strong> — Same meaning, less scary</li>
+          <li><strong>Question as statement</strong> — "Cancel your proposal for..." flows better</li>
+          <li><strong>"Keep Proposal" button</strong> — Clear opposite of "Cancel Proposal"</li>
+          <li><strong>Reason rewording</strong> — More natural language</li>
+        </ul>
+      </div>
+
+      <div class="element-trace">
+        <table>
+          <tr>
+            <th>Element</th>
+            <th>User Sees</th>
+            <th>Emotional State</th>
+            <th>Aligned?</th>
+          </tr>
+          <tr>
+            <td>Icon</td>
+            <td>Warning triangle</td>
+            <td>Alerted</td>
+            <td class="aligned">✓</td>
+          </tr>
+          <tr>
+            <td>Title</td>
+            <td>"Cancel Proposal"</td>
+            <td>Clear intent</td>
+            <td class="aligned">✓</td>
+          </tr>
+          <tr>
+            <td>Subtitle</td>
+            <td>"can't be undone"</td>
+            <td>Understands finality</td>
+            <td class="aligned">✓</td>
+          </tr>
+          <tr>
+            <td>Question</td>
+            <td>Statement + info</td>
+            <td>Informed</td>
+            <td class="aligned">✓</td>
+          </tr>
+          <tr>
+            <td>Buttons</td>
+            <td>"Keep" / "Cancel"</td>
+            <td>Clear choice</td>
+            <td class="aligned">✓</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width: 1200px; margin: 40px auto 0; padding: 24px; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+    <h3 style="font-size: 16px; margin-bottom: 16px;">Copy Changes Summary</h3>
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+      <tr style="background: #f8f8f8;">
+        <th style="padding: 12px; text-align: left; border-bottom: 2px solid #e5e5e5;">Location</th>
+        <th style="padding: 12px; text-align: left; border-bottom: 2px solid #e5e5e5;">Current</th>
+        <th style="padding: 12px; text-align: left; border-bottom: 2px solid #e5e5e5;">Proposed</th>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">Subtitle</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">"This action is irreversible"</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;"><strong>"This can't be undone"</strong></td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">Confirmation</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">"Are you sure you want to cancel..."</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;"><strong>"Cancel your proposal for...? The host will be notified."</strong></td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">Back Button</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">"Go Back"</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;"><strong>"Keep Proposal"</strong></td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">Confirm Button</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">"Yes, Cancel"</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;"><strong>"Cancel Proposal"</strong></td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">Reason 1</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">"Found another property"</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;"><strong>"Found another place"</strong></td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">Reason 2</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">"Changed move-in dates"</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;"><strong>"My plans changed"</strong></td>
+      </tr>
+      <tr>
+        <td style="padding: 12px;">Reason (Other)</td>
+        <td style="padding: 12px;">"Other"</td>
+        <td style="padding: 12px;"><strong>"Something else"</strong></td>
+      </tr>
+    </table>
+  </div>
+
+  <p style="text-align: center; margin-top: 40px; color: #888; font-size: 13px;">
+    Milton Glaser Agent — Voice & Trust Audit — 2026-01-29
+  </p>
+</body>
+</html>

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proposal Success Modal Redesign - Milton Glaser Audit</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      padding: 40px;
+      min-height: 100vh;
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .column {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .column h2 {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #666;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .column.current h2 { color: #f59e0b; }
+    .column.proposed h2 { color: #16a34a; }
+
+    /* Modal Simulation */
+    .modal-preview {
+      background: rgba(0,0,0,0.5);
+      border-radius: 12px;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .success-modal {
+      background: white;
+      border-radius: 16px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      padding: 24px;
+      text-align: center;
+      position: relative;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-radius: 8px;
+      color: #666;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background: #dcfce7;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #16a34a;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .modal-subtitle {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .listing-name {
+      color: #7c3aed;
+      font-weight: 500;
+    }
+
+    .info-box {
+      background: #f5f3ff;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+      border-left: 4px solid #7c3aed;
+      text-align: left;
+    }
+
+    .info-box h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #5b21b6;
+      margin-bottom: 8px;
+    }
+
+    .info-box p {
+      font-size: 14px;
+      color: #6d28d9;
+      line-height: 1.5;
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: #7c3aed;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #6d28d9;
+    }
+
+    .btn-secondary {
+      background: white;
+      border: 2px solid #7c3aed;
+      color: #7c3aed;
+    }
+
+    .btn-secondary:hover {
+      background: #f5f3ff;
+    }
+
+    .recommended-badge {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    /* Annotations */
+    .annotation {
+      margin-top: 20px;
+      padding: 16px;
+      background: #fafafa;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .annotation h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .annotation ul {
+      padding-left: 20px;
+      color: #555;
+    }
+
+    .annotation li {
+      margin-bottom: 6px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge.good { background: #fef3c7; color: #d97706; }
+    .badge.better { background: #dcfce7; color: #16a34a; }
+
+    /* Element Trace Table */
+    .element-trace {
+      margin-top: 24px;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .element-trace table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .element-trace th {
+      background: #f8f8f8;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .element-trace td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #f0f0f0;
+      color: #555;
+    }
+
+    .element-trace tr:last-child td {
+      border-bottom: none;
+    }
+
+    .aligned { color: #16a34a; }
+    .improved { color: #7c3aed; }
+
+    @media (max-width: 900px) {
+      .comparison {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1 style="text-align: center; margin-bottom: 40px; color: #333; font-size: 24px;">
+    Proposal Success Modal — Copy Enhancement
+  </h1>
+
+  <div class="comparison">
+    <!-- CURRENT (GOOD) -->
+    <div class="column current">
+      <h2>Current Implementation (Good)</h2>
+
+      <div class="modal-preview">
+        <div class="success-modal">
+          <button class="close-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+
+          <div class="success-icon">
+            <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+
+          <h3 class="modal-title">Proposal Submitted!</h3>
+
+          <p class="modal-subtitle">
+            Your proposal for <span class="listing-name">Sunny Harlem Studio</span> has been sent to the host.
+          </p>
+
+          <div class="info-box">
+            <h4>What's Next?</h4>
+            <p>Complete your rental application to increase your chances of approval. The host will review your proposal and application together.</p>
+          </div>
+
+          <div class="button-group">
+            <button class="btn btn-primary">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+              Submit Rental Application
+              <span class="recommended-badge">(Recommended)</span>
+            </button>
+            <button class="btn btn-secondary">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/>
+              </svg>
+              Go to Guest Dashboard
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <h4>What's Working <span class="badge good">Already Good</span></h4>
+        <ul>
+          <li><strong>Celebratory title</strong> with exclamation point</li>
+          <li><strong>"What's Next?" section</strong> reduces anxiety</li>
+          <li><strong>Clear CTAs</strong> with recommended action marked</li>
+          <li><strong>Listing name highlighted</strong> for context</li>
+        </ul>
+      </div>
+
+      <div class="element-trace">
+        <table>
+          <tr>
+            <th>Element</th>
+            <th>User Sees</th>
+            <th>Emotional State</th>
+            <th>Aligned?</th>
+          </tr>
+          <tr>
+            <td>Icon</td>
+            <td>Green checkmark</td>
+            <td>Relief, success</td>
+            <td class="aligned">✓</td>
+          </tr>
+          <tr>
+            <td>Title</td>
+            <td>"Proposal Submitted!"</td>
+            <td>Excited</td>
+            <td class="aligned">✓</td>
+          </tr>
+          <tr>
+            <td>Subtitle</td>
+            <td>Listing confirmation</td>
+            <td>Reassured</td>
+            <td class="aligned">✓</td>
+          </tr>
+          <tr>
+            <td>Info Box</td>
+            <td>Next steps</td>
+            <td>Informed</td>
+            <td class="aligned">✓</td>
+          </tr>
+          <tr>
+            <td>Primary CTA</td>
+            <td>Rental App</td>
+            <td>Motivated</td>
+            <td class="aligned">✓</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- PROPOSED (ENHANCED) -->
+    <div class="column proposed">
+      <h2>Proposed Enhancement</h2>
+
+      <div class="modal-preview">
+        <div class="success-modal">
+          <button class="close-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+
+          <div class="success-icon">
+            <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+
+          <h3 class="modal-title">You're In!</h3>
+
+          <p class="modal-subtitle">
+            Your proposal for <span class="listing-name">Sunny Harlem Studio</span> is on its way to the host.
+          </p>
+
+          <div class="info-box">
+            <h4>One more thing...</h4>
+            <p>Hosts love prepared guests. Complete your rental application and you'll stand out from the crowd.</p>
+          </div>
+
+          <div class="button-group">
+            <button class="btn btn-primary">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+              Complete My Application
+            </button>
+            <button class="btn btn-secondary">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z"/>
+              </svg>
+              I'll do it later
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <h4>Enhancements Made <span class="badge better">More Personality</span></h4>
+        <ul>
+          <li><strong>"You're In!" title</strong> — Feels more celebratory, personal</li>
+          <li><strong>"is on its way"</strong> — More dynamic than "has been sent"</li>
+          <li><strong>"One more thing..."</strong> — Intriguing hook, Steve Jobs style</li>
+          <li><strong>"stand out from the crowd"</strong> — Benefit-focused, not task-focused</li>
+          <li><strong>"Complete My Application"</strong> — First-person, ownership</li>
+          <li><strong>"I'll do it later"</strong> — Honest, no judgment, still friendly</li>
+        </ul>
+      </div>
+
+      <div class="element-trace">
+        <table>
+          <tr>
+            <th>Element</th>
+            <th>User Sees</th>
+            <th>Emotional State</th>
+            <th>Aligned?</th>
+          </tr>
+          <tr>
+            <td>Icon</td>
+            <td>Green checkmark</td>
+            <td>Relief, success</td>
+            <td class="aligned">✓</td>
+          </tr>
+          <tr>
+            <td>Title</td>
+            <td>"You're In!"</td>
+            <td>Excited, welcomed</td>
+            <td class="improved">✓+</td>
+          </tr>
+          <tr>
+            <td>Subtitle</td>
+            <td>"on its way"</td>
+            <td>Action happening</td>
+            <td class="improved">✓+</td>
+          </tr>
+          <tr>
+            <td>Info Box</td>
+            <td>Benefit-focused</td>
+            <td>Motivated</td>
+            <td class="improved">✓+</td>
+          </tr>
+          <tr>
+            <td>Primary CTA</td>
+            <td>First-person</td>
+            <td>Taking ownership</td>
+            <td class="improved">✓+</td>
+          </tr>
+          <tr>
+            <td>Secondary CTA</td>
+            <td>Honest option</td>
+            <td>No pressure</td>
+            <td class="improved">✓+</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width: 1200px; margin: 40px auto 0; padding: 24px; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+    <h3 style="font-size: 16px; margin-bottom: 16px;">Copy Changes Summary</h3>
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+      <tr style="background: #f8f8f8;">
+        <th style="padding: 12px; text-align: left; border-bottom: 2px solid #e5e5e5;">Location</th>
+        <th style="padding: 12px; text-align: left; border-bottom: 2px solid #e5e5e5;">Current</th>
+        <th style="padding: 12px; text-align: left; border-bottom: 2px solid #e5e5e5;">Proposed</th>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">Title</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">"Proposal Submitted!"</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;"><strong>"You're In!"</strong></td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">Subtitle verb</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">"has been sent to the host"</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;"><strong>"is on its way to the host"</strong></td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">Info Box Title</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">"What's Next?"</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;"><strong>"One more thing..."</strong></td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">Info Box Body</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">"Complete your rental application to increase your chances..."</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;"><strong>"Hosts love prepared guests. Complete your rental application and you'll stand out from the crowd."</strong></td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">Primary CTA</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;">"Submit Rental Application (Recommended)"</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f0f0f0;"><strong>"Complete My Application"</strong></td>
+      </tr>
+      <tr>
+        <td style="padding: 12px;">Secondary CTA</td>
+        <td style="padding: 12px;">"Go to Guest Dashboard"</td>
+        <td style="padding: 12px;"><strong>"I'll do it later"</strong></td>
+      </tr>
+    </table>
+    <p style="margin-top: 16px; font-size: 13px; color: #666;">
+      <strong>Note:</strong> Current implementation is already good. These are polish-level enhancements to add more personality. Priority: P3 (Nice to Have).
+    </p>
+  </div>
+
+  <p style="text-align: center; margin-top: 40px; color: #888; font-size: 13px;">
+    Milton Glaser Agent — Voice & Trust Audit — 2026-01-29
+  </p>
+</body>
+</html>

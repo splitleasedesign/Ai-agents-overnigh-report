@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don Norman Mockup 3: Simplified Pricing + Mobile Flow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 32px;
+            font-size: 14px;
+        }
+
+        .section-header {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin: 40px 0 16px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 700px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .card-title.before { color: #dc3545; }
+        .card-title.after { color: #28a745; }
+
+        /* OLD Pricing Breakdown */
+        .pricing-old {
+            font-size: 13px;
+        }
+
+        .pricing-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .pricing-row:last-child {
+            border-bottom: none;
+        }
+
+        .pricing-label {
+            color: #666;
+        }
+
+        .pricing-value {
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .pricing-total {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        /* NEW Pricing - Simplified */
+        .pricing-new-hero {
+            text-align: center;
+            padding: 24px 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 16px;
+        }
+
+        .pricing-new-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #666;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .pricing-new-amount {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .pricing-new-period {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .pricing-new-secondary {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 16px;
+        }
+
+        .pricing-new-item {
+            text-align: center;
+        }
+
+        .pricing-new-item-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #999;
+            margin-bottom: 4px;
+        }
+
+        .pricing-new-item-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        /* Fee Details Accordion */
+        .fee-accordion {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .fee-accordion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: #f9f9f9;
+            cursor: pointer;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .fee-accordion-header:hover {
+            background: #f0f0f0;
+        }
+
+        .fee-accordion-content {
+            padding: 12px 16px;
+            font-size: 13px;
+        }
+
+        .fee-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+        }
+
+        .fee-row .label {
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .fee-row .value {
+            color: #1a1a1a;
+        }
+
+        .info-icon {
+            width: 14px;
+            height: 14px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #666;
+            cursor: help;
+        }
+
+        /* Note */
+        .note {
+            background: #f0f9ff;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 12px;
+            color: #0369a1;
+            margin-top: 16px;
+        }
+
+        /* Mobile Proposal Card */
+        .mobile-frame {
+            max-width: 375px;
+            margin: 0 auto;
+            background: #f5f5f5;
+            border-radius: 24px;
+            padding: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .mobile-screen {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .mobile-header {
+            background: #6366f1;
+            color: white;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .mobile-header-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .mobile-proposal-card {
+            padding: 16px;
+        }
+
+        .mobile-listing-info {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .mobile-listing-image {
+            width: 60px;
+            height: 60px;
+            background: #e0e0e0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 24px;
+        }
+
+        .mobile-listing-details {
+            flex: 1;
+        }
+
+        .mobile-listing-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .mobile-listing-location {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .mobile-status-badge {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        .mobile-schedule {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .mobile-schedule-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .mobile-schedule-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .mobile-schedule-label {
+            color: #666;
+        }
+
+        .mobile-schedule-value {
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        .mobile-pricing-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-top: 1px solid #f0f0f0;
+            margin-bottom: 16px;
+        }
+
+        .mobile-pricing-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .mobile-pricing-amount {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .mobile-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .mobile-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+        }
+
+        .mobile-btn-primary {
+            background: #6366f1;
+            color: white;
+        }
+
+        .mobile-btn-secondary {
+            background: white;
+            color: #6366f1;
+            border: 1px solid #6366f1;
+        }
+
+        /* Swipe Actions */
+        .swipe-hint {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            padding: 12px;
+            background: #f9f9f9;
+            font-size: 11px;
+            color: #999;
+        }
+
+        .swipe-hint-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .swipe-arrow-left {
+            color: #dc3545;
+        }
+
+        .swipe-arrow-right {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mockup 3: Simplified Pricing + Mobile Flow</h1>
+        <p class="subtitle">Don Norman Audit — Reduce cognitive load, show what matters first</p>
+
+        <!-- Pricing Comparison -->
+        <div class="section-header">Pricing Display Simplification</div>
+        <div class="comparison">
+            <div class="card">
+                <div class="card-title before">Before (15+ fields)</div>
+                <div class="pricing-old">
+                    <div class="pricing-row">
+                        <span class="pricing-label">Price per night</span>
+                        <span class="pricing-value">$85</span>
+                    </div>
+                    <div class="pricing-row">
+                        <span class="pricing-label">Nights per week</span>
+                        <span class="pricing-value">4</span>
+                    </div>
+                    <div class="pricing-row">
+                        <span class="pricing-label">Weekly rate</span>
+                        <span class="pricing-value">$340</span>
+                    </div>
+                    <div class="pricing-row">
+                        <span class="pricing-label">4-week rent</span>
+                        <span class="pricing-value">$1,360</span>
+                    </div>
+                    <div class="pricing-row">
+                        <span class="pricing-label">Damage deposit</span>
+                        <span class="pricing-value">$500</span>
+                    </div>
+                    <div class="pricing-row">
+                        <span class="pricing-label">Cleaning fee</span>
+                        <span class="pricing-value">$75</span>
+                    </div>
+                    <div class="pricing-row">
+                        <span class="pricing-label">Maintenance fee</span>
+                        <span class="pricing-value">$25</span>
+                    </div>
+                    <div class="pricing-row">
+                        <span class="pricing-label">Service fee</span>
+                        <span class="pricing-value">$136</span>
+                    </div>
+                    <div class="pricing-row">
+                        <span class="pricing-label">First 4 weeks total</span>
+                        <span class="pricing-value pricing-total">$2,096</span>
+                    </div>
+                    <div class="pricing-row">
+                        <span class="pricing-label">Reservation total (13 wks)</span>
+                        <span class="pricing-value pricing-total">$4,880</span>
+                    </div>
+                </div>
+                <div class="note">
+                    <strong>Problems:</strong> Too many numbers, user must do mental math, unclear what to pay now vs later
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title after">After (Progressive disclosure)</div>
+
+                <div class="pricing-new-hero">
+                    <div class="pricing-new-label">First Payment</div>
+                    <div class="pricing-new-amount">$2,096</div>
+                    <div class="pricing-new-period">Due at move-in</div>
+                </div>
+
+                <div class="pricing-new-secondary">
+                    <div class="pricing-new-item">
+                        <div class="pricing-new-item-label">Monthly</div>
+                        <div class="pricing-new-item-value">$1,496</div>
+                    </div>
+                    <div class="pricing-new-item">
+                        <div class="pricing-new-item-label">Per Night</div>
+                        <div class="pricing-new-item-value">$85</div>
+                    </div>
+                </div>
+
+                <div class="fee-accordion">
+                    <div class="fee-accordion-header">
+                        <span>See fee breakdown</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="fee-accordion-content">
+                        <div class="fee-row">
+                            <span class="label">
+                                4-week rent
+                                <span class="info-icon" title="$85/night × 4 nights × 4 weeks">?</span>
+                            </span>
+                            <span class="value">$1,360</span>
+                        </div>
+                        <div class="fee-row">
+                            <span class="label">
+                                Damage deposit
+                                <span class="info-icon" title="Refundable after checkout">?</span>
+                            </span>
+                            <span class="value">$500</span>
+                        </div>
+                        <div class="fee-row">
+                            <span class="label">
+                                Cleaning + maintenance
+                                <span class="info-icon" title="One-time fee">?</span>
+                            </span>
+                            <span class="value">$100</span>
+                        </div>
+                        <div class="fee-row">
+                            <span class="label">
+                                Service fee
+                                <span class="info-icon" title="Split Lease platform fee (10%)">?</span>
+                            </span>
+                            <span class="value">$136</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="note">
+                    <strong>Improvements:</strong> Shows what matters (first payment), secondary info available on demand, tooltips explain each fee
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Proposal Card -->
+        <div class="section-header">Mobile: Optimized Proposal Card</div>
+        <div class="mobile-frame">
+            <div class="mobile-screen">
+                <div class="mobile-header">
+                    <div class="mobile-header-title">My Proposals</div>
+                </div>
+
+                <div class="mobile-proposal-card">
+                    <div class="mobile-listing-info">
+                        <div class="mobile-listing-image">🏠</div>
+                        <div class="mobile-listing-details">
+                            <div class="mobile-listing-name">Brooklyn Studio</div>
+                            <div class="mobile-listing-location">Williamsburg, NY</div>
+                            <div class="mobile-status-badge">⏳ Awaiting Host</div>
+                        </div>
+                    </div>
+
+                    <div class="mobile-schedule">
+                        <div class="mobile-schedule-row">
+                            <span class="mobile-schedule-label">Schedule</span>
+                            <span class="mobile-schedule-value">Mon-Fri · 4 nights/wk</span>
+                        </div>
+                        <div class="mobile-schedule-row">
+                            <span class="mobile-schedule-label">Move-in</span>
+                            <span class="mobile-schedule-value">Feb 15, 2026</span>
+                        </div>
+                        <div class="mobile-schedule-row">
+                            <span class="mobile-schedule-label">Duration</span>
+                            <span class="mobile-schedule-value">13 weeks</span>
+                        </div>
+                    </div>
+
+                    <div class="mobile-pricing-summary">
+                        <div>
+                            <div class="mobile-pricing-label">First payment</div>
+                            <div class="mobile-pricing-amount">$2,096</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="mobile-pricing-label">then monthly</div>
+                            <div style="font-size: 14px; color: #666;">$1,496</div>
+                        </div>
+                    </div>
+
+                    <div class="mobile-actions">
+                        <button class="mobile-btn mobile-btn-secondary">Edit</button>
+                        <button class="mobile-btn mobile-btn-primary">Message Host</button>
+                    </div>
+                </div>
+
+                <div class="swipe-hint">
+                    <div class="swipe-hint-item">
+                        <span class="swipe-arrow-left">←</span>
+                        <span>Swipe to cancel</span>
+                    </div>
+                    <div class="swipe-hint-item">
+                        <span>Swipe to accept</span>
+                        <span class="swipe-arrow-right">→</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="note" style="max-width: 375px; margin: 16px auto 0;">
+            <strong>Mobile Improvements:</strong>
+            <ul style="margin-top: 8px; padding-left: 16px;">
+                <li>Key info visible without expanding</li>
+                <li>Action buttons always visible</li>
+                <li>Swipe gestures for quick actions</li>
+                <li>Pricing shows first payment prominently</li>
+                <li>Status badge with icon for quick scanning</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
