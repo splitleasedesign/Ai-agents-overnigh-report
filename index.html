@@ -238,6 +238,78 @@
             font-size: 13px;
         }
 
+        /* Top Navigation */
+        .top-nav {
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 13px;
+        }
+
+        .top-nav a {
+            color: var(--gray-600);
+            text-decoration: none;
+        }
+
+        .top-nav a:hover {
+            color: var(--primary);
+        }
+
+        .top-nav .separator {
+            color: var(--gray-300);
+        }
+
+        .top-nav .current {
+            color: var(--gray-900);
+            font-weight: 500;
+        }
+
+        /* Runs Section */
+        .runs-nav {
+            background: var(--primary-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 32px;
+        }
+
+        .runs-nav h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .runs-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .run-link {
+            font-size: 12px;
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 6px;
+            color: var(--gray-700);
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+
+        .run-link:hover {
+            border-color: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .run-link.current {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .mockup-preview {
@@ -251,6 +323,13 @@
     </style>
 </head>
 <body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <a href="../index.html">Special Reports</a>
+        <span class="separator">/</span>
+        <span class="current">AI Design Team</span>
+    </nav>
+
     <!-- Header -->
     <header class="header">
         <h1>AI Design Team — Work Log</h1>
@@ -281,6 +360,15 @@
     </header>
 
     <div class="container">
+
+        <!-- Runs Navigation -->
+        <div class="runs-nav">
+            <h3>Run Reports</h3>
+            <div class="runs-list">
+                <span class="run-link current">Run 001-002: Mockups</span>
+                <a href="runs/2026-01-31--run-003-comet-integration.html" class="run-link">Run 003: Comet Integration</a>
+            </div>
+        </div>
 
         <!-- Paula Scher -->
         <section class="agent-section">
@@ -665,8 +753,8 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <p>Generated January 30, 2026</p>
-        <p>Split Lease AI Design Team</p>
+        <p><a href="../index.html" style="color: var(--primary); text-decoration: none;">Back to Special Reports</a></p>
+        <p style="margin-top: 8px;">Split Lease AI Design Team</p>
     </footer>
 </body>
 </html>

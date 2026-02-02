@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run 003 — Comet Integration | AI Design Team</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #31135D;
+            --primary-light: #7B4FB5;
+            --primary-bg: #F7F2FA;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --green-50: #ECFDF5;
+            --green-600: #059669;
+            --blue-50: #EFF6FF;
+            --blue-600: #2563EB;
+            --amber-50: #FFFBEB;
+            --amber-600: #D97706;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: white;
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            border-bottom: 1px solid var(--gray-200);
+            padding: 40px 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--gray-900);
+        }
+
+        .header .meta {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .header .summary {
+            margin-top: 24px;
+            padding: 20px;
+            background: var(--gray-50);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--gray-700);
+        }
+
+        .header .summary strong {
+            color: var(--gray-900);
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 32px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+
+        .stat strong {
+            font-size: 20px;
+            color: var(--primary);
+            display: block;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Section Headers */
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--gray-900);
+        }
+
+        .section-subtitle {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-bottom: 32px;
+        }
+
+        /* Collaboration Highlight */
+        .collaboration-box {
+            background: linear-gradient(135deg, var(--primary-bg) 0%, #EDE9FE 100%);
+            border: 1px solid #DDD6FE;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 48px;
+        }
+
+        .collaboration-box h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .collaboration-box .icon {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .collaboration-flow {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 24px 0;
+            flex-wrap: wrap;
+        }
+
+        .collab-agent {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .collab-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+            color: white;
+        }
+
+        .collab-arrow {
+            color: var(--gray-400);
+            font-size: 20px;
+        }
+
+        .collaboration-box p {
+            font-size: 14px;
+            color: var(--gray-700);
+            line-height: 1.7;
+        }
+
+        .collab-output {
+            margin-top: 16px;
+            padding: 16px;
+            background: white;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'SF Mono', Monaco, monospace;
+            color: var(--gray-600);
+        }
+
+        /* Agent Section */
+        .agent-section {
+            margin-bottom: 60px;
+            padding-bottom: 60px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .agent-section:last-child {
+            border-bottom: none;
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .agent-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .agent-info h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .agent-info .domain {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .agent-info .task {
+            font-size: 13px;
+            color: var(--gray-600);
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        /* Prompt Cards */
+        .prompts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .prompts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .prompt-column h4 {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .prompt-column.everyday h4 {
+            color: var(--green-600);
+        }
+
+        .prompt-column.curious h4 {
+            color: var(--blue-600);
+        }
+
+        .prompt-card {
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .prompt-card.everyday {
+            border-left: 3px solid var(--green-600);
+        }
+
+        .prompt-card.curious {
+            border-left: 3px solid var(--blue-600);
+        }
+
+        .prompt-card h5 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 8px;
+        }
+
+        .prompt-card p {
+            font-size: 13px;
+            color: var(--gray-600);
+            line-height: 1.5;
+        }
+
+        .prompt-card .frequency {
+            margin-top: 8px;
+            font-size: 11px;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* Graphics Section */
+        .graphics-preview {
+            background: var(--amber-50);
+            border: 1px solid #FDE68A;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 32px;
+        }
+
+        .graphics-preview h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--amber-600);
+            margin-bottom: 16px;
+        }
+
+        .graphics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .graphics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .graphic-item {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--gray-600);
+        }
+
+        .graphic-item .icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        /* How Comet Works */
+        .comet-explainer {
+            background: var(--gray-50);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 48px;
+        }
+
+        .comet-explainer h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .comet-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .comet-steps {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .comet-step {
+            text-align: center;
+        }
+
+        .comet-step .number {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .comet-step h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .comet-step p {
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid var(--gray-200);
+            color: var(--gray-500);
+            font-size: 13px;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 13px;
+        }
+
+        .top-nav a {
+            color: var(--gray-600);
+            text-decoration: none;
+        }
+
+        .top-nav a:hover {
+            color: var(--primary);
+        }
+
+        .top-nav .separator {
+            color: var(--gray-300);
+        }
+
+        .top-nav .current {
+            color: var(--gray-900);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <a href="../../index.html">Special Reports</a>
+        <span class="separator">/</span>
+        <a href="../index.html">AI Design Team</a>
+        <span class="separator">/</span>
+        <span class="current">Run 003</span>
+    </nav>
+
+    <!-- Header -->
+    <header class="header">
+        <h1>Run 003 — Comet Integration</h1>
+        <p class="meta">January 31, 2026 • Split Lease AI Design Team</p>
+
+        <div class="summary">
+            <strong>Overview:</strong> This run focuses on creating automated testing prompts for Perplexity Comet — an AI browser that can navigate websites, fill forms, and verify functionality like a human tester. Each agent designed domain-specific prompts that can run daily to catch regressions before users do.
+        </div>
+
+        <div class="stats-row">
+            <div class="stat">
+                <strong>54</strong>
+                Comet prompts
+            </div>
+            <div class="stat">
+                <strong>10</strong>
+                Agents active
+            </div>
+            <div class="stat">
+                <strong>34</strong>
+                Graphics planned
+            </div>
+            <div class="stat">
+                <strong>3+3</strong>
+                Everyday + Curious
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- How Comet Works -->
+        <div class="comet-explainer">
+            <h3>What is Comet?</h3>
+            <p style="font-size: 14px; color: var(--gray-700);">Comet is Perplexity's AI-powered browser that can execute tasks autonomously. Unlike chatbots that just answer questions, Comet navigates websites, clicks buttons, fills forms, and verifies results — bridging the gap between design recommendations and actual testing.</p>
+
+            <div class="comet-steps">
+                <div class="comet-step">
+                    <div class="number">1</div>
+                    <h4>Agent Creates Prompt</h4>
+                    <p>Each agent designs prompts based on their domain expertise</p>
+                </div>
+                <div class="comet-step">
+                    <div class="number">2</div>
+                    <h4>Comet Executes</h4>
+                    <p>Comet runs the test on the live site, navigating like a real user</p>
+                </div>
+                <div class="comet-step">
+                    <div class="number">3</div>
+                    <h4>Results Documented</h4>
+                    <p>Pass/fail results feed back to agents for analysis and fixes</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Collaboration Highlight -->
+        <div class="collaboration-box">
+            <h3>
+                <span class="icon">↔</span>
+                Cross-Agent Collaboration
+            </h3>
+
+            <div class="collaboration-flow">
+                <div class="collab-agent">
+                    <div class="collab-avatar" style="background: #8B5CF6;">MV</div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px;">Massimo Vignelli</div>
+                        <div style="font-size: 12px; color: var(--gray-500);">Created spec for 34 graphics</div>
+                    </div>
+                </div>
+                <span class="collab-arrow">→</span>
+                <div class="collab-agent">
+                    <div class="collab-avatar" style="background: #F97316;">CE</div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px;">Charles Eames</div>
+                        <div style="font-size: 12px; color: var(--gray-500);">Producing all 34 HTML mockups</div>
+                    </div>
+                </div>
+            </div>
+
+            <p>Massimo's graphics strategy document specified 34 illustrations needed across empty states, errors, trust badges, onboarding, and marketing. Charles Eames is implementing all 34 using his signature approach from the Empty State: Favorites mockup — pure CSS/SVG animations, floating elements, and helpful tips sections.</p>
+
+            <div class="collab-output">
+                <strong>Output:</strong> runs/run-003--2026-01-31/charles-eames/html/*.html (34 files)
+            </div>
+        </div>
+
+        <h2 class="section-title">Comet Prompts by Agent</h2>
+        <p class="section-subtitle">Each agent created 3 everyday (daily health) + 3 curious (exploration/benchmarking) prompts</p>
+
+        <!-- Don Norman -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #31135D;">DN</div>
+                <div class="agent-info">
+                    <h2>Don Norman</h2>
+                    <div class="domain">Proposal Flow Testing</div>
+                    <div class="task">Created prompts to verify the critical guest→proposal→booking path works correctly. Previously built 114-test checklist that Comet executed successfully.</div>
+                </div>
+            </div>
+
+            <div class="prompts-grid">
+                <div class="prompt-column everyday">
+                    <h4>● Everyday Checks</h4>
+
+                    <div class="prompt-card everyday">
+                        <h5>Guest Proposal Completion</h5>
+                        <p>Full happy path: select days, pick date, submit proposal, verify success modal appears</p>
+                        <div class="frequency">Daily</div>
+                    </div>
+
+                    <div class="prompt-card everyday">
+                        <h5>Error States Display</h5>
+                        <p>Trigger validation errors, verify messages show what/why/next with retry buttons</p>
+                        <div class="frequency">Daily</div>
+                    </div>
+
+                    <div class="prompt-card everyday">
+                        <h5>Data Persistence</h5>
+                        <p>Selected days, dates, and pricing carry through modal transitions without loss</p>
+                        <div class="frequency">Daily</div>
+                    </div>
+                </div>
+
+                <div class="prompt-column curious">
+                    <h4>◐ Curious Explorations</h4>
+
+                    <div class="prompt-card curious">
+                        <h5>Non-Contiguous Days</h5>
+                        <p>What happens when selecting Mon+Fri only? Does system handle gaps gracefully?</p>
+                        <div class="frequency">Weekly</div>
+                    </div>
+
+                    <div class="prompt-card curious">
+                        <h5>Airbnb Benchmark</h5>
+                        <p>Compare booking flow: click count, form fields, time to complete vs Airbnb</p>
+                        <div class="frequency">Weekly</div>
+                    </div>
+
+                    <div class="prompt-card curious">
+                        <h5>Session Handling</h5>
+                        <p>Leave flow mid-way, return after 30min — is draft preserved? Any warning?</p>
+                        <div class="frequency">Weekly</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Jony Ive -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #6366F1;">JI</div>
+                <div class="agent-info">
+                    <h2>Jony Ive</h2>
+                    <div class="domain">Mobile & Responsive Testing</div>
+                    <div class="task">Created prompts for viewport testing at 375px, 768px, and 1024px. Focuses on overflow detection, touch targets, and breakpoint behavior.</div>
+                </div>
+            </div>
+
+            <div class="prompts-grid">
+                <div class="prompt-column everyday">
+                    <h4>● Everyday Checks</h4>
+
+                    <div class="prompt-card everyday">
+                        <h5>No Horizontal Overflow</h5>
+                        <p>At 375px viewport, verify no horizontal scroll exists on any page</p>
+                        <div class="frequency">Daily</div>
+                    </div>
+
+                    <div class="prompt-card everyday">
+                        <h5>Touch Targets ≥44px</h5>
+                        <p>Measure all buttons and interactive elements meet minimum touch size</p>
+                        <div class="frequency">Daily</div>
+                    </div>
+
+                    <div class="prompt-card everyday">
+                        <h5>Modals Fit Screen</h5>
+                        <p>Close button visible, content scrollable, no elements cut off on mobile</p>
+                        <div class="frequency">Daily</div>
+                    </div>
+                </div>
+
+                <div class="prompt-column curious">
+                    <h4>◐ Curious Explorations</h4>
+
+                    <div class="prompt-card curious">
+                        <h5>Airbnb Mobile Benchmark</h5>
+                        <p>Compare search experience: filter UX, card layout, map integration on mobile</p>
+                        <div class="frequency">Weekly</div>
+                    </div>
+
+                    <div class="prompt-card curious">
+                        <h5>Orientation Change</h5>
+                        <p>Rotate device mid-flow — what breaks? Is state preserved?</p>
+                        <div class="frequency">Weekly</div>
+                    </div>
+
+                    <div class="prompt-card curious">
+                        <h5>Bottom Sheet Behavior</h5>
+                        <p>Do modals behave like native iOS/Android sheets? Swipe to dismiss?</p>
+                        <div class="frequency">Weekly</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dieter Rams -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #059669;">DR</div>
+                <div class="agent-info">
+                    <h2>Dieter Rams</h2>
+                    <div class="domain">Trust Verification</div>
+                    <div class="task">Created prompts to verify trust signals load correctly and claims are sourced. Applies "Hallucination Filter" pattern — every claim must have evidence.</div>
+                </div>
+            </div>
+
+            <div class="prompts-grid">
+                <div class="prompt-column everyday">
+                    <h4>● Everyday Checks</h4>
+
+                    <div class="prompt-card everyday">
+                        <h5>Trust Badges Load</h5>
+                        <p>Verification icons appear correctly, no broken images or missing elements</p>
+                        <div class="frequency">Daily</div>
+                    </div>
+
+                    <div class="prompt-card everyday">
+                        <h5>Guarantee Text Present</h5>
+                        <p>$1M protection and money-back guarantee visible on relevant pages</p>
+                        <div class="frequency">Daily</div>
+                    </div>
+
+                    <div class="prompt-card everyday">
+                        <h5>Support Hours Accurate</h5>
+                        <p>Whatever support hours we claim matches actual availability</p>
+                        <div class="frequency">Daily</div>
+                    </div>
+                </div>
+
+                <div class="prompt-column curious">
+                    <h4>◐ Curious Explorations</h4>
+
+                    <div class="prompt-card curious">
+                        <h5>Airbnb Trust Benchmark</h5>
+                        <p>What trust signals does Airbnb show that Split Lease doesn't?</p>
+                        <div class="frequency">Weekly</div>
+                    </div>
+
+                    <div class="prompt-card curious">
+                        <h5>Testimonial Audit</h5>
+                        <p>Are any testimonials using stock photos? Reverse image search check</p>
+                        <div class="frequency">Weekly</div>
+                    </div>
+
+                    <div class="prompt-card curious">
+                        <h5>Stat Sourcing</h5>
+                        <p>Do our numbers ("2,400+ guests") have visible source attribution?</p>
+                        <div class="frequency">Weekly</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Massimo Vignelli -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #8B5CF6;">MV</div>
+                <div class="agent-info">
+                    <h2>Massimo Vignelli</h2>
+                    <div class="domain">Search Experience Testing</div>
+                    <div class="task">Created prompts to verify search works, filters apply correctly, and listing cards display properly.</div>
+                </div>
+            </div>
+
+            <div class="prompts-grid">
+                <div class="prompt-column everyday">
+                    <h4>● Everyday Checks</h4>
+
+                    <div class="prompt-card everyday">
+                        <h5>Search Returns Results</h5>
+                        <p>Basic search works, listings appear, no empty state incorrectly shown</p>
+                        <div class="frequency">Daily</div>
+                    </div>
+
+                    <div class="prompt-card everyday">
+                        <h5>Filters Actually Filter</h5>
+                        <p>Price, neighborhood, amenities filters change results as expected</p>
+                        <div class="frequency">Daily</div>
+                    </div>
+
+                    <div class="prompt-card everyday">
+                        <h5>Listing Cards Display</h5>
+                        <p>Images load, prices show correctly, heart/favorite buttons work</p>
+                        <div class="frequency">Daily</div>
+                    </div>
+                </div>
+
+                <div class="prompt-column curious">
+                    <h4>◐ Curious Explorations</h4>
+
+                    <div class="prompt-card curious">
+                        <h5>Airbnb Search Benchmark</h5>
+                        <p>How does their filter UX compare? What features do they have?</p>
+                        <div class="frequency">Weekly</div>
+                    </div>
+
+                    <div class="prompt-card curious">
+                        <h5>Zero Results Handling</h5>
+                        <p>What happens with impossible filter combinations?</p>
+                        <div class="frequency">Weekly</div>
+                    </div>
+
+                    <div class="prompt-card curious">
+                        <h5>Map vs List Sync</h5>
+                        <p>Do map pins accurately match list results when filtering?</p>
+                        <div class="frequency">Weekly</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Milton Glaser -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #EF4444;">MG</div>
+                <div class="agent-info">
+                    <h2>Milton Glaser</h2>
+                    <div class="domain">Copy Extraction & Audit</div>
+                    <div class="task">Created prompts to extract copy from pages for audit and catch inconsistencies in tone and messaging.</div>
+                </div>
+            </div>
+
+            <div class="prompts-grid">
+                <div class="prompt-column everyday">
+                    <h4>● Everyday Checks</h4>
+
+                    <div class="prompt-card everyday">
+                        <h5>No Placeholder Text</h5>
+                        <p>Scan for "Lorem ipsum", "TODO", or placeholder content in production</p>
+                        <div class="frequency">Daily</div>
+                    </div>
+
+                    <div class="prompt-card everyday">
+                        <h5>Error Messages Helpful</h5>
+                        <p>Every error explains what happened, why, and what to do next</p>
+                        <div class="frequency">Daily</div>
+                    </div>
+
+                    <div class="prompt-card everyday">
+                        <h5>CTAs Action-Oriented</h5>
+                        <p>Buttons use verbs that describe what happens when clicked</p>
+                        <div class="frequency">Daily</div>
+                    </div>
+                </div>
+
+                <div class="prompt-column curious">
+                    <h4>◐ Curious Explorations</h4>
+
+                    <div class="prompt-card curious">
+                        <h5>Airbnb Copy Benchmark</h5>
+                        <p>How do they phrase similar messages? Compare error copy</p>
+                        <div class="frequency">Weekly</div>
+                    </div>
+
+                    <div class="prompt-card curious">
+                        <h5>Full Page Extraction</h5>
+                        <p>Extract all text from key pages for comprehensive copy audit</p>
+                        <div class="frequency">Weekly</div>
+                    </div>
+
+                    <div class="prompt-card curious">
+                        <h5>Tone Consistency</h5>
+                        <p>Does error page sound like welcome page? Check voice alignment</p>
+                        <div class="frequency">Weekly</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Other Agents Summary -->
+        <section class="agent-section">
+            <h2 class="section-title">Additional Agent Prompts</h2>
+            <p class="section-subtitle">Four more agents created domain-specific Comet prompts</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
+                <div style="background: var(--gray-50); padding: 20px; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <div class="agent-avatar" style="background: #EC4899; width: 36px; height: 36px; font-size: 12px;">PS</div>
+                        <div>
+                            <strong style="font-size: 14px;">Paula Scher</strong>
+                            <div style="font-size: 12px; color: var(--gray-500);">Host Acquisition</div>
+                        </div>
+                    </div>
+                    <ul style="font-size: 13px; color: var(--gray-600); padding-left: 16px;">
+                        <li>List With Us page loads correctly</li>
+                        <li>Earnings calculator works</li>
+                        <li>Signup flow initiates</li>
+                    </ul>
+                </div>
+
+                <div style="background: var(--gray-50); padding: 20px; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <div class="agent-avatar" style="background: #0EA5E9; width: 36px; height: 36px; font-size: 12px;">JMB</div>
+                        <div>
+                            <strong style="font-size: 14px;">Josef Müller-Brockmann</strong>
+                            <div style="font-size: 12px; color: var(--gray-500);">Design System</div>
+                        </div>
+                    </div>
+                    <ul style="font-size: 13px; color: var(--gray-600); padding-left: 16px;">
+                        <li>Button styles match across pages</li>
+                        <li>Typography hierarchy consistent</li>
+                        <li>Accessibility scan (contrast, focus)</li>
+                    </ul>
+                </div>
+
+                <div style="background: var(--gray-50); padding: 20px; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <div class="agent-avatar" style="background: #F59E0B; width: 36px; height: 36px; font-size: 12px;">LW</div>
+                        <div>
+                            <strong style="font-size: 14px;">Luke Wroblewski</strong>
+                            <div style="font-size: 12px; color: var(--gray-500);">Conversion</div>
+                        </div>
+                    </div>
+                    <ul style="font-size: 13px; color: var(--gray-600); padding-left: 16px;">
+                        <li>Primary CTA visible above fold</li>
+                        <li>Forms submit successfully</li>
+                        <li>Click count to conversion</li>
+                    </ul>
+                </div>
+
+                <div style="background: var(--gray-50); padding: 20px; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <div class="agent-avatar" style="background: #10B981; width: 36px; height: 36px; font-size: 12px;">SB</div>
+                        <div>
+                            <strong style="font-size: 14px;">Saul Bass</strong>
+                            <div style="font-size: 12px; color: var(--gray-500);">Hero & Animation</div>
+                        </div>
+                    </div>
+                    <ul style="font-size: 13px; color: var(--gray-600); padding-left: 16px;">
+                        <li>Hero images load correctly</li>
+                        <li>Above-fold content complete</li>
+                        <li>Animation inventory check</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charles Eames Graphics -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #F97316;">CE</div>
+                <div class="agent-info">
+                    <h2>Charles Eames</h2>
+                    <div class="domain">Graphics Production</div>
+                    <div class="task">Producing 34 HTML graphics using the Empty State: Favorites approach — pure CSS/SVG animations, floating elements, and helpful tips sections.</div>
+                </div>
+            </div>
+
+            <div class="graphics-preview">
+                <h4>34 Graphics In Production</h4>
+                <div class="graphics-grid">
+                    <div class="graphic-item">
+                        <div class="icon">🔍</div>
+                        Search Empty
+                    </div>
+                    <div class="graphic-item">
+                        <div class="icon">❤️</div>
+                        Favorites Empty
+                    </div>
+                    <div class="graphic-item">
+                        <div class="icon">📋</div>
+                        Proposals Empty
+                    </div>
+                    <div class="graphic-item">
+                        <div class="icon">📝</div>
+                        Leases Empty
+                    </div>
+                    <div class="graphic-item">
+                        <div class="icon">💬</div>
+                        Messages Empty
+                    </div>
+                    <div class="graphic-item">
+                        <div class="icon">⭐</div>
+                        Reviews Empty
+                    </div>
+                    <div class="graphic-item">
+                        <div class="icon">📡</div>
+                        Network Error
+                    </div>
+                    <div class="graphic-item">
+                        <div class="icon">🤖</div>
+                        Generic Error
+                    </div>
+                    <div class="graphic-item">
+                        <div class="icon">🚧</div>
+                        404 Page
+                    </div>
+                    <div class="graphic-item">
+                        <div class="icon">⏰</div>
+                        Session Expired
+                    </div>
+                    <div class="graphic-item">
+                        <div class="icon">🛡️</div>
+                        Verified Host
+                    </div>
+                    <div class="graphic-item">
+                        <div class="icon">🔒</div>
+                        Secure Payment
+                    </div>
+                    <div class="graphic-item">
+                        <div class="icon">👋</div>
+                        Onboarding Welcome
+                    </div>
+                    <div class="graphic-item">
+                        <div class="icon">🎉</div>
+                        Success State
+                    </div>
+                    <div class="graphic-item">
+                        <div class="icon">📧</div>
+                        Email Headers
+                    </div>
+                    <div class="graphic-item">
+                        <div class="icon">+19</div>
+                        More...
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><a href="../index.html" style="color: var(--primary); text-decoration: none;">Back to AI Design Team</a></p>
+        <p style="margin-top: 8px;">Split Lease AI Design Team — Run 003</p>
+    </footer>
+</body>
+</html>
