@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works — AI Design Team | Split Lease</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #31135D;
+            --primary-light: #7B4FB5;
+            --primary-bg: #F7F2FA;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --green-50: #ECFDF5;
+            --green-600: #059669;
+            --blue-50: #EFF6FF;
+            --blue-600: #2563EB;
+            --amber-50: #FFFBEB;
+            --amber-600: #D97706;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: white;
+            color: var(--gray-900);
+            line-height: 1.7;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 13px;
+        }
+
+        .top-nav a {
+            color: var(--gray-600);
+            text-decoration: none;
+        }
+
+        .top-nav a:hover {
+            color: var(--primary);
+        }
+
+        .top-nav .separator {
+            color: var(--gray-300);
+        }
+
+        .top-nav .current {
+            color: var(--gray-900);
+            font-weight: 500;
+        }
+
+        /* Header */
+        .header {
+            border-bottom: 1px solid var(--gray-200);
+            padding: 60px 24px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--gray-900);
+        }
+
+        .header .subtitle {
+            font-size: 18px;
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 64px;
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .section h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--gray-900);
+        }
+
+        .section p {
+            font-size: 15px;
+            color: var(--gray-700);
+            margin-bottom: 16px;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .info-box.purple {
+            background: var(--primary-bg);
+        }
+
+        .info-box h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--gray-900);
+        }
+
+        .info-box p, .info-box li {
+            font-size: 14px;
+            color: var(--gray-700);
+        }
+
+        /* Steps */
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin: 32px 0;
+        }
+
+        .step {
+            display: flex;
+            gap: 20px;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .step-content p {
+            font-size: 14px;
+            color: var(--gray-600);
+            margin-bottom: 0;
+        }
+
+        /* Agent Cards */
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        @media (max-width: 640px) {
+            .agents-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .agent-card {
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .agent-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .agent-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+            color: white;
+        }
+
+        .agent-card h4 {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .agent-card .domain {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .agent-card p {
+            font-size: 13px;
+            color: var(--gray-600);
+            margin: 0;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: var(--gray-900);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 13px;
+            color: #E5E7EB;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .code-block .comment {
+            color: #6B7280;
+        }
+
+        .code-block .keyword {
+            color: #A78BFA;
+        }
+
+        .code-block .string {
+            color: #34D399;
+        }
+
+        /* Folder Tree */
+        .folder-tree {
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            margin: 24px 0;
+        }
+
+        .folder-tree .folder {
+            color: var(--blue-600);
+        }
+
+        .folder-tree .file {
+            color: var(--gray-700);
+        }
+
+        .folder-tree .desc {
+            color: var(--gray-500);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* Diagram */
+        .diagram {
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 32px;
+            margin: 24px 0;
+            text-align: center;
+        }
+
+        .diagram-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .diagram-box {
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 16px 24px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .diagram-box.primary {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .diagram-arrow {
+            color: var(--gray-400);
+            font-size: 20px;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 24px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 16px;
+            background: var(--gray-50);
+            font-weight: 600;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid var(--gray-200);
+            color: var(--gray-500);
+            font-size: 13px;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <a href="../index.html">Special Reports</a>
+        <span class="separator">/</span>
+        <a href="index.html">AI Design Team</a>
+        <span class="separator">/</span>
+        <span class="current">How It Works</span>
+    </nav>
+
+    <!-- Header -->
+    <header class="header">
+        <h1>How the AI Design Team Works</h1>
+        <p class="subtitle">A system of 10 specialized AI agents that analyze, audit, and improve the Split Lease platform. Each agent has a unique perspective inspired by legendary designers.</p>
+    </header>
+
+    <div class="container">
+
+        <!-- Overview Section -->
+        <section class="section">
+            <p class="section-label">Overview</p>
+            <h2>What is this?</h2>
+            <p>The AI Design Team is a collection of 10 AI agents, each specialized in a different aspect of design and UX. They're powered by Claude and can be triggered to analyze websites, create mockups, write reports, and suggest improvements.</p>
+
+            <div class="diagram">
+                <div class="diagram-flow">
+                    <div class="diagram-box">Prompt</div>
+                    <span class="diagram-arrow">&rarr;</span>
+                    <div class="diagram-box primary">AI Agent</div>
+                    <span class="diagram-arrow">&rarr;</span>
+                    <div class="diagram-box">Report / Mockup</div>
+                </div>
+            </div>
+
+            <p>Each agent has persistent memory, knows the Split Lease codebase, and builds on previous work. They can work independently or collaborate on complex projects.</p>
+        </section>
+
+        <!-- The 10 Agents -->
+        <section class="section">
+            <p class="section-label">The Team</p>
+            <h2>Meet the 10 Agents</h2>
+            <p>Each agent is named after a legendary designer and inherits their philosophy and expertise area:</p>
+
+            <div class="agents-grid">
+                <div class="agent-card">
+                    <div class="agent-card-header">
+                        <div class="agent-avatar" style="background: #31135D;">DN</div>
+                        <div>
+                            <h4>Don Norman</h4>
+                            <div class="domain">Psychology of Design</div>
+                        </div>
+                    </div>
+                    <p>Usability testing, cognitive load analysis, error prevention, user mental models</p>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-card-header">
+                        <div class="agent-avatar" style="background: #6366F1;">JI</div>
+                        <div>
+                            <h4>Jony Ive</h4>
+                            <div class="domain">Mobile & Responsive</div>
+                        </div>
+                    </div>
+                    <p>Touch targets, viewport testing, mobile-first design, responsive breakpoints</p>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-card-header">
+                        <div class="agent-avatar" style="background: #059669;">DR</div>
+                        <div>
+                            <h4>Dieter Rams</h4>
+                            <div class="domain">Trust & Honesty</div>
+                        </div>
+                    </div>
+                    <p>Trust signals, claim verification, honest design, transparency audits</p>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-card-header">
+                        <div class="agent-avatar" style="background: #8B5CF6;">MV</div>
+                        <div>
+                            <h4>Massimo Vignelli</h4>
+                            <div class="domain">Search & Visual Hierarchy</div>
+                        </div>
+                    </div>
+                    <p>Grid systems, typography, information hierarchy, search experience</p>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-card-header">
+                        <div class="agent-avatar" style="background: #F97316;">CE</div>
+                        <div>
+                            <h4>Charles Eames</h4>
+                            <div class="domain">Design Systems</div>
+                        </div>
+                    </div>
+                    <p>Component libraries, empty states, onboarding, micro-interactions</p>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-card-header">
+                        <div class="agent-avatar" style="background: #EF4444;">MG</div>
+                        <div>
+                            <h4>Milton Glaser</h4>
+                            <div class="domain">Brand Voice & Copy</div>
+                        </div>
+                    </div>
+                    <p>Tone of voice, microcopy, error messages, emotional design</p>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-card-header">
+                        <div class="agent-avatar" style="background: #EC4899;">PS</div>
+                        <div>
+                            <h4>Paula Scher</h4>
+                            <div class="domain">Host Acquisition</div>
+                        </div>
+                    </div>
+                    <p>Landing pages, conversion funnels, value propositions, host journey</p>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-card-header">
+                        <div class="agent-avatar" style="background: #14B8A6;">JMB</div>
+                        <div>
+                            <h4>Josef Müller-Brockmann</h4>
+                            <div class="domain">Design System Health</div>
+                        </div>
+                    </div>
+                    <p>Consistency audits, spacing patterns, component drift, accessibility</p>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-card-header">
+                        <div class="agent-avatar" style="background: #F59E0B;">LW</div>
+                        <div>
+                            <h4>Luke Wroblewski</h4>
+                            <div class="domain">Conversion & Forms</div>
+                        </div>
+                    </div>
+                    <p>Funnel optimization, form design, click reduction, mobile forms</p>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-card-header">
+                        <div class="agent-avatar" style="background: #3B82F6;">SB</div>
+                        <div>
+                            <h4>Saul Bass</h4>
+                            <div class="domain">Landing & Hero</div>
+                        </div>
+                    </div>
+                    <p>Hero sections, first impressions, visual impact, animation</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Folder Structure -->
+        <section class="section">
+            <p class="section-label">Setup</p>
+            <h2>Folder Structure</h2>
+            <p>Each agent has its own folder with three key files. Runs (overnight batch jobs) are organized by date.</p>
+
+            <div class="folder-tree">
+<span class="folder">AI Team/</span>
+├── <span class="folder">agents/</span>
+│   └── <span class="folder">[agent-name]/</span>
+│       ├── <span class="file">agent.md</span>        <span class="desc">← Personality, expertise, constraints</span>
+│       ├── <span class="file">memory.md</span>       <span class="desc">← Session logs, lessons learned</span>
+│       └── <span class="file">prompt.md</span>       <span class="desc">← Current task assignment</span>
+│
+├── <span class="folder">runs/</span>
+│   ├── <span class="folder">run-001--2026-01-29/</span>
+│   │   ├── <span class="file">_manifest.md</span>    <span class="desc">← What each agent was assigned</span>
+│   │   └── <span class="folder">[agent-name]/</span>
+│   │       ├── <span class="folder">html/</span>       <span class="desc">← Mockups produced</span>
+│   │       └── <span class="folder">reports/</span>   <span class="desc">← Analysis reports</span>
+│   │
+│   └── <span class="folder">run-002--2026-01-30/</span>
+│       └── ...
+│
+└── <span class="folder">orchestrator/</span>
+    └── <span class="file">agent.md</span>            <span class="desc">← Coordinates all agents</span>
+            </div>
+        </section>
+
+        <!-- How to Run -->
+        <section class="section">
+            <p class="section-label">Process</p>
+            <h2>How to Run an Agent</h2>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Write the prompt</h4>
+                        <p>Create or update the agent's <code>prompt.md</code> file with the task. Be specific about what you want analyzed and where to save results.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Trigger the agent</h4>
+                        <p>In Claude Code, navigate to the agent folder and say: <strong>"read your prompt.md"</strong>. The agent will read its personality (agent.md), check its memory, and execute the task.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Review deliverables</h4>
+                        <p>The agent saves reports and mockups to the specified run folder. It also updates its memory.md with a session log.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box purple">
+                <h4>Example Trigger Command</h4>
+                <p>Open Claude Code, then type:</p>
+                <div class="code-block" style="margin-top: 12px; margin-bottom: 0;">
+                    <pre>cd agents/don-norman
+read your prompt.md</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prompt Structure -->
+        <section class="section">
+            <p class="section-label">Templates</p>
+            <h2>Prompt Structure</h2>
+            <p>Each prompt.md follows this format:</p>
+
+            <div class="code-block">
+                <pre><span class="comment"># Task: [Task Name]</span>
+<span class="keyword">Date:</span> <span class="string">2026-01-31</span>
+<span class="keyword">Priority:</span> <span class="string">medium</span>
+<span class="keyword">Run:</span> <span class="string">run-003--2026-01-31</span>
+
+<span class="comment">## Context</span>
+[Background information, what to read first]
+
+<span class="comment">## Objective</span>
+[Clear description of what to produce]
+
+<span class="comment">## Deliverables</span>
+Save to: `runs/run-003--2026-01-31/[agent]/reports/[filename].md`
+
+<span class="comment">## When Done</span>
+1. Save report to specified location
+2. Update memory.md with session log:
+   `[date] task-name | deliverable | ~tokens | path | feedback | lesson`</pre>
+            </div>
+        </section>
+
+        <!-- Memory vs Reports -->
+        <section class="section">
+            <p class="section-label">Important Distinction</p>
+            <h2>Memory vs Reports</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>memory.md</th>
+                            <th>reports/</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Session logs (one line per run)</td>
+                            <td>Full deliverables and analysis</td>
+                        </tr>
+                        <tr>
+                            <td>Lessons learned</td>
+                            <td>Detailed findings</td>
+                        </tr>
+                        <tr>
+                            <td>User feedback received</td>
+                            <td>Mockups and code</td>
+                        </tr>
+                        <tr>
+                            <td>Tips for future sessions</td>
+                            <td>Recommendations</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-box">
+                <h4>Memory Log Format</h4>
+                <pre style="font-size: 13px; margin-top: 8px;">[2026-01-31] comet-prompts | 6 prompts | ~2k tokens | runs/run-003.../report.md | positive | learned X</pre>
+            </div>
+        </section>
+
+        <!-- Overnight Runs -->
+        <section class="section">
+            <p class="section-label">Batch Processing</p>
+            <h2>Overnight Runs</h2>
+            <p>For large projects, we trigger multiple agents in sequence. Each run gets a unique ID and date:</p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Run</th>
+                            <th>Date</th>
+                            <th>Focus</th>
+                            <th>Output</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>run-001</td>
+                            <td>Jan 29, 2026</td>
+                            <td>Initial platform audit</td>
+                            <td>Reports + mockups</td>
+                        </tr>
+                        <tr>
+                            <td>run-002</td>
+                            <td>Jan 30, 2026</td>
+                            <td>Deep-dive analysis</td>
+                            <td>26 HTML mockups</td>
+                        </tr>
+                        <tr>
+                            <td>run-003</td>
+                            <td>Jan 31, 2026</td>
+                            <td>Comet integration</td>
+                            <td>54 testing prompts</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Cross-Agent Collaboration -->
+        <section class="section">
+            <p class="section-label">Advanced</p>
+            <h2>Cross-Agent Collaboration</h2>
+            <p>Agents can build on each other's work. Example from Run 003:</p>
+
+            <div class="diagram">
+                <div class="diagram-flow">
+                    <div class="diagram-box">Massimo Vignelli<br><small>Creates 34 graphic specs</small></div>
+                    <span class="diagram-arrow">&rarr;</span>
+                    <div class="diagram-box primary">Charles Eames<br><small>Produces all 34 graphics</small></div>
+                </div>
+            </div>
+
+            <p>Massimo's <code>graphics-strategy.md</code> defines what graphics are needed. Charles reads this and produces each one using his Empty State component approach.</p>
+        </section>
+
+        <!-- Comet Integration -->
+        <section class="section">
+            <p class="section-label">Automation</p>
+            <h2>Comet Testing Prompts</h2>
+            <p>Agents can create prompts for <a href="https://www.perplexity.ai/comet" target="_blank">Perplexity Comet</a> — an AI browser that tests websites automatically.</p>
+
+            <div class="info-box">
+                <h4>Example Comet Prompt (Don Norman)</h4>
+                <div class="code-block" style="margin-top: 12px; margin-bottom: 0;">
+                    <pre>TASK: Complete a proposal for non-contiguous days
+URL: https://www.splitlease.com/listing/test-123
+STEPS:
+1. Click "Request to Book"
+2. Select Monday and Thursday (non-adjacent)
+3. Fill required fields with test data
+4. Submit proposal
+VERIFY:
+- Confirmation modal appears
+- Selected days shown correctly
+- No console errors
+OUTPUT: Pass/Fail with screenshot</pre>
+                </div>
+            </div>
+
+            <p>Each agent creates prompts for their domain — Don Norman tests usability flows, Jony Ive tests mobile viewports, Dieter Rams verifies trust claims are accurate.</p>
+        </section>
+
+        <!-- Tools Used -->
+        <section class="section">
+            <p class="section-label">Stack</p>
+            <h2>Tools Used</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tool</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Claude Code</strong></td>
+                            <td>AI assistant that runs the agents (Claude Opus 4.5)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Markdown files</strong></td>
+                            <td>Agent definitions, prompts, memory, reports</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HTML/CSS</strong></td>
+                            <td>Mockup output format (self-contained, no dependencies)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Perplexity Comet</strong></td>
+                            <td>Automated browser testing (optional)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GitHub</strong></td>
+                            <td>Version control for reports</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Google Drive</strong></td>
+                            <td>File storage and sync</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Quick Start -->
+        <section class="section">
+            <p class="section-label">Getting Started</p>
+            <h2>Quick Start</h2>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Pick an agent</h4>
+                        <p>Choose based on what you need: usability audit (Don Norman), mobile check (Jony Ive), trust review (Dieter Rams), etc.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Write a prompt</h4>
+                        <p>Edit their prompt.md with your task. Include: context, objective, deliverable location.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Run it</h4>
+                        <p>In Claude Code: <code>read your prompt.md</code></p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Review & iterate</h4>
+                        <p>Check the output, provide feedback, run again if needed.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><a href="index.html">Back to AI Design Team</a></p>
+        <p style="margin-top: 8px;">Split Lease Design Team — Documentation</p>
+    </footer>
+</body>
+</html>
