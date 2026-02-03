@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trust Patterns &amp; Error States - Dieter Rams</title>
+    <style>
+        /* =================================================
+           TOKENS FROM JOSEF MULLER-BROCKMANN
+           ================================================= */
+        :root {
+            /* Status Colors */
+            --color-status-success: #22C55E;
+            --color-status-warning: #F59E0B;
+            --color-status-danger: #EF4444;
+            --color-status-info: #3B82F6;
+            --color-status-neutral: #6B7280;
+
+            /* Status Backgrounds */
+            --bg-status-success: #DCFCE7;
+            --bg-status-warning: #FEF3C7;
+            --bg-status-danger: #FEE2E2;
+            --bg-status-info: #DBEAFE;
+            --bg-status-neutral: #F3F4F6;
+
+            /* Status Borders */
+            --border-status-success: #86EFAC;
+            --border-status-warning: #FCD34D;
+            --border-status-danger: #FCA5A5;
+            --border-status-info: #93C5FD;
+            --border-status-neutral: #D1D5DB;
+
+            /* Text */
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+
+            /* Layout */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+
+            /* Trust Palette - Honest, Calm, Confident */
+            --trust-bg: #F9FAFB;
+            --trust-card: #FFFFFF;
+            --trust-border: #E5E7EB;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--trust-bg);
+            color: var(--text-primary);
+            line-height: 1.5;
+            padding: var(--spacing-lg);
+        }
+
+        /* =================================================
+           SECTION LAYOUT
+           ================================================= */
+        .page-header {
+            max-width: 1200px;
+            margin: 0 auto var(--spacing-xl);
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .section {
+            max-width: 1200px;
+            margin: 0 auto var(--spacing-xl);
+            background: var(--trust-card);
+            border: 1px solid var(--trust-border);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--trust-border);
+        }
+
+        .section-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: var(--bg-status-info);
+            color: var(--color-status-info);
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* =================================================
+           1. DOCUMENT SUMMARY MODAL
+           ================================================= */
+        .document-modal {
+            background: var(--trust-card);
+            border: 1px solid var(--trust-border);
+            border-radius: 12px;
+            max-width: 600px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .document-modal-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--trust-border);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .document-modal-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .document-modal-header p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .document-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-status-info);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-status-info);
+        }
+
+        .plain-english-summary {
+            padding: var(--spacing-lg);
+            background: var(--bg-status-info);
+            border-left: 4px solid var(--color-status-info);
+            margin: var(--spacing-md);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .plain-english-summary h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .plain-english-summary ul {
+            list-style: none;
+            font-size: 14px;
+        }
+
+        .plain-english-summary li {
+            padding: var(--spacing-xs) 0;
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+        }
+
+        .plain-english-summary li::before {
+            content: "---";
+            color: var(--color-status-info);
+            font-weight: 600;
+        }
+
+        .document-agreement-card {
+            margin: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--trust-bg);
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .document-agreement-card h5 {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .agreement-row {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-xs) 0;
+            border-bottom: 1px dashed var(--trust-border);
+        }
+
+        .agreement-row:last-child {
+            border-bottom: none;
+        }
+
+        .agreement-label {
+            color: var(--text-secondary);
+        }
+
+        .agreement-value {
+            font-weight: 500;
+        }
+
+        .progressive-disclosure {
+            padding: 0 var(--spacing-md) var(--spacing-md);
+        }
+
+        .disclosure-toggle {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            background: none;
+            border: none;
+            color: var(--color-status-info);
+            font-size: 14px;
+            cursor: pointer;
+            padding: var(--spacing-sm) 0;
+        }
+
+        .disclosure-toggle:hover {
+            text-decoration: underline;
+        }
+
+        .full-document-preview {
+            display: none;
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: #fff;
+            border: 1px solid var(--trust-border);
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .full-document-preview.expanded {
+            display: block;
+        }
+
+        .document-modal-actions {
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--trust-border);
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--color-status-info);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #2563EB;
+        }
+
+        /* IMPORTANT: Request Changes button has EQUAL WEIGHT to Sign button */
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 2px solid var(--trust-border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--text-secondary);
+        }
+
+        .btn-ghost {
+            background: none;
+            color: var(--text-secondary);
+            border: none;
+        }
+
+        .btn-ghost:hover {
+            color: var(--text-primary);
+        }
+
+        /* Trust Signal: Equal button sizing */
+        .action-equal-weight {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        /* =================================================
+           2. PAYMENT STATUS DISPLAYS
+           ================================================= */
+        .payment-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .payment-status-card {
+            background: var(--trust-card);
+            border: 1px solid var(--trust-border);
+            border-radius: 12px;
+            padding: var(--spacing-md);
+            position: relative;
+        }
+
+        .payment-status-card.overdue {
+            border-left: 4px solid var(--color-status-danger);
+        }
+
+        .payment-status-card.due-soon {
+            border-left: 4px solid var(--color-status-warning);
+        }
+
+        .payment-status-card.paid {
+            border-left: 4px solid var(--color-status-success);
+        }
+
+        .payment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .payment-amount {
+            font-size: 24px;
+            font-weight: 600;
+            font-feature-settings: 'tnum' 1;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.success {
+            background: var(--bg-status-success);
+            color: var(--color-status-success);
+        }
+
+        .status-badge.warning {
+            background: var(--bg-status-warning);
+            color: var(--color-status-warning);
+        }
+
+        .status-badge.danger {
+            background: var(--bg-status-danger);
+            color: var(--color-status-danger);
+        }
+
+        .status-badge.info {
+            background: var(--bg-status-info);
+            color: var(--color-status-info);
+        }
+
+        .payment-details {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .payment-details p {
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .payment-date {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* Honest Payment Copy Examples */
+        .payment-note {
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--trust-bg);
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .payment-note strong {
+            color: var(--text-primary);
+        }
+
+        /* Receipt link - always visible */
+        .receipt-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            margin-top: var(--spacing-md);
+            color: var(--color-status-info);
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .receipt-link:hover {
+            text-decoration: underline;
+        }
+
+        /* =================================================
+           3. ERROR STATE PATTERNS
+           ================================================= */
+        .error-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        .error-card {
+            background: var(--trust-card);
+            border: 1px solid var(--trust-border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .error-header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-md);
+            padding: var(--spacing-lg);
+        }
+
+        .error-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .error-icon.danger {
+            background: var(--bg-status-danger);
+            color: var(--color-status-danger);
+        }
+
+        .error-icon.warning {
+            background: var(--bg-status-warning);
+            color: var(--color-status-warning);
+        }
+
+        .error-icon.info {
+            background: var(--bg-status-info);
+            color: var(--color-status-info);
+        }
+
+        .error-content h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .error-content p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .error-details {
+            padding: 0 var(--spacing-lg) var(--spacing-lg);
+        }
+
+        .error-details h5 {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .error-details ul {
+            list-style: none;
+            font-size: 14px;
+        }
+
+        .error-details li {
+            padding: var(--spacing-xs) 0;
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+        }
+
+        .error-details li svg {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .error-actions {
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: var(--trust-bg);
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+
+        /* Timeline display for context */
+        .timeline-note {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: white;
+            border-radius: 6px;
+            margin-top: var(--spacing-sm);
+        }
+
+        /* "Need more time?" link - Trust signal */
+        .help-link {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .help-link a {
+            color: var(--color-status-info);
+            text-decoration: none;
+        }
+
+        .help-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* =================================================
+           4. DARK PATTERN PREVENTION CHECKLIST
+           ================================================= */
+        .checklist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .checklist-category {
+            background: var(--trust-bg);
+            border-radius: 8px;
+            padding: var(--spacing-md);
+        }
+
+        .checklist-category h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .checklist-items {
+            list-style: none;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) 0;
+            font-size: 13px;
+            border-bottom: 1px solid var(--trust-border);
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .check-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .check-indicator.pass {
+            background: var(--bg-status-success);
+            color: var(--color-status-success);
+        }
+
+        .check-indicator.fail {
+            background: var(--bg-status-danger);
+            color: var(--color-status-danger);
+        }
+
+        .check-indicator.warn {
+            background: var(--bg-status-warning);
+            color: var(--color-status-warning);
+        }
+
+        .check-text {
+            flex: 1;
+        }
+
+        .check-text .fail-reason {
+            display: block;
+            font-size: 11px;
+            color: var(--color-status-danger);
+            margin-top: 2px;
+        }
+
+        .check-text .warn-note {
+            display: block;
+            font-size: 11px;
+            color: var(--color-status-warning);
+            margin-top: 2px;
+        }
+
+        /* Summary Score */
+        .checklist-summary {
+            margin-top: var(--spacing-lg);
+            padding: var(--spacing-md);
+            background: var(--bg-status-success);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .checklist-summary.partial {
+            background: var(--bg-status-warning);
+        }
+
+        .checklist-summary.fail {
+            background: var(--bg-status-danger);
+        }
+
+        .summary-score {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-status-success);
+        }
+
+        .checklist-summary.partial .summary-score {
+            color: var(--color-status-warning);
+        }
+
+        .checklist-summary.fail .summary-score {
+            color: var(--color-status-danger);
+        }
+
+        .summary-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* =================================================
+           5. PRIVACY TRUST SIGNALS
+           ================================================= */
+        .privacy-examples {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        .privacy-field {
+            background: var(--trust-bg);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+        }
+
+        .privacy-field-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .privacy-label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .privacy-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: 4px 8px;
+            background: white;
+            border-radius: 4px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .privacy-input-demo {
+            background: white;
+            border: 1px solid var(--trust-border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 14px;
+            color: var(--text-primary);
+            width: 100%;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .privacy-note {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .privacy-note svg {
+            flex-shrink: 0;
+            margin-top: 1px;
+            color: var(--color-status-info);
+        }
+
+        /* Trust Signal: Access Log */
+        .access-log {
+            margin-top: var(--spacing-lg);
+            padding: var(--spacing-md);
+            background: white;
+            border-radius: 8px;
+        }
+
+        .access-log h4 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .access-log-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--trust-border);
+            font-size: 13px;
+        }
+
+        .access-log-item:last-child {
+            border-bottom: none;
+        }
+
+        .access-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-status-neutral);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .access-details {
+            flex: 1;
+        }
+
+        .access-name {
+            font-weight: 500;
+        }
+
+        .access-action {
+            color: var(--text-secondary);
+        }
+
+        .access-time {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* =================================================
+           COMPARISON: HONEST VS DISHONEST PATTERNS
+           ================================================= */
+        .comparison-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-md);
+        }
+
+        @media (max-width: 768px) {
+            .comparison-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .comparison-card {
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+        }
+
+        .comparison-card.bad {
+            background: var(--bg-status-danger);
+            border: 2px solid var(--color-status-danger);
+        }
+
+        .comparison-card.good {
+            background: var(--bg-status-success);
+            border: 2px solid var(--color-status-success);
+        }
+
+        .comparison-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .comparison-card.bad .comparison-header {
+            color: var(--color-status-danger);
+        }
+
+        .comparison-card.good .comparison-header {
+            color: var(--color-status-success);
+        }
+
+        .comparison-example {
+            background: white;
+            border-radius: 8px;
+            padding: var(--spacing-md);
+            font-size: 14px;
+        }
+
+        .comparison-example p {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .comparison-example p:last-child {
+            margin-bottom: 0;
+        }
+
+        .comparison-example .fake-urgency {
+            color: var(--color-status-danger);
+            font-weight: 600;
+        }
+
+        .comparison-example .honest {
+            color: var(--color-status-success);
+        }
+
+        /* =================================================
+           UTILITY CLASSES
+           ================================================= */
+        .icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+        }
+
+        .mt-sm { margin-top: var(--spacing-sm); }
+        .mt-md { margin-top: var(--spacing-md); }
+        .mt-lg { margin-top: var(--spacing-lg); }
+
+        .text-muted { color: var(--text-secondary); }
+        .text-sm { font-size: 13px; }
+
+        /* Print styles for documentation */
+        @media print {
+            body { background: white; }
+            .section { box-shadow: none; border: 1px solid #ddd; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1>Trust Patterns and Error States</h1>
+        <p>Honest design decisions for Split Lease legal documents, payments, and error handling. Every pattern here passes the "would users feel tricked?" test.</p>
+    </header>
+
+    <!-- =================================================
+         SECTION 1: DOCUMENT SUMMARY MODAL
+         ================================================= -->
+    <section class="section">
+        <div class="section-header">
+            <span class="section-number">1</span>
+            <h2>Legal Document Trust Patterns</h2>
+        </div>
+
+        <p class="text-muted text-sm" style="margin-bottom: var(--spacing-lg);">
+            Legal documents are intimidating. Progressive disclosure reduces cognitive load while respecting the user's right to read everything. The "Request Changes" button has equal visual weight to "Sign" - negotiation is legitimate, not discouraged.
+        </p>
+
+        <!-- Document Summary Modal -->
+        <div class="document-modal">
+            <div class="document-modal-header">
+                <div>
+                    <h3>Periodic Tenancy Agreement</h3>
+                    <p>Between you and Sarah Chen for 142 E 27th St, Apt 4B</p>
+                </div>
+                <div class="document-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Plain English Summary - Appears FIRST -->
+            <div class="plain-english-summary">
+                <h4>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    What you're agreeing to
+                </h4>
+                <ul>
+                    <li>You'll rent this apartment on your selected dates from February through August 2026</li>
+                    <li>Your monthly rent is $1,850 plus a 5% service fee ($92.50)</li>
+                    <li>Either party can request date changes with 7 days notice</li>
+                    <li>You can end this agreement with 30 days written notice</li>
+                    <li>Security deposit of $500 is refundable after move-out inspection</li>
+                </ul>
+            </div>
+
+            <!-- What You're Agreeing To Card -->
+            <div class="document-agreement-card">
+                <h5>Agreement Details</h5>
+                <div class="agreement-row">
+                    <span class="agreement-label">Your scheduled dates</span>
+                    <span class="agreement-value">Feb 7-9, Feb 14-16, Feb 21-23, Feb 28 - Mar 2</span>
+                </div>
+                <div class="agreement-row">
+                    <span class="agreement-label">Total rent this month</span>
+                    <span class="agreement-value">$1,850.00</span>
+                </div>
+                <div class="agreement-row">
+                    <span class="agreement-label">Cancellation terms</span>
+                    <span class="agreement-value">30 days notice required</span>
+                </div>
+                <div class="agreement-row">
+                    <span class="agreement-label">Your rights</span>
+                    <span class="agreement-value">Quiet enjoyment, dispute resolution via Split Lease</span>
+                </div>
+            </div>
+
+            <!-- Progressive Disclosure -->
+            <div class="progressive-disclosure">
+                <button class="disclosure-toggle" onclick="toggleDocument()" id="docToggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                    Read Full Legal Document
+                </button>
+                <div class="full-document-preview" id="fullDocument">
+                    <p><strong>PERIODIC TENANCY AGREEMENT</strong></p>
+                    <p>This Agreement is entered into as of February 2, 2026, by and between Sarah Chen ("Host") and the registered guest ("Guest") through the Split Lease platform...</p>
+                    <p>1. PREMISES: Host agrees to rent to Guest the premises located at 142 E 27th Street, Apartment 4B, New York, NY 10016 (the "Premises").</p>
+                    <p>2. TERM: This agreement covers periodic occupancy on the dates selected and approved through the Split Lease platform from February 2026 through August 2026...</p>
+                    <p>3. RENT: Guest agrees to pay $1,850.00 per month plus applicable service fees for the selected dates...</p>
+                    <p>[Document continues - no scroll-jacking, user can scroll freely]</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons - EQUAL WEIGHT -->
+            <div class="document-modal-actions">
+                <button class="btn btn-secondary action-equal-weight">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Request Changes
+                </button>
+                <button class="btn btn-primary action-equal-weight">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    Sign Agreement
+                </button>
+                <button class="btn btn-ghost">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Trust Note -->
+        <p class="text-muted text-sm mt-lg">
+            <strong>Trust Design Notes:</strong> No forced scroll-to-bottom. No countdown timer. "Request Changes" is not hidden. PDF download always available. Users sign when they're ready, not when we pressure them.
+        </p>
+    </section>
+
+    <!-- =================================================
+         SECTION 2: PAYMENT STATUS DISPLAYS
+         ================================================= -->
+    <section class="section">
+        <div class="section-header">
+            <span class="section-number">2</span>
+            <h2>Payment Status Displays</h2>
+        </div>
+
+        <p class="text-muted text-sm" style="margin-bottom: var(--spacing-lg);">
+            Payment status uses facts, not pressure. "Due January 15" is honest. "Pay now before it's too late!" is manipulative. Every state shows clear dates and amounts - no ambiguity.
+        </p>
+
+        <div class="payment-gallery">
+
+            <!-- PAID Status -->
+            <div class="payment-status-card paid">
+                <div class="payment-header">
+                    <div class="payment-amount">$1,850.00</div>
+                    <span class="status-badge success">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        Paid
+                    </span>
+                </div>
+                <div class="payment-details">
+                    <p>Monthly rent - February 2026</p>
+                    <p class="payment-date">Paid on January 31, 2026</p>
+                    <p>Card ending in 4242</p>
+                </div>
+                <a href="#" class="receipt-link">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download Receipt
+                </a>
+            </div>
+
+            <!-- DUE (7+ days out) - Neutral, informational -->
+            <div class="payment-status-card">
+                <div class="payment-header">
+                    <div class="payment-amount">$1,850.00</div>
+                    <span class="status-badge info">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        Due
+                    </span>
+                </div>
+                <div class="payment-details">
+                    <p>Monthly rent - March 2026</p>
+                    <p class="payment-date">Due March 1, 2026</p>
+                </div>
+                <div class="payment-note">
+                    <strong>27 days until due</strong> - No action needed yet.
+                </div>
+            </div>
+
+            <!-- DUE (within 7 days) - Amber, attention needed -->
+            <div class="payment-status-card due-soon">
+                <div class="payment-header">
+                    <div class="payment-amount">$1,850.00</div>
+                    <span class="status-badge warning">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        Due Soon
+                    </span>
+                </div>
+                <div class="payment-details">
+                    <p>Monthly rent - February 2026</p>
+                    <p class="payment-date">Due February 15, 2026</p>
+                </div>
+                <div class="payment-note">
+                    <strong>Due in 5 days.</strong> Payment will auto-process if autopay is enabled.
+                </div>
+            </div>
+
+            <!-- PAST DUE (Day 1) - Gentle, helpful -->
+            <div class="payment-status-card overdue">
+                <div class="payment-header">
+                    <div class="payment-amount">$1,850.00</div>
+                    <span class="status-badge danger">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        Past Due
+                    </span>
+                </div>
+                <div class="payment-details">
+                    <p>Monthly rent - February 2026</p>
+                    <p class="payment-date">Was due February 15, 2026</p>
+                </div>
+                <div class="payment-note">
+                    <strong>Payment needs attention.</strong> This can happen if your card expired or has a temporary hold. <a href="#" style="color: var(--color-status-info);">Update payment method</a>
+                </div>
+            </div>
+
+            <!-- PAST DUE (Day 3+) - Urgent but dignified -->
+            <div class="payment-status-card overdue">
+                <div class="payment-header">
+                    <div class="payment-amount">$1,850.00</div>
+                    <span class="status-badge danger">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        3 Days Past Due
+                    </span>
+                </div>
+                <div class="payment-details">
+                    <p>Monthly rent - February 2026</p>
+                    <p class="payment-date">Was due February 15, 2026</p>
+                </div>
+                <div class="payment-note">
+                    Please resolve this to keep your lease in good standing. <a href="#" style="color: var(--color-status-info);">Contact support for payment plan options</a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Honest vs Dishonest Comparison -->
+        <h3 style="margin-top: var(--spacing-xl); margin-bottom: var(--spacing-md); font-size: 16px;">Honest vs Dishonest Payment Copy</h3>
+        <div class="comparison-section">
+            <div class="comparison-card bad">
+                <div class="comparison-header">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                    </svg>
+                    Do Not Use
+                </div>
+                <div class="comparison-example">
+                    <p class="fake-urgency">"You're OVERDUE! Pay immediately to avoid consequences."</p>
+                    <p class="fake-urgency">"WARNING: Your account is at risk!"</p>
+                    <p class="fake-urgency">"Act now before late fees apply!"</p>
+                </div>
+            </div>
+            <div class="comparison-card good">
+                <div class="comparison-header">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    Use This Instead
+                </div>
+                <div class="comparison-example">
+                    <p class="honest">"Your payment of $1,850 was due on February 15."</p>
+                    <p class="honest">"Please complete payment or contact us if you need help."</p>
+                    <p class="honest">"Having trouble? We can discuss options."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =================================================
+         SECTION 3: ERROR STATE PATTERNS
+         ================================================= -->
+    <section class="section">
+        <div class="section-header">
+            <span class="section-number">3</span>
+            <h2>Error State Patterns</h2>
+        </div>
+
+        <p class="text-muted text-sm" style="margin-bottom: var(--spacing-lg);">
+            Errors should guide without blaming. State what happened, assign responsibility appropriately (our error vs external), explain what happens next, and provide clear action paths. Never catastrophize - most errors are recoverable.
+        </p>
+
+        <div class="error-gallery">
+
+            <!-- Payment Failed -->
+            <div class="error-card">
+                <div class="error-header">
+                    <div class="error-icon danger">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                        </svg>
+                    </div>
+                    <div class="error-content">
+                        <h4>Payment couldn't be processed</h4>
+                        <p>Your payment of $1,850.00 did not go through. Here's what we know:</p>
+                    </div>
+                </div>
+                <div class="error-details">
+                    <h5>What happened</h5>
+                    <ul>
+                        <li>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-status-info)" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            <span>Reason: Card declined - insufficient funds</span>
+                        </li>
+                        <li>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-status-info)" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            <span>Card ending in 4242</span>
+                        </li>
+                    </ul>
+                    <div class="timeline-note">
+                        Please resolve within 48 hours to avoid booking issues.
+                    </div>
+                </div>
+                <div class="error-actions">
+                    <button class="btn btn-primary">Update Payment Method</button>
+                    <button class="btn btn-secondary">Contact Support</button>
+                    <span class="help-link">Need more time? <a href="#">Let us know</a></span>
+                </div>
+            </div>
+
+            <!-- DCT Request Expired - Requester View -->
+            <div class="error-card">
+                <div class="error-header">
+                    <div class="error-icon warning">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <div class="error-content">
+                        <h4>Date Change Request Expired</h4>
+                        <p>Your request to change dates to March 14-16 expired after 48 hours without a response.</p>
+                    </div>
+                </div>
+                <div class="error-details">
+                    <h5>What this means</h5>
+                    <ul>
+                        <li>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-status-success)" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span><strong>Your original dates remain confirmed:</strong> March 7-9, 2026</span>
+                        </li>
+                        <li>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-status-success)" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>No action needed from you</span>
+                        </li>
+                        <li>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-status-info)" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            <span>You can submit a new request if you'd still like to explore date changes</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="error-actions">
+                    <button class="btn btn-primary">Submit New Request</button>
+                    <button class="btn btn-secondary">Keep Original Dates</button>
+                </div>
+            </div>
+
+            <!-- DCT Request Expired - Responder View -->
+            <div class="error-card">
+                <div class="error-header">
+                    <div class="error-icon warning">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <div class="error-content">
+                        <h4>Date Change Request Expired</h4>
+                        <p>A request from John D. to change dates expired before you could respond.</p>
+                    </div>
+                </div>
+                <div class="error-details">
+                    <h5>What this means</h5>
+                    <ul>
+                        <li>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-status-success)" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span><strong>The original booking dates remain unchanged:</strong> March 7-9, 2026</span>
+                        </li>
+                        <li>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-status-info)" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            <span>John may submit a new request if they still need different dates</span>
+                        </li>
+                    </ul>
+                    <div class="timeline-note">
+                        Tip: Responding quickly to date change requests helps maintain your Flexibility Score.
+                    </div>
+                </div>
+                <div class="error-actions">
+                    <button class="btn btn-secondary">Message John</button>
+                    <button class="btn btn-ghost">Dismiss</button>
+                </div>
+            </div>
+
+            <!-- Document Generation Failed -->
+            <div class="error-card">
+                <div class="error-header">
+                    <div class="error-icon info">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="12" y1="18" x2="12" y2="12"></line>
+                            <line x1="12" y1="9" x2="12.01" y2="9"></line>
+                        </svg>
+                    </div>
+                    <div class="error-content">
+                        <h4>Document preparation taking longer than expected</h4>
+                        <p>We're having trouble generating your lease agreement. <strong>This is our error, not yours.</strong></p>
+                    </div>
+                </div>
+                <div class="error-details">
+                    <h5>What you can do</h5>
+                    <ul>
+                        <li>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-status-info)" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            <span>Wait 5 minutes and refresh this page</span>
+                        </li>
+                        <li>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-status-success)" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>Your lease details are saved - nothing is lost</span>
+                        </li>
+                        <li>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-status-info)" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            <span>If this persists, we'll reach out via email</span>
+                        </li>
+                    </ul>
+                    <div class="timeline-note">
+                        Expected resolution: Within 24 hours. Our team has been notified.
+                    </div>
+                </div>
+                <div class="error-actions">
+                    <button class="btn btn-primary">Try Again</button>
+                    <button class="btn btn-secondary">Notify Me When Ready</button>
+                    <button class="btn btn-ghost">Contact Support</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- =================================================
+         SECTION 4: DARK PATTERN PREVENTION CHECKLIST
+         ================================================= -->
+    <section class="section">
+        <div class="section-header">
+            <span class="section-number">4</span>
+            <h2>Dark Pattern Prevention Checklist</h2>
+        </div>
+
+        <p class="text-muted text-sm" style="margin-bottom: var(--spacing-lg);">
+            Run this checklist against any new Leases page design. Each item tests a specific manipulation pattern. A passing score requires all items to pass - there's no "acceptable" level of dark patterns.
+        </p>
+
+        <div class="checklist-grid">
+
+            <!-- Document Signing -->
+            <div class="checklist-category">
+                <h4>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    Document Signing
+                </h4>
+                <ul class="checklist-items">
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">No forced scroll-to-bottom before signing</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">"Request Changes" has equal weight to "Sign"</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">No countdown timer on signing deadline</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">No "Only 2 people viewing" scarcity</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">PDF download always available</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Payment Reminders -->
+            <div class="checklist-category">
+                <h4>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                    </svg>
+                    Payment Reminders
+                </h4>
+                <ul class="checklist-items">
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">No red styling before payment is actually late</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">No false late fee threats</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">No multiple pop-ups for same due payment</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">"Pay later" option not hidden</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">Contact support option visible</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- DCT / Date Changes -->
+            <div class="checklist-category">
+                <h4>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    Date Change Tool (DCT)
+                </h4>
+                <ul class="checklist-items">
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">No large countdown timer creating anxiety</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">No interrupting pop-ups about expiration</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">No "You're about to lose $X!" framing</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">Clear warning before auto-decline at expiration</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">Savings show trade-off (date change required)</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Flexibility Scores -->
+            <div class="checklist-category">
+                <h4>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    Flexibility Scores
+                </h4>
+                <ul class="checklist-items">
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">No "Your score is dropping!" warnings</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">No comparative shaming ("bottom 20%")</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">No gamification (streaks, levels, points)</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">Measures responsiveness, not compliance</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-indicator pass">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="check-text">Criteria is transparent and published</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- Summary Score -->
+        <div class="checklist-summary">
+            <div>
+                <span class="summary-score">20/20</span>
+                <span class="summary-text" style="margin-left: var(--spacing-md);">All checks pass</span>
+            </div>
+            <span class="status-badge success">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Honest Design
+            </span>
+        </div>
+
+    </section>
+
+    <!-- =================================================
+         SECTION 5: PRIVACY TRUST SIGNALS
+         ================================================= -->
+    <section class="section">
+        <div class="section-header">
+            <span class="section-number">5</span>
+            <h2>Privacy Trust Signals</h2>
+        </div>
+
+        <p class="text-muted text-sm" style="margin-bottom: var(--spacing-lg);">
+            Privacy notes appear contextually - next to the specific data being protected, not as generic badges everywhere. Users see what's protected without "privacy theater" that creates noise without value.
+        </p>
+
+        <div class="privacy-examples">
+
+            <!-- Phone Number Field -->
+            <div class="privacy-field">
+                <div class="privacy-field-header">
+                    <span class="privacy-label">Phone Number</span>
+                    <span class="privacy-badge">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Protected
+                    </span>
+                </div>
+                <div class="privacy-input-demo">(212) 555-0123</div>
+                <div class="privacy-note">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    <span>Only shared with your host after booking is confirmed. Not visible to other users.</span>
+                </div>
+            </div>
+
+            <!-- Payment Info Field -->
+            <div class="privacy-field">
+                <div class="privacy-field-header">
+                    <span class="privacy-label">Payment Method</span>
+                    <span class="privacy-badge">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Encrypted
+                    </span>
+                </div>
+                <div class="privacy-input-demo">Visa ending in 4242</div>
+                <div class="privacy-note">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    <span>Encrypted and stored securely. Never shared with hosts - they only receive payment, not your card details.</span>
+                </div>
+            </div>
+
+            <!-- Address Field -->
+            <div class="privacy-field">
+                <div class="privacy-field-header">
+                    <span class="privacy-label">Property Address</span>
+                    <span class="privacy-badge">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        Time-Limited
+                    </span>
+                </div>
+                <div class="privacy-input-demo">142 E 27th Street, Apt 4B, New York, NY 10016</div>
+                <div class="privacy-note">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    <span>Full address visible 24 hours before your check-in. Until then, you'll see the neighborhood only.</span>
+                </div>
+            </div>
+
+            <!-- Access Log Example -->
+            <div class="access-log">
+                <h4>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    Who has viewed your information
+                </h4>
+                <div class="access-log-item">
+                    <div class="access-avatar">SC</div>
+                    <div class="access-details">
+                        <span class="access-name">Sarah Chen</span>
+                        <span class="access-action"> viewed your phone number</span>
+                    </div>
+                    <span class="access-time">Feb 1, 2026</span>
+                </div>
+                <div class="access-log-item">
+                    <div class="access-avatar">SC</div>
+                    <div class="access-details">
+                        <span class="access-name">Sarah Chen</span>
+                        <span class="access-action"> viewed your profile</span>
+                    </div>
+                    <span class="access-time">Jan 28, 2026</span>
+                </div>
+                <p class="text-muted text-sm" style="margin-top: var(--spacing-md);">
+                    This log shows who accessed your personal information and when. <a href="#" style="color: var(--color-status-info);">View full access history</a>
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="max-width: 1200px; margin: var(--spacing-xl) auto; padding: var(--spacing-lg); text-align: center; color: var(--text-muted); font-size: 13px;">
+        <p><strong>Dieter Rams - Trust Patterns</strong></p>
+        <p>Run 006B - Phase B: Mockups - 2026-02-02</p>
+        <p style="margin-top: var(--spacing-sm); font-style: italic;">"Good design is honest." - Dieter Rams</p>
+    </footer>
+
+    <script>
+        function toggleDocument() {
+            const doc = document.getElementById('fullDocument');
+            const toggle = document.getElementById('docToggle');
+            doc.classList.toggle('expanded');
+            if (doc.classList.contains('expanded')) {
+                toggle.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="18 15 12 9 6 15"></polyline>
+                    </svg>
+                    Hide Full Legal Document
+                `;
+            } else {
+                toggle.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                    Read Full Legal Document
+                `;
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,2018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Tokens & Component Specs - Josef Muller-Brockmann</title>
+    <style>
+        /* ============================================
+           CSS CUSTOM PROPERTIES (DESIGN TOKENS)
+           ============================================ */
+
+        :root {
+            /* STATUS COLORS - Foreground */
+            --color-status-success: #22C55E;
+            --color-status-warning: #F59E0B;
+            --color-status-danger: #EF4444;
+            --color-status-info: #3B82F6;
+            --color-status-neutral: #6B7280;
+
+            /* STATUS COLORS - Background */
+            --bg-status-success: #DCFCE7;
+            --bg-status-warning: #FEF3C7;
+            --bg-status-danger: #FEE2E2;
+            --bg-status-info: #DBEAFE;
+            --bg-status-neutral: #F3F4F6;
+
+            /* TIER TOKENS */
+            --color-tier-gold: #FFD700;
+            --color-tier-gold-bg: #FFFBEB;
+            --color-tier-silver: #9CA3AF;
+            --color-tier-silver-bg: #F9FAFB;
+            --color-tier-bronze: #CD7F32;
+            --color-tier-bronze-bg: #FEF3E2;
+
+            /* CALENDAR DATE STATES */
+            --color-calendar-booked: #3B82F6;
+            --color-calendar-booked-bg: #DBEAFE;
+            --color-calendar-available: #E5E7EB;
+            --color-calendar-add: #22C55E;
+            --color-calendar-add-bg: #DCFCE7;
+            --color-calendar-remove: #EF4444;
+            --color-calendar-remove-bg: #FEE2E2;
+            --color-calendar-conflict: #F59E0B;
+            --color-calendar-conflict-bg: #FEF3C7;
+
+            /* SPACING SCALE */
+            --spacing-2xs: 2px;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-base: 16px;
+            --spacing-lg: 20px;
+            --spacing-xl: 24px;
+            --spacing-2xl: 32px;
+            --spacing-3xl: 40px;
+            --spacing-4xl: 48px;
+
+            /* COMPACT SPACING (Data-dense views) */
+            --spacing-compact-cell-x: 12px;
+            --spacing-compact-cell-y: 8px;
+            --spacing-compact-row: 4px;
+            --spacing-compact-group: 12px;
+
+            /* TYPOGRAPHY */
+            --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+            /* FONT SIZES */
+            --text-xs: 11px;
+            --text-sm: 12px;
+            --text-base: 14px;
+            --text-md: 16px;
+            --text-lg: 18px;
+            --text-xl: 20px;
+            --text-2xl: 24px;
+            --text-3xl: 30px;
+
+            /* FONT WEIGHTS */
+            --weight-normal: 400;
+            --weight-medium: 500;
+            --weight-semibold: 600;
+            --weight-bold: 700;
+
+            /* LINE HEIGHTS */
+            --leading-tight: 1.25;
+            --leading-normal: 1.5;
+            --leading-relaxed: 1.625;
+            --leading-compact: 1.3;
+
+            /* TABLE TYPOGRAPHY */
+            --font-table-header: var(--font-family-base);
+            --text-table-header: var(--text-sm);
+            --weight-table-header: var(--weight-semibold);
+            --text-table-row: var(--text-base);
+            --weight-table-row: var(--weight-normal);
+
+            /* BORDER RADIUS */
+            --radius-sm: 4px;
+            --radius-md: 6px;
+            --radius-lg: 8px;
+            --radius-xl: 12px;
+            --radius-full: 9999px;
+
+            /* SHADOWS */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+            /* BASE COLORS */
+            --color-white: #FFFFFF;
+            --color-gray-50: #F9FAFB;
+            --color-gray-100: #F3F4F6;
+            --color-gray-200: #E5E7EB;
+            --color-gray-300: #D1D5DB;
+            --color-gray-400: #9CA3AF;
+            --color-gray-500: #6B7280;
+            --color-gray-600: #4B5563;
+            --color-gray-700: #374151;
+            --color-gray-800: #1F2937;
+            --color-gray-900: #111827;
+
+            /* FOCUS RING */
+            --focus-ring-color: #3B82F6;
+            --focus-ring-offset: 2px;
+        }
+
+        /* ============================================
+           GLOBAL STYLES
+           ============================================ */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            font-size: var(--text-base);
+            line-height: var(--leading-normal);
+            color: var(--color-gray-800);
+            background: var(--color-gray-50);
+            padding: var(--spacing-2xl);
+        }
+
+        h1 {
+            font-size: var(--text-3xl);
+            font-weight: var(--weight-bold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        h2 {
+            font-size: var(--text-2xl);
+            font-weight: var(--weight-semibold);
+            color: var(--color-gray-900);
+            margin-top: var(--spacing-3xl);
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--color-gray-200);
+        }
+
+        h3 {
+            font-size: var(--text-lg);
+            font-weight: var(--weight-semibold);
+            color: var(--color-gray-700);
+            margin-top: var(--spacing-xl);
+            margin-bottom: var(--spacing-md);
+        }
+
+        h4 {
+            font-size: var(--text-md);
+            font-weight: var(--weight-medium);
+            color: var(--color-gray-600);
+            margin-top: var(--spacing-lg);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        p {
+            margin-bottom: var(--spacing-md);
+            color: var(--color-gray-600);
+        }
+
+        .subtitle {
+            font-size: var(--text-md);
+            color: var(--color-gray-500);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        code {
+            font-family: var(--font-family-mono);
+            font-size: var(--text-sm);
+            background: var(--color-gray-100);
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+            color: var(--color-gray-700);
+        }
+
+        /* ============================================
+           LAYOUT UTILITIES
+           ============================================ */
+
+        .section {
+            background: var(--color-white);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .grid {
+            display: grid;
+            gap: var(--spacing-base);
+        }
+
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        .grid-5 { grid-template-columns: repeat(5, 1fr); }
+        .grid-6 { grid-template-columns: repeat(6, 1fr); }
+
+        .flex {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+
+        .flex-col {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .gap-xs { gap: var(--spacing-xs); }
+        .gap-sm { gap: var(--spacing-sm); }
+        .gap-md { gap: var(--spacing-md); }
+        .gap-lg { gap: var(--spacing-lg); }
+        .gap-xl { gap: var(--spacing-xl); }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4, .grid-5, .grid-6 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ============================================
+           TOKEN DEMONSTRATION STYLES
+           ============================================ */
+
+        .color-swatch {
+            display: flex;
+            flex-direction: column;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--color-gray-200);
+        }
+
+        .color-swatch__color {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--weight-semibold);
+            font-size: var(--text-sm);
+        }
+
+        .color-swatch__info {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--color-white);
+        }
+
+        .color-swatch__name {
+            font-weight: var(--weight-medium);
+            font-size: var(--text-sm);
+            color: var(--color-gray-800);
+        }
+
+        .color-swatch__value {
+            font-family: var(--font-family-mono);
+            font-size: var(--text-xs);
+            color: var(--color-gray-500);
+        }
+
+        .spacing-demo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .spacing-demo__bar {
+            background: var(--color-status-info);
+            height: 24px;
+            border-radius: var(--radius-sm);
+        }
+
+        .spacing-demo__label {
+            font-size: var(--text-sm);
+            color: var(--color-gray-600);
+            min-width: 120px;
+        }
+
+        .spacing-demo__value {
+            font-family: var(--font-family-mono);
+            font-size: var(--text-xs);
+            color: var(--color-gray-400);
+        }
+
+        .typography-demo {
+            padding: var(--spacing-md);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .typography-demo__label {
+            font-size: var(--text-xs);
+            color: var(--color-gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        /* ============================================
+           STATUS BADGE COMPONENT
+           ============================================ */
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            font-weight: var(--weight-medium);
+            line-height: 1;
+        }
+
+        .status-badge--paid,
+        .status-badge--success,
+        .status-badge--signed {
+            background: var(--bg-status-success);
+            color: var(--color-status-success);
+        }
+
+        .status-badge--due,
+        .status-badge--pending,
+        .status-badge--processing {
+            background: var(--bg-status-warning);
+            color: #B45309; /* Darker amber for text contrast */
+        }
+
+        .status-badge--overdue,
+        .status-badge--danger,
+        .status-badge--voided {
+            background: var(--bg-status-danger);
+            color: var(--color-status-danger);
+        }
+
+        .status-badge--info,
+        .status-badge--draft {
+            background: var(--bg-status-info);
+            color: var(--color-status-info);
+        }
+
+        .status-badge--neutral {
+            background: var(--bg-status-neutral);
+            color: var(--color-status-neutral);
+        }
+
+        .status-badge__icon {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+
+        /* Tier Badges */
+        .tier-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            font-weight: var(--weight-semibold);
+        }
+
+        .tier-badge--gold {
+            background: var(--color-tier-gold-bg);
+            color: #92400E;
+            border: 1px solid var(--color-tier-gold);
+        }
+
+        .tier-badge--silver {
+            background: var(--color-tier-silver-bg);
+            color: var(--color-gray-600);
+            border: 1px solid var(--color-tier-silver);
+        }
+
+        .tier-badge--bronze {
+            background: var(--color-tier-bronze-bg);
+            color: #92400E;
+            border: 1px solid var(--color-tier-bronze);
+        }
+
+        /* ============================================
+           PAYMENT ROW COMPONENT
+           ============================================ */
+
+        .payment-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .payment-table th {
+            font-family: var(--font-table-header);
+            font-size: var(--text-table-header);
+            font-weight: var(--weight-table-header);
+            color: var(--color-gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: left;
+            padding: var(--spacing-compact-cell-y) var(--spacing-compact-cell-x);
+            border-bottom: 1px solid var(--color-gray-200);
+        }
+
+        .payment-table th.text-right {
+            text-align: right;
+        }
+
+        .payment-table th.text-center {
+            text-align: center;
+        }
+
+        .payment-row {
+            transition: background-color 0.15s ease;
+        }
+
+        .payment-row:hover {
+            background: var(--color-gray-50);
+        }
+
+        .payment-row td {
+            padding: var(--spacing-compact-cell-y) var(--spacing-compact-cell-x);
+            border-bottom: 1px solid var(--color-gray-100);
+            font-size: var(--text-table-row);
+            vertical-align: middle;
+        }
+
+        .payment-row--overdue {
+            border-left: 3px solid var(--color-status-danger);
+            background: var(--bg-status-danger);
+        }
+
+        .payment-row--overdue:hover {
+            background: #FECACA;
+        }
+
+        .payment-row__date {
+            color: var(--color-gray-700);
+        }
+
+        .payment-row__date--actual {
+            font-size: var(--text-xs);
+            color: var(--color-gray-400);
+        }
+
+        .payment-row__memo {
+            color: var(--color-gray-600);
+        }
+
+        .payment-row__amount {
+            text-align: right;
+            font-weight: var(--weight-semibold);
+            font-variant-numeric: tabular-nums;
+            color: var(--color-gray-800);
+        }
+
+        .payment-row__status {
+            text-align: center;
+        }
+
+        .payment-row__actions {
+            text-align: right;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            font-size: var(--text-sm);
+            font-weight: var(--weight-medium);
+            color: var(--color-status-info);
+            background: transparent;
+            border: 1px solid var(--color-status-info);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--bg-status-info);
+        }
+
+        .action-btn:focus-visible {
+            outline: 2px solid var(--focus-ring-color);
+            outline-offset: var(--focus-ring-offset);
+        }
+
+        /* Payment Card (Mobile) */
+        .payment-card {
+            background: var(--color-white);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-base);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .payment-card--overdue {
+            border-left: 3px solid var(--color-status-danger);
+            background: var(--bg-status-danger);
+        }
+
+        .payment-card__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .payment-card__date {
+            font-weight: var(--weight-medium);
+            color: var(--color-gray-800);
+        }
+
+        .payment-card__amount {
+            font-size: var(--text-lg);
+            font-weight: var(--weight-bold);
+            font-variant-numeric: tabular-nums;
+            color: var(--color-gray-900);
+        }
+
+        .payment-card__memo {
+            font-size: var(--text-sm);
+            color: var(--color-gray-500);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .payment-card__footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ============================================
+           STAY CARD COMPONENT
+           ============================================ */
+
+        .stay-card {
+            background: var(--color-white);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            transition: box-shadow 0.2s ease;
+        }
+
+        .stay-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .stay-card__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-base);
+            border-bottom: 1px solid var(--color-gray-100);
+        }
+
+        .stay-card__week {
+            font-weight: var(--weight-semibold);
+            color: var(--color-gray-800);
+        }
+
+        .stay-card__body {
+            padding: var(--spacing-base);
+        }
+
+        .stay-card__dates {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .stay-card__date-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stay-card__date-label {
+            font-size: var(--text-xs);
+            color: var(--color-gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--spacing-2xs);
+        }
+
+        .stay-card__date-value {
+            font-weight: var(--weight-medium);
+            color: var(--color-gray-800);
+        }
+
+        .stay-card__amount {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--color-gray-100);
+        }
+
+        .stay-card__amount-label {
+            font-size: var(--text-sm);
+            color: var(--color-gray-500);
+        }
+
+        .stay-card__amount-value {
+            font-size: var(--text-lg);
+            font-weight: var(--weight-bold);
+            font-variant-numeric: tabular-nums;
+            color: var(--color-gray-900);
+        }
+
+        .stay-card__footer {
+            padding: var(--spacing-base);
+            background: var(--color-gray-50);
+            border-top: 1px solid var(--color-gray-100);
+        }
+
+        .stay-card--active {
+            border-color: var(--color-status-success);
+            border-width: 2px;
+        }
+
+        .stay-card--cancelled {
+            opacity: 0.6;
+        }
+
+        .stay-card--cancelled .stay-card__amount-value {
+            text-decoration: line-through;
+            color: var(--color-gray-400);
+        }
+
+        /* Host perspective indicator */
+        .perspective-tag {
+            font-size: var(--text-xs);
+            padding: 2px var(--spacing-sm);
+            border-radius: var(--radius-full);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: var(--weight-semibold);
+        }
+
+        .perspective-tag--host {
+            background: #E0E7FF;
+            color: #4338CA;
+        }
+
+        .perspective-tag--guest {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        /* ============================================
+           DCT CALENDAR COMPONENT
+           ============================================ */
+
+        .calendar {
+            background: var(--color-white);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-base);
+            max-width: 340px;
+        }
+
+        .calendar__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-base);
+        }
+
+        .calendar__title {
+            font-weight: var(--weight-semibold);
+            color: var(--color-gray-800);
+        }
+
+        .calendar__nav {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .calendar__nav-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-gray-100);
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            color: var(--color-gray-600);
+            transition: all 0.15s ease;
+        }
+
+        .calendar__nav-btn:hover {
+            background: var(--color-gray-200);
+        }
+
+        .calendar__weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .calendar__weekday {
+            font-size: var(--text-xs);
+            font-weight: var(--weight-semibold);
+            color: var(--color-gray-400);
+            padding: var(--spacing-xs);
+        }
+
+        .calendar__grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+
+        .calendar__day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-sm);
+            font-weight: var(--weight-medium);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: var(--color-gray-700);
+            transition: all 0.15s ease;
+            position: relative;
+        }
+
+        .calendar__day:hover {
+            background: var(--color-gray-100);
+        }
+
+        .calendar__day:focus-visible {
+            outline: 2px solid var(--focus-ring-color);
+            outline-offset: 1px;
+        }
+
+        .calendar__day--other-month {
+            color: var(--color-gray-300);
+        }
+
+        .calendar__day--booked {
+            background: var(--color-calendar-booked);
+            color: var(--color-white);
+        }
+
+        .calendar__day--booked:hover {
+            background: #2563EB;
+        }
+
+        .calendar__day--available {
+            background: var(--color-calendar-available);
+        }
+
+        .calendar__day--add {
+            background: var(--color-calendar-add);
+            color: var(--color-white);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .calendar__day--remove {
+            background: var(--color-calendar-remove-bg);
+            color: var(--color-status-danger);
+            text-decoration: line-through;
+        }
+
+        .calendar__day--conflict {
+            background: var(--color-calendar-conflict);
+            color: var(--color-white);
+        }
+
+        .calendar__legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-base);
+            padding-top: var(--spacing-base);
+            border-top: 1px solid var(--color-gray-100);
+        }
+
+        .calendar__legend-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: var(--text-xs);
+            color: var(--color-gray-600);
+        }
+
+        .calendar__legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: var(--radius-sm);
+        }
+
+        .calendar__legend-dot--booked { background: var(--color-calendar-booked); }
+        .calendar__legend-dot--add { background: var(--color-calendar-add); }
+        .calendar__legend-dot--remove { background: var(--color-calendar-remove-bg); border: 1px solid var(--color-status-danger); }
+        .calendar__legend-dot--conflict { background: var(--color-calendar-conflict); }
+
+        /* ============================================
+           DOCUMENT CARD COMPONENT
+           ============================================ */
+
+        .document-card {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-base);
+            background: var(--color-white);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-base);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .document-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .document-card__icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-status-info);
+            color: var(--color-status-info);
+            border-radius: var(--radius-md);
+            flex-shrink: 0;
+        }
+
+        .document-card__content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .document-card__title {
+            font-weight: var(--weight-semibold);
+            color: var(--color-gray-800);
+            margin-bottom: var(--spacing-2xs);
+        }
+
+        .document-card__meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--text-sm);
+            color: var(--color-gray-500);
+        }
+
+        .document-card__actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-shrink: 0;
+        }
+
+        /* Multi-party signing progress */
+        .signing-progress {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            margin-top: var(--spacing-sm);
+        }
+
+        .signing-progress__step {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
+            font-weight: var(--weight-semibold);
+        }
+
+        .signing-progress__step--complete {
+            background: var(--bg-status-success);
+            color: var(--color-status-success);
+        }
+
+        .signing-progress__step--pending {
+            background: var(--bg-status-warning);
+            color: #B45309;
+        }
+
+        .signing-progress__step--waiting {
+            background: var(--color-gray-100);
+            color: var(--color-gray-400);
+        }
+
+        .signing-progress__connector {
+            width: 20px;
+            height: 2px;
+            background: var(--color-gray-200);
+        }
+
+        .signing-progress__connector--complete {
+            background: var(--color-status-success);
+        }
+
+        .signing-progress__label {
+            font-size: var(--text-xs);
+            color: var(--color-gray-500);
+            margin-left: var(--spacing-sm);
+        }
+
+        /* ============================================
+           ACCESSIBILITY CHECKLIST
+           ============================================ */
+
+        .a11y-checklist {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .a11y-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            background: var(--color-gray-50);
+        }
+
+        .a11y-item--pass {
+            background: var(--bg-status-success);
+        }
+
+        .a11y-item--fail {
+            background: var(--bg-status-danger);
+        }
+
+        .a11y-item__icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .a11y-item__icon--pass {
+            color: var(--color-status-success);
+        }
+
+        .a11y-item__icon--fail {
+            color: var(--color-status-danger);
+        }
+
+        .a11y-item__text {
+            font-size: var(--text-sm);
+            color: var(--color-gray-700);
+        }
+
+        .a11y-item__category {
+            font-size: var(--text-xs);
+            color: var(--color-gray-400);
+            margin-top: 2px;
+        }
+
+        /* ============================================
+           SVG ICONS (Inline)
+           ============================================ */
+
+        .icon {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .icon--sm { width: 14px; height: 14px; }
+        .icon--md { width: 20px; height: 20px; }
+        .icon--lg { width: 24px; height: 24px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Design Tokens & Component Specifications</h1>
+        <p class="subtitle">Josef Muller-Brockmann - Foundation Layer | Run 006B - 2026-02-02</p>
+    </header>
+
+    <!-- ============================================
+         SECTION 1: DESIGN TOKENS
+         ============================================ -->
+
+    <h2>1. Design Tokens</h2>
+
+    <!-- Status Colors -->
+    <section class="section">
+        <h3>Status Colors (Foreground)</h3>
+        <p>Semantic colors for status indicators. Always pair with icon and text label for accessibility.</p>
+
+        <div class="grid grid-5">
+            <div class="color-swatch">
+                <div class="color-swatch__color" style="background: var(--color-status-success); color: white;">Aa</div>
+                <div class="color-swatch__info">
+                    <div class="color-swatch__name">Success</div>
+                    <div class="color-swatch__value">#22C55E</div>
+                </div>
+            </div>
+            <div class="color-swatch">
+                <div class="color-swatch__color" style="background: var(--color-status-warning); color: white;">Aa</div>
+                <div class="color-swatch__info">
+                    <div class="color-swatch__name">Warning</div>
+                    <div class="color-swatch__value">#F59E0B</div>
+                </div>
+            </div>
+            <div class="color-swatch">
+                <div class="color-swatch__color" style="background: var(--color-status-danger); color: white;">Aa</div>
+                <div class="color-swatch__info">
+                    <div class="color-swatch__name">Danger</div>
+                    <div class="color-swatch__value">#EF4444</div>
+                </div>
+            </div>
+            <div class="color-swatch">
+                <div class="color-swatch__color" style="background: var(--color-status-info); color: white;">Aa</div>
+                <div class="color-swatch__info">
+                    <div class="color-swatch__name">Info</div>
+                    <div class="color-swatch__value">#3B82F6</div>
+                </div>
+            </div>
+            <div class="color-swatch">
+                <div class="color-swatch__color" style="background: var(--color-status-neutral); color: white;">Aa</div>
+                <div class="color-swatch__info">
+                    <div class="color-swatch__name">Neutral</div>
+                    <div class="color-swatch__value">#6B7280</div>
+                </div>
+            </div>
+        </div>
+
+        <h4>Status Backgrounds</h4>
+        <p>Light background variants for badges and containers.</p>
+
+        <div class="grid grid-5">
+            <div class="color-swatch">
+                <div class="color-swatch__color" style="background: var(--bg-status-success); color: var(--color-status-success);">Aa</div>
+                <div class="color-swatch__info">
+                    <div class="color-swatch__name">Success BG</div>
+                    <div class="color-swatch__value">#DCFCE7</div>
+                </div>
+            </div>
+            <div class="color-swatch">
+                <div class="color-swatch__color" style="background: var(--bg-status-warning); color: #B45309;">Aa</div>
+                <div class="color-swatch__info">
+                    <div class="color-swatch__name">Warning BG</div>
+                    <div class="color-swatch__value">#FEF3C7</div>
+                </div>
+            </div>
+            <div class="color-swatch">
+                <div class="color-swatch__color" style="background: var(--bg-status-danger); color: var(--color-status-danger);">Aa</div>
+                <div class="color-swatch__info">
+                    <div class="color-swatch__name">Danger BG</div>
+                    <div class="color-swatch__value">#FEE2E2</div>
+                </div>
+            </div>
+            <div class="color-swatch">
+                <div class="color-swatch__color" style="background: var(--bg-status-info); color: var(--color-status-info);">Aa</div>
+                <div class="color-swatch__info">
+                    <div class="color-swatch__name">Info BG</div>
+                    <div class="color-swatch__value">#DBEAFE</div>
+                </div>
+            </div>
+            <div class="color-swatch">
+                <div class="color-swatch__color" style="background: var(--bg-status-neutral); color: var(--color-status-neutral);">Aa</div>
+                <div class="color-swatch__info">
+                    <div class="color-swatch__name">Neutral BG</div>
+                    <div class="color-swatch__value">#F3F4F6</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tier Tokens -->
+    <section class="section">
+        <h3>Tier Tokens</h3>
+        <p>Flexibility tier indicators for host/guest reputation system.</p>
+
+        <div class="grid grid-3">
+            <div class="color-swatch">
+                <div class="color-swatch__color" style="background: var(--color-tier-gold-bg); border-bottom: 3px solid var(--color-tier-gold);">
+                    <span class="tier-badge tier-badge--gold">
+                        <svg class="icon--sm" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        Gold
+                    </span>
+                </div>
+                <div class="color-swatch__info">
+                    <div class="color-swatch__name">Tier Gold</div>
+                    <div class="color-swatch__value">#FFD700 / #FFFBEB</div>
+                </div>
+            </div>
+            <div class="color-swatch">
+                <div class="color-swatch__color" style="background: var(--color-tier-silver-bg); border-bottom: 3px solid var(--color-tier-silver);">
+                    <span class="tier-badge tier-badge--silver">
+                        <svg class="icon--sm" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        Silver
+                    </span>
+                </div>
+                <div class="color-swatch__info">
+                    <div class="color-swatch__name">Tier Silver</div>
+                    <div class="color-swatch__value">#9CA3AF / #F9FAFB</div>
+                </div>
+            </div>
+            <div class="color-swatch">
+                <div class="color-swatch__color" style="background: var(--color-tier-bronze-bg); border-bottom: 3px solid var(--color-tier-bronze);">
+                    <span class="tier-badge tier-badge--bronze">
+                        <svg class="icon--sm" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        Bronze
+                    </span>
+                </div>
+                <div class="color-swatch__info">
+                    <div class="color-swatch__name">Tier Bronze</div>
+                    <div class="color-swatch__value">#CD7F32 / #FEF3E2</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Spacing Scale -->
+    <section class="section">
+        <h3>Spacing Scale</h3>
+        <p>Base spacing tokens for consistent layouts.</p>
+
+        <div class="spacing-demo">
+            <span class="spacing-demo__label"><code>--spacing-2xs</code></span>
+            <div class="spacing-demo__bar" style="width: 2px;"></div>
+            <span class="spacing-demo__value">2px</span>
+        </div>
+        <div class="spacing-demo">
+            <span class="spacing-demo__label"><code>--spacing-xs</code></span>
+            <div class="spacing-demo__bar" style="width: 4px;"></div>
+            <span class="spacing-demo__value">4px</span>
+        </div>
+        <div class="spacing-demo">
+            <span class="spacing-demo__label"><code>--spacing-sm</code></span>
+            <div class="spacing-demo__bar" style="width: 8px;"></div>
+            <span class="spacing-demo__value">8px</span>
+        </div>
+        <div class="spacing-demo">
+            <span class="spacing-demo__label"><code>--spacing-md</code></span>
+            <div class="spacing-demo__bar" style="width: 12px;"></div>
+            <span class="spacing-demo__value">12px</span>
+        </div>
+        <div class="spacing-demo">
+            <span class="spacing-demo__label"><code>--spacing-base</code></span>
+            <div class="spacing-demo__bar" style="width: 16px;"></div>
+            <span class="spacing-demo__value">16px</span>
+        </div>
+        <div class="spacing-demo">
+            <span class="spacing-demo__label"><code>--spacing-lg</code></span>
+            <div class="spacing-demo__bar" style="width: 20px;"></div>
+            <span class="spacing-demo__value">20px</span>
+        </div>
+        <div class="spacing-demo">
+            <span class="spacing-demo__label"><code>--spacing-xl</code></span>
+            <div class="spacing-demo__bar" style="width: 24px;"></div>
+            <span class="spacing-demo__value">24px</span>
+        </div>
+        <div class="spacing-demo">
+            <span class="spacing-demo__label"><code>--spacing-2xl</code></span>
+            <div class="spacing-demo__bar" style="width: 32px;"></div>
+            <span class="spacing-demo__value">32px</span>
+        </div>
+        <div class="spacing-demo">
+            <span class="spacing-demo__label"><code>--spacing-3xl</code></span>
+            <div class="spacing-demo__bar" style="width: 40px;"></div>
+            <span class="spacing-demo__value">40px</span>
+        </div>
+        <div class="spacing-demo">
+            <span class="spacing-demo__label"><code>--spacing-4xl</code></span>
+            <div class="spacing-demo__bar" style="width: 48px;"></div>
+            <span class="spacing-demo__value">48px</span>
+        </div>
+
+        <h4>Compact Spacing (Data-Dense Views)</h4>
+        <p>Tighter spacing for tables and data-heavy layouts.</p>
+
+        <div class="spacing-demo">
+            <span class="spacing-demo__label"><code>--spacing-compact-cell-y</code></span>
+            <div class="spacing-demo__bar" style="width: 8px; background: var(--color-status-warning);"></div>
+            <span class="spacing-demo__value">8px (vertical)</span>
+        </div>
+        <div class="spacing-demo">
+            <span class="spacing-demo__label"><code>--spacing-compact-cell-x</code></span>
+            <div class="spacing-demo__bar" style="width: 12px; background: var(--color-status-warning);"></div>
+            <span class="spacing-demo__value">12px (horizontal)</span>
+        </div>
+        <div class="spacing-demo">
+            <span class="spacing-demo__label"><code>--spacing-compact-row</code></span>
+            <div class="spacing-demo__bar" style="width: 4px; background: var(--color-status-warning);"></div>
+            <span class="spacing-demo__value">4px (between rows)</span>
+        </div>
+        <div class="spacing-demo">
+            <span class="spacing-demo__label"><code>--spacing-compact-group</code></span>
+            <div class="spacing-demo__bar" style="width: 12px; background: var(--color-status-warning);"></div>
+            <span class="spacing-demo__value">12px (between groups)</span>
+        </div>
+    </section>
+
+    <!-- Typography Scale -->
+    <section class="section">
+        <h3>Typography Scale</h3>
+        <p>Font sizes and weights for consistent text hierarchy.</p>
+
+        <div class="typography-demo">
+            <div class="typography-demo__label">--text-xs / 11px</div>
+            <span style="font-size: var(--text-xs);">The quick brown fox jumps over the lazy dog</span>
+        </div>
+        <div class="typography-demo">
+            <div class="typography-demo__label">--text-sm / 12px (Table Headers)</div>
+            <span style="font-size: var(--text-sm); font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-gray-500);">DATE / DESCRIPTION / AMOUNT / STATUS</span>
+        </div>
+        <div class="typography-demo">
+            <div class="typography-demo__label">--text-base / 14px (Body, Table Rows)</div>
+            <span style="font-size: var(--text-base);">The quick brown fox jumps over the lazy dog</span>
+        </div>
+        <div class="typography-demo">
+            <div class="typography-demo__label">--text-md / 16px (Labels)</div>
+            <span style="font-size: var(--text-md);">The quick brown fox jumps over the lazy dog</span>
+        </div>
+        <div class="typography-demo">
+            <div class="typography-demo__label">--text-lg / 18px (Card Titles)</div>
+            <span style="font-size: var(--text-lg); font-weight: var(--weight-semibold);">The quick brown fox jumps over the lazy dog</span>
+        </div>
+        <div class="typography-demo">
+            <div class="typography-demo__label">--text-xl / 20px (Section Headers)</div>
+            <span style="font-size: var(--text-xl); font-weight: var(--weight-semibold);">The quick brown fox jumps over the lazy dog</span>
+        </div>
+        <div class="typography-demo">
+            <div class="typography-demo__label">--text-2xl / 24px (Page Titles)</div>
+            <span style="font-size: var(--text-2xl); font-weight: var(--weight-bold);">The quick brown fox jumps over the lazy dog</span>
+        </div>
+        <div class="typography-demo">
+            <div class="typography-demo__label">--text-3xl / 30px (Hero Text)</div>
+            <span style="font-size: var(--text-3xl); font-weight: var(--weight-bold);">The quick brown fox</span>
+        </div>
+
+        <h4>Currency/Amount Typography</h4>
+        <div class="typography-demo">
+            <div class="typography-demo__label">Tabular Nums (Aligns decimal points)</div>
+            <div style="font-variant-numeric: tabular-nums; font-weight: var(--weight-semibold);">
+                <div>$1,234.56</div>
+                <div>$   89.00</div>
+                <div>$  456.78</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SECTION 2: COMPONENT LIBRARY
+         ============================================ -->
+
+    <h2>2. Component Library</h2>
+
+    <!-- StatusBadge Component -->
+    <section class="section">
+        <h3>StatusBadge Component</h3>
+        <p>Unified badge component for all status indicators. <strong>Always includes icon + text label</strong> (not color alone).</p>
+
+        <h4>Payment Status Variants</h4>
+        <div class="flex flex-wrap gap-md" style="margin-bottom: var(--spacing-lg);">
+            <span class="status-badge status-badge--paid">
+                <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Paid
+            </span>
+            <span class="status-badge status-badge--due">
+                <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Due Feb 15
+            </span>
+            <span class="status-badge status-badge--overdue">
+                <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                Past Due 3 days
+            </span>
+            <span class="status-badge status-badge--pending">
+                <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                Processing
+            </span>
+        </div>
+
+        <h4>Document Status Variants</h4>
+        <div class="flex flex-wrap gap-md" style="margin-bottom: var(--spacing-lg);">
+            <span class="status-badge status-badge--draft">
+                <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                Draft
+            </span>
+            <span class="status-badge status-badge--pending">
+                <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                Pending Signature
+            </span>
+            <span class="status-badge status-badge--signed">
+                <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Signed
+            </span>
+            <span class="status-badge status-badge--voided">
+                <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                Voided
+            </span>
+        </div>
+
+        <h4>Stay Status Variants</h4>
+        <div class="flex flex-wrap gap-md" style="margin-bottom: var(--spacing-lg);">
+            <span class="status-badge status-badge--info">
+                <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                Upcoming
+            </span>
+            <span class="status-badge status-badge--success">
+                <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Active
+            </span>
+            <span class="status-badge status-badge--neutral">
+                <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Completed
+            </span>
+            <span class="status-badge status-badge--danger">
+                <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                Cancelled
+            </span>
+        </div>
+
+        <h4>Tier Badges</h4>
+        <div class="flex flex-wrap gap-md">
+            <span class="tier-badge tier-badge--gold">
+                <svg class="icon--sm" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                Gold Flexibility
+            </span>
+            <span class="tier-badge tier-badge--silver">
+                <svg class="icon--sm" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                Silver Flexibility
+            </span>
+            <span class="tier-badge tier-badge--bronze">
+                <svg class="icon--sm" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                Bronze Flexibility
+            </span>
+        </div>
+
+        <div style="margin-top: var(--spacing-xl); padding: var(--spacing-base); background: var(--bg-status-info); border-radius: var(--radius-md);">
+            <h4 style="margin-top: 0; color: var(--color-status-info);">Accessibility Note</h4>
+            <p style="margin: 0; font-size: var(--text-sm);">All status badges MUST include both an icon and text label. Color is reinforcement only, never the sole status indicator. Screen reader should announce: "Status: [label]"</p>
+        </div>
+    </section>
+
+    <!-- PaymentRow Component -->
+    <section class="section">
+        <h3>PaymentRow Component</h3>
+        <p>Desktop table layout with compact spacing. Transforms to card layout on mobile.</p>
+
+        <h4>Desktop Layout (Table)</h4>
+        <table class="payment-table">
+            <thead>
+                <tr>
+                    <th style="width: 140px;">Date</th>
+                    <th>Description</th>
+                    <th class="text-right" style="width: 100px;">Amount</th>
+                    <th class="text-center" style="width: 140px;">Status</th>
+                    <th class="text-right" style="width: 100px;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="payment-row">
+                    <td class="payment-row__date">
+                        Feb 1, 2026
+                        <div class="payment-row__date--actual">Paid Jan 30</div>
+                    </td>
+                    <td class="payment-row__memo">Monthly rent - February</td>
+                    <td class="payment-row__amount">$1,500.00</td>
+                    <td class="payment-row__status">
+                        <span class="status-badge status-badge--paid">
+                            <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Paid
+                        </span>
+                    </td>
+                    <td class="payment-row__actions">
+                        <button class="action-btn">
+                            <svg class="icon--sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            Receipt
+                        </button>
+                    </td>
+                </tr>
+                <tr class="payment-row">
+                    <td class="payment-row__date">Mar 1, 2026</td>
+                    <td class="payment-row__memo">Monthly rent - March</td>
+                    <td class="payment-row__amount">$1,500.00</td>
+                    <td class="payment-row__status">
+                        <span class="status-badge status-badge--due">
+                            <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Due in 27 days
+                        </span>
+                    </td>
+                    <td class="payment-row__actions">
+                        <button class="action-btn">Pay Now</button>
+                    </td>
+                </tr>
+                <tr class="payment-row payment-row--overdue">
+                    <td class="payment-row__date">
+                        Jan 1, 2026
+                        <div class="payment-row__date--actual">+ $75 late fee</div>
+                    </td>
+                    <td class="payment-row__memo">Monthly rent - January</td>
+                    <td class="payment-row__amount">$1,575.00</td>
+                    <td class="payment-row__status">
+                        <span class="status-badge status-badge--overdue">
+                            <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            Past due 32 days
+                        </span>
+                    </td>
+                    <td class="payment-row__actions">
+                        <button class="action-btn" style="border-color: var(--color-status-danger); color: var(--color-status-danger);">Pay Now</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4 style="margin-top: var(--spacing-2xl);">Mobile Layout (Cards)</h4>
+        <p>Below 768px, table transforms to stacked cards with touch-friendly spacing.</p>
+
+        <div style="max-width: 360px;">
+            <div class="payment-card">
+                <div class="payment-card__header">
+                    <div>
+                        <div class="payment-card__date">Feb 1, 2026</div>
+                        <div class="payment-card__memo">Monthly rent - February</div>
+                    </div>
+                    <div class="payment-card__amount">$1,500.00</div>
+                </div>
+                <div class="payment-card__footer">
+                    <span class="status-badge status-badge--paid">
+                        <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Paid
+                    </span>
+                    <button class="action-btn">Receipt</button>
+                </div>
+            </div>
+
+            <div class="payment-card payment-card--overdue">
+                <div class="payment-card__header">
+                    <div>
+                        <div class="payment-card__date">Jan 1, 2026</div>
+                        <div class="payment-card__memo">Monthly rent - January + $75 late fee</div>
+                    </div>
+                    <div class="payment-card__amount">$1,575.00</div>
+                </div>
+                <div class="payment-card__footer">
+                    <span class="status-badge status-badge--overdue">
+                        <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        Past due
+                    </span>
+                    <button class="action-btn" style="border-color: var(--color-status-danger); color: var(--color-status-danger);">Pay Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- StayCard Component -->
+    <section class="section">
+        <h3>StayCard Component</h3>
+        <p>Card component for individual stays within a lease. Supports host and guest perspectives.</p>
+
+        <div class="grid grid-2">
+            <!-- Guest View -->
+            <div>
+                <h4>Guest Perspective</h4>
+                <div class="stay-card stay-card--active">
+                    <div class="stay-card__header">
+                        <span class="stay-card__week">Week 2 of 4</span>
+                        <div class="flex gap-sm">
+                            <span class="perspective-tag perspective-tag--guest">Guest View</span>
+                            <span class="status-badge status-badge--success">
+                                <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                Active
+                            </span>
+                        </div>
+                    </div>
+                    <div class="stay-card__body">
+                        <div class="stay-card__dates">
+                            <div class="stay-card__date-group">
+                                <span class="stay-card__date-label">Check-in</span>
+                                <span class="stay-card__date-value">Feb 8, 2026</span>
+                            </div>
+                            <div class="stay-card__date-group">
+                                <span class="stay-card__date-label">Check-out</span>
+                                <span class="stay-card__date-value">Feb 15, 2026</span>
+                            </div>
+                        </div>
+                        <div class="stay-card__amount">
+                            <span class="stay-card__amount-label">Amount Paid</span>
+                            <span class="stay-card__amount-value">$750.00</span>
+                        </div>
+                    </div>
+                    <div class="stay-card__footer">
+                        <button class="action-btn" style="width: 100%;">View Check-out Instructions</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Host View -->
+            <div>
+                <h4>Host Perspective</h4>
+                <div class="stay-card">
+                    <div class="stay-card__header">
+                        <span class="stay-card__week">Week 3 of 4</span>
+                        <div class="flex gap-sm">
+                            <span class="perspective-tag perspective-tag--host">Host View</span>
+                            <span class="status-badge status-badge--info">
+                                <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                Upcoming
+                            </span>
+                        </div>
+                    </div>
+                    <div class="stay-card__body">
+                        <div class="stay-card__dates">
+                            <div class="stay-card__date-group">
+                                <span class="stay-card__date-label">Guest Arrives</span>
+                                <span class="stay-card__date-value">Feb 15, 2026</span>
+                            </div>
+                            <div class="stay-card__date-group">
+                                <span class="stay-card__date-label">Guest Departs</span>
+                                <span class="stay-card__date-value">Feb 22, 2026</span>
+                            </div>
+                        </div>
+                        <div class="stay-card__amount">
+                            <span class="stay-card__amount-label">Amount Earned</span>
+                            <span class="stay-card__amount-value">$750.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stay-card stay-card--cancelled" style="margin-top: var(--spacing-base);">
+                    <div class="stay-card__header">
+                        <span class="stay-card__week">Week 4 of 4</span>
+                        <span class="status-badge status-badge--danger">
+                            <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            Cancelled
+                        </span>
+                    </div>
+                    <div class="stay-card__body">
+                        <div class="stay-card__dates">
+                            <div class="stay-card__date-group">
+                                <span class="stay-card__date-label">Was Scheduled</span>
+                                <span class="stay-card__date-value">Feb 22 - Mar 1</span>
+                            </div>
+                        </div>
+                        <div class="stay-card__amount">
+                            <span class="stay-card__amount-label">Refunded</span>
+                            <span class="stay-card__amount-value">$750.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DCTCalendar Component -->
+    <section class="section">
+        <h3>DCTCalendar Component</h3>
+        <p>Date Change Tool calendar with multi-layer status visualization.</p>
+
+        <div class="grid grid-2">
+            <div class="calendar">
+                <div class="calendar__header">
+                    <div class="calendar__nav">
+                        <button class="calendar__nav-btn" aria-label="Previous month">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        </button>
+                    </div>
+                    <span class="calendar__title">February 2026</span>
+                    <div class="calendar__nav">
+                        <button class="calendar__nav-btn" aria-label="Next month">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="calendar__weekdays">
+                    <span class="calendar__weekday">S</span>
+                    <span class="calendar__weekday">M</span>
+                    <span class="calendar__weekday">T</span>
+                    <span class="calendar__weekday">W</span>
+                    <span class="calendar__weekday">T</span>
+                    <span class="calendar__weekday">F</span>
+                    <span class="calendar__weekday">S</span>
+                </div>
+
+                <div class="calendar__grid">
+                    <!-- Row 1 -->
+                    <button class="calendar__day calendar__day--other-month">25</button>
+                    <button class="calendar__day calendar__day--other-month">26</button>
+                    <button class="calendar__day calendar__day--other-month">27</button>
+                    <button class="calendar__day calendar__day--other-month">28</button>
+                    <button class="calendar__day calendar__day--other-month">29</button>
+                    <button class="calendar__day calendar__day--other-month">30</button>
+                    <button class="calendar__day calendar__day--other-month">31</button>
+                    <!-- Row 2 -->
+                    <button class="calendar__day">1</button>
+                    <button class="calendar__day calendar__day--booked" aria-label="Monday, February 2, booked">2</button>
+                    <button class="calendar__day calendar__day--booked" aria-label="Tuesday, February 3, booked">3</button>
+                    <button class="calendar__day calendar__day--booked" aria-label="Wednesday, February 4, booked">4</button>
+                    <button class="calendar__day calendar__day--booked" aria-label="Thursday, February 5, booked">5</button>
+                    <button class="calendar__day calendar__day--booked" aria-label="Friday, February 6, booked">6</button>
+                    <button class="calendar__day calendar__day--booked" aria-label="Saturday, February 7, booked">7</button>
+                    <!-- Row 3 -->
+                    <button class="calendar__day calendar__day--booked">8</button>
+                    <button class="calendar__day calendar__day--remove" aria-label="Monday, February 9, selected for removal">9</button>
+                    <button class="calendar__day calendar__day--remove" aria-label="Tuesday, February 10, selected for removal">10</button>
+                    <button class="calendar__day calendar__day--booked">11</button>
+                    <button class="calendar__day calendar__day--booked">12</button>
+                    <button class="calendar__day calendar__day--booked">13</button>
+                    <button class="calendar__day calendar__day--booked">14</button>
+                    <!-- Row 4 -->
+                    <button class="calendar__day calendar__day--booked">15</button>
+                    <button class="calendar__day calendar__day--booked">16</button>
+                    <button class="calendar__day calendar__day--booked">17</button>
+                    <button class="calendar__day calendar__day--booked">18</button>
+                    <button class="calendar__day calendar__day--booked">19</button>
+                    <button class="calendar__day calendar__day--booked">20</button>
+                    <button class="calendar__day calendar__day--booked">21</button>
+                    <!-- Row 5 -->
+                    <button class="calendar__day">22</button>
+                    <button class="calendar__day calendar__day--add" aria-label="Monday, February 23, proposed to add">23</button>
+                    <button class="calendar__day calendar__day--add" aria-label="Tuesday, February 24, proposed to add">24</button>
+                    <button class="calendar__day calendar__day--add">25</button>
+                    <button class="calendar__day calendar__day--conflict" aria-label="Thursday, February 26, conflict with existing booking">26</button>
+                    <button class="calendar__day calendar__day--add">27</button>
+                    <button class="calendar__day">28</button>
+                </div>
+
+                <div class="calendar__legend">
+                    <div class="calendar__legend-item">
+                        <span class="calendar__legend-dot calendar__legend-dot--booked"></span>
+                        Booked
+                    </div>
+                    <div class="calendar__legend-item">
+                        <span class="calendar__legend-dot calendar__legend-dot--add"></span>
+                        Proposed Add
+                    </div>
+                    <div class="calendar__legend-item">
+                        <span class="calendar__legend-dot calendar__legend-dot--remove"></span>
+                        Proposed Remove
+                    </div>
+                    <div class="calendar__legend-item">
+                        <span class="calendar__legend-dot calendar__legend-dot--conflict"></span>
+                        Conflict
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h4>Calendar State Legend</h4>
+                <table class="payment-table" style="font-size: var(--text-sm);">
+                    <thead>
+                        <tr>
+                            <th>State</th>
+                            <th>Visual</th>
+                            <th>Token</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="payment-row">
+                            <td>Booked</td>
+                            <td><span style="display: inline-block; width: 24px; height: 24px; background: var(--color-calendar-booked); border-radius: var(--radius-sm);"></span></td>
+                            <td><code>--color-calendar-booked</code></td>
+                        </tr>
+                        <tr class="payment-row">
+                            <td>Proposed Add</td>
+                            <td><span style="display: inline-block; width: 24px; height: 24px; background: var(--color-calendar-add); border-radius: var(--radius-sm); animation: pulse 2s infinite;"></span></td>
+                            <td><code>--color-calendar-add</code> + pulse</td>
+                        </tr>
+                        <tr class="payment-row">
+                            <td>Proposed Remove</td>
+                            <td><span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: var(--color-calendar-remove-bg); color: var(--color-status-danger); border-radius: var(--radius-sm); text-decoration: line-through; font-size: 10px;">9</span></td>
+                            <td><code>--color-calendar-remove-bg</code> + strikethrough</td>
+                        </tr>
+                        <tr class="payment-row">
+                            <td>Conflict</td>
+                            <td><span style="display: inline-block; width: 24px; height: 24px; background: var(--color-calendar-conflict); border-radius: var(--radius-sm);"></span></td>
+                            <td><code>--color-calendar-conflict</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="margin-top: var(--spacing-xl); padding: var(--spacing-base); background: var(--bg-status-info); border-radius: var(--radius-md);">
+                    <h4 style="margin-top: 0; color: var(--color-status-info);">Accessibility Note</h4>
+                    <p style="margin: 0; font-size: var(--text-sm);">Each date button must have aria-label announcing: day name, date, month, and status. Example: "Monday, February 9, selected for removal". Selection changes should be announced via aria-live region.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DocumentCard Component -->
+    <section class="section">
+        <h3>DocumentCard Component</h3>
+        <p>Card for lease documents with signing status and multi-party progress indicator.</p>
+
+        <div class="grid grid-2">
+            <!-- Draft State -->
+            <div class="document-card">
+                <div class="document-card__icon">
+                    <svg class="icon--lg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+                <div class="document-card__content">
+                    <div class="document-card__title">Pet Agreement Draft</div>
+                    <div class="document-card__meta">
+                        <span class="status-badge status-badge--draft">
+                            <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                            Draft
+                        </span>
+                        <span>Created Jan 28, 2026</span>
+                    </div>
+                </div>
+                <div class="document-card__actions">
+                    <button class="action-btn">Edit</button>
+                </div>
+            </div>
+
+            <!-- Pending Signature -->
+            <div class="document-card">
+                <div class="document-card__icon" style="background: var(--bg-status-warning); color: #B45309;">
+                    <svg class="icon--lg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+                <div class="document-card__content">
+                    <div class="document-card__title">Primary Tenancy Agreement</div>
+                    <div class="document-card__meta">
+                        <span class="status-badge status-badge--pending">
+                            <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                            Awaiting Your Signature
+                        </span>
+                    </div>
+                    <div class="signing-progress">
+                        <span class="signing-progress__step signing-progress__step--complete">
+                            <svg class="icon--sm" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                        </span>
+                        <span class="signing-progress__connector signing-progress__connector--complete"></span>
+                        <span class="signing-progress__step signing-progress__step--pending">2</span>
+                        <span class="signing-progress__connector"></span>
+                        <span class="signing-progress__step signing-progress__step--waiting">3</span>
+                        <span class="signing-progress__label">1 of 3 signed</span>
+                    </div>
+                </div>
+                <div class="document-card__actions">
+                    <button class="action-btn">View</button>
+                    <button class="action-btn" style="background: var(--color-status-info); color: white; border-color: var(--color-status-info);">Sign Now</button>
+                </div>
+            </div>
+
+            <!-- Signed -->
+            <div class="document-card">
+                <div class="document-card__icon" style="background: var(--bg-status-success); color: var(--color-status-success);">
+                    <svg class="icon--lg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+                <div class="document-card__content">
+                    <div class="document-card__title">Supplemental Terms</div>
+                    <div class="document-card__meta">
+                        <span class="status-badge status-badge--signed">
+                            <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Fully Signed
+                        </span>
+                        <span>Signed Jan 15, 2026</span>
+                    </div>
+                    <div class="signing-progress">
+                        <span class="signing-progress__step signing-progress__step--complete">
+                            <svg class="icon--sm" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                        </span>
+                        <span class="signing-progress__connector signing-progress__connector--complete"></span>
+                        <span class="signing-progress__step signing-progress__step--complete">
+                            <svg class="icon--sm" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                        </span>
+                        <span class="signing-progress__label">All parties signed</span>
+                    </div>
+                </div>
+                <div class="document-card__actions">
+                    <button class="action-btn">
+                        <svg class="icon--sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        Download
+                    </button>
+                </div>
+            </div>
+
+            <!-- Voided -->
+            <div class="document-card" style="opacity: 0.6;">
+                <div class="document-card__icon" style="background: var(--bg-status-danger); color: var(--color-status-danger);">
+                    <svg class="icon--lg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+                <div class="document-card__content">
+                    <div class="document-card__title" style="text-decoration: line-through;">Original Agreement v1</div>
+                    <div class="document-card__meta">
+                        <span class="status-badge status-badge--voided">
+                            <svg class="status-badge__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                            Voided
+                        </span>
+                        <span>Superseded by v2</span>
+                    </div>
+                </div>
+                <div class="document-card__actions">
+                    <button class="action-btn" style="opacity: 0.5;">View Archive</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SECTION 3: ACCESSIBILITY CHECKLIST
+         ============================================ -->
+
+    <h2>3. Accessibility Checklist</h2>
+
+    <section class="section">
+        <h3>Status Indicators</h3>
+        <div class="a11y-checklist">
+            <div class="a11y-item a11y-item--pass">
+                <span class="a11y-item__icon a11y-item__icon--pass">
+                    <svg class="icon--md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <div>
+                    <div class="a11y-item__text">All status badges include icon + text label (not color alone)</div>
+                    <div class="a11y-item__category">WCAG 1.4.1 Use of Color</div>
+                </div>
+            </div>
+            <div class="a11y-item a11y-item--pass">
+                <span class="a11y-item__icon a11y-item__icon--pass">
+                    <svg class="icon--md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <div>
+                    <div class="a11y-item__text">Status colors have 4.5:1 contrast ratio against backgrounds</div>
+                    <div class="a11y-item__category">WCAG 1.4.3 Contrast (Minimum)</div>
+                </div>
+            </div>
+            <div class="a11y-item a11y-item--pass">
+                <span class="a11y-item__icon a11y-item__icon--pass">
+                    <svg class="icon--md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <div>
+                    <div class="a11y-item__text">Due dates show "Due in X days" or "Past due Y days" context</div>
+                    <div class="a11y-item__category">WCAG 2.4.6 Headings and Labels</div>
+                </div>
+            </div>
+        </div>
+
+        <h3 style="margin-top: var(--spacing-xl);">Calendar Navigation</h3>
+        <div class="a11y-checklist">
+            <div class="a11y-item a11y-item--pass">
+                <span class="a11y-item__icon a11y-item__icon--pass">
+                    <svg class="icon--md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <div>
+                    <div class="a11y-item__text">Date cells are keyboard-operable buttons</div>
+                    <div class="a11y-item__category">WCAG 2.1.1 Keyboard</div>
+                </div>
+            </div>
+            <div class="a11y-item a11y-item--pass">
+                <span class="a11y-item__icon a11y-item__icon--pass">
+                    <svg class="icon--md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <div>
+                    <div class="a11y-item__text">Each date has aria-label with full context (day, date, month, status)</div>
+                    <div class="a11y-item__category">WCAG 4.1.2 Name, Role, Value</div>
+                </div>
+            </div>
+            <div class="a11y-item a11y-item--fail">
+                <span class="a11y-item__icon a11y-item__icon--fail">
+                    <svg class="icon--md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <div>
+                    <div class="a11y-item__text">ARIA grid pattern not yet implemented (needs role="grid")</div>
+                    <div class="a11y-item__category">WCAG 4.1.2 Name, Role, Value - TODO</div>
+                </div>
+            </div>
+            <div class="a11y-item a11y-item--fail">
+                <span class="a11y-item__icon a11y-item__icon--fail">
+                    <svg class="icon--md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <div>
+                    <div class="a11y-item__text">Selection changes not announced via aria-live region - TODO</div>
+                    <div class="a11y-item__category">WCAG 4.1.3 Status Messages - TODO</div>
+                </div>
+            </div>
+        </div>
+
+        <h3 style="margin-top: var(--spacing-xl);">Focus Management</h3>
+        <div class="a11y-checklist">
+            <div class="a11y-item a11y-item--pass">
+                <span class="a11y-item__icon a11y-item__icon--pass">
+                    <svg class="icon--md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <div>
+                    <div class="a11y-item__text">Global focus-visible style using 2px blue outline</div>
+                    <div class="a11y-item__category">WCAG 2.4.7 Focus Visible</div>
+                </div>
+            </div>
+            <div class="a11y-item a11y-item--pass">
+                <span class="a11y-item__icon a11y-item__icon--pass">
+                    <svg class="icon--md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <div>
+                    <div class="a11y-item__text">All interactive elements (buttons, links) are focusable</div>
+                    <div class="a11y-item__category">WCAG 2.1.1 Keyboard</div>
+                </div>
+            </div>
+            <div class="a11y-item a11y-item--pass">
+                <span class="a11y-item__icon a11y-item__icon--pass">
+                    <svg class="icon--md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <div>
+                    <div class="a11y-item__text">Focus ring uses offset to avoid content overlap</div>
+                    <div class="a11y-item__category">WCAG 2.4.11 Focus Not Obscured</div>
+                </div>
+            </div>
+        </div>
+
+        <h3 style="margin-top: var(--spacing-xl);">Touch Targets (Mobile)</h3>
+        <div class="a11y-checklist">
+            <div class="a11y-item a11y-item--pass">
+                <span class="a11y-item__icon a11y-item__icon--pass">
+                    <svg class="icon--md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <div>
+                    <div class="a11y-item__text">Calendar navigation buttons are 32x32px minimum</div>
+                    <div class="a11y-item__category">WCAG 2.5.5 Target Size</div>
+                </div>
+            </div>
+            <div class="a11y-item a11y-item--pass">
+                <span class="a11y-item__icon a11y-item__icon--pass">
+                    <svg class="icon--md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <div>
+                    <div class="a11y-item__text">Action buttons have adequate padding for touch</div>
+                    <div class="a11y-item__category">WCAG 2.5.5 Target Size</div>
+                </div>
+            </div>
+            <div class="a11y-item a11y-item--fail">
+                <span class="a11y-item__icon a11y-item__icon--fail">
+                    <svg class="icon--md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <div>
+                    <div class="a11y-item__text">Calendar date cells need 44x44px on mobile (current ~40px) - TODO</div>
+                    <div class="a11y-item__category">WCAG 2.5.5 Target Size - TODO</div>
+                </div>
+            </div>
+        </div>
+
+        <h3 style="margin-top: var(--spacing-xl);">Screen Reader Announcements</h3>
+        <div class="a11y-checklist">
+            <div class="a11y-item a11y-item--pass">
+                <span class="a11y-item__icon a11y-item__icon--pass">
+                    <svg class="icon--md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <div>
+                    <div class="a11y-item__text">Payment rows announce: "Payment of $X is [status]"</div>
+                    <div class="a11y-item__category">WCAG 4.1.2 Name, Role, Value</div>
+                </div>
+            </div>
+            <div class="a11y-item a11y-item--pass">
+                <span class="a11y-item__icon a11y-item__icon--pass">
+                    <svg class="icon--md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <div>
+                    <div class="a11y-item__text">Document cards announce document name and signing status</div>
+                    <div class="a11y-item__category">WCAG 4.1.2 Name, Role, Value</div>
+                </div>
+            </div>
+            <div class="a11y-item a11y-item--pass">
+                <span class="a11y-item__icon a11y-item__icon--pass">
+                    <svg class="icon--md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <div>
+                    <div class="a11y-item__text">Stay cards announce: "Stay [week X of Y], [check-in] to [check-out], [status]"</div>
+                    <div class="a11y-item__category">WCAG 4.1.2 Name, Role, Value</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         FOOTER
+         ============================================ -->
+
+    <footer style="margin-top: var(--spacing-3xl); padding-top: var(--spacing-xl); border-top: 1px solid var(--color-gray-200); text-align: center; color: var(--color-gray-500); font-size: var(--text-sm);">
+        <p>Josef Muller-Brockmann - Design System Foundation</p>
+        <p>Run 006B - Phase B: Mockups - 2026-02-02</p>
+        <p style="margin-top: var(--spacing-md);"><strong>Dependency Chain:</strong> Josef (Tokens) &rarr; Massimo (Grid) &rarr; Paula (Visual Hierarchy) &rarr; Don (Flows) &rarr; Charles (Empty States) &rarr; Dieter (Trust) &rarr; Milton (Copy) &rarr; Jony (Mobile) &rarr; Luke (Conversion)</p>
+    </footer>
+
+</body>
+</html>

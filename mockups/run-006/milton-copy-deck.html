@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Copy Deck — Milton Glaser | Run 006B</title>
+    <style>
+        /* =================================================
+           DESIGN TOKENS (from Josef Muller-Brockmann)
+           ================================================= */
+        :root {
+            /* Status Colors */
+            --color-status-success: #22C55E;
+            --color-status-warning: #F59E0B;
+            --color-status-danger: #EF4444;
+            --color-status-info: #3B82F6;
+            --color-status-neutral: #6B7280;
+
+            /* Status Backgrounds */
+            --bg-status-success: #DCFCE7;
+            --bg-status-warning: #FEF3C7;
+            --bg-status-danger: #FEE2E2;
+            --bg-status-info: #DBEAFE;
+            --bg-status-neutral: #F3F4F6;
+
+            /* Text Colors */
+            --text-primary: #1F2937;
+            --text-secondary: #4B5563;
+            --text-muted: #6B7280;
+
+            /* UI Colors */
+            --border-light: #E5E7EB;
+            --bg-page: #F9FAFB;
+            --bg-card: #FFFFFF;
+
+            /* Tier Colors */
+            --color-tier-gold: #FFD700;
+            --color-tier-silver: #C0C0C0;
+            --color-tier-bronze: #CD7F32;
+            --bg-tier-gold: #FFFBEB;
+            --bg-tier-silver: #F9FAFB;
+            --bg-tier-bronze: #FEF3E2;
+        }
+
+        /* =================================================
+           BASE STYLES
+           ================================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-page);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 48px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .meta-badge {
+            display: inline-block;
+            background: var(--bg-status-info);
+            color: var(--color-status-info);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        /* =================================================
+           SECTION STYLES
+           ================================================= */
+        section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        section h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        section h2::before {
+            content: attr(data-number);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: var(--text-primary);
+            color: white;
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 24px 0 16px 0;
+        }
+
+        h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 20px 0 12px 0;
+        }
+
+        /* =================================================
+           BADGE STYLES (Live Examples)
+           ================================================= */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: var(--bg-status-success);
+            color: var(--color-status-success);
+        }
+
+        .badge-warning {
+            background: var(--bg-status-warning);
+            color: #92400E;
+        }
+
+        .badge-danger {
+            background: var(--bg-status-danger);
+            color: #B91C1C;
+        }
+
+        .badge-info {
+            background: var(--bg-status-info);
+            color: #1E40AF;
+        }
+
+        .badge-neutral {
+            background: var(--bg-status-neutral);
+            color: var(--color-status-neutral);
+        }
+
+        .badge-icon {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* =================================================
+           TABLE STYLES
+           ================================================= */
+        .copy-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+
+        .copy-table th {
+            text-align: left;
+            padding: 12px 16px;
+            background: var(--bg-status-neutral);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .copy-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: top;
+        }
+
+        .copy-table tr:hover {
+            background: #F5F7FA;
+        }
+
+        .char-count {
+            display: inline-block;
+            background: var(--bg-status-neutral);
+            color: var(--text-muted);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        /* =================================================
+           BUTTON STYLES (Live Examples)
+           ================================================= */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s ease;
+        }
+
+        .btn-primary {
+            background: var(--color-status-info);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563EB;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border-light);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-status-neutral);
+        }
+
+        .btn-danger {
+            background: var(--color-status-danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        .btn-success {
+            background: var(--color-status-success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #16A34A;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 16px 0;
+        }
+
+        /* =================================================
+           MODAL STYLES (Live Examples)
+           ================================================= */
+        .modal-example {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            max-width: 480px;
+            margin: 16px 0;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h5 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: none;
+            font-size: 20px;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-status-neutral);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-body p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .modal-body ul {
+            margin: 12px 0;
+            padding-left: 20px;
+        }
+
+        .modal-body li {
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            background: var(--bg-page);
+        }
+
+        .modal-legal {
+            font-size: 12px;
+            color: var(--text-muted);
+            padding: 12px 24px;
+            background: var(--bg-page);
+            border-top: 1px solid var(--border-light);
+        }
+
+        .modal-hint {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 12px;
+            background: var(--bg-status-info);
+            border-radius: 8px;
+            font-size: 13px;
+            color: #1E40AF;
+            margin-top: 16px;
+        }
+
+        /* =================================================
+           NOTIFICATION STYLES
+           ================================================= */
+        .notification {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+
+        .notification-info {
+            background: var(--bg-status-info);
+            border-left: 4px solid var(--color-status-info);
+        }
+
+        .notification-warning {
+            background: var(--bg-status-warning);
+            border-left: 4px solid var(--color-status-warning);
+        }
+
+        .notification-danger {
+            background: var(--bg-status-danger);
+            border-left: 4px solid var(--color-status-danger);
+        }
+
+        .notification-success {
+            background: var(--bg-status-success);
+            border-left: 4px solid var(--color-status-success);
+        }
+
+        .notification-icon {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .notification-body {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* =================================================
+           EMPTY STATE STYLES
+           ================================================= */
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            background: var(--bg-page);
+            border: 2px dashed var(--border-light);
+            border-radius: 12px;
+            margin: 16px 0;
+        }
+
+        .empty-state-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 16px;
+            color: var(--text-muted);
+        }
+
+        .empty-state h5 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            max-width: 360px;
+            margin: 0 auto 16px;
+        }
+
+        /* =================================================
+           CELEBRATION STYLES
+           ================================================= */
+        .celebration {
+            text-align: center;
+            padding: 32px;
+            background: linear-gradient(135deg, var(--bg-status-success) 0%, #F0FDF4 100%);
+            border-radius: 12px;
+            margin: 16px 0;
+        }
+
+        .celebration-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 16px;
+            background: var(--color-status-success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+        }
+
+        .celebration h5 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .celebration p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* =================================================
+           ERROR STYLES
+           ================================================= */
+        .error-card {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 16px 0;
+            max-width: 480px;
+        }
+
+        .error-header {
+            background: var(--bg-status-danger);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .error-header svg {
+            color: var(--color-status-danger);
+        }
+
+        .error-header h5 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #B91C1C;
+        }
+
+        .error-body {
+            padding: 24px;
+        }
+
+        .error-body p {
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .error-body ul {
+            margin: 12px 0;
+            padding-left: 20px;
+        }
+
+        .error-body li {
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .error-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            gap: 12px;
+        }
+
+        /* =================================================
+           TONE GUIDE STYLES
+           ================================================= */
+        .tone-example {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 16px 0;
+        }
+
+        .tone-do {
+            background: var(--bg-status-success);
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid var(--color-status-success);
+        }
+
+        .tone-dont {
+            background: var(--bg-status-danger);
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid var(--color-status-danger);
+        }
+
+        .tone-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .tone-do .tone-label {
+            color: var(--color-status-success);
+        }
+
+        .tone-dont .tone-label {
+            color: var(--color-status-danger);
+        }
+
+        .tone-text {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        /* =================================================
+           CODE BLOCK STYLES
+           ================================================= */
+        .copy-block {
+            background: #1F2937;
+            color: #E5E7EB;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            margin: 12px 0;
+        }
+
+        /* =================================================
+           RESPONSIVE
+           ================================================= */
+        @media (max-width: 768px) {
+            .container {
+                padding: 24px 16px;
+            }
+
+            section {
+                padding: 24px 16px;
+            }
+
+            .tone-example {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-example {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Complete Copy Deck</h1>
+            <p>Every word for Leases Management Pages — Milton Glaser</p>
+            <span class="meta-badge">Run 006B — 2026-02-02</span>
+        </header>
+
+        <!-- =========================================================
+             SECTION 1: STATUS LABEL GLOSSARY
+             ========================================================= -->
+        <section id="status-labels">
+            <h2 data-number="1">Status Label Glossary</h2>
+            <p class="section-desc">All status badges with live examples. Use traffic light principle: Green (complete), Amber (action needed), Red (critical).</p>
+
+            <h3>Payment Status</h3>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Live Badge</th>
+                        <th>Supporting Text</th>
+                        <th>When to Use</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Paid</strong></td>
+                        <td><span class="badge badge-success"><svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Paid</span></td>
+                        <td>"Payment received on [date]" <span class="char-count">28 chars</span></td>
+                        <td>Payment successfully processed</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Due</strong> (7+ days)</td>
+                        <td><span class="badge badge-neutral"><svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Due Feb 15</span></td>
+                        <td>"Payment scheduled for [date]" <span class="char-count">30 chars</span></td>
+                        <td>Payment more than 7 days away</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Due Soon</strong> (7 days)</td>
+                        <td><span class="badge badge-warning"><svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Due Feb 8</span></td>
+                        <td>"Due in [X] days" <span class="char-count">14 chars</span></td>
+                        <td>Payment within 7 days</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Past Due</strong></td>
+                        <td><span class="badge badge-danger"><svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Past Due</span></td>
+                        <td>"Was due on [date]" <span class="char-count">18 chars</span></td>
+                        <td>Payment is overdue — never say "Late"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Processing</strong></td>
+                        <td><span class="badge badge-info"><svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Processing</span></td>
+                        <td>"Payment is being processed" <span class="char-count">27 chars</span></td>
+                        <td>Payment in transit</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>DCT Request Status</h3>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Live Badge</th>
+                        <th>Supporting Text</th>
+                        <th>Who Acts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Awaiting Response</strong></td>
+                        <td><span class="badge badge-info"><svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Awaiting Response</span></td>
+                        <td>"Sent [time] ago" <span class="char-count">15 chars</span></td>
+                        <td>Other party</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Action Required</strong></td>
+                        <td><span class="badge badge-warning"><svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Action Required</span></td>
+                        <td>"Expires in [X hours]" <span class="char-count">20 chars</span></td>
+                        <td>Current user</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Under Review</strong></td>
+                        <td><span class="badge badge-info"><svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>Under Review</span></td>
+                        <td>"You responded [time] ago" <span class="char-count">25 chars</span></td>
+                        <td>Other party</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Accepted</strong></td>
+                        <td><span class="badge badge-success"><svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Accepted</span></td>
+                        <td>"Effective [date]" <span class="char-count">16 chars</span></td>
+                        <td>None — complete</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Declined</strong></td>
+                        <td><span class="badge badge-neutral"><svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Declined</span></td>
+                        <td>"On [date]" <span class="char-count">10 chars</span></td>
+                        <td>Requester (new request option)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Expired</strong></td>
+                        <td><span class="badge badge-danger"><svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Expired</span></td>
+                        <td>"No response received" <span class="char-count">20 chars</span></td>
+                        <td>Requester (new request option)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Counter Proposal</strong></td>
+                        <td><span class="badge badge-info"><svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>Counter Proposal</span></td>
+                        <td>"New dates suggested" <span class="char-count">19 chars</span></td>
+                        <td>Original requester</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Document Status</h3>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Live Badge</th>
+                        <th>Supporting Text</th>
+                        <th>Visual Style</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Draft</strong></td>
+                        <td><span class="badge badge-neutral"><svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Draft</span></td>
+                        <td>"Agreement being prepared" <span class="char-count">24 chars</span></td>
+                        <td>Gray, dashed outline</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ready to Sign</strong></td>
+                        <td><span class="badge badge-info"><svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Ready to Sign</span></td>
+                        <td>"Awaiting your signature" <span class="char-count">23 chars</span></td>
+                        <td>Blue, pulsing dot</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Awaiting Signatures</strong></td>
+                        <td><span class="badge badge-warning"><svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Awaiting Signatures</span></td>
+                        <td>"1 of 2 signatures complete" <span class="char-count">26 chars</span></td>
+                        <td>Amber</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Signed</strong></td>
+                        <td><span class="badge badge-success"><svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Signed</span></td>
+                        <td>"Completed on [date]" <span class="char-count">19 chars</span></td>
+                        <td>Green, checkmark</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Amendment Requested</strong></td>
+                        <td><span class="badge badge-warning"><svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Amendment Requested</span></td>
+                        <td>"Changes proposed on [date]" <span class="char-count">26 chars</span></td>
+                        <td>Amber, edit icon</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Voided</strong></td>
+                        <td><span class="badge badge-neutral"><svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>Voided</span></td>
+                        <td>"Cancelled on [date]" <span class="char-count">19 chars</span></td>
+                        <td>Gray, strikethrough</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- =========================================================
+             SECTION 2: BUTTON & CTA COPY
+             ========================================================= -->
+        <section id="buttons">
+            <h2 data-number="2">Button & CTA Copy</h2>
+            <p class="section-desc">All button labels with live examples. Verb-forward for actions, clear outcomes.</p>
+
+            <h3>Sign Flow Buttons</h3>
+            <div class="btn-group">
+                <button class="btn btn-primary">Sign Agreement</button>
+                <button class="btn btn-secondary">Review Document</button>
+                <button class="btn btn-secondary">Download PDF</button>
+                <button class="btn btn-secondary">Request Changes</button>
+            </div>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Button</th>
+                        <th>Copy</th>
+                        <th>Context</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Primary CTA</td><td><strong>Sign Agreement</strong></td><td>Final signing action</td><td>14</td></tr>
+                    <tr><td>Review</td><td><strong>Review Document</strong></td><td>Opens full document view</td><td>15</td></tr>
+                    <tr><td>Download</td><td><strong>Download PDF</strong></td><td>Downloads document</td><td>12</td></tr>
+                    <tr><td>Request Changes</td><td><strong>Request Changes</strong></td><td>Opens amendment flow</td><td>15</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Payment Flow Buttons</h3>
+            <div class="btn-group">
+                <button class="btn btn-primary">Pay Now</button>
+                <button class="btn btn-secondary">Set Up Auto-Pay</button>
+                <button class="btn btn-secondary">Update Payment Method</button>
+                <button class="btn btn-secondary">View Receipt</button>
+                <button class="btn btn-secondary">Try Again</button>
+            </div>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Button</th>
+                        <th>Copy</th>
+                        <th>Context</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Primary payment</td><td><strong>Pay Now</strong></td><td>Immediate payment</td><td>7</td></tr>
+                    <tr><td>Auto-pay setup</td><td><strong>Set Up Auto-Pay</strong></td><td>Enable recurring payments</td><td>15</td></tr>
+                    <tr><td>Update method</td><td><strong>Update Payment Method</strong></td><td>Change card/bank</td><td>21</td></tr>
+                    <tr><td>Receipt</td><td><strong>View Receipt</strong></td><td>After successful payment</td><td>12</td></tr>
+                    <tr><td>Retry</td><td><strong>Try Again</strong></td><td>After payment error</td><td>9</td></tr>
+                    <tr><td>Payment with amount</td><td><strong>Pay $2,100.00 Now</strong></td><td>Past due payments</td><td>16</td></tr>
+                </tbody>
+            </table>
+
+            <h3>DCT Flow Buttons</h3>
+            <div class="btn-group">
+                <button class="btn btn-primary">Request Date Change</button>
+                <button class="btn btn-success">Accept Change</button>
+                <button class="btn btn-danger">Decline Request</button>
+                <button class="btn btn-secondary">Send Counter Proposal</button>
+                <button class="btn btn-secondary">Send New Request</button>
+                <button class="btn btn-secondary">Message Host</button>
+            </div>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Button</th>
+                        <th>Copy</th>
+                        <th>Context</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Initiate DCT</td><td><strong>Request Date Change</strong></td><td>Opens DCT calendar</td><td>19</td></tr>
+                    <tr><td>Accept</td><td><strong>Accept Change</strong></td><td>Confirms new dates</td><td>13</td></tr>
+                    <tr><td>Decline (red)</td><td><strong>Decline Request</strong></td><td>Rejects date change</td><td>15</td></tr>
+                    <tr><td>Counter</td><td><strong>Send Counter Proposal</strong></td><td>Suggests alternatives</td><td>21</td></tr>
+                    <tr><td>After expiration</td><td><strong>Send New Request</strong></td><td>Resend after expired</td><td>16</td></tr>
+                    <tr><td>Communication</td><td><strong>Message Host</strong> / <strong>Message Guest</strong></td><td>Opens messaging</td><td>12/13</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Destructive Action Buttons</h3>
+            <div class="btn-group">
+                <button class="btn btn-danger">Yes, Decline</button>
+                <button class="btn btn-danger">Yes, Cancel Booking</button>
+                <button class="btn btn-danger">Begin Cancellation</button>
+            </div>
+            <p style="margin-top: 12px; color: var(--text-secondary); font-size: 14px;">
+                <strong>Pattern:</strong> Always use "Yes, [action]" for destructive confirmations. Red for destructive, never for cancel/go-back.
+            </p>
+
+            <h3>General UI Buttons</h3>
+            <div class="btn-group">
+                <button class="btn btn-secondary">Cancel</button>
+                <button class="btn btn-secondary">Go Back</button>
+                <button class="btn btn-secondary">Close</button>
+                <button class="btn btn-secondary">Got It</button>
+                <button class="btn btn-secondary">Learn More</button>
+                <button class="btn btn-secondary">Contact Support</button>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SECTION 3: NOTIFICATION COPY
+             ========================================================= -->
+        <section id="notifications">
+            <h2 data-number="3">Notification Copy</h2>
+            <p class="section-desc">Urgency levels with live examples. Specificity trumps shouting — "Due Feb 3" beats "DUE SOON!!!"</p>
+
+            <h3>Urgency Level Examples</h3>
+
+            <h4>Informational (Gray/Blue)</h4>
+            <div class="notification notification-info">
+                <svg class="notification-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                <div class="notification-content">
+                    <div class="notification-title">Your February invoice is ready to view</div>
+                    <div class="notification-body">$2,100.00 due on February 15, 2026</div>
+                </div>
+            </div>
+            <p><strong>Tone:</strong> Calm, FYI. Character count: 41 <span class="char-count">41</span></p>
+
+            <h4>Standard (Blue)</h4>
+            <div class="notification notification-info">
+                <svg class="notification-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <div class="notification-content">
+                    <div class="notification-title">You have a new message from Sarah</div>
+                    <div class="notification-body">Check your inbox for details about your upcoming stay.</div>
+                </div>
+            </div>
+            <p><strong>Tone:</strong> Neutral, helpful. Character count: 35 <span class="char-count">35</span></p>
+
+            <h4>Attention (Amber)</h4>
+            <div class="notification notification-warning">
+                <svg class="notification-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <div class="notification-content">
+                    <div class="notification-title">Your lease is ready — please sign by Feb 15</div>
+                    <div class="notification-body">Review your PT Agreement and sign to secure your stay.</div>
+                </div>
+            </div>
+            <p><strong>Tone:</strong> Clear prompt, specific deadline. Character count: 43 <span class="char-count">43</span></p>
+
+            <h4>Urgent (Orange)</h4>
+            <div class="notification notification-warning" style="border-left-color: #EA580C;">
+                <svg class="notification-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <div class="notification-content">
+                    <div class="notification-title">Payment due tomorrow, Feb 3</div>
+                    <div class="notification-body">$2,100.00 will be charged to your card ending 4242.</div>
+                </div>
+            </div>
+            <p><strong>Tone:</strong> Direct, time-sensitive. Character count: 28 <span class="char-count">28</span></p>
+
+            <h4>Critical (Red)</h4>
+            <div class="notification notification-danger">
+                <svg class="notification-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <div class="notification-content">
+                    <div class="notification-title">Your date change request expires in 1 hour</div>
+                    <div class="notification-body">Respond now to keep your proposed dates.</div>
+                </div>
+            </div>
+            <p><strong>Tone:</strong> Firm but not panic-inducing. Character count: 44 <span class="char-count">44</span></p>
+
+            <h3>DCT Countdown Copy</h3>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Time Remaining</th>
+                        <th>Copy</th>
+                        <th>Tone</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>24 hours</td><td>"Response requested by 3:00 PM tomorrow"</td><td>Informative</td><td>39</td></tr>
+                    <tr><td>12 hours</td><td>"Response needed by 3:00 PM today"</td><td>Gentle reminder</td><td>33</td></tr>
+                    <tr><td>6 hours</td><td>"Expires in 6 hours at 9:00 PM"</td><td>Clear deadline</td><td>30</td></tr>
+                    <tr><td>2 hours</td><td>"Expires in 2 hours"</td><td>Urgent</td><td>18</td></tr>
+                    <tr><td>1 hour</td><td>"Expires in 1 hour — respond now"</td><td>Critical</td><td>32</td></tr>
+                    <tr><td>Expired</td><td>"This request has expired"</td><td>Factual, no blame</td><td>24</td></tr>
+                </tbody>
+            </table>
+            <p style="margin-top: 12px; color: var(--text-secondary); font-size: 14px;">
+                <strong>Pattern:</strong> Above 6h: Use specific times. Below 6h: Use relative time. Below 1h: Add call-to-action.
+            </p>
+        </section>
+
+        <!-- =========================================================
+             SECTION 4: MODAL COPY
+             ========================================================= -->
+        <section id="modals">
+            <h2 data-number="4">Modal Copy</h2>
+            <p class="section-desc">Complete modal copy with live examples. Legal but approachable. "Take your time" reduces anxiety.</p>
+
+            <h3>Sign Lease Modal</h3>
+            <div class="modal-example">
+                <div class="modal-header">
+                    <h5>Review & Sign Your Lease Agreement</h5>
+                    <button class="modal-close">x</button>
+                </div>
+                <div class="modal-body">
+                    <p>You're about to sign a legally binding rental agreement for:</p>
+                    <ul style="list-style: none; padding: 0; background: var(--bg-page); border-radius: 8px; padding: 16px;">
+                        <li><strong>123 Main Street, Apt 4B, New York, NY</strong></li>
+                        <li>Lease dates: Feb 1, 2026 - Jan 31, 2027</li>
+                        <li>Monthly rent: $2,400</li>
+                    </ul>
+                    <p>By signing, you agree to the terms and conditions in this document.</p>
+                    <div class="modal-hint">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                        Take your time to review — once signed, changes require both parties to agree.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary">Review Document</button>
+                    <button class="btn btn-primary">Sign Agreement</button>
+                </div>
+                <div class="modal-legal">
+                    By clicking "Sign Agreement", you acknowledge this is a legally binding document under New York State law.
+                </div>
+            </div>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Copy</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Header</td><td><strong>Review & Sign Your Lease Agreement</strong></td><td>36</td></tr>
+                    <tr><td>Body intro</td><td>"You're about to sign a legally binding rental agreement for:"</td><td>60</td></tr>
+                    <tr><td>Agreement line</td><td>"By signing, you agree to the terms and conditions in this document."</td><td>68</td></tr>
+                    <tr><td>Reassurance</td><td>"Take your time to review — once signed, changes require both parties to agree."</td><td>78</td></tr>
+                    <tr><td>Legal footer</td><td>"By clicking 'Sign Agreement', you acknowledge this is a legally binding document under New York State law."</td><td>105</td></tr>
+                </tbody>
+            </table>
+
+            <h3>DCT Accept Modal</h3>
+            <div class="modal-example">
+                <div class="modal-header">
+                    <h5>Accept Date Change?</h5>
+                    <button class="modal-close">x</button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Sarah</strong> has requested to change:</p>
+                    <ul style="list-style: none; padding: 0; background: var(--bg-page); border-radius: 8px; padding: 16px;">
+                        <li><span style="color: var(--text-muted);">Original dates:</span> Feb 10-12, Feb 17-19</li>
+                        <li><span style="color: var(--text-muted);">New dates:</span> <strong>Feb 10-12, Feb 24-26</strong></li>
+                    </ul>
+                    <p>By accepting, both parties' calendars and payment schedules will be updated automatically.</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary">Cancel</button>
+                    <button class="btn btn-secondary">Decline</button>
+                    <button class="btn btn-success">Accept Change</button>
+                </div>
+            </div>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Copy</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Header</td><td><strong>Accept Date Change?</strong></td><td>19</td></tr>
+                    <tr><td>Body intro</td><td>"[Name] has requested to change:"</td><td>32</td></tr>
+                    <tr><td>Consequence</td><td>"By accepting, both parties' calendars and payment schedules will be updated automatically."</td><td>90</td></tr>
+                </tbody>
+            </table>
+
+            <h3>DCT Decline Modal</h3>
+            <div class="modal-example">
+                <div class="modal-header">
+                    <h5>Decline Date Change?</h5>
+                    <button class="modal-close">x</button>
+                </div>
+                <div class="modal-body">
+                    <p>Let Sarah know why you're declining:</p>
+                    <select style="width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: 6px; margin-bottom: 12px;">
+                        <option>Select a reason (optional)</option>
+                        <option>Dates don't work for me</option>
+                        <option>Already have other plans</option>
+                        <option>Prefer to discuss first</option>
+                        <option>Other</option>
+                    </select>
+                    <textarea placeholder="Add a message (optional)" style="width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: 6px; min-height: 80px; font-family: inherit;"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary">Cancel</button>
+                    <button class="btn btn-danger">Decline Request</button>
+                </div>
+            </div>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Copy</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Header</td><td><strong>Decline Date Change?</strong></td><td>20</td></tr>
+                    <tr><td>Body prompt</td><td>"Let [Name] know why you're declining:"</td><td>38</td></tr>
+                    <tr><td>Dropdown options</td><td>"Dates don't work for me" / "Already have other plans" / "Prefer to discuss first" / "Other"</td><td>varies</td></tr>
+                    <tr><td>Placeholder</td><td>"Add a message (optional)"</td><td>24</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Destructive Warning Modal</h3>
+            <div class="modal-example">
+                <div class="modal-header">
+                    <h5>Decline this request?</h5>
+                    <button class="modal-close">x</button>
+                </div>
+                <div class="modal-body">
+                    <p>This will notify Sarah that you've declined their date change request.</p>
+                    <p style="color: var(--text-muted);">They can submit a new request if they'd like to propose different dates.</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary">Cancel</button>
+                    <button class="btn btn-danger">Yes, Decline</button>
+                </div>
+            </div>
+            <p style="margin-top: 12px; color: var(--text-secondary); font-size: 14px;">
+                <strong>Pattern:</strong> State what will happen, state recovery options, use "Yes, [action]" for confirmation.
+            </p>
+        </section>
+
+        <!-- =========================================================
+             SECTION 5: EMPTY STATE COPY
+             ========================================================= -->
+        <section id="empty-states">
+            <h2 data-number="5">Empty State Copy</h2>
+            <p class="section-desc">Every empty state educates. Explain what will appear and why.</p>
+
+            <h3>No Payments Yet (First-Time User)</h3>
+            <div class="empty-state">
+                <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+                </svg>
+                <h5>No payments yet</h5>
+                <p>Your first invoice will appear here once your lease is signed and your stay begins.</p>
+                <button class="btn btn-primary">Set Up Payment Method</button>
+            </div>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Copy</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Headline</td><td><strong>No payments yet</strong></td><td>15</td></tr>
+                    <tr><td>Body</td><td>"Your first invoice will appear here once your lease is signed and your stay begins."</td><td>84</td></tr>
+                    <tr><td>CTA</td><td><strong>Set Up Payment Method</strong></td><td>21</td></tr>
+                </tbody>
+            </table>
+
+            <h3>All Caught Up (Between Payments)</h3>
+            <div class="empty-state" style="background: var(--bg-status-success); border-color: var(--color-status-success);">
+                <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="var(--color-status-success)" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                <h5>All caught up!</h5>
+                <p>Your next payment of $2,100 is due on Feb 15. We'll remind you a week before.</p>
+                <div class="btn-group" style="justify-content: center;">
+                    <button class="btn btn-secondary">View Payment History</button>
+                    <button class="btn btn-secondary">Manage Auto-Pay</button>
+                </div>
+            </div>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Copy</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Headline</td><td><strong>All caught up!</strong></td><td>14</td></tr>
+                    <tr><td>Body</td><td>"Your next payment of $[amount] is due on [date]. We'll remind you a week before."</td><td>80</td></tr>
+                </tbody>
+            </table>
+
+            <h3>No DCT Requests</h3>
+            <div class="empty-state">
+                <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                <h5>No date changes right now</h5>
+                <p>This is where you'll see any requests to change check-in or check-out dates.</p>
+                <button class="btn btn-primary">Request Date Change</button>
+            </div>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Copy</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Headline</td><td><strong>No date changes right now</strong></td><td>25</td></tr>
+                    <tr><td>Body</td><td>"This is where you'll see any requests to change check-in or check-out dates."</td><td>76</td></tr>
+                    <tr><td>CTA</td><td><strong>Request Date Change</strong></td><td>19</td></tr>
+                </tbody>
+            </table>
+
+            <h3>No Documents Yet</h3>
+            <div class="empty-state">
+                <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                </svg>
+                <h5>Documents on the way</h5>
+                <p>Your lease agreement is being prepared. This usually takes a few hours after booking confirmation.</p>
+            </div>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Copy</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Headline</td><td><strong>Documents on the way</strong></td><td>20</td></tr>
+                    <tr><td>Body</td><td>"Your lease agreement is being prepared. This usually takes a few hours after booking confirmation."</td><td>97</td></tr>
+                </tbody>
+            </table>
+
+            <h3>First Time Welcome (Lease Dashboard)</h3>
+            <div class="empty-state" style="text-align: left; padding: 24px;">
+                <h5 style="text-align: center; margin-bottom: 16px;">Welcome to your Lease Dashboard</h5>
+                <p style="text-align: center; margin-bottom: 20px;">This is your home base for everything about your rental at <strong>123 Main Street</strong>.</p>
+                <div style="background: white; padding: 16px; border-radius: 8px; border: 1px solid var(--border-light);">
+                    <p style="margin-bottom: 12px;"><strong>Here's what you can do:</strong></p>
+                    <ul style="margin-left: 20px;">
+                        <li>View and sign your lease documents</li>
+                        <li>Track payments and set up auto-pay</li>
+                        <li>Request date changes if plans shift</li>
+                        <li>Access check-in details when it's time</li>
+                    </ul>
+                </div>
+                <p style="text-align: center; margin-top: 16px; color: var(--text-muted);">Everything in one place — no digging through emails.</p>
+                <div style="text-align: center; margin-top: 16px;">
+                    <button class="btn btn-primary">Got It</button>
+                </div>
+            </div>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Copy</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Headline</td><td><strong>Welcome to your Lease Dashboard</strong></td><td>32</td></tr>
+                    <tr><td>Intro</td><td>"This is your home base for everything about your rental at [Property Address]."</td><td>77</td></tr>
+                    <tr><td>List header</td><td>"Here's what you can do:"</td><td>23</td></tr>
+                    <tr><td>Item 1</td><td>"View and sign your lease documents"</td><td>35</td></tr>
+                    <tr><td>Item 2</td><td>"Track payments and set up auto-pay"</td><td>35</td></tr>
+                    <tr><td>Item 3</td><td>"Request date changes if plans shift"</td><td>36</td></tr>
+                    <tr><td>Item 4</td><td>"Access check-in details when it's time"</td><td>39</td></tr>
+                    <tr><td>Closing</td><td>"Everything in one place — no digging through emails."</td><td>51</td></tr>
+                    <tr><td>CTA</td><td><strong>Got It</strong> (dismisses permanently)</td><td>6</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- =========================================================
+             SECTION 6: CELEBRATION COPY
+             ========================================================= -->
+        <section id="celebrations">
+            <h2 data-number="6">Success & Celebration Copy</h2>
+            <p class="section-desc">Celebratory but brief. Users want acknowledgment, not a parade. Lead with the win, follow with detail.</p>
+
+            <h3>Lease Signed</h3>
+            <div class="celebration">
+                <div class="celebration-icon">&#10003;</div>
+                <h5>Lease signed — you're all set!</h5>
+                <p>Both parties have signed. View your agreement below.</p>
+            </div>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Copy</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Headline</td><td><strong>Lease signed — you're all set!</strong></td><td>31</td></tr>
+                    <tr><td>Subtext</td><td>"Both parties have signed. View your agreement below."</td><td>52</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Payment Received</h3>
+            <div class="celebration">
+                <div class="celebration-icon">&#10003;</div>
+                <h5>Payment received — thank you!</h5>
+                <p>$2,100.00 paid on February 1, 2026</p>
+            </div>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Copy</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Headline</td><td><strong>Payment received — thank you!</strong></td><td>31</td></tr>
+                    <tr><td>Subtext</td><td>"$[amount] paid on [date]"</td><td>varies</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Date Change Accepted</h3>
+            <div class="celebration">
+                <div class="celebration-icon">&#10003;</div>
+                <h5>Date change confirmed!</h5>
+                <p>Your new dates: Feb 10-12, Feb 24-26</p>
+            </div>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Copy</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Headline</td><td><strong>Date change confirmed!</strong></td><td>22</td></tr>
+                    <tr><td>Subtext</td><td>"Your new dates: [dates]"</td><td>varies</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Date Change Request Sent</h3>
+            <div class="notification notification-success">
+                <svg class="notification-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <div class="notification-content">
+                    <div class="notification-title">Request sent</div>
+                    <div class="notification-body">Your host has 24 hours to respond.</div>
+                </div>
+            </div>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Copy</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Headline</td><td><strong>Request sent</strong></td><td>12</td></tr>
+                    <tr><td>Subtext</td><td>"Your host has 24 hours to respond."</td><td>35</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Other Success Messages</h3>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>Headline</th>
+                        <th>Subtext (optional)</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Message sent</td><td><strong>Message sent</strong></td><td>-</td><td>12</td></tr>
+                    <tr><td>Document uploaded</td><td><strong>Document uploaded</strong></td><td>"[filename] added to your lease"</td><td>17</td></tr>
+                    <tr><td>Payment method updated</td><td><strong>Payment method updated</strong></td><td>"Card ending 4242 is now your default."</td><td>22</td></tr>
+                    <tr><td>Auto-pay enabled</td><td><strong>Auto-pay is set up</strong></td><td>"We'll handle the rest."</td><td>19</td></tr>
+                </tbody>
+            </table>
+            <p style="margin-top: 12px; color: var(--text-secondary); font-size: 14px;">
+                <strong>Pattern:</strong> Never start with "Successfully" — it's assumed. Lead with outcome.
+            </p>
+        </section>
+
+        <!-- =========================================================
+             SECTION 7: ERROR MESSAGE COPY
+             ========================================================= -->
+        <section id="errors">
+            <h2 data-number="7">Error Message Copy</h2>
+            <p class="section-desc">Never say "failed" — say "couldn't be processed." Multiple recovery paths. Never shame.</p>
+
+            <h3>Payment Couldn't Be Processed</h3>
+            <div class="error-card">
+                <div class="error-header">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <h5>Payment couldn't be processed</h5>
+                </div>
+                <div class="error-body">
+                    <p>This can happen if:</p>
+                    <ul>
+                        <li>Your card was declined by your bank</li>
+                        <li>The card details need updating</li>
+                        <li>Your bank flagged this as unusual activity</li>
+                    </ul>
+                    <p><strong>What to do:</strong></p>
+                    <ul style="list-style-type: decimal;">
+                        <li>Check your card is current in Payment Methods</li>
+                        <li>Try a different payment method</li>
+                        <li>Contact your bank if the issue persists</li>
+                    </ul>
+                </div>
+                <div class="error-footer">
+                    <button class="btn btn-secondary">Update Payment Method</button>
+                    <button class="btn btn-primary">Try Again</button>
+                </div>
+            </div>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Copy</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Headline</td><td><strong>Payment couldn't be processed</strong></td><td>30</td></tr>
+                    <tr><td>Intro</td><td>"This can happen if:"</td><td>19</td></tr>
+                    <tr><td>Reason 1</td><td>"Your card was declined by your bank"</td><td>35</td></tr>
+                    <tr><td>Reason 2</td><td>"The card details need updating"</td><td>31</td></tr>
+                    <tr><td>Reason 3</td><td>"Your bank flagged this as unusual activity"</td><td>42</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Specific Payment Errors</h3>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Error Type</th>
+                        <th>Copy</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Card declined</td><td>"Your card was declined. Please try a different payment method or contact your bank."</td><td>81</td></tr>
+                    <tr><td>Insufficient funds</td><td>"Payment couldn't be completed. Please check your available balance or try a different card."</td><td>91</td></tr>
+                    <tr><td>Expired card</td><td>"This card has expired. Please update your payment method."</td><td>56</td></tr>
+                    <tr><td>Network error</td><td>"We couldn't connect to the payment processor. Please try again in a moment."</td><td>75</td></tr>
+                </tbody>
+            </table>
+
+            <h3>DCT Request Expired — For Requester</h3>
+            <div class="error-card">
+                <div class="error-header" style="background: var(--bg-status-warning);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#92400E" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <h5 style="color: #92400E;">This request has expired</h5>
+                </div>
+                <div class="error-body">
+                    <p>Your host didn't respond within 24 hours. This happens — they may have been away.</p>
+                    <p style="background: var(--bg-page); padding: 12px; border-radius: 6px; margin: 12px 0;">
+                        <strong>Your original dates remain confirmed:</strong> Feb 10-12, Feb 17-19
+                    </p>
+                    <p><strong>Your options:</strong></p>
+                    <ul>
+                        <li>Send a new request with the same dates</li>
+                        <li>Message your host to discuss before resending</li>
+                    </ul>
+                </div>
+                <div class="error-footer">
+                    <button class="btn btn-secondary">Message Host</button>
+                    <button class="btn btn-primary">Send New Request</button>
+                </div>
+            </div>
+
+            <h3>DCT Request Expired — For Responder</h3>
+            <div class="error-card">
+                <div class="error-header" style="background: var(--bg-status-warning);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#92400E" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <h5 style="color: #92400E;">This request has expired</h5>
+                </div>
+                <div class="error-body">
+                    <p>A date change request from <strong>Maria</strong> expired before you could respond.</p>
+                    <p style="color: var(--text-muted);">If you'd still like to discuss dates, you can message them directly. They can also submit a new request.</p>
+                </div>
+                <div class="error-footer">
+                    <button class="btn btn-primary">Message Guest</button>
+                </div>
+            </div>
+            <p style="margin-top: 12px; color: var(--text-secondary); font-size: 14px;">
+                <strong>Pattern:</strong> Neutral framing — no blame for either party. Always confirm original dates are SAFE.
+            </p>
+
+            <h3>Document Generation Error</h3>
+            <div class="error-card">
+                <div class="error-header">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <h5>Document couldn't be generated</h5>
+                </div>
+                <div class="error-body">
+                    <p>We're having trouble creating your agreement. <strong>This is on our end, not yours.</strong></p>
+                    <p><strong>What we're doing:</strong></p>
+                    <ul>
+                        <li>Our team has been notified</li>
+                        <li>Expected resolution: within 24 hours</li>
+                    </ul>
+                    <p><strong>What you should do:</strong></p>
+                    <ul>
+                        <li>No action needed right now</li>
+                        <li>We'll notify you when it's ready</li>
+                    </ul>
+                </div>
+                <div class="error-footer">
+                    <button class="btn btn-secondary">Contact Support</button>
+                </div>
+            </div>
+
+            <h3>Connection Error</h3>
+            <div class="error-card" style="max-width: 360px;">
+                <div class="error-header">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <h5>Connection interrupted</h5>
+                </div>
+                <div class="error-body">
+                    <p>We couldn't reach our servers just now. <strong>Your work has been saved.</strong></p>
+                    <div class="modal-hint" style="background: var(--bg-status-neutral); color: var(--text-muted);">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                        If this continues, check your internet connection.
+                    </div>
+                </div>
+                <div class="error-footer">
+                    <button class="btn btn-primary">Try Again</button>
+                </div>
+            </div>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Copy</th>
+                        <th>Chars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Headline</td><td><strong>Connection interrupted</strong></td><td>22</td></tr>
+                    <tr><td>Reassurance</td><td>"We couldn't reach our servers just now. Your work has been saved."</td><td>65</td></tr>
+                    <tr><td>Hint</td><td>"If this continues, check your internet connection."</td><td>49</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- =========================================================
+             SECTION 8: TONE GUIDELINES
+             ========================================================= -->
+        <section id="tone">
+            <h2 data-number="8">Tone Guidelines Reference</h2>
+            <p class="section-desc">One voice, context shifts. Host and Guest get the same tone, different framing.</p>
+
+            <h3>Voice Principles</h3>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Principle</th>
+                        <th>Application</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>First person plural for Split Lease actions</td><td>Use "we" when Split Lease is the actor</td><td>"We'll notify you when it's ready"</td></tr>
+                    <tr><td>Second person for user actions</td><td>Use "you/your" for what they do</td><td>"Your payment is due Feb 3"</td></tr>
+                    <tr><td>Active voice, present tense</td><td>Direct and immediate</td><td>"Payment is processing" not "Payment is being processed"</td></tr>
+                    <tr><td>Contractions are fine</td><td>Natural speech</td><td>"don't", "we'll", "you're"</td></tr>
+                    <tr><td>Exclamation points only for celebrations</td><td>Reserve for wins</td><td>"Lease signed!" but "Payment due Feb 3" (no exclamation)</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Host vs Guest Framing</h3>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>Host Sees</th>
+                        <th>Guest Sees</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Payment reminder</td><td>"Payment from Sarah is due on Feb 3"</td><td>"Your payment to John is due on Feb 3"</td></tr>
+                    <tr><td>Document status</td><td>"Awaiting Sarah's signature"</td><td>"Your signature is needed"</td></tr>
+                    <tr><td>Date change</td><td>"Sarah has requested a date change"</td><td>"You requested a date change"</td></tr>
+                    <tr><td>Booking confirmed</td><td>"You have a new booking!"</td><td>"Your stay is confirmed!"</td></tr>
+                    <tr><td>Request expired</td><td>"A request from Maria expired"</td><td>"Your request has expired"</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Money Conversation Tone</h3>
+            <div class="tone-example">
+                <div class="tone-do">
+                    <div class="tone-label">Do</div>
+                    <div class="tone-text">"Payment due Feb 3"</div>
+                </div>
+                <div class="tone-dont">
+                    <div class="tone-label">Don't</div>
+                    <div class="tone-text">"You owe $2,400"</div>
+                </div>
+            </div>
+            <div class="tone-example">
+                <div class="tone-do">
+                    <div class="tone-label">Do</div>
+                    <div class="tone-text">"Due in 3 days (Feb 3)"</div>
+                </div>
+                <div class="tone-dont">
+                    <div class="tone-label">Don't</div>
+                    <div class="tone-text">"Due soon"</div>
+                </div>
+            </div>
+            <div class="tone-example">
+                <div class="tone-do">
+                    <div class="tone-label">Do</div>
+                    <div class="tone-text">"Payment was due on Feb 1"</div>
+                </div>
+                <div class="tone-dont">
+                    <div class="tone-label">Don't</div>
+                    <div class="tone-text">"Your payment is OVERDUE"</div>
+                </div>
+            </div>
+            <div class="tone-example">
+                <div class="tone-do">
+                    <div class="tone-label">Do</div>
+                    <div class="tone-text">"Set up auto-pay — we'll handle the rest"</div>
+                </div>
+                <div class="tone-dont">
+                    <div class="tone-label">Don't</div>
+                    <div class="tone-text">"Set up auto-pay to never miss a payment"</div>
+                </div>
+            </div>
+
+            <h3>Legal-Friendly Balance</h3>
+            <div class="tone-example">
+                <div class="tone-do">
+                    <div class="tone-label">Do — Lead with human, follow with legal</div>
+                    <div class="tone-text">"Your lease includes a 30-day notice period. (See Section 4.2 for details.)"</div>
+                </div>
+                <div class="tone-dont">
+                    <div class="tone-label">Don't — Legal-first</div>
+                    <div class="tone-text">"Pursuant to Section 4.2 of your agreement, a 30-day notice period applies."</div>
+                </div>
+            </div>
+            <div class="tone-example">
+                <div class="tone-do">
+                    <div class="tone-label">Do — Reassurance</div>
+                    <div class="tone-text">"To keep everything running smoothly, please sign by Feb 15."</div>
+                </div>
+                <div class="tone-dont">
+                    <div class="tone-label">Don't — Intimidation</div>
+                    <div class="tone-text">"Failure to sign by Feb 15 will result in cancellation of your booking."</div>
+                </div>
+            </div>
+
+            <h3>Error & Failure Tone</h3>
+            <div class="tone-example">
+                <div class="tone-do">
+                    <div class="tone-label">Do — Neutral language</div>
+                    <div class="tone-text">"Payment couldn't be processed"</div>
+                </div>
+                <div class="tone-dont">
+                    <div class="tone-label">Don't — Blame language</div>
+                    <div class="tone-text">"Your payment failed"</div>
+                </div>
+            </div>
+            <div class="tone-example">
+                <div class="tone-do">
+                    <div class="tone-label">Do — Factual status</div>
+                    <div class="tone-text">"Past Due"</div>
+                </div>
+                <div class="tone-dont">
+                    <div class="tone-label">Don't — Judgmental</div>
+                    <div class="tone-text">"Late" or "Overdue"</div>
+                </div>
+            </div>
+            <div class="tone-example">
+                <div class="tone-do">
+                    <div class="tone-label">Do — Neutral expiration</div>
+                    <div class="tone-text">"This request has expired"</div>
+                </div>
+                <div class="tone-dont">
+                    <div class="tone-label">Don't — Blame assignment</div>
+                    <div class="tone-text">"Your host didn't respond in time"</div>
+                </div>
+            </div>
+
+            <h3>Key Patterns Summary</h3>
+            <table class="copy-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Pattern</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td><strong>Traffic Light Statuses</strong></td><td>Green (complete), Amber (action needed), Red (critical) — universal and instant</td></tr>
+                    <tr><td>2</td><td><strong>Specificity Over Urgency</strong></td><td>"Due Feb 3" beats "Due soon" — dates are more urgent than adjectives</td></tr>
+                    <tr><td>3</td><td><strong>Lead with Win, Follow with Detail</strong></td><td>"Lease signed — you're all set!" then the explanation</td></tr>
+                    <tr><td>4</td><td><strong>Neutral Failures</strong></td><td>"Couldn't be processed" not "failed" — no blame, just facts</td></tr>
+                    <tr><td>5</td><td><strong>One Voice, Context Shifts</strong></td><td>Same tone for Host and Guest, different framing by role</td></tr>
+                    <tr><td>6</td><td><strong>Legal in Parentheses</strong></td><td>Plain language first, legal reference available but not leading</td></tr>
+                    <tr><td>7</td><td><strong>Money is Direct</strong></td><td>Specific amounts and dates, never vague ("your payment")</td></tr>
+                    <tr><td>8</td><td><strong>Empty States Educate</strong></td><td>Every empty state explains what will appear and why</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer style="text-align: center; padding: 40px 0; color: var(--text-muted); font-size: 14px;">
+            <p><strong>Milton Glaser — Messaging & Modals</strong></p>
+            <p>Run 006B | Phase B: Mockups | 2026-02-02</p>
+            <p style="margin-top: 8px; font-style: italic;">"There are three responses to design: yes, no, and WOW."</p>
+        </footer>
+    </div>
+</body>
+</html>

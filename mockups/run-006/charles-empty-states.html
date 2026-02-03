@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empty States & Onboarding Mockups - Charles Eames | Run 006B</title>
+    <style>
+        /* =================================================
+           DESIGN TOKENS (from Josef Muller-Brockmann)
+           ================================================= */
+        :root {
+            /* Status Colors */
+            --color-status-success: #22C55E;
+            --color-status-warning: #F59E0B;
+            --color-status-danger: #EF4444;
+            --color-status-info: #3B82F6;
+            --color-status-neutral: #6B7280;
+
+            /* Status Backgrounds */
+            --bg-status-success: #DCFCE7;
+            --bg-status-warning: #FEF3C7;
+            --bg-status-danger: #FEE2E2;
+            --bg-status-info: #DBEAFE;
+            --bg-status-neutral: #F3F4F6;
+
+            /* Brand Colors */
+            --accent-blue: #3B82F6;
+            --accent-blue-dark: #2563EB;
+            --text-primary: #1F2937;
+            --text-secondary: #4B5563;
+            --text-muted: #6B7280;
+            --border-light: #E5E7EB;
+            --border-medium: #D1D5DB;
+            --bg-page: #F9FAFB;
+            --bg-card: #FFFFFF;
+
+            /* Tier Colors */
+            --color-tier-gold: #FFD700;
+            --bg-tier-gold: #FFFBEB;
+
+            /* Spacing */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+
+            /* Typography */
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* =================================================
+           BASE STYLES
+           ================================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-page);
+            color: var(--text-primary);
+            line-height: 1.5;
+            padding: var(--spacing-xl);
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-secondary);
+        }
+
+        .page-header {
+            max-width: 1200px;
+            margin: 0 auto var(--spacing-xl);
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        .section {
+            max-width: 1200px;
+            margin: 0 auto var(--spacing-xl);
+        }
+
+        .demo-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .demo-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        /* =================================================
+           LEASE JOURNEY PROGRESS BAR
+           ================================================= */
+        .lease-journey {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+        }
+
+        .journey-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .journey-track {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .journey-track::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 32px;
+            right: 32px;
+            height: 4px;
+            background: var(--border-light);
+            border-radius: 2px;
+            z-index: 0;
+        }
+
+        .journey-progress-fill {
+            position: absolute;
+            top: 16px;
+            left: 32px;
+            height: 4px;
+            background: var(--color-status-success);
+            border-radius: 2px;
+            z-index: 1;
+            transition: width 0.8s ease-out;
+        }
+
+        .journey-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            max-width: 120px;
+        }
+
+        .stage-node {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 3px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            margin-bottom: var(--spacing-sm);
+            transition: all 0.3s ease;
+        }
+
+        .stage-node.complete {
+            background: var(--color-status-success);
+            border-color: var(--color-status-success);
+            color: white;
+        }
+
+        .stage-node.current {
+            border-color: var(--accent-blue);
+            animation: pulse-border 2s ease-in-out infinite;
+        }
+
+        .stage-node.upcoming {
+            opacity: 0.5;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); }
+        }
+
+        .stage-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .stage-date {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .stage-label.complete {
+            color: var(--color-status-success);
+            font-weight: 600;
+        }
+
+        .stage-label.current {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .journey-current-indicator {
+            text-align: center;
+            font-size: 13px;
+            color: var(--accent-blue);
+            font-weight: 500;
+        }
+
+        /* Journey Animation Demo */
+        .journey-controls {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+            justify-content: center;
+        }
+
+        .journey-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border-medium);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .journey-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .journey-btn.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+
+        /* =================================================
+           WELCOME MODAL
+           ================================================= */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .welcome-modal {
+            background: var(--bg-card);
+            border-radius: 16px;
+            max-width: 480px;
+            width: 90%;
+            padding: var(--spacing-xl);
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .modal-overlay.visible .welcome-modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .welcome-confetti {
+            font-size: 48px;
+            margin-bottom: var(--spacing-md);
+            animation: bounce-in 0.6s ease-out;
+        }
+
+        @keyframes bounce-in {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .welcome-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .welcome-host-card {
+            background: var(--bg-status-neutral);
+            border-radius: 12px;
+            padding: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            text-align: left;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .host-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .host-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .host-info p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .host-message {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .welcome-list {
+            text-align: left;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .welcome-list-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .welcome-list ul {
+            list-style: none;
+        }
+
+        .welcome-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .welcome-list li::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--color-status-info);
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+
+        .welcome-btn {
+            padding: 12px 32px;
+            border-radius: 8px;
+            border: none;
+            background: var(--accent-blue);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .welcome-btn:hover {
+            background: var(--accent-blue-dark);
+        }
+
+        .welcome-tour-link {
+            margin-top: var(--spacing-md);
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .welcome-tour-link a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        /* =================================================
+           EMPTY STATES
+           ================================================= */
+        .empty-state {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: var(--spacing-xl);
+            text-align: center;
+        }
+
+        .empty-state-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--bg-status-neutral);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-md);
+            font-size: 32px;
+        }
+
+        .empty-state-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .empty-state-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            max-width: 320px;
+            margin: 0 auto var(--spacing-md);
+        }
+
+        .empty-state-highlight {
+            background: var(--bg-status-info);
+            border-radius: 8px;
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .highlight-date {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        .highlight-amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-feature-settings: 'tnum' 1;
+        }
+
+        .highlight-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .empty-state-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-medium);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .empty-state-cta:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        /* Empty State: Documents Drafting */
+        .document-drafting {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .drafting-animation {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .drafting-doc {
+            width: 60px;
+            height: 72px;
+            background: var(--bg-card);
+            border: 2px solid var(--border-medium);
+            border-radius: 6px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .drafting-doc::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 8px;
+            right: 8px;
+            height: 4px;
+            background: var(--border-light);
+            border-radius: 2px;
+            animation: line-load 1.5s ease-in-out infinite;
+        }
+
+        .drafting-doc::after {
+            content: '';
+            position: absolute;
+            top: 22px;
+            left: 8px;
+            width: 60%;
+            height: 4px;
+            background: var(--border-light);
+            border-radius: 2px;
+            animation: line-load 1.5s ease-in-out 0.2s infinite;
+        }
+
+        @keyframes line-load {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .drafting-progress {
+            width: 200px;
+            height: 6px;
+            background: var(--border-light);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .drafting-progress-bar {
+            height: 100%;
+            background: var(--accent-blue);
+            border-radius: 3px;
+            animation: progress-fill 3s ease-in-out infinite;
+        }
+
+        @keyframes progress-fill {
+            0% { width: 0%; }
+            50% { width: 75%; }
+            100% { width: 0%; }
+        }
+
+        .drafting-time {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Empty State Grid */
+        .empty-states-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        /* =================================================
+           CELEBRATION MODALS
+           ================================================= */
+        .celebration-modal {
+            background: var(--bg-card);
+            border-radius: 16px;
+            max-width: 420px;
+            width: 90%;
+            padding: var(--spacing-xl);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .celebration-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background: linear-gradient(135deg, var(--bg-status-success) 0%, #86EFAC 100%);
+        }
+
+        .celebration-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .celebration-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-md);
+            font-size: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            animation: pop-in 0.5s ease-out;
+        }
+
+        @keyframes pop-in {
+            0% { transform: scale(0); }
+            60% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .celebration-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .celebration-amount {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-status-success);
+            font-feature-settings: 'tnum' 1;
+        }
+
+        .celebration-detail {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .celebration-message {
+            background: var(--bg-status-success);
+            border-radius: 8px;
+            padding: var(--spacing-md);
+            font-size: 14px;
+            color: var(--color-status-success);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .celebration-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            justify-content: center;
+        }
+
+        .celebration-btn-primary {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            background: var(--color-status-success);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .celebration-btn-secondary {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: 1px solid var(--border-medium);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* Confetti Animation */
+        .confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-50px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(400px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* =================================================
+           DCT ONBOARDING TOOLTIP
+           ================================================= */
+        .tooltip-demo {
+            position: relative;
+            padding: var(--spacing-xl);
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+        }
+
+        .dct-button-demo {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--accent-blue);
+            background: var(--bg-card);
+            color: var(--accent-blue);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .onboarding-tooltip {
+            position: absolute;
+            top: calc(100% + 16px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 360px;
+            background: var(--text-primary);
+            color: white;
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+        }
+
+        .onboarding-tooltip::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid var(--text-primary);
+        }
+
+        .tooltip-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .tooltip-intro {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .tooltip-steps {
+            list-style: none;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .tooltip-steps li {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-xs) 0;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .step-number {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .tooltip-tips {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: var(--spacing-sm) var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .tooltip-tips-title {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+            opacity: 0.8;
+        }
+
+        .tooltip-tips ul {
+            list-style: none;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .tooltip-tips li {
+            padding: 2px 0;
+        }
+
+        .tooltip-tips li::before {
+            content: '• ';
+            margin-right: 4px;
+        }
+
+        .tooltip-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tooltip-dismiss {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .tooltip-dismiss input {
+            width: 14px;
+            height: 14px;
+        }
+
+        .tooltip-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            background: white;
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* =================================================
+           MICROINTERACTIONS DEMO
+           ================================================= */
+        .microinteractions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .micro-demo {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+        }
+
+        .micro-demo h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        /* Payment Confirmed Animation */
+        .payment-row-demo {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md);
+            border-radius: 8px;
+            transition: all 0.5s ease;
+        }
+
+        .payment-row-demo.confirming {
+            background: var(--bg-status-success);
+        }
+
+        .payment-status-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--border-light);
+            margin-right: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .payment-status-icon.confirmed {
+            background: var(--color-status-success);
+            color: white;
+            animation: check-pop 0.4s ease-out;
+        }
+
+        @keyframes check-pop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        .payment-info {
+            flex: 1;
+        }
+
+        .payment-date {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .payment-amount {
+            font-size: 14px;
+            font-weight: 600;
+            font-feature-settings: 'tnum' 1;
+        }
+
+        /* Document Signed Animation */
+        .doc-icon-demo {
+            width: 64px;
+            height: 64px;
+            background: var(--bg-status-neutral);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .doc-seal {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--color-tier-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.4s ease;
+        }
+
+        .doc-seal.visible {
+            opacity: 1;
+            transform: scale(1);
+            animation: seal-stamp 0.5s ease-out;
+        }
+
+        @keyframes seal-stamp {
+            0% { transform: scale(0) rotate(-45deg); }
+            60% { transform: scale(1.2) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        /* Milestone Progress Animation */
+        .milestone-demo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .milestone-node {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 3px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.5s ease;
+        }
+
+        .milestone-node.completing {
+            border-color: var(--color-status-success);
+            background: var(--color-status-success);
+            color: white;
+            animation: milestone-complete 0.6s ease-out;
+        }
+
+        @keyframes milestone-complete {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.2); }
+            60% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+
+        .milestone-line {
+            flex: 1;
+            height: 4px;
+            background: var(--border-light);
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .milestone-line-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0;
+            background: var(--color-status-success);
+            border-radius: 2px;
+            transition: width 0.8s ease;
+        }
+
+        .milestone-line-fill.filling {
+            width: 100%;
+        }
+
+        /* Stay Completed Badge Animation */
+        .stay-card-demo {
+            background: var(--bg-status-neutral);
+            border-radius: 12px;
+            padding: var(--spacing-md);
+            position: relative;
+            transform: translateX(0);
+            opacity: 1;
+            transition: all 0.5s ease;
+        }
+
+        .stay-card-demo.sliding-in {
+            animation: slide-in-right 0.5s ease-out;
+        }
+
+        @keyframes slide-in-right {
+            0% { transform: translateX(40px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
+        .completed-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--color-status-success);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease 0.3s;
+        }
+
+        .completed-badge.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .completed-badge-shine {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shine 2s ease-in-out 0.6s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            50%, 100% { left: 100%; }
+        }
+
+        /* DCT Approval Animation */
+        .calendar-icon-demo {
+            font-size: 48px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .calendar-icon-demo.approved {
+            animation: calendar-jump 0.5s ease;
+        }
+
+        @keyframes calendar-jump {
+            0% { transform: translateY(0); }
+            30% { transform: translateY(-12px); }
+            50% { transform: translateY(0); }
+            70% { transform: translateY(-6px); }
+            100% { transform: translateY(0); }
+        }
+
+        .dct-approval-message {
+            text-align: center;
+            font-size: 14px;
+            color: var(--color-status-success);
+            font-weight: 500;
+            margin-top: var(--spacing-sm);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .dct-approval-message.visible {
+            opacity: 1;
+        }
+
+        /* First-Time Badge */
+        .first-badge {
+            display: inline-block;
+            background: var(--bg-tier-gold);
+            color: #B45309;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .first-badge::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.3), transparent);
+            animation: badge-shine 3s ease-in-out infinite;
+        }
+
+        @keyframes badge-shine {
+            0% { left: -100%; }
+            30%, 100% { left: 100%; }
+        }
+
+        /* Trigger Button */
+        .trigger-btn {
+            margin-top: var(--spacing-md);
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--accent-blue);
+            background: var(--bg-card);
+            color: var(--accent-blue);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .trigger-btn:hover {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        /* =================================================
+           MODAL TRIGGER BUTTONS (for demo)
+           ================================================= */
+        .modal-triggers {
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .modal-trigger-btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            background: var(--accent-blue);
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .modal-trigger-btn:hover {
+            background: var(--accent-blue-dark);
+        }
+
+        .modal-trigger-btn.celebration {
+            background: var(--color-status-success);
+        }
+
+        .modal-trigger-btn.celebration:hover {
+            background: #16A34A;
+        }
+
+        /* Close button for modals */
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-status-neutral);
+            color: var(--text-muted);
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        /* =================================================
+           RESPONSIVE
+           ================================================= */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-md);
+            }
+
+            .journey-track::before {
+                left: 20px;
+                right: 20px;
+            }
+
+            .journey-progress-fill {
+                left: 20px;
+            }
+
+            .stage-node {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+
+            .stage-label, .stage-date {
+                font-size: 10px;
+            }
+
+            .empty-states-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-modal, .celebration-modal {
+                padding: var(--spacing-lg);
+            }
+
+            .onboarding-tooltip {
+                width: calc(100vw - 32px);
+                left: 16px;
+                transform: none;
+            }
+
+            .microinteractions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1>Empty States & Onboarding</h1>
+        <p class="page-subtitle">Charles Eames | Run 006B | Position 5 of 9</p>
+    </header>
+
+    <!-- Section 1: Lease Journey Progress Bar -->
+    <section class="section">
+        <h2>1. Lease Journey Progress Bar</h2>
+        <p style="color: var(--text-secondary); margin-bottom: var(--spacing-md);">
+            Interactive 5-stage progress indicator showing where users are in their lease lifecycle.
+            Click the stage buttons below to see the animation.
+        </p>
+
+        <div class="lease-journey" id="journey-demo">
+            <div class="journey-title">Your Lease Journey</div>
+            <div class="journey-track">
+                <div class="journey-progress-fill" id="journey-fill" style="width: 12%;"></div>
+
+                <div class="journey-stage">
+                    <div class="stage-node complete" id="stage-1">&#10003;</div>
+                    <div class="stage-label complete">Matched</div>
+                    <div class="stage-date">Feb 2, 2026</div>
+                </div>
+
+                <div class="journey-stage">
+                    <div class="stage-node current" id="stage-2">&#128196;</div>
+                    <div class="stage-label current">Docs Signed</div>
+                    <div class="stage-date">Pending</div>
+                </div>
+
+                <div class="journey-stage">
+                    <div class="stage-node upcoming" id="stage-3">&#128176;</div>
+                    <div class="stage-label">First Payment</div>
+                    <div class="stage-date">Feb 15</div>
+                </div>
+
+                <div class="journey-stage">
+                    <div class="stage-node upcoming" id="stage-4">&#127968;</div>
+                    <div class="stage-label">First Stay</div>
+                    <div class="stage-date">Feb 20</div>
+                </div>
+
+                <div class="journey-stage">
+                    <div class="stage-node upcoming" id="stage-5">&#11088;</div>
+                    <div class="stage-label">Established</div>
+                    <div class="stage-date">---</div>
+                </div>
+            </div>
+            <div class="journey-current-indicator" id="journey-indicator">&#8593; You are here</div>
+
+            <div class="journey-controls">
+                <button class="journey-btn active" data-stage="1">Stage 1</button>
+                <button class="journey-btn" data-stage="2">Stage 2</button>
+                <button class="journey-btn" data-stage="3">Stage 3</button>
+                <button class="journey-btn" data-stage="4">Stage 4</button>
+                <button class="journey-btn" data-stage="5">Stage 5</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: First Visit Welcome Modal -->
+    <section class="section">
+        <h2>2. First Visit Welcome Modal</h2>
+        <p style="color: var(--text-secondary); margin-bottom: var(--spacing-md);">
+            Celebratory modal shown on first visit to the Leases page after proposal acceptance.
+        </p>
+
+        <div class="modal-triggers">
+            <button class="modal-trigger-btn" onclick="showWelcomeModal()">Show Welcome Modal</button>
+        </div>
+    </section>
+
+    <!-- Section 3: Empty States Gallery -->
+    <section class="section">
+        <h2>3. Per-Section Empty States</h2>
+        <p style="color: var(--text-secondary); margin-bottom: var(--spacing-md);">
+            Each empty section tells users what's coming next with specific dates - narrative framing, not "nothing here."
+        </p>
+
+        <div class="empty-states-grid">
+            <!-- Financials Empty State -->
+            <div class="empty-state">
+                <div class="empty-state-icon">&#128179;</div>
+                <div class="empty-state-title">Your first payment is scheduled</div>
+
+                <div class="empty-state-highlight">
+                    <div class="highlight-date">&#128197; February 15, 2026</div>
+                    <div class="highlight-amount">$2,100.00</div>
+                    <div class="highlight-label">Monthly rent + utilities</div>
+                </div>
+
+                <p class="empty-state-description">
+                    Payment records will appear here after each transaction.
+                </p>
+
+                <a href="#" class="empty-state-cta">
+                    &#128197; View Payment Schedule
+                </a>
+            </div>
+
+            <!-- DCT Empty State -->
+            <div class="empty-state">
+                <div class="empty-state-icon">&#128197;</div>
+                <div class="empty-state-title">Plans change. We get it.</div>
+
+                <p class="empty-state-description">
+                    If you need to swap days in your schedule, you can request a change here.
+                    Your host will review and respond within 48 hours.
+                </p>
+
+                <div style="background: var(--bg-status-success); color: var(--color-status-success); padding: 12px; border-radius: 8px; font-size: 14px; margin-bottom: var(--spacing-md);">
+                    &#10003; No requests yet - your schedule is working perfectly!
+                </div>
+
+                <a href="#" class="empty-state-cta">
+                    &#128218; Learn How Date Changes Work
+                </a>
+            </div>
+
+            <!-- Stays Empty State -->
+            <div class="empty-state">
+                <div class="empty-state-icon">&#127968;</div>
+                <div class="empty-state-title">Your upcoming stay</div>
+
+                <div style="background: var(--bg-status-info); border-radius: 12px; padding: var(--spacing-md); text-align: left; margin-bottom: var(--spacing-md);">
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">&#128205; 123 Park Ave, Murray Hill</div>
+                    <div style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">&#128197; Feb 20-23, 2026</div>
+                    <div style="font-size: 14px; color: var(--text-muted);">&#128273; Check-in: 4:00 PM</div>
+                </div>
+
+                <p class="empty-state-description">
+                    After your first stay, you'll see your history here - including receipts and review options.
+                </p>
+
+                <a href="#" class="empty-state-cta">
+                    &#128273; View Check-in Details
+                </a>
+            </div>
+
+            <!-- Documents Drafting State -->
+            <div class="empty-state">
+                <div class="document-drafting">
+                    <div class="drafting-animation">
+                        <div class="drafting-doc"></div>
+                    </div>
+
+                    <div class="empty-state-title">We're preparing your lease agreement</div>
+
+                    <div class="drafting-progress">
+                        <div class="drafting-progress-bar"></div>
+                    </div>
+                    <div class="drafting-time">Usually takes 2-3 minutes</div>
+
+                    <p class="empty-state-description" style="margin-top: var(--spacing-md);">
+                        We'll notify you when it's ready to review.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: First-Time Celebrations -->
+    <section class="section">
+        <h2>4. First-Time Celebration Modals</h2>
+        <p style="color: var(--text-secondary); margin-bottom: var(--spacing-md);">
+            Success modals with animations for milestone moments. Celebrations feel earned but not overwhelming.
+        </p>
+
+        <div class="modal-triggers">
+            <button class="modal-trigger-btn celebration" onclick="showPaymentCelebration()">First Payment Complete</button>
+            <button class="modal-trigger-btn celebration" onclick="showLeaseCelebration()">Lease Signed</button>
+        </div>
+    </section>
+
+    <!-- Section 5: DCT Onboarding Tooltip -->
+    <section class="section">
+        <h2>5. First DCT Onboarding Tooltip</h2>
+        <p style="color: var(--text-secondary); margin-bottom: var(--spacing-md);">
+            Educational tooltip explaining how date changes work. Appears on first click of "Request Date Change" button.
+        </p>
+
+        <div class="tooltip-demo">
+            <div style="text-align: center;">
+                <button class="dct-button-demo">
+                    &#128197; Request Date Change
+                </button>
+            </div>
+
+            <div class="onboarding-tooltip">
+                <div class="tooltip-title">&#128197; Request a Date Change</div>
+                <div class="tooltip-intro">Life happens! Here's how it works:</div>
+
+                <ol class="tooltip-steps">
+                    <li>
+                        <span class="step-number">1</span>
+                        Select the dates you need to swap
+                    </li>
+                    <li>
+                        <span class="step-number">2</span>
+                        Add a brief note explaining why (helps approval!)
+                    </li>
+                    <li>
+                        <span class="step-number">3</span>
+                        Your host gets notified and has 48h to respond
+                    </li>
+                    <li>
+                        <span class="step-number">4</span>
+                        If approved, your schedule updates automatically
+                    </li>
+                </ol>
+
+                <div class="tooltip-tips">
+                    <div class="tooltip-tips-title">Tips for approval:</div>
+                    <ul>
+                        <li>Request early - more notice = higher approval</li>
+                        <li>Offer alternatives if your first choice doesn't work</li>
+                        <li>Be specific about the reason (work trip, family event, etc.)</li>
+                    </ul>
+                </div>
+
+                <div class="tooltip-footer">
+                    <label class="tooltip-dismiss">
+                        <input type="checkbox"> Don't show this again
+                    </label>
+                    <button class="tooltip-btn">Got it, let's start</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6: Microinteraction Demonstrations -->
+    <section class="section">
+        <h2>6. Microinteraction Demonstrations</h2>
+        <p style="color: var(--text-secondary); margin-bottom: var(--spacing-md);">
+            Subtle animations for key moments. Click the trigger buttons to see each animation.
+        </p>
+
+        <div class="microinteractions-grid">
+            <!-- Payment Confirmed -->
+            <div class="micro-demo">
+                <h4>Payment Confirmed</h4>
+                <div class="payment-row-demo" id="payment-demo">
+                    <div class="payment-status-icon" id="payment-icon">&#9675;</div>
+                    <div class="payment-info">
+                        <div class="payment-date">February 15, 2026</div>
+                    </div>
+                    <div class="payment-amount">$2,100.00</div>
+                </div>
+                <button class="trigger-btn" onclick="triggerPaymentAnimation()">Trigger Animation</button>
+            </div>
+
+            <!-- Document Signed -->
+            <div class="micro-demo">
+                <h4>Document Signed (Gold Seal)</h4>
+                <div class="doc-icon-demo" id="doc-demo">
+                    &#128196;
+                    <div class="doc-seal" id="doc-seal">&#9733;</div>
+                </div>
+                <button class="trigger-btn" onclick="triggerDocAnimation()">Trigger Animation</button>
+            </div>
+
+            <!-- Milestone Complete -->
+            <div class="micro-demo">
+                <h4>Milestone Completed</h4>
+                <div class="milestone-demo">
+                    <div class="milestone-node" id="milestone-node">&#128176;</div>
+                    <div class="milestone-line">
+                        <div class="milestone-line-fill" id="milestone-fill"></div>
+                    </div>
+                    <div class="milestone-node upcoming">&#127968;</div>
+                </div>
+                <button class="trigger-btn" onclick="triggerMilestoneAnimation()">Trigger Animation</button>
+            </div>
+
+            <!-- Stay Completed Badge -->
+            <div class="micro-demo">
+                <h4>Stay Completed (Badge + Slide)</h4>
+                <div class="stay-card-demo" id="stay-card">
+                    <div style="font-weight: 600; margin-bottom: 4px;">Feb 20-23, 2026</div>
+                    <div style="font-size: 14px; color: var(--text-muted);">Murray Hill Apartment</div>
+                    <div class="completed-badge" id="completed-badge">
+                        Completed
+                        <div class="completed-badge-shine"></div>
+                    </div>
+                </div>
+                <button class="trigger-btn" onclick="triggerStayAnimation()">Trigger Animation</button>
+            </div>
+
+            <!-- DCT Approval -->
+            <div class="micro-demo">
+                <h4>DCT Request Approved</h4>
+                <div class="calendar-icon-demo" id="calendar-demo">&#128197;</div>
+                <div class="dct-approval-message" id="dct-message">&#10003; Approved! Your schedule has been updated.</div>
+                <button class="trigger-btn" onclick="triggerDCTAnimation()">Trigger Animation</button>
+            </div>
+
+            <!-- First-Time Badge -->
+            <div class="micro-demo">
+                <h4>First-Time Label</h4>
+                <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
+                    <span style="font-size: 14px; color: var(--text-secondary);">Payment:</span>
+                    <span class="first-badge">First!</span>
+                    <span style="font-size: 14px; color: var(--text-primary); font-weight: 600;">$2,100.00</span>
+                </div>
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: var(--spacing-sm);">
+                    Badge remains for 7 days, then fades.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Welcome Modal (hidden by default) -->
+    <div class="modal-overlay" id="welcome-overlay" onclick="hideWelcomeModal(event)">
+        <div class="welcome-modal" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="hideWelcomeModal(event)">&times;</button>
+            <div class="welcome-confetti">&#127881;</div>
+            <h3 class="welcome-title">Congratulations!<br>Your Lease with Sarah is underway</h3>
+
+            <div class="welcome-host-card">
+                <div class="host-avatar">SC</div>
+                <div class="host-info">
+                    <h4>Sarah Chen</h4>
+                    <p>Your host since Feb 2, 2026</p>
+                    <div class="host-message">"Welcome! Let me know if you have any questions before your first stay."</div>
+                </div>
+            </div>
+
+            <div class="welcome-list">
+                <div class="welcome-list-title">Here's what's happening:</div>
+                <ul>
+                    <li>We're preparing your lease agreement</li>
+                    <li>Your first payment will be due February 15</li>
+                    <li>Your first check-in is scheduled for February 20</li>
+                </ul>
+            </div>
+
+            <button class="welcome-btn" onclick="hideWelcomeModal(event)">Got It</button>
+
+            <div class="welcome-tour-link">
+                <a href="#">&#128218; Take a quick tour</a> or explore on your own
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Celebration Modal (hidden by default) -->
+    <div class="modal-overlay" id="payment-overlay" onclick="hidePaymentCelebration(event)">
+        <div class="celebration-modal" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="hidePaymentCelebration(event)">&times;</button>
+            <div class="confetti-container" id="confetti-1"></div>
+            <div class="celebration-bg"></div>
+            <div class="celebration-content">
+                <div class="celebration-icon">&#10003;</div>
+                <h3 class="celebration-title">First Payment Complete!</h3>
+                <div class="celebration-amount">$2,100.00</div>
+                <p class="celebration-detail">Sent to Sarah Chen<br>Receipt sent to your email</p>
+
+                <div class="celebration-message">
+                    &#127881; You're officially a Split Lease member.<br>Welcome to the community.
+                </div>
+
+                <div class="celebration-actions">
+                    <button class="celebration-btn-secondary" onclick="hidePaymentCelebration(event)">View Receipt</button>
+                    <button class="celebration-btn-primary" onclick="hidePaymentCelebration(event)">Return to Lease</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lease Signed Celebration Modal (hidden by default) -->
+    <div class="modal-overlay" id="lease-overlay" onclick="hideLeaseCelebration(event)">
+        <div class="celebration-modal" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="hideLeaseCelebration(event)">&times;</button>
+            <div class="confetti-container" id="confetti-2"></div>
+            <div class="celebration-bg" style="background: linear-gradient(135deg, var(--bg-tier-gold) 0%, #FCD34D 100%);"></div>
+            <div class="celebration-content">
+                <div class="celebration-icon">&#128196;</div>
+                <h3 class="celebration-title">Lease Agreement Signed!</h3>
+                <p class="celebration-detail" style="font-size: 16px;">All parties have signed &#10003;</p>
+
+                <div style="background: var(--bg-tier-gold); color: #B45309; padding: 12px; border-radius: 8px; font-size: 14px; margin-bottom: var(--spacing-lg);">
+                    &#11088; Your lease with Sarah Chen is now official.<br>A copy has been emailed to both parties.
+                </div>
+
+                <div class="celebration-actions">
+                    <button class="celebration-btn-secondary" onclick="hideLeaseCelebration(event)">Download PDF</button>
+                    <button class="celebration-btn-primary" style="background: #B45309;" onclick="hideLeaseCelebration(event)">Continue to Dashboard</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =================================================
+        // LEASE JOURNEY PROGRESS BAR
+        // =================================================
+        const journeyStages = [
+            { fill: '0%', current: 1 },
+            { fill: '25%', current: 2 },
+            { fill: '50%', current: 3 },
+            { fill: '75%', current: 4 },
+            { fill: '100%', current: 5 }
+        ];
+
+        const journeyBtns = document.querySelectorAll('.journey-btn');
+        const journeyFill = document.getElementById('journey-fill');
+        const stageNodes = [
+            document.getElementById('stage-1'),
+            document.getElementById('stage-2'),
+            document.getElementById('stage-3'),
+            document.getElementById('stage-4'),
+            document.getElementById('stage-5')
+        ];
+        const stageLabels = document.querySelectorAll('.stage-label');
+        const journeyIndicator = document.getElementById('journey-indicator');
+
+        function updateJourneyStage(stageNum) {
+            const config = journeyStages[stageNum - 1];
+            journeyFill.style.width = config.fill;
+
+            stageNodes.forEach((node, i) => {
+                node.classList.remove('complete', 'current', 'upcoming');
+                stageLabels[i].classList.remove('complete', 'current');
+
+                if (i + 1 < stageNum) {
+                    node.classList.add('complete');
+                    node.innerHTML = '&#10003;';
+                    stageLabels[i].classList.add('complete');
+                } else if (i + 1 === stageNum) {
+                    node.classList.add('current');
+                    const icons = ['&#129309;', '&#128196;', '&#128176;', '&#127968;', '&#11088;'];
+                    node.innerHTML = icons[i];
+                    stageLabels[i].classList.add('current');
+                } else {
+                    node.classList.add('upcoming');
+                    const icons = ['&#129309;', '&#128196;', '&#128176;', '&#127968;', '&#11088;'];
+                    node.innerHTML = icons[i];
+                }
+            });
+
+            journeyBtns.forEach((btn, i) => {
+                btn.classList.toggle('active', i + 1 === stageNum);
+            });
+        }
+
+        journeyBtns.forEach((btn, i) => {
+            btn.addEventListener('click', () => {
+                updateJourneyStage(i + 1);
+            });
+        });
+
+        // Initialize at stage 2
+        updateJourneyStage(2);
+
+        // =================================================
+        // WELCOME MODAL
+        // =================================================
+        function showWelcomeModal() {
+            document.getElementById('welcome-overlay').classList.add('visible');
+        }
+
+        function hideWelcomeModal(event) {
+            document.getElementById('welcome-overlay').classList.remove('visible');
+        }
+
+        // =================================================
+        // CELEBRATION MODALS WITH CONFETTI
+        // =================================================
+        function createConfetti(containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            const colors = ['#22C55E', '#3B82F6', '#F59E0B', '#EC4899', '#8B5CF6'];
+
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                confetti.style.animationDuration = (Math.random() * 1 + 2) + 's';
+                container.appendChild(confetti);
+            }
+        }
+
+        function showPaymentCelebration() {
+            document.getElementById('payment-overlay').classList.add('visible');
+            createConfetti('confetti-1');
+        }
+
+        function hidePaymentCelebration(event) {
+            document.getElementById('payment-overlay').classList.remove('visible');
+        }
+
+        function showLeaseCelebration() {
+            document.getElementById('lease-overlay').classList.add('visible');
+            createConfetti('confetti-2');
+        }
+
+        function hideLeaseCelebration(event) {
+            document.getElementById('lease-overlay').classList.remove('visible');
+        }
+
+        // =================================================
+        // MICROINTERACTION TRIGGERS
+        // =================================================
+        function triggerPaymentAnimation() {
+            const row = document.getElementById('payment-demo');
+            const icon = document.getElementById('payment-icon');
+
+            row.classList.remove('confirming');
+            icon.classList.remove('confirmed');
+            icon.innerHTML = '&#9675;';
+
+            setTimeout(() => {
+                row.classList.add('confirming');
+                icon.classList.add('confirmed');
+                icon.innerHTML = '&#10003;';
+            }, 100);
+
+            setTimeout(() => {
+                row.classList.remove('confirming');
+            }, 2000);
+        }
+
+        function triggerDocAnimation() {
+            const seal = document.getElementById('doc-seal');
+            seal.classList.remove('visible');
+
+            setTimeout(() => {
+                seal.classList.add('visible');
+            }, 100);
+        }
+
+        function triggerMilestoneAnimation() {
+            const node = document.getElementById('milestone-node');
+            const fill = document.getElementById('milestone-fill');
+
+            node.classList.remove('completing');
+            fill.classList.remove('filling');
+
+            setTimeout(() => {
+                node.classList.add('completing');
+                node.innerHTML = '&#10003;';
+                fill.classList.add('filling');
+            }, 100);
+
+            setTimeout(() => {
+                node.innerHTML = '&#128176;';
+            }, 3000);
+        }
+
+        function triggerStayAnimation() {
+            const card = document.getElementById('stay-card');
+            const badge = document.getElementById('completed-badge');
+
+            card.classList.remove('sliding-in');
+            badge.classList.remove('visible');
+            card.style.opacity = '0';
+            card.style.transform = 'translateX(40px)';
+
+            setTimeout(() => {
+                card.style.opacity = '';
+                card.style.transform = '';
+                card.classList.add('sliding-in');
+            }, 100);
+
+            setTimeout(() => {
+                badge.classList.add('visible');
+            }, 500);
+        }
+
+        function triggerDCTAnimation() {
+            const calendar = document.getElementById('calendar-demo');
+            const message = document.getElementById('dct-message');
+
+            calendar.classList.remove('approved');
+            message.classList.remove('visible');
+
+            setTimeout(() => {
+                calendar.classList.add('approved');
+            }, 100);
+
+            setTimeout(() => {
+                message.classList.add('visible');
+            }, 400);
+
+            setTimeout(() => {
+                message.classList.remove('visible');
+            }, 3000);
+        }
+    </script>
+
+    <!-- Footer -->
+    <footer style="max-width: 1200px; margin: var(--spacing-xl) auto 0; padding-top: var(--spacing-lg); border-top: 1px solid var(--border-light); color: var(--text-muted); font-size: 13px;">
+        <p><strong>Charles Eames</strong> - Onboarding & Empty States Agent</p>
+        <p>Run 006B | Phase B: Mockups | Position 5 of 9</p>
+        <p style="margin-top: var(--spacing-sm); font-style: italic;">"The details are not the details. They make the design."</p>
+    </footer>
+</body>
+</html>

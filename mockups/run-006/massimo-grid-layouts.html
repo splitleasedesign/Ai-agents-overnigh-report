@@ -1,0 +1,2473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grid & Layout Specifications - Massimo Vignelli | Split Lease Leases Pages</title>
+    <style>
+        /* =================================================
+           DESIGN TOKENS (from Josef Muller-Brockmann)
+           ================================================= */
+        :root {
+            /* Status Semantic Colors */
+            --color-status-success: #22C55E;
+            --color-status-warning: #F59E0B;
+            --color-status-danger: #EF4444;
+            --color-status-info: #3B82F6;
+            --color-status-neutral: #6B7280;
+
+            /* Status Backgrounds */
+            --bg-status-success: #DCFCE7;
+            --bg-status-warning: #FEF3C7;
+            --bg-status-danger: #FEE2E2;
+            --bg-status-info: #DBEAFE;
+            --bg-status-neutral: #F3F4F6;
+
+            /* Text Colors */
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+
+            /* Surface Colors */
+            --surface-primary: #FFFFFF;
+            --surface-secondary: #F5F7FA;
+            --surface-hover: #F5F7FA;
+            --surface-active: #EEF2F7;
+
+            /* Border Colors */
+            --border-default: #E5E7EB;
+            --border-strong: #D1D5DB;
+
+            /* Accent */
+            --accent-blue: #3B82F6;
+
+            /* Grid System */
+            --grid-columns-desktop: 12;
+            --grid-columns-tablet: 8;
+            --grid-columns-mobile: 4;
+            --grid-gutter-desktop: 24px;
+            --grid-gutter-tablet: 20px;
+            --grid-gutter-mobile: 16px;
+            --grid-margin: 48px;
+
+            /* Component Heights */
+            --header-height: 64px;
+            --header-height-mobile: 48px;
+            --tab-bar-height: 48px;
+            --tab-bar-height-mobile: 44px;
+            --action-center-height: 120px;
+
+            /* Spacing */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+
+            /* Typography */
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-size-xs: 10px;
+            --font-size-sm: 12px;
+            --font-size-md: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 20px;
+            --font-size-2xl: 24px;
+            --font-size-3xl: 32px;
+
+            /* Table */
+            --height-table-row: 56px;
+            --height-table-header: 44px;
+
+            /* Calendar */
+            --size-calendar-cell: 40px;
+            --size-calendar-cell-mobile: 44px;
+            --gap-calendar-cells: 2px;
+        }
+
+        /* =================================================
+           RESET & BASE
+           ================================================= */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-md);
+            color: var(--text-primary);
+            background: var(--surface-secondary);
+            line-height: 1.5;
+        }
+
+        /* =================================================
+           UTILITY CLASSES
+           ================================================= */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* =================================================
+           GRID OVERLAY (Toggle with checkbox)
+           ================================================= */
+        .grid-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--surface-primary);
+            padding: var(--spacing-md);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .grid-toggle label {
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 999;
+            display: none;
+        }
+
+        #grid-toggle:checked ~ .page-container .grid-overlay {
+            display: block;
+        }
+
+        .grid-overlay-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: var(--grid-gutter-desktop);
+            padding: 0 var(--grid-margin);
+        }
+
+        .grid-col {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px dashed rgba(59, 130, 246, 0.3);
+        }
+
+        @media (max-width: 1199px) {
+            .grid-overlay-inner {
+                grid-template-columns: repeat(8, 1fr);
+                gap: var(--grid-gutter-tablet);
+                padding: 0 var(--spacing-lg);
+            }
+            .grid-col:nth-child(n+9) {
+                display: none;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .grid-overlay-inner {
+                grid-template-columns: repeat(4, 1fr);
+                gap: var(--grid-gutter-mobile);
+                padding: 0 var(--spacing-md);
+            }
+            .grid-col:nth-child(n+5) {
+                display: none;
+            }
+        }
+
+        /* =================================================
+           BREAKPOINT INDICATOR
+           ================================================= */
+        .breakpoint-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background: var(--text-primary);
+            color: white;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: 4px;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+        }
+
+        .breakpoint-indicator::before {
+            content: 'DESKTOP (12 columns)';
+        }
+
+        @media (max-width: 1199px) {
+            .breakpoint-indicator::before {
+                content: 'TABLET (8 columns)';
+            }
+        }
+
+        @media (max-width: 767px) {
+            .breakpoint-indicator::before {
+                content: 'MOBILE (4 columns)';
+            }
+        }
+
+        /* =================================================
+           PAGE CONTAINER
+           ================================================= */
+        .page-container {
+            min-height: 100vh;
+            background: var(--surface-secondary);
+        }
+
+        /* =================================================
+           HEADER BAR (64px fixed)
+           ================================================= */
+        .header-bar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: var(--header-height);
+            background: var(--surface-primary);
+            border-bottom: 1px solid var(--border-default);
+            display: flex;
+            align-items: center;
+            padding: 0 var(--grid-margin);
+        }
+
+        .header-bar-inner {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+        }
+
+        .status-badge--success {
+            background: var(--bg-status-success);
+            color: var(--color-status-success);
+        }
+
+        .status-badge--warning {
+            background: var(--bg-status-warning);
+            color: var(--color-status-warning);
+        }
+
+        .status-badge--danger {
+            background: var(--bg-status-danger);
+            color: var(--color-status-danger);
+        }
+
+        .status-badge--info {
+            background: var(--bg-status-info);
+            color: var(--color-status-info);
+        }
+
+        .status-badge svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .lease-id {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .counterparty {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--surface-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        .counterparty-name {
+            font-size: var(--font-size-md);
+            font-weight: 500;
+        }
+
+        @media (max-width: 1199px) {
+            .header-bar {
+                height: 56px;
+                padding: 0 var(--spacing-lg);
+            }
+        }
+
+        @media (max-width: 767px) {
+            .header-bar {
+                height: var(--header-height-mobile);
+                padding: 0 var(--spacing-md);
+            }
+            .lease-id {
+                font-size: var(--font-size-md);
+            }
+            .counterparty-name {
+                display: none;
+            }
+        }
+
+        /* =================================================
+           ACTION CENTER (collapsible, 0-120px)
+           ================================================= */
+        .action-center {
+            background: var(--surface-primary);
+            border-bottom: 1px solid var(--border-default);
+            padding: var(--spacing-md) var(--grid-margin);
+        }
+
+        .action-center.is-empty {
+            display: none;
+        }
+
+        .action-center-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .action-center-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .action-center-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            color: var(--color-status-warning);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .action-cards {
+            display: flex;
+            gap: var(--spacing-md);
+            overflow-x: auto;
+            padding-bottom: var(--spacing-sm);
+        }
+
+        .action-card {
+            flex: 0 0 260px;
+            background: var(--surface-primary);
+            border: 1px solid var(--border-default);
+            border-radius: 8px;
+            padding: var(--spacing-md);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .action-card--danger {
+            border-left: 4px solid var(--color-status-danger);
+        }
+
+        .action-card--warning {
+            border-left: 4px solid var(--color-status-warning);
+        }
+
+        .action-card--info {
+            border-left: 4px solid var(--color-status-info);
+        }
+
+        .action-card-title {
+            font-weight: 600;
+            font-size: var(--font-size-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .action-card-description {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .action-card-button {
+            align-self: flex-start;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: 6px;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        @media (max-width: 1199px) {
+            .action-center {
+                padding: var(--spacing-md) var(--spacing-lg);
+            }
+        }
+
+        @media (max-width: 767px) {
+            .action-center {
+                padding: var(--spacing-md);
+            }
+            .action-cards {
+                scroll-snap-type: x mandatory;
+            }
+            .action-card {
+                flex: 0 0 240px;
+                scroll-snap-align: start;
+            }
+        }
+
+        /* =================================================
+           TAB BAR (48px)
+           ================================================= */
+        .tab-bar {
+            height: var(--tab-bar-height);
+            background: var(--surface-primary);
+            border-bottom: 1px solid var(--border-default);
+            padding: 0 var(--grid-margin);
+            position: sticky;
+            top: var(--header-height);
+            z-index: 90;
+        }
+
+        .tab-bar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            align-items: stretch;
+            gap: var(--spacing-lg);
+        }
+
+        .tab {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: 0 var(--spacing-md);
+            font-size: var(--font-size-md);
+            font-weight: 500;
+            color: var(--text-secondary);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+        }
+
+        .tab.is-active {
+            color: var(--accent-blue);
+            border-bottom-color: var(--accent-blue);
+        }
+
+        .tab svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .tab-label {
+            display: inline;
+        }
+
+        @media (max-width: 1199px) {
+            .tab-bar {
+                padding: 0 var(--spacing-lg);
+                top: 56px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .tab-bar {
+                position: fixed;
+                bottom: 0;
+                top: auto;
+                left: 0;
+                right: 0;
+                height: var(--tab-bar-height-mobile);
+                padding: 0;
+                border-bottom: none;
+                border-top: 1px solid var(--border-default);
+            }
+            .tab-bar-inner {
+                justify-content: space-around;
+                gap: 0;
+            }
+            .tab {
+                flex-direction: column;
+                gap: 2px;
+                font-size: var(--font-size-xs);
+                border-bottom: none;
+                padding: var(--spacing-sm);
+            }
+            .tab.is-active {
+                border-bottom: none;
+            }
+            .tab-label {
+                display: block;
+            }
+        }
+
+        /* =================================================
+           CONTENT AREA (12-column grid, 24px gutters)
+           ================================================= */
+        .content-area {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-xl) var(--grid-margin);
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: var(--grid-gutter-desktop);
+        }
+
+        .primary-content {
+            grid-column: span 8;
+        }
+
+        .secondary-content {
+            grid-column: span 4;
+        }
+
+        @media (max-width: 1199px) {
+            .content-area {
+                grid-template-columns: repeat(8, 1fr);
+                gap: var(--grid-gutter-tablet);
+                padding: var(--spacing-lg);
+            }
+            .primary-content {
+                grid-column: span 8;
+            }
+            .secondary-content {
+                grid-column: span 8;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .content-area {
+                grid-template-columns: repeat(4, 1fr);
+                gap: var(--grid-gutter-mobile);
+                padding: var(--spacing-md);
+                padding-bottom: calc(var(--tab-bar-height-mobile) + var(--spacing-lg));
+            }
+            .primary-content,
+            .secondary-content {
+                grid-column: span 4;
+            }
+        }
+
+        /* =================================================
+           TAB CONTENT PANELS
+           ================================================= */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.is-active {
+            display: contents;
+        }
+
+        /* =================================================
+           CARDS
+           ================================================= */
+        .card {
+            background: var(--surface-primary);
+            border: 1px solid var(--border-default);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+        }
+
+        .card + .card {
+            margin-top: var(--spacing-lg);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .card-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+        }
+
+        /* =================================================
+           OVERVIEW TAB LAYOUT
+           ================================================= */
+        .journey-progress {
+            background: var(--surface-secondary);
+            border-radius: 8px;
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .progress-track {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .progress-track::before {
+            content: '';
+            position: absolute;
+            top: 14px;
+            left: 20px;
+            right: 20px;
+            height: 4px;
+            background: var(--border-default);
+            z-index: 0;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-xs);
+            z-index: 1;
+        }
+
+        .progress-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--surface-primary);
+            border: 3px solid var(--border-default);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-dot.is-complete {
+            background: var(--color-status-success);
+            border-color: var(--color-status-success);
+            color: white;
+        }
+
+        .progress-dot.is-current {
+            border-color: var(--accent-blue);
+            background: var(--bg-status-info);
+        }
+
+        .progress-label {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            text-align: center;
+            max-width: 70px;
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-md);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: var(--spacing-md);
+            background: var(--surface-secondary);
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 767px) {
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+            .progress-label {
+                font-size: 8px;
+                max-width: 50px;
+            }
+        }
+
+        .next-stay-card {
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .next-stay-dates {
+            display: flex;
+            gap: var(--spacing-lg);
+            margin: var(--spacing-md) 0;
+        }
+
+        .date-block {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+
+        .date-label {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .date-value {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+        }
+
+        /* =================================================
+           FINANCIALS TAB LAYOUT
+           ================================================= */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .summary-card {
+            padding: var(--spacing-lg);
+            border-radius: 8px;
+            background: var(--surface-secondary);
+        }
+
+        .summary-card--hero {
+            grid-column: span 2;
+            background: linear-gradient(135deg, var(--accent-blue), #1D4ED8);
+            color: white;
+        }
+
+        .summary-card--hero .stat-label {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .summary-card--hero .stat-value {
+            color: white;
+            font-size: var(--font-size-3xl);
+        }
+
+        @media (max-width: 767px) {
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+            .summary-card--hero {
+                grid-column: span 1;
+            }
+        }
+
+        /* Payment Table */
+        .payment-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .payment-table th {
+            text-align: left;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-bottom: 2px solid var(--border-default);
+            height: var(--height-table-header);
+        }
+
+        .payment-table td {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-bottom: 1px solid var(--border-default);
+            height: var(--height-table-row);
+            vertical-align: middle;
+        }
+
+        .payment-table tbody tr:hover {
+            background: var(--surface-hover);
+        }
+
+        .payment-table .col-date {
+            width: 140px;
+        }
+
+        .payment-table .col-amount {
+            width: 100px;
+            text-align: right;
+            font-feature-settings: 'tnum' 1;
+            font-weight: 600;
+        }
+
+        .payment-table .col-status {
+            width: 100px;
+            text-align: center;
+        }
+
+        .payment-table .col-action {
+            width: 80px;
+            text-align: center;
+        }
+
+        .payment-row--overdue {
+            border-left: 4px solid var(--color-status-danger);
+        }
+
+        @media (max-width: 767px) {
+            .payment-table {
+                display: none;
+            }
+        }
+
+        /* Payment Cards (Mobile) */
+        .payment-cards {
+            display: none;
+        }
+
+        @media (max-width: 767px) {
+            .payment-cards {
+                display: flex;
+                flex-direction: column;
+                gap: var(--spacing-sm);
+            }
+        }
+
+        .payment-card {
+            background: var(--surface-primary);
+            border: 1px solid var(--border-default);
+            border-radius: 8px;
+            padding: var(--spacing-md);
+        }
+
+        .payment-card--overdue {
+            border-left: 4px solid var(--color-status-danger);
+        }
+
+        .payment-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .payment-card-amount {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            font-feature-settings: 'tnum' 1;
+        }
+
+        .payment-card-date {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .payment-card-description {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .payment-card-action {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: 6px;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        /* Money Found Card */
+        .money-found-card {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white;
+        }
+
+        .money-found-card .card-title {
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .money-found-value {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            margin: var(--spacing-md) 0;
+        }
+
+        .money-found-breakdown {
+            font-size: var(--font-size-sm);
+            opacity: 0.9;
+        }
+
+        /* =================================================
+           STAYS TAB LAYOUT
+           ================================================= */
+        .stays-grid {
+            display: flex;
+            gap: var(--spacing-md);
+            overflow-x: auto;
+            padding-bottom: var(--spacing-sm);
+        }
+
+        .stay-card {
+            flex: 0 0 300px;
+            background: var(--surface-primary);
+            border: 1px solid var(--border-default);
+            border-radius: 12px;
+            padding: var(--spacing-md);
+        }
+
+        .stay-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .stay-week {
+            font-weight: 600;
+        }
+
+        .stay-dates {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .stay-date-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: var(--font-size-sm);
+            padding: var(--spacing-xs) 0;
+        }
+
+        .stay-date-label {
+            color: var(--text-secondary);
+        }
+
+        .stay-date-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-xs);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .date-badge {
+            background: var(--bg-status-neutral);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: 4px;
+            font-size: var(--font-size-xs);
+        }
+
+        .stay-amount {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .stay-action {
+            width: 100%;
+            padding: var(--spacing-sm);
+            border: 1px solid var(--border-default);
+            border-radius: 6px;
+            background: transparent;
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+        }
+
+        @media (max-width: 767px) {
+            .stays-grid {
+                scroll-snap-type: x mandatory;
+            }
+            .stay-card {
+                flex: 0 0 280px;
+                scroll-snap-align: start;
+            }
+        }
+
+        /* =================================================
+           DOCUMENTS TAB LAYOUT
+           ================================================= */
+        .documents-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .document-card {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            border: 1px solid var(--border-default);
+            border-radius: 8px;
+            background: var(--surface-primary);
+        }
+
+        .document-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--surface-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+
+        .document-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .document-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .document-name {
+            font-weight: 600;
+        }
+
+        .document-meta {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .signing-progress {
+            margin: var(--spacing-md) 0;
+            background: var(--surface-secondary);
+            border-radius: 8px;
+            padding: var(--spacing-md);
+        }
+
+        .signing-progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .signing-progress-bar {
+            height: 6px;
+            background: var(--border-default);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .signing-progress-fill {
+            height: 100%;
+            background: var(--color-status-success);
+            width: 50%;
+        }
+
+        .signer-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .signer-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-sm);
+        }
+
+        .signer-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+
+        .signer-icon--signed {
+            background: var(--color-status-success);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .signer-icon--pending {
+            background: var(--surface-secondary);
+            border: 2px solid var(--border-default);
+        }
+
+        .document-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: 6px;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn--primary {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+        }
+
+        .btn--secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-default);
+        }
+
+        @media (max-width: 767px) {
+            .document-card {
+                flex-direction: column;
+            }
+            .document-icon {
+                align-self: flex-start;
+            }
+            .document-actions {
+                flex-direction: column;
+            }
+            .document-actions .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* =================================================
+           DCT MODAL
+           ================================================= */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-lg);
+        }
+
+        .modal-backdrop.is-open {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--surface-primary);
+            border-radius: 16px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-default);
+        }
+
+        .modal-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: var(--font-size-xl);
+            color: var(--text-secondary);
+        }
+
+        .modal-body {
+            padding: var(--spacing-lg);
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: var(--spacing-lg);
+        }
+
+        @media (max-width: 767px) {
+            .modal {
+                max-height: 100vh;
+                height: 100%;
+                border-radius: 16px 16px 0 0;
+            }
+            .modal-body {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* DCT Calendar */
+        .dct-calendar {
+            background: var(--surface-primary);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .calendar-nav-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--border-default);
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .calendar-month {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: var(--gap-calendar-cells);
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding: var(--spacing-sm);
+        }
+
+        .calendar-cell {
+            aspect-ratio: 1;
+            min-height: var(--size-calendar-cell);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-sm);
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .calendar-cell:hover:not(.calendar-cell--unavailable) {
+            background: var(--surface-hover);
+        }
+
+        .calendar-cell--other-month {
+            color: var(--text-muted);
+        }
+
+        .calendar-cell--today {
+            border-color: var(--accent-blue);
+        }
+
+        .calendar-cell--booked {
+            background: var(--color-status-success);
+            color: white;
+        }
+
+        .calendar-cell--proposed-add {
+            background: var(--color-status-success);
+            color: white;
+            animation: pulse 1s ease-in-out infinite alternate;
+        }
+
+        .calendar-cell--proposed-add::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 6px;
+            height: 6px;
+            background: #166534;
+            border-radius: 50%;
+        }
+
+        .calendar-cell--proposed-remove {
+            background: rgba(34, 197, 94, 0.4);
+            color: var(--text-primary);
+            position: relative;
+        }
+
+        .calendar-cell--proposed-remove::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: var(--color-status-danger);
+            transform: rotate(-45deg);
+        }
+
+        .calendar-cell--conflict {
+            background: var(--color-status-warning);
+            color: white;
+            border-color: #D97706;
+        }
+
+        .calendar-cell--unavailable {
+            color: var(--text-muted);
+            cursor: not-allowed;
+            background: var(--surface-secondary);
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 767px) {
+            .calendar-cell {
+                min-height: var(--size-calendar-cell-mobile);
+            }
+        }
+
+        /* Calendar Legend */
+        .calendar-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-default);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-sm);
+        }
+
+        .legend-swatch {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .legend-swatch--booked {
+            background: var(--color-status-success);
+        }
+
+        .legend-swatch--adding {
+            background: var(--color-status-success);
+            position: relative;
+        }
+
+        .legend-swatch--adding::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 4px;
+            height: 4px;
+            background: #166534;
+            border-radius: 50%;
+        }
+
+        .legend-swatch--removing {
+            background: rgba(34, 197, 94, 0.4);
+            position: relative;
+        }
+
+        .legend-swatch--removing::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 20%;
+            right: 20%;
+            height: 2px;
+            background: var(--color-status-danger);
+            transform: rotate(-45deg);
+        }
+
+        .legend-swatch--conflict {
+            background: var(--color-status-warning);
+        }
+
+        /* DCT Summary Panel */
+        .dct-summary {
+            background: var(--surface-secondary);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+        }
+
+        .dct-summary-title {
+            font-weight: 600;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .dct-changes {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .dct-change-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm) 0;
+        }
+
+        .dct-change-item + .dct-change-item {
+            border-top: 1px solid var(--border-default);
+        }
+
+        .dct-change-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .dct-change-value {
+            font-weight: 600;
+        }
+
+        .dct-change-value--add {
+            color: var(--color-status-success);
+        }
+
+        .dct-change-value--remove {
+            color: var(--color-status-danger);
+        }
+
+        .dct-total {
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-md);
+            border-top: 2px solid var(--border-default);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dct-total-label {
+            font-weight: 600;
+        }
+
+        .dct-total-value {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--color-status-success);
+        }
+
+        .dct-actions {
+            margin-top: var(--spacing-lg);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .dct-actions .btn {
+            width: 100%;
+            text-align: center;
+            padding: var(--spacing-md);
+        }
+
+        /* =================================================
+           SPEC ANNOTATIONS
+           ================================================= */
+        .spec-note {
+            position: absolute;
+            background: #F59E0B;
+            color: white;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: 600;
+            border-radius: 3px;
+            z-index: 50;
+            pointer-events: none;
+        }
+
+        /* =================================================
+           SECTION DEMO (shows all demos)
+           ================================================= */
+        .demo-section {
+            margin-top: var(--spacing-2xl);
+            padding: var(--spacing-lg);
+            background: var(--surface-primary);
+            border-radius: 12px;
+        }
+
+        .demo-section-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--border-default);
+        }
+    </style>
+</head>
+<body>
+    <input type="checkbox" id="grid-toggle" class="visually-hidden">
+
+    <div class="grid-toggle">
+        <label for="grid-toggle">
+            <input type="checkbox" id="grid-toggle-visible" onchange="document.getElementById('grid-toggle').checked = this.checked">
+            Show Grid Overlay
+        </label>
+    </div>
+
+    <div class="breakpoint-indicator" aria-hidden="true"></div>
+
+    <div class="page-container">
+        <!-- Grid Overlay -->
+        <div class="grid-overlay">
+            <div class="grid-overlay-inner">
+                <div class="grid-col"></div>
+                <div class="grid-col"></div>
+                <div class="grid-col"></div>
+                <div class="grid-col"></div>
+                <div class="grid-col"></div>
+                <div class="grid-col"></div>
+                <div class="grid-col"></div>
+                <div class="grid-col"></div>
+                <div class="grid-col"></div>
+                <div class="grid-col"></div>
+                <div class="grid-col"></div>
+                <div class="grid-col"></div>
+            </div>
+        </div>
+
+        <!-- HEADER BAR (64px fixed) -->
+        <header class="header-bar">
+            <div class="header-bar-inner">
+                <div class="header-left">
+                    <span class="status-badge status-badge--success" role="status">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                        Active
+                    </span>
+                    <span class="lease-id">Agreement #LZ-2026-0042</span>
+                </div>
+                <div class="header-right">
+                    <div class="counterparty">
+                        <div class="avatar">JD</div>
+                        <span class="counterparty-name">John Doe</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ACTION CENTER (collapsible) -->
+        <div class="action-center">
+            <div class="action-center-inner">
+                <div class="action-center-header">
+                    <span class="action-center-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                        Action Required
+                    </span>
+                </div>
+                <div class="action-cards">
+                    <div class="action-card action-card--danger">
+                        <div class="action-card-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="8" x2="12" y2="12"/>
+                                <line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                            Invoice Overdue
+                        </div>
+                        <div class="action-card-description">$1,200 due Jan 5 - 3 days past due</div>
+                        <button class="action-card-button">Pay Now</button>
+                    </div>
+                    <div class="action-card action-card--warning">
+                        <div class="action-card-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                            Sign Updated PTA
+                        </div>
+                        <div class="action-card-description">Document ready for your signature</div>
+                        <button class="action-card-button">Review & Sign</button>
+                    </div>
+                    <div class="action-card action-card--info">
+                        <div class="action-card-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="16" y1="2" x2="16" y2="6"/>
+                                <line x1="8" y1="2" x2="8" y2="6"/>
+                                <line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                            Date Change Request
+                        </div>
+                        <div class="action-card-description">Host proposed adding Feb 14-15</div>
+                        <button class="action-card-button">Review Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB BAR (48px) -->
+        <nav class="tab-bar" role="tablist">
+            <div class="tab-bar-inner">
+                <button class="tab is-active" role="tab" aria-selected="true" data-tab="overview">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"/>
+                        <rect x="14" y="3" width="7" height="7"/>
+                        <rect x="14" y="14" width="7" height="7"/>
+                        <rect x="3" y="14" width="7" height="7"/>
+                    </svg>
+                    <span class="tab-label">Overview</span>
+                </button>
+                <button class="tab" role="tab" aria-selected="false" data-tab="financials">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23"/>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg>
+                    <span class="tab-label">Financials</span>
+                </button>
+                <button class="tab" role="tab" aria-selected="false" data-tab="stays">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    <span class="tab-label">Stays</span>
+                </button>
+                <button class="tab" role="tab" aria-selected="false" data-tab="documents">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                    <span class="tab-label">Documents</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- CONTENT AREA -->
+
+        <!-- OVERVIEW TAB -->
+        <div class="tab-content is-active" data-content="overview">
+            <main class="content-area">
+                <div class="primary-content">
+                    <!-- Journey Progress -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Lease Journey</h2>
+                        </div>
+                        <div class="journey-progress">
+                            <div class="progress-track">
+                                <div class="progress-step">
+                                    <div class="progress-dot is-complete">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                            <polyline points="20 6 9 17 4 12"/>
+                                        </svg>
+                                    </div>
+                                    <span class="progress-label">Proposal Accepted</span>
+                                </div>
+                                <div class="progress-step">
+                                    <div class="progress-dot is-complete">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                            <polyline points="20 6 9 17 4 12"/>
+                                        </svg>
+                                    </div>
+                                    <span class="progress-label">Documents Signed</span>
+                                </div>
+                                <div class="progress-step">
+                                    <div class="progress-dot is-current"></div>
+                                    <span class="progress-label">First Payment</span>
+                                </div>
+                                <div class="progress-step">
+                                    <div class="progress-dot"></div>
+                                    <span class="progress-label">First Stay</span>
+                                </div>
+                                <div class="progress-step">
+                                    <div class="progress-dot"></div>
+                                    <span class="progress-label">Lease Complete</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Next Stay Card -->
+                    <div class="card next-stay-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Next Stay</h2>
+                            <span class="status-badge status-badge--info">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                Upcoming
+                            </span>
+                        </div>
+                        <div class="next-stay-dates">
+                            <div class="date-block">
+                                <span class="date-label">Check-in</span>
+                                <span class="date-value">Fri, Feb 7, 2026</span>
+                            </div>
+                            <div class="date-block">
+                                <span class="date-label">Check-out</span>
+                                <span class="date-value">Sun, Feb 9, 2026</span>
+                            </div>
+                        </div>
+                        <button class="btn btn--secondary">View Stay Details</button>
+                    </div>
+
+                    <!-- DCT Action Card -->
+                    <div class="card" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: white; border: none;">
+                        <div class="card-header" style="margin-bottom: var(--spacing-sm);">
+                            <h2 class="card-title" style="color: white;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                                </svg>
+                                Adjust Your Dates
+                            </h2>
+                        </div>
+                        <p style="opacity: 0.9; margin-bottom: var(--spacing-md);">Need to change your booking dates? Use the Date Change Tool to add, remove, or swap nights.</p>
+                        <button class="btn" style="background: white; color: #1D4ED8;" onclick="document.getElementById('dct-modal').classList.add('is-open')">Open Date Change Tool</button>
+                    </div>
+                </div>
+
+                <aside class="secondary-content">
+                    <!-- Quick Stats -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Quick Stats</h2>
+                        </div>
+                        <div class="quick-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">12</div>
+                                <div class="stat-label">Total Nights</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">4</div>
+                                <div class="stat-label">Stays</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">$2,400</div>
+                                <div class="stat-label">Total Value</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Next Payment -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Next Payment</h2>
+                            <span class="status-badge status-badge--warning">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                Due Soon
+                            </span>
+                        </div>
+                        <div style="margin: var(--spacing-md) 0;">
+                            <div style="font-size: var(--font-size-2xl); font-weight: 700;">$600.00</div>
+                            <div style="font-size: var(--font-size-sm); color: var(--text-secondary);">Due Feb 15, 2026</div>
+                        </div>
+                        <button class="btn btn--primary" style="width: 100%;">Pay Now</button>
+                    </div>
+                </aside>
+            </main>
+        </div>
+
+        <!-- FINANCIALS TAB -->
+        <div class="tab-content" data-content="financials">
+            <main class="content-area">
+                <div class="primary-content">
+                    <!-- Summary Cards -->
+                    <div class="summary-cards">
+                        <div class="summary-card summary-card--hero">
+                            <div class="stat-label">Total Paid</div>
+                            <div class="stat-value">$1,800.00</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="stat-label">Remaining</div>
+                            <div class="stat-value">$600.00</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="stat-label">Next Due</div>
+                            <div class="stat-value">Feb 15</div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Table (Desktop) -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Payment Schedule</h2>
+                        </div>
+                        <table class="payment-table">
+                            <thead>
+                                <tr>
+                                    <th class="col-date" scope="col">Date</th>
+                                    <th scope="col">Description</th>
+                                    <th class="col-amount" scope="col">Amount</th>
+                                    <th class="col-status" scope="col">Status</th>
+                                    <th class="col-action" scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="col-date">Jan 1, 2026</td>
+                                    <td>Initial deposit</td>
+                                    <td class="col-amount">$600.00</td>
+                                    <td class="col-status">
+                                        <span class="status-badge status-badge--success">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="20 6 9 17 4 12"/>
+                                            </svg>
+                                            Paid
+                                        </span>
+                                    </td>
+                                    <td class="col-action">
+                                        <button class="btn btn--secondary" style="padding: 4px 8px; font-size: 12px;">DL</button>
+                                    </td>
+                                </tr>
+                                <tr class="payment-row--overdue">
+                                    <td class="col-date">Jan 5, 2026</td>
+                                    <td>Monthly rent - January</td>
+                                    <td class="col-amount">$1,200.00</td>
+                                    <td class="col-status">
+                                        <span class="status-badge status-badge--danger">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <circle cx="12" cy="12" r="10"/>
+                                                <line x1="12" y1="8" x2="12" y2="12"/>
+                                                <line x1="12" y1="16" x2="12.01" y2="16"/>
+                                            </svg>
+                                            Past Due
+                                        </span>
+                                    </td>
+                                    <td class="col-action">
+                                        <button class="btn btn--primary" style="padding: 4px 8px; font-size: 12px;">Pay</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-date">Feb 15, 2026</td>
+                                    <td>Monthly rent - February</td>
+                                    <td class="col-amount">$600.00</td>
+                                    <td class="col-status">
+                                        <span class="status-badge status-badge--warning">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <circle cx="12" cy="12" r="10"/>
+                                                <polyline points="12 6 12 12 16 14"/>
+                                            </svg>
+                                            Due
+                                        </span>
+                                    </td>
+                                    <td class="col-action">
+                                        <button class="btn btn--secondary" style="padding: 4px 8px; font-size: 12px;">Pay</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-date">Jan 20, 2026</td>
+                                    <td>DCT Adjustment #1</td>
+                                    <td class="col-amount" style="color: var(--color-status-success);">+$85.00</td>
+                                    <td class="col-status">
+                                        <span class="status-badge status-badge--success">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="20 6 9 17 4 12"/>
+                                            </svg>
+                                            Applied
+                                        </span>
+                                    </td>
+                                    <td class="col-action"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Payment Cards (Mobile) -->
+                        <div class="payment-cards">
+                            <div class="payment-card">
+                                <div class="payment-card-header">
+                                    <span class="status-badge status-badge--success">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="20 6 9 17 4 12"/>
+                                        </svg>
+                                        Paid
+                                    </span>
+                                    <span class="payment-card-amount">$600.00</span>
+                                </div>
+                                <div class="payment-card-date">Jan 1, 2026</div>
+                                <div class="payment-card-description">Initial deposit</div>
+                            </div>
+                            <div class="payment-card payment-card--overdue">
+                                <div class="payment-card-header">
+                                    <span class="status-badge status-badge--danger">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"/>
+                                            <line x1="12" y1="8" x2="12" y2="12"/>
+                                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                                        </svg>
+                                        Past Due
+                                    </span>
+                                    <span class="payment-card-amount">$1,200.00</span>
+                                </div>
+                                <div class="payment-card-date">Due Jan 5, 2026</div>
+                                <div class="payment-card-description">Monthly rent - January</div>
+                                <button class="payment-card-action">Pay Now</button>
+                            </div>
+                            <div class="payment-card">
+                                <div class="payment-card-header">
+                                    <span class="status-badge status-badge--warning">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"/>
+                                            <polyline points="12 6 12 12 16 14"/>
+                                        </svg>
+                                        Due
+                                    </span>
+                                    <span class="payment-card-amount">$600.00</span>
+                                </div>
+                                <div class="payment-card-date">Due Feb 15, 2026</div>
+                                <div class="payment-card-description">Monthly rent - February</div>
+                                <button class="payment-card-action">Pay Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="secondary-content">
+                    <!-- Money Found Card -->
+                    <div class="card money-found-card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="1" x2="12" y2="23"/>
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                                </svg>
+                                Money Found
+                            </h2>
+                        </div>
+                        <div class="money-found-value">+$125.00</div>
+                        <div class="money-found-breakdown">
+                            <div>+$245.00 dates added (3 nights)</div>
+                            <div>-$120.00 dates removed (2 nights)</div>
+                        </div>
+                    </div>
+                </aside>
+            </main>
+        </div>
+
+        <!-- STAYS TAB -->
+        <div class="tab-content" data-content="stays">
+            <main class="content-area">
+                <div class="primary-content" style="grid-column: span 12;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Your Stays</h2>
+                            <span style="font-size: var(--font-size-sm); color: var(--text-secondary);">4 stays, 12 nights total</span>
+                        </div>
+                        <div class="stays-grid">
+                            <div class="stay-card">
+                                <div class="stay-card-header">
+                                    <span class="stay-week">Week 1 of 4</span>
+                                    <span class="status-badge status-badge--success">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="20 6 9 17 4 12"/>
+                                        </svg>
+                                        Completed
+                                    </span>
+                                </div>
+                                <div class="stay-dates">
+                                    <div class="stay-date-row">
+                                        <span class="stay-date-label">Check-in</span>
+                                        <span>Fri, Jan 10, 2026</span>
+                                    </div>
+                                    <div class="stay-date-row">
+                                        <span class="stay-date-label">Check-out</span>
+                                        <span>Sun, Jan 12, 2026</span>
+                                    </div>
+                                </div>
+                                <div class="stay-date-badges">
+                                    <span class="date-badge">Jan 10</span>
+                                    <span class="date-badge">Jan 11</span>
+                                </div>
+                                <div class="stay-amount">$450.00</div>
+                                <button class="stay-action">Leave Review</button>
+                            </div>
+
+                            <div class="stay-card">
+                                <div class="stay-card-header">
+                                    <span class="stay-week">Week 2 of 4</span>
+                                    <span class="status-badge status-badge--info">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"/>
+                                            <polyline points="12 6 12 12 16 14"/>
+                                        </svg>
+                                        Upcoming
+                                    </span>
+                                </div>
+                                <div class="stay-dates">
+                                    <div class="stay-date-row">
+                                        <span class="stay-date-label">Check-in</span>
+                                        <span>Fri, Feb 7, 2026</span>
+                                    </div>
+                                    <div class="stay-date-row">
+                                        <span class="stay-date-label">Check-out</span>
+                                        <span>Sun, Feb 9, 2026</span>
+                                    </div>
+                                </div>
+                                <div class="stay-date-badges">
+                                    <span class="date-badge">Feb 7</span>
+                                    <span class="date-badge">Feb 8</span>
+                                </div>
+                                <div class="stay-amount">$450.00</div>
+                                <button class="stay-action">View Details</button>
+                            </div>
+
+                            <div class="stay-card">
+                                <div class="stay-card-header">
+                                    <span class="stay-week">Week 3 of 4</span>
+                                    <span class="status-badge status-badge--info">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"/>
+                                            <polyline points="12 6 12 12 16 14"/>
+                                        </svg>
+                                        Upcoming
+                                    </span>
+                                </div>
+                                <div class="stay-dates">
+                                    <div class="stay-date-row">
+                                        <span class="stay-date-label">Check-in</span>
+                                        <span>Fri, Feb 21, 2026</span>
+                                    </div>
+                                    <div class="stay-date-row">
+                                        <span class="stay-date-label">Check-out</span>
+                                        <span>Mon, Feb 24, 2026</span>
+                                    </div>
+                                </div>
+                                <div class="stay-date-badges">
+                                    <span class="date-badge">Feb 21</span>
+                                    <span class="date-badge">Feb 22</span>
+                                    <span class="date-badge">Feb 23</span>
+                                </div>
+                                <div class="stay-amount">$675.00</div>
+                                <button class="stay-action">View Details</button>
+                            </div>
+
+                            <div class="stay-card">
+                                <div class="stay-card-header">
+                                    <span class="stay-week">Week 4 of 4</span>
+                                    <span class="status-badge status-badge--info">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"/>
+                                            <polyline points="12 6 12 12 16 14"/>
+                                        </svg>
+                                        Upcoming
+                                    </span>
+                                </div>
+                                <div class="stay-dates">
+                                    <div class="stay-date-row">
+                                        <span class="stay-date-label">Check-in</span>
+                                        <span>Fri, Mar 13, 2026</span>
+                                    </div>
+                                    <div class="stay-date-row">
+                                        <span class="stay-date-label">Check-out</span>
+                                        <span>Sun, Mar 15, 2026</span>
+                                    </div>
+                                </div>
+                                <div class="stay-date-badges">
+                                    <span class="date-badge">Mar 13</span>
+                                    <span class="date-badge">Mar 14</span>
+                                </div>
+                                <div class="stay-amount">$450.00</div>
+                                <button class="stay-action">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- DOCUMENTS TAB -->
+        <div class="tab-content" data-content="documents">
+            <main class="content-area">
+                <div class="primary-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Documents</h2>
+                        </div>
+                        <div class="documents-list">
+                            <!-- PT Agreement - Signed -->
+                            <div class="document-card">
+                                <div class="document-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                        <line x1="16" y1="13" x2="8" y2="13"/>
+                                        <line x1="16" y1="17" x2="8" y2="17"/>
+                                    </svg>
+                                </div>
+                                <div class="document-content">
+                                    <div class="document-header">
+                                        <h3 class="document-name">PT Agreement</h3>
+                                        <span class="status-badge status-badge--success">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="20 6 9 17 4 12"/>
+                                            </svg>
+                                            Signed
+                                        </span>
+                                    </div>
+                                    <div class="document-meta">Created Jan 15, 2026 - Signed Jan 16, 2026</div>
+                                    <div class="document-actions">
+                                        <button class="btn btn--secondary">View</button>
+                                        <button class="btn btn--secondary">Download</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Amendment - Pending Signature -->
+                            <div class="document-card">
+                                <div class="document-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                        <line x1="12" y1="18" x2="12" y2="12"/>
+                                        <line x1="9" y1="15" x2="15" y2="15"/>
+                                    </svg>
+                                </div>
+                                <div class="document-content">
+                                    <div class="document-header">
+                                        <h3 class="document-name">Amendment - Date Changes</h3>
+                                        <span class="status-badge status-badge--warning">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <circle cx="12" cy="12" r="10"/>
+                                                <polyline points="12 6 12 12 16 14"/>
+                                            </svg>
+                                            Awaiting Signature
+                                        </span>
+                                    </div>
+                                    <div class="document-meta">Created Jan 20, 2026</div>
+                                    <div class="signing-progress">
+                                        <div class="signing-progress-header">
+                                            <span>Signing Progress</span>
+                                            <span>1 of 2 signed</span>
+                                        </div>
+                                        <div class="signing-progress-bar">
+                                            <div class="signing-progress-fill"></div>
+                                        </div>
+                                        <div class="signer-list">
+                                            <div class="signer-item">
+                                                <div class="signer-icon signer-icon--signed">
+                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                                        <polyline points="20 6 9 17 4 12"/>
+                                                    </svg>
+                                                </div>
+                                                <span>John Doe - Signed Jan 21</span>
+                                            </div>
+                                            <div class="signer-item">
+                                                <div class="signer-icon signer-icon--pending"></div>
+                                                <span>Jane Smith - Awaiting signature</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="document-actions">
+                                        <button class="btn btn--secondary">View</button>
+                                        <button class="btn btn--primary">Sign Now</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CC Authorization -->
+                            <div class="document-card">
+                                <div class="document-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                                        <line x1="1" y1="10" x2="23" y2="10"/>
+                                    </svg>
+                                </div>
+                                <div class="document-content">
+                                    <div class="document-header">
+                                        <h3 class="document-name">CC Authorization</h3>
+                                        <span class="status-badge status-badge--success">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="20 6 9 17 4 12"/>
+                                            </svg>
+                                            Signed
+                                        </span>
+                                    </div>
+                                    <div class="document-meta">Created Jan 15, 2026 - Signed Jan 15, 2026</div>
+                                    <div class="document-actions">
+                                        <button class="btn btn--secondary">View</button>
+                                        <button class="btn btn--secondary">Download</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="secondary-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Document Status</h2>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-secondary);">Total Documents</span>
+                                <span style="font-weight: 600;">3</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-secondary);">Signed</span>
+                                <span style="font-weight: 600; color: var(--color-status-success);">2</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-secondary);">Awaiting Signature</span>
+                                <span style="font-weight: 600; color: var(--color-status-warning);">1</span>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </main>
+        </div>
+
+        <!-- DCT MODAL -->
+        <div class="modal-backdrop" id="dct-modal">
+            <div class="modal" role="dialog" aria-labelledby="dct-modal-title">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="dct-modal-title">Date Change Tool</h2>
+                    <button class="modal-close" onclick="document.getElementById('dct-modal').classList.remove('is-open')" aria-label="Close modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <!-- Calendar Section -->
+                    <div class="dct-calendar">
+                        <div class="calendar-header">
+                            <div class="calendar-nav">
+                                <button class="calendar-nav-btn" aria-label="Previous month">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="15 18 9 12 15 6"/>
+                                    </svg>
+                                </button>
+                                <span class="calendar-month">February 2026</span>
+                                <button class="calendar-nav-btn" aria-label="Next month">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="9 18 15 12 9 6"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="calendar-grid" role="grid" aria-label="February 2026 calendar">
+                            <div class="calendar-day-header" role="columnheader">Sun</div>
+                            <div class="calendar-day-header" role="columnheader">Mon</div>
+                            <div class="calendar-day-header" role="columnheader">Tue</div>
+                            <div class="calendar-day-header" role="columnheader">Wed</div>
+                            <div class="calendar-day-header" role="columnheader">Thu</div>
+                            <div class="calendar-day-header" role="columnheader">Fri</div>
+                            <div class="calendar-day-header" role="columnheader">Sat</div>
+
+                            <!-- Week 1 -->
+                            <div class="calendar-cell calendar-cell--other-month" role="gridcell">25</div>
+                            <div class="calendar-cell calendar-cell--other-month" role="gridcell">26</div>
+                            <div class="calendar-cell calendar-cell--other-month" role="gridcell">27</div>
+                            <div class="calendar-cell calendar-cell--other-month" role="gridcell">28</div>
+                            <div class="calendar-cell calendar-cell--other-month" role="gridcell">29</div>
+                            <div class="calendar-cell calendar-cell--other-month" role="gridcell">30</div>
+                            <div class="calendar-cell calendar-cell--other-month" role="gridcell">31</div>
+
+                            <!-- Week 2 -->
+                            <div class="calendar-cell" role="gridcell">1</div>
+                            <div class="calendar-cell calendar-cell--today" role="gridcell">2</div>
+                            <div class="calendar-cell" role="gridcell">3</div>
+                            <div class="calendar-cell" role="gridcell">4</div>
+                            <div class="calendar-cell" role="gridcell">5</div>
+                            <div class="calendar-cell" role="gridcell">6</div>
+                            <div class="calendar-cell calendar-cell--booked" role="gridcell" aria-label="February 7, booked">7</div>
+
+                            <!-- Week 3 -->
+                            <div class="calendar-cell calendar-cell--booked" role="gridcell" aria-label="February 8, booked">8</div>
+                            <div class="calendar-cell" role="gridcell">9</div>
+                            <div class="calendar-cell" role="gridcell">10</div>
+                            <div class="calendar-cell" role="gridcell">11</div>
+                            <div class="calendar-cell" role="gridcell">12</div>
+                            <div class="calendar-cell" role="gridcell">13</div>
+                            <div class="calendar-cell calendar-cell--proposed-add" role="gridcell" aria-label="February 14, proposed addition">14</div>
+
+                            <!-- Week 4 -->
+                            <div class="calendar-cell calendar-cell--proposed-add" role="gridcell" aria-label="February 15, proposed addition">15</div>
+                            <div class="calendar-cell" role="gridcell">16</div>
+                            <div class="calendar-cell" role="gridcell">17</div>
+                            <div class="calendar-cell" role="gridcell">18</div>
+                            <div class="calendar-cell" role="gridcell">19</div>
+                            <div class="calendar-cell" role="gridcell">20</div>
+                            <div class="calendar-cell calendar-cell--booked" role="gridcell" aria-label="February 21, booked">21</div>
+
+                            <!-- Week 5 -->
+                            <div class="calendar-cell calendar-cell--booked" role="gridcell" aria-label="February 22, booked">22</div>
+                            <div class="calendar-cell calendar-cell--proposed-remove" role="gridcell" aria-label="February 23, proposed for removal">23</div>
+                            <div class="calendar-cell" role="gridcell">24</div>
+                            <div class="calendar-cell" role="gridcell">25</div>
+                            <div class="calendar-cell" role="gridcell">26</div>
+                            <div class="calendar-cell calendar-cell--conflict" role="gridcell" aria-label="February 27, conflict">27</div>
+                            <div class="calendar-cell" role="gridcell">28</div>
+                        </div>
+
+                        <div class="calendar-legend">
+                            <div class="legend-item">
+                                <div class="legend-swatch legend-swatch--booked"></div>
+                                <span>Booked</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-swatch legend-swatch--adding"></div>
+                                <span>Adding</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-swatch legend-swatch--removing"></div>
+                                <span>Removing</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-swatch legend-swatch--conflict"></div>
+                                <span>Conflict</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary Panel -->
+                    <div class="dct-summary">
+                        <h3 class="dct-summary-title">Change Summary</h3>
+                        <div class="dct-changes">
+                            <div class="dct-change-item">
+                                <span class="dct-change-label">Dates adding</span>
+                                <span class="dct-change-value dct-change-value--add">+2 nights</span>
+                            </div>
+                            <div class="dct-change-item">
+                                <span class="dct-change-label">Feb 14-15</span>
+                                <span class="dct-change-value dct-change-value--add">+$450.00</span>
+                            </div>
+                            <div class="dct-change-item">
+                                <span class="dct-change-label">Dates removing</span>
+                                <span class="dct-change-value dct-change-value--remove">-1 night</span>
+                            </div>
+                            <div class="dct-change-item">
+                                <span class="dct-change-label">Feb 23</span>
+                                <span class="dct-change-value dct-change-value--remove">-$225.00</span>
+                            </div>
+                        </div>
+                        <div class="dct-total">
+                            <span class="dct-total-label">Net Change</span>
+                            <span class="dct-total-value">+$225.00</span>
+                        </div>
+                        <div class="dct-actions">
+                            <button class="btn btn--primary">Submit Request</button>
+                            <button class="btn btn--secondary" onclick="document.getElementById('dct-modal').classList.remove('is-open')">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.dataset.tab;
+
+                // Update tab states
+                document.querySelectorAll('.tab').forEach(t => {
+                    t.classList.remove('is-active');
+                    t.setAttribute('aria-selected', 'false');
+                });
+                this.classList.add('is-active');
+                this.setAttribute('aria-selected', 'true');
+
+                // Update content panels
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('is-active');
+                });
+                document.querySelector(`[data-content="${tabId}"]`).classList.add('is-active');
+            });
+        });
+
+        // Close modal on backdrop click
+        document.getElementById('dct-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('is-open');
+            }
+        });
+
+        // Keyboard support for modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('dct-modal').classList.remove('is-open');
+            }
+        });
+    </script>
+</body>
+</html>

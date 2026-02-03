@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Hierarchy & Dashboards — Paula Scher</title>
+    <style>
+        /* =================================================
+           CSS RESET & BASE STYLES
+           ================================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Status Semantic Tokens (from Josef) */
+            --color-status-success: #22C55E;
+            --color-status-warning: #F59E0B;
+            --color-status-danger: #EF4444;
+            --color-status-info: #3B82F6;
+            --color-status-neutral: #6B7280;
+
+            --bg-status-success: #DCFCE7;
+            --bg-status-warning: #FEF3C7;
+            --bg-status-danger: #FEE2E2;
+            --bg-status-info: #DBEAFE;
+            --bg-status-neutral: #F3F4F6;
+
+            /* View-Specific Accent Colors */
+            --accent-host: #22C55E;        /* Money green for hosts */
+            --accent-host-light: #DCFCE7;
+            --accent-guest: #3B82F6;       /* Stay blue for guests */
+            --accent-guest-light: #DBEAFE;
+
+            /* Typography */
+            --text-primary: #1F2937;
+            --text-secondary: #4B5563;
+            --text-muted: #6B7280;
+            --text-light: #9CA3AF;
+
+            /* Surfaces */
+            --surface-primary: #FFFFFF;
+            --surface-secondary: #F9FAFB;
+            --surface-tertiary: #F3F4F6;
+            --border-light: #E5E7EB;
+
+            /* Typography Scale */
+            --font-hero: 48px;
+            --font-h1: 32px;
+            --font-h2: 24px;
+            --font-h3: 18px;
+            --font-body: 16px;
+            --font-small: 14px;
+            --font-micro: 12px;
+
+            /* Spacing */
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-2xl: 48px;
+
+            /* Shadows */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--surface-secondary);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        /* =================================================
+           NAVIGATION & TOGGLE
+           ================================================= */
+        .page-header {
+            background: var(--surface-primary);
+            border-bottom: 1px solid var(--border-light);
+            padding: var(--space-md) var(--space-xl);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: var(--font-h2);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .logo span {
+            opacity: 0.6;
+        }
+
+        .view-toggle {
+            display: flex;
+            background: var(--surface-tertiary);
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .toggle-btn {
+            padding: 8px 20px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: var(--font-small);
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+
+        .toggle-btn.active {
+            background: var(--surface-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .toggle-btn.host-active {
+            color: var(--accent-host);
+        }
+
+        .toggle-btn.guest-active {
+            color: var(--accent-guest);
+        }
+
+        /* =================================================
+           MAIN CONTAINER
+           ================================================= */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-xl);
+        }
+
+        /* =================================================
+           DASHBOARD VIEW
+           ================================================= */
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =================================================
+           HERO SECTION - MONEY/STAY AS HERO
+           ================================================= */
+        .hero-section {
+            background: var(--surface-primary);
+            border-radius: 16px;
+            padding: var(--space-2xl);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .host-dashboard .hero-section::before {
+            background: linear-gradient(90deg, var(--accent-host), #4ADE80);
+        }
+
+        .guest-dashboard .hero-section::before {
+            background: linear-gradient(90deg, var(--accent-guest), #60A5FA);
+        }
+
+        .hero-label {
+            font-size: var(--font-micro);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: var(--space-sm);
+        }
+
+        .host-dashboard .hero-label {
+            color: var(--accent-host);
+        }
+
+        .guest-dashboard .hero-label {
+            color: var(--accent-guest);
+        }
+
+        .hero-value {
+            font-size: var(--font-hero);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: var(--space-sm);
+            font-feature-settings: 'tnum' 1;
+        }
+
+        .host-dashboard .hero-value {
+            color: var(--text-primary);
+        }
+
+        .guest-dashboard .hero-value {
+            color: var(--text-primary);
+        }
+
+        .hero-subtitle {
+            font-size: var(--font-body);
+            color: var(--text-muted);
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: var(--space-xl);
+            margin-top: var(--space-lg);
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--border-light);
+        }
+
+        .hero-stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-stat-value {
+            font-size: var(--font-h2);
+            font-weight: 600;
+        }
+
+        .host-dashboard .hero-stat-value {
+            color: var(--accent-host);
+        }
+
+        .guest-dashboard .hero-stat-value {
+            color: var(--accent-guest);
+        }
+
+        .hero-stat-label {
+            font-size: var(--font-small);
+            color: var(--text-muted);
+        }
+
+        /* =================================================
+           CARD GRID
+           ================================================= */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        @media (max-width: 768px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* =================================================
+           CARDS
+           ================================================= */
+        .card {
+            background: var(--surface-primary);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-md);
+        }
+
+        .card-title {
+            font-size: var(--font-h3);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-content {
+            font-size: var(--font-body);
+        }
+
+        .card-value {
+            font-size: var(--font-h2);
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+        }
+
+        .card-meta {
+            font-size: var(--font-small);
+            color: var(--text-muted);
+        }
+
+        /* =================================================
+           STATUS BADGES
+           ================================================= */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: var(--font-micro);
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: var(--bg-status-success);
+            color: var(--color-status-success);
+        }
+
+        .badge-warning {
+            background: var(--bg-status-warning);
+            color: var(--color-status-warning);
+        }
+
+        .badge-info {
+            background: var(--bg-status-info);
+            color: var(--color-status-info);
+        }
+
+        .badge-danger {
+            background: var(--bg-status-danger);
+            color: var(--color-status-danger);
+        }
+
+        /* =================================================
+           RELIABILITY CHECKLIST (HOST VIEW)
+           ================================================= */
+        .reliability-section {
+            background: var(--surface-primary);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            margin-bottom: var(--space-lg);
+        }
+
+        .reliability-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+
+        .reliability-title {
+            font-size: var(--font-h3);
+            font-weight: 600;
+        }
+
+        .reliability-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-sm);
+        }
+
+        @media (max-width: 768px) {
+            .reliability-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .reliability-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-md);
+            background: var(--surface-secondary);
+            border-radius: 8px;
+        }
+
+        .reliability-check {
+            width: 20px;
+            height: 20px;
+            background: var(--bg-status-success);
+            color: var(--color-status-success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        /* =================================================
+           LEASE JOURNEY (GUEST VIEW)
+           ================================================= */
+        .journey-section {
+            background: var(--surface-primary);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            margin-bottom: var(--space-lg);
+        }
+
+        .journey-title {
+            font-size: var(--font-h3);
+            font-weight: 600;
+            margin-bottom: var(--space-lg);
+        }
+
+        .journey-progress {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .journey-progress::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 40px;
+            right: 40px;
+            height: 2px;
+            background: var(--border-light);
+        }
+
+        .journey-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .journey-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-small);
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+        }
+
+        .journey-dot.completed {
+            background: var(--accent-guest);
+            color: white;
+        }
+
+        .journey-dot.current {
+            background: var(--surface-primary);
+            border: 3px solid var(--accent-guest);
+            color: var(--accent-guest);
+        }
+
+        .journey-dot.pending {
+            background: var(--surface-tertiary);
+            color: var(--text-light);
+        }
+
+        .journey-label {
+            font-size: var(--font-micro);
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 80px;
+        }
+
+        /* =================================================
+           ACTION CENTER
+           ================================================= */
+        .action-center {
+            margin-bottom: var(--space-lg);
+        }
+
+        .action-card {
+            background: var(--surface-primary);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            border: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .action-card.urgent {
+            border-left: 4px solid var(--color-status-danger);
+        }
+
+        .action-card.pending {
+            border-left: 4px solid var(--color-status-warning);
+        }
+
+        .action-card.info {
+            border-left: 4px solid var(--color-status-info);
+        }
+
+        .action-content {
+            flex: 1;
+        }
+
+        .action-title {
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+        }
+
+        .action-meta {
+            font-size: var(--font-small);
+            color: var(--text-muted);
+        }
+
+        .action-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: var(--font-small);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-button.primary {
+            background: var(--accent-guest);
+            color: white;
+        }
+
+        .host-dashboard .action-button.primary {
+            background: var(--accent-host);
+        }
+
+        /* =================================================
+           SECTION DIVIDER
+           ================================================= */
+        .section-divider {
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: var(--space-2xl) 0;
+        }
+
+        .section-divider::before,
+        .section-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-light);
+        }
+
+        .section-divider span {
+            padding: 0 var(--space-lg);
+            font-size: var(--font-small);
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* =================================================
+           VISUAL HIERARCHY DEMONSTRATION
+           ================================================= */
+        .hierarchy-demo {
+            background: var(--surface-primary);
+            border-radius: 16px;
+            padding: var(--space-2xl);
+            margin-bottom: var(--space-lg);
+        }
+
+        .hierarchy-title {
+            font-size: var(--font-h2);
+            font-weight: 600;
+            margin-bottom: var(--space-lg);
+            color: var(--text-primary);
+        }
+
+        .hierarchy-levels {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xl);
+        }
+
+        .hierarchy-level {
+            display: grid;
+            grid-template-columns: 120px 1fr 200px;
+            align-items: center;
+            gap: var(--space-lg);
+            padding: var(--space-lg);
+            background: var(--surface-secondary);
+            border-radius: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .hierarchy-level {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+
+        .level-badge {
+            font-size: var(--font-micro);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .level-1 .level-badge { background: #7C3AED; color: white; }
+        .level-2 .level-badge { background: #8B5CF6; color: white; }
+        .level-3 .level-badge { background: #A78BFA; color: white; }
+        .level-4 .level-badge { background: #C4B5FD; color: #5B21B6; }
+
+        .level-example {
+            font-feature-settings: 'tnum' 1;
+        }
+
+        .level-1 .level-example {
+            font-size: var(--font-hero);
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .level-2 .level-example {
+            font-size: var(--font-h2);
+            font-weight: 600;
+        }
+
+        .level-3 .level-example {
+            font-size: var(--font-body);
+            font-weight: 400;
+        }
+
+        .level-4 .level-example {
+            font-size: var(--font-micro);
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+
+        .level-specs {
+            font-size: var(--font-small);
+            color: var(--text-muted);
+        }
+
+        .level-specs strong {
+            color: var(--text-secondary);
+        }
+
+        /* =================================================
+           COLOR ACCENT STRATEGY
+           ================================================= */
+        .accent-demo {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        @media (max-width: 768px) {
+            .accent-demo {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .accent-card {
+            border-radius: 16px;
+            padding: var(--space-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .accent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .accent-host {
+            background: var(--surface-primary);
+            border: 2px solid var(--accent-host-light);
+        }
+
+        .accent-host::before {
+            background: var(--accent-host);
+        }
+
+        .accent-guest {
+            background: var(--surface-primary);
+            border: 2px solid var(--accent-guest-light);
+        }
+
+        .accent-guest::before {
+            background: var(--accent-guest);
+        }
+
+        .accent-title {
+            font-size: var(--font-h3);
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .accent-host .accent-title { color: var(--accent-host); }
+        .accent-guest .accent-title { color: var(--accent-guest); }
+
+        .accent-color-chip {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+        }
+
+        .accent-host .accent-color-chip { background: var(--accent-host); }
+        .accent-guest .accent-color-chip { background: var(--accent-guest); }
+
+        .accent-list {
+            list-style: none;
+        }
+
+        .accent-list li {
+            padding: var(--space-sm) 0;
+            font-size: var(--font-small);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .accent-list li::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .accent-host .accent-list li::before { background: var(--accent-host); }
+        .accent-guest .accent-list li::before { background: var(--accent-guest); }
+
+        /* =================================================
+           URGENCY HIERARCHY DEMO
+           ================================================= */
+        .urgency-demo {
+            background: var(--surface-primary);
+            border-radius: 16px;
+            padding: var(--space-2xl);
+            margin-bottom: var(--space-lg);
+        }
+
+        .urgency-title {
+            font-size: var(--font-h2);
+            font-weight: 600;
+            margin-bottom: var(--space-lg);
+        }
+
+        .urgency-cards {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .urgency-card {
+            padding: var(--space-lg);
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+        }
+
+        .urgency-critical {
+            border-left: 4px solid var(--color-status-danger);
+            background: linear-gradient(90deg, var(--bg-status-danger) 0%, var(--surface-primary) 100%);
+        }
+
+        .urgency-warning {
+            border-left: 4px solid var(--color-status-warning);
+            background: linear-gradient(90deg, var(--bg-status-warning) 0%, var(--surface-primary) 100%);
+        }
+
+        .urgency-info {
+            border-left: 4px solid var(--color-status-info);
+            background: linear-gradient(90deg, var(--bg-status-info) 0%, var(--surface-primary) 100%);
+        }
+
+        .urgency-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .urgency-critical .urgency-icon {
+            background: var(--bg-status-danger);
+            color: var(--color-status-danger);
+        }
+
+        .urgency-warning .urgency-icon {
+            background: var(--bg-status-warning);
+            color: var(--color-status-warning);
+        }
+
+        .urgency-info .urgency-icon {
+            background: var(--bg-status-info);
+            color: var(--color-status-info);
+        }
+
+        .urgency-content {
+            flex: 1;
+        }
+
+        .urgency-label {
+            font-size: var(--font-micro);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .urgency-critical .urgency-label { color: var(--color-status-danger); }
+        .urgency-warning .urgency-label { color: var(--color-status-warning); }
+        .urgency-info .urgency-label { color: var(--color-status-info); }
+
+        .urgency-text {
+            font-size: var(--font-body);
+            color: var(--text-primary);
+        }
+
+        .urgency-action {
+            font-size: var(--font-small);
+            color: var(--text-muted);
+        }
+
+        /* =================================================
+           MULTI-PROPERTY OVERVIEW
+           ================================================= */
+        .multi-property {
+            background: var(--surface-primary);
+            border-radius: 16px;
+            padding: var(--space-2xl);
+            margin-bottom: var(--space-lg);
+        }
+
+        .multi-property-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-xl);
+        }
+
+        .multi-total {
+            font-size: var(--font-h1);
+            font-weight: 700;
+            color: var(--accent-host);
+            font-feature-settings: 'tnum' 1;
+        }
+
+        .multi-total-label {
+            font-size: var(--font-small);
+            color: var(--text-muted);
+        }
+
+        .property-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .property-row {
+            display: flex;
+            align-items: center;
+            padding: var(--space-md);
+            background: var(--surface-secondary);
+            border-radius: 10px;
+            gap: var(--space-lg);
+        }
+
+        .property-thumb {
+            width: 56px;
+            height: 56px;
+            background: var(--surface-tertiary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+        }
+
+        .property-info {
+            flex: 1;
+        }
+
+        .property-address {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .property-guest {
+            font-size: var(--font-small);
+            color: var(--text-muted);
+        }
+
+        .property-earnings {
+            text-align: right;
+        }
+
+        .property-amount {
+            font-size: var(--font-h3);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-feature-settings: 'tnum' 1;
+        }
+
+        .property-status {
+            font-size: var(--font-small);
+        }
+
+        /* =================================================
+           FOOTER
+           ================================================= */
+        .page-footer {
+            text-align: center;
+            padding: var(--space-2xl);
+            color: var(--text-muted);
+            font-size: var(--font-small);
+        }
+
+        .page-footer strong {
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- ================================================= -->
+    <!-- HEADER WITH VIEW TOGGLE                           -->
+    <!-- ================================================= -->
+    <header class="page-header">
+        <div class="header-content">
+            <div class="logo">Paula Scher <span>Visual Hierarchy</span></div>
+            <div class="view-toggle">
+                <button class="toggle-btn active host-active" id="hostToggle" onclick="showDashboard('host')">Host View</button>
+                <button class="toggle-btn" id="guestToggle" onclick="showDashboard('guest')">Guest View</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- ================================================= -->
+        <!-- HOST DASHBOARD VIEW                                -->
+        <!-- Money as Hero: $12,450 Total Earned               -->
+        <!-- ================================================= -->
+        <div class="dashboard host-dashboard active" id="hostDashboard">
+
+            <!-- HERO: Money-as-Hero -->
+            <section class="hero-section">
+                <div class="hero-label">Total Earned This Lease</div>
+                <div class="hero-value">$12,450</div>
+                <div class="hero-subtitle">123 East 45th St, #4A</div>
+
+                <div class="hero-meta">
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">$2,100</span>
+                        <span class="hero-stat-label">Next Payment (Feb 8)</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">100%</span>
+                        <span class="hero-stat-label">On-Time Payments</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">6</span>
+                        <span class="hero-stat-label">Stays Completed</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CARD GRID: Secondary Information -->
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Next Payment</span>
+                        <span class="badge badge-success">On Track</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-value">$2,100</div>
+                        <div class="card-meta">Due Saturday, February 8, 2026</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Payment History</span>
+                        <span class="badge badge-success">100% On-Time</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-value">6 of 6</div>
+                        <div class="card-meta">All payments received on time</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GUEST RELIABILITY -->
+            <section class="reliability-section">
+                <div class="reliability-header">
+                    <span class="reliability-title">Guest Reliability</span>
+                    <span class="badge badge-success">Excellent</span>
+                </div>
+                <div class="reliability-grid">
+                    <div class="reliability-item">
+                        <span class="reliability-check">&#10003;</span>
+                        <span>All Payments On Time</span>
+                    </div>
+                    <div class="reliability-item">
+                        <span class="reliability-check">&#10003;</span>
+                        <span>Auto-Pay Enabled</span>
+                    </div>
+                    <div class="reliability-item">
+                        <span class="reliability-check">&#10003;</span>
+                        <span>6 Stays Completed</span>
+                    </div>
+                    <div class="reliability-item">
+                        <span class="reliability-check">&#10003;</span>
+                        <span>Responds Within 2 Hours</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ACTION CENTER (No Actions) -->
+            <section class="action-center" style="opacity: 0.5;">
+                <div class="action-card info" style="justify-content: center; padding: 32px;">
+                    <span style="color: var(--text-muted);">No actions required — everything is on track</span>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- ================================================= -->
+        <!-- GUEST DASHBOARD VIEW                               -->
+        <!-- Stay as Hero: Next Stay Feb 10-12                 -->
+        <!-- ================================================= -->
+        <div class="dashboard guest-dashboard" id="guestDashboard">
+
+            <!-- HERO: Stay-as-Hero -->
+            <section class="hero-section">
+                <div class="hero-label">Your Next Stay</div>
+                <div class="hero-value">Feb 10 – 12</div>
+                <div class="hero-subtitle">123 East 45th St, #4A</div>
+
+                <div class="hero-meta">
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">4:00 PM</span>
+                        <span class="hero-stat-label">Check-in Time</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">8</span>
+                        <span class="hero-stat-label">Days Until Stay</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">$10,850</span>
+                        <span class="hero-stat-label">Total Paid</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CARD GRID -->
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Check-in Details</span>
+                        <span class="badge badge-info">Upcoming</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-value">4:00 PM</div>
+                        <div class="card-meta">Tuesday, February 10, 2026</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Payment Due</span>
+                        <span class="badge badge-warning">Due Soon</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-value">$2,100</div>
+                        <div class="card-meta">Due Saturday, February 8, 2026</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LEASE JOURNEY -->
+            <section class="journey-section">
+                <div class="journey-title">Lease Journey</div>
+                <div class="journey-progress">
+                    <div class="journey-step">
+                        <div class="journey-dot completed">&#10003;</div>
+                        <div class="journey-label">Proposal Accepted</div>
+                    </div>
+                    <div class="journey-step">
+                        <div class="journey-dot completed">&#10003;</div>
+                        <div class="journey-label">Agreement Signed</div>
+                    </div>
+                    <div class="journey-step">
+                        <div class="journey-dot completed">&#10003;</div>
+                        <div class="journey-label">First Stay</div>
+                    </div>
+                    <div class="journey-step">
+                        <div class="journey-dot current">4</div>
+                        <div class="journey-label">Ongoing Stays</div>
+                    </div>
+                    <div class="journey-step">
+                        <div class="journey-dot pending">5</div>
+                        <div class="journey-label">Lease Complete</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ACTION CENTER -->
+            <section class="action-center">
+                <div class="action-card pending">
+                    <div class="action-content">
+                        <div class="action-title">Payment Due Soon</div>
+                        <div class="action-meta">$2,100 due February 8, 2026 — 6 days remaining</div>
+                    </div>
+                    <button class="action-button primary">Pay Now</button>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- ================================================= -->
+        <!-- VISUAL HIERARCHY DEMONSTRATION                    -->
+        <!-- ================================================= -->
+        <div class="section-divider">
+            <span>Visual Hierarchy System</span>
+        </div>
+
+        <section class="hierarchy-demo">
+            <h2 class="hierarchy-title">Typography Hierarchy (4 Levels)</h2>
+            <div class="hierarchy-levels">
+
+                <div class="hierarchy-level level-1">
+                    <div class="level-badge">Level 1</div>
+                    <div class="level-example">$12,450</div>
+                    <div class="level-specs">
+                        <strong>Hero</strong><br>
+                        48px / Bold / High contrast<br>
+                        The single most important number
+                    </div>
+                </div>
+
+                <div class="hierarchy-level level-2">
+                    <div class="level-badge">Level 2</div>
+                    <div class="level-example">$2,100 Due Feb 8</div>
+                    <div class="level-specs">
+                        <strong>Important</strong><br>
+                        24px / Semibold / Clear prominence<br>
+                        Secondary metrics and actions
+                    </div>
+                </div>
+
+                <div class="hierarchy-level level-3">
+                    <div class="level-badge">Level 3</div>
+                    <div class="level-example">123 East 45th Street, Apartment 4A</div>
+                    <div class="level-specs">
+                        <strong>Contextual</strong><br>
+                        16px / Regular / Readable<br>
+                        Supporting information
+                    </div>
+                </div>
+
+                <div class="hierarchy-level level-4">
+                    <div class="level-badge">Level 4</div>
+                    <div class="level-example">Last updated January 15, 2026 at 3:42 PM</div>
+                    <div class="level-specs">
+                        <strong>Metadata</strong><br>
+                        12px / Regular / Gray / De-emphasized<br>
+                        Timestamps, IDs, fine print
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================================================= -->
+        <!-- COLOR ACCENT STRATEGY                              -->
+        <!-- ================================================= -->
+        <div class="section-divider">
+            <span>Color Accent Strategy</span>
+        </div>
+
+        <div class="accent-demo">
+            <div class="accent-card accent-host">
+                <div class="accent-title">
+                    <div class="accent-color-chip"></div>
+                    Host View — Money Green
+                </div>
+                <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 16px;">
+                    #22C55E signals revenue, success, and business health.
+                </p>
+                <ul class="accent-list">
+                    <li>Total Earned hero metric</li>
+                    <li>Payment received confirmations</li>
+                    <li>On-time payment badges</li>
+                    <li>Guest reliability checkmarks</li>
+                    <li>Active lease status indicators</li>
+                </ul>
+            </div>
+
+            <div class="accent-card accent-guest">
+                <div class="accent-title">
+                    <div class="accent-color-chip"></div>
+                    Guest View — Stay Blue
+                </div>
+                <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 16px;">
+                    #3B82F6 signals upcoming experiences and progress.
+                </p>
+                <ul class="accent-list">
+                    <li>Next Stay hero display</li>
+                    <li>Upcoming stay badges</li>
+                    <li>Check-in countdown</li>
+                    <li>Lease journey progress</li>
+                    <li>Property and stay cards</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ================================================= -->
+        <!-- URGENCY HIERARCHY                                  -->
+        <!-- ================================================= -->
+        <div class="section-divider">
+            <span>Action Center Urgency</span>
+        </div>
+
+        <section class="urgency-demo">
+            <h2 class="urgency-title">Urgency Visual Hierarchy</h2>
+            <div class="urgency-cards">
+
+                <div class="urgency-card urgency-critical">
+                    <div class="urgency-icon">!</div>
+                    <div class="urgency-content">
+                        <div class="urgency-label">Critical — Overdue</div>
+                        <div class="urgency-text">Payment of $2,100 was due January 31</div>
+                        <div class="urgency-action">4px red left border + red gradient background</div>
+                    </div>
+                </div>
+
+                <div class="urgency-card urgency-warning">
+                    <div class="urgency-icon">&#8987;</div>
+                    <div class="urgency-content">
+                        <div class="urgency-label">Warning — Due Soon</div>
+                        <div class="urgency-text">Sign updated PT Agreement by February 5</div>
+                        <div class="urgency-action">4px amber left border + amber gradient background</div>
+                    </div>
+                </div>
+
+                <div class="urgency-card urgency-info">
+                    <div class="urgency-icon">i</div>
+                    <div class="urgency-content">
+                        <div class="urgency-label">Informational</div>
+                        <div class="urgency-text">Guest submitted date change request for March</div>
+                        <div class="urgency-action">4px blue left border + blue gradient background</div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================================================= -->
+        <!-- MULTI-PROPERTY HOST OVERVIEW                      -->
+        <!-- ================================================= -->
+        <div class="section-divider">
+            <span>Multi-Property Host Overview</span>
+        </div>
+
+        <section class="multi-property">
+            <div class="multi-property-header">
+                <div>
+                    <div class="multi-total-label">Portfolio Total Earnings</div>
+                    <div class="multi-total">$47,250</div>
+                </div>
+                <span class="badge badge-success">3 Active Leases</span>
+            </div>
+
+            <div class="property-list">
+                <div class="property-row">
+                    <div class="property-thumb">&#127968;</div>
+                    <div class="property-info">
+                        <div class="property-address">123 East 45th St, #4A</div>
+                        <div class="property-guest">Guest: Maria S.</div>
+                    </div>
+                    <div class="property-earnings">
+                        <div class="property-amount">$12,450</div>
+                        <div class="property-status badge badge-success">On Track</div>
+                    </div>
+                </div>
+
+                <div class="property-row">
+                    <div class="property-thumb">&#127968;</div>
+                    <div class="property-info">
+                        <div class="property-address">456 West 23rd St, #2B</div>
+                        <div class="property-guest">Guest: James K.</div>
+                    </div>
+                    <div class="property-earnings">
+                        <div class="property-amount">$18,300</div>
+                        <div class="property-status badge badge-success">On Track</div>
+                    </div>
+                </div>
+
+                <div class="property-row">
+                    <div class="property-thumb">&#127968;</div>
+                    <div class="property-info">
+                        <div class="property-address">789 Broadway, #12F</div>
+                        <div class="property-guest">Guest: Sarah L.</div>
+                    </div>
+                    <div class="property-earnings">
+                        <div class="property-amount">$16,500</div>
+                        <div class="property-status badge badge-warning">Action Needed</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="page-footer">
+        <p><strong>Paula Scher — Visual Hierarchy & Dashboard Mockup</strong></p>
+        <p>Run 006B — Phase B: Mockups — 2026-02-02</p>
+        <p>Position 3 of 9 in execution sequence</p>
+    </footer>
+
+    <script>
+        function showDashboard(view) {
+            // Hide all dashboards
+            document.querySelectorAll('.dashboard').forEach(d => d.classList.remove('active'));
+
+            // Reset toggle buttons
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.classList.remove('active', 'host-active', 'guest-active');
+            });
+
+            if (view === 'host') {
+                document.getElementById('hostDashboard').classList.add('active');
+                document.getElementById('hostToggle').classList.add('active', 'host-active');
+            } else {
+                document.getElementById('guestDashboard').classList.add('active');
+                document.getElementById('guestToggle').classList.add('active', 'guest-active');
+            }
+        }
+    </script>
+</body>
+</html>

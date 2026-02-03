@@ -1,0 +1,2286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaction Flow Diagrams - Don Norman</title>
+    <style>
+        :root {
+            /* Status Colors from Synthesis */
+            --color-success: #22C55E;
+            --color-warning: #F59E0B;
+            --color-danger: #EF4444;
+            --color-info: #3B82F6;
+            --bg-success: #DCFCE7;
+            --bg-warning: #FEF3C7;
+            --bg-danger: #FEE2E2;
+            --bg-info: #DBEAFE;
+
+            /* Layout */
+            --border-radius: 8px;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+            --shadow-lg: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.5;
+            padding: 24px;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 32px;
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 16px 24px;
+            margin: -24px -24px 24px -24px;
+            border-bottom: 1px solid #e2e8f0;
+            z-index: 100;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: var(--color-info);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            background: var(--bg-info);
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        nav a:hover {
+            background: var(--color-info);
+            color: white;
+        }
+
+        section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow);
+        }
+
+        section h2 {
+            font-size: 22px;
+            margin-bottom: 8px;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        section h2 span {
+            font-size: 14px;
+            background: var(--bg-info);
+            color: var(--color-info);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: normal;
+        }
+
+        .section-desc {
+            color: #64748b;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        /* State Machine Styles */
+        .state-machine {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            padding: 24px;
+            background: #f8fafc;
+            border-radius: var(--border-radius);
+        }
+
+        .state-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .state-node {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .state-node:hover {
+            border-color: var(--color-info);
+            box-shadow: var(--shadow);
+        }
+
+        .state-node.active {
+            border-color: var(--color-info);
+            background: var(--bg-info);
+        }
+
+        .state-node.success {
+            border-color: var(--color-success);
+            background: var(--bg-success);
+        }
+
+        .state-node.warning {
+            border-color: var(--color-warning);
+            background: var(--bg-warning);
+        }
+
+        .state-node.danger {
+            border-color: var(--color-danger);
+            background: var(--bg-danger);
+        }
+
+        .state-node .title {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .state-node .desc {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .arrow {
+            color: #94a3b8;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .arrow-down {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .branch-label {
+            font-size: 11px;
+            color: var(--color-warning);
+            background: var(--bg-warning);
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+        }
+
+        .state-detail {
+            background: #f8fafc;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 24px;
+            border-left: 4px solid var(--color-info);
+        }
+
+        .state-detail h4 {
+            margin-bottom: 12px;
+            color: var(--color-info);
+        }
+
+        .state-detail ul {
+            margin-left: 20px;
+        }
+
+        .state-detail li {
+            margin-bottom: 6px;
+        }
+
+        /* Interactive Flow Styles */
+        .flow-container {
+            position: relative;
+        }
+
+        .flow-step {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .flow-step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .flow-progress {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            align-items: center;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            transition: all 0.2s;
+        }
+
+        .progress-dot.active {
+            background: var(--color-info);
+            transform: scale(1.2);
+        }
+
+        .progress-dot.completed {
+            background: var(--color-success);
+        }
+
+        .progress-line {
+            flex: 1;
+            height: 2px;
+            background: #e2e8f0;
+            max-width: 40px;
+        }
+
+        .progress-line.completed {
+            background: var(--color-success);
+        }
+
+        .step-content {
+            background: #f8fafc;
+            border-radius: var(--border-radius);
+            padding: 32px;
+            min-height: 300px;
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .step-number {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .conversion-badge {
+            background: var(--bg-success);
+            color: var(--color-success);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .conversion-badge.warning {
+            background: var(--bg-warning);
+            color: #92400e;
+        }
+
+        .mock-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 16px;
+        }
+
+        .mock-card h4 {
+            margin-bottom: 16px;
+        }
+
+        .mock-card ul {
+            margin-left: 20px;
+            margin-bottom: 16px;
+        }
+
+        .mock-card li {
+            margin-bottom: 8px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: var(--color-info);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-success {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #16a34a;
+        }
+
+        .btn-danger {
+            background: var(--color-danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .btn-warning {
+            background: var(--color-warning);
+            color: white;
+        }
+
+        .flow-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        /* Entry Points */
+        .entry-points {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .entry-point {
+            flex: 1;
+            background: white;
+            border: 2px dashed #e2e8f0;
+            border-radius: var(--border-radius);
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .entry-point:hover {
+            border-color: var(--color-info);
+            border-style: solid;
+        }
+
+        .entry-point.selected {
+            border-color: var(--color-info);
+            border-style: solid;
+            background: var(--bg-info);
+        }
+
+        .entry-point .icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        /* Success/Failure States */
+        .outcome-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .outcome-card {
+            border-radius: var(--border-radius);
+            padding: 24px;
+        }
+
+        .outcome-card.success {
+            background: var(--bg-success);
+            border: 2px solid var(--color-success);
+        }
+
+        .outcome-card.failure {
+            background: var(--bg-danger);
+            border: 2px solid var(--color-danger);
+        }
+
+        .outcome-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        /* DCT Calendar Mock */
+        .calendar-mock {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin: 16px 0;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .calendar-day.header {
+            font-weight: 600;
+            font-size: 11px;
+            color: #64748b;
+            cursor: default;
+        }
+
+        .calendar-day.existing {
+            background: var(--bg-info);
+            color: var(--color-info);
+        }
+
+        .calendar-day.available:hover {
+            background: #e2e8f0;
+        }
+
+        .calendar-day.selected-add {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .calendar-day.selected-remove {
+            background: var(--color-danger);
+            color: white;
+            text-decoration: line-through;
+        }
+
+        .calendar-day.disabled {
+            color: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .calendar-legend {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+            font-size: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        /* Parallel Flows */
+        .parallel-flows {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        .flow-column {
+            background: #f8fafc;
+            border-radius: var(--border-radius);
+            padding: 24px;
+        }
+
+        .flow-column h3 {
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .flow-column h3.requester {
+            border-color: var(--color-info);
+        }
+
+        .flow-column h3.responder {
+            border-color: var(--color-warning);
+        }
+
+        /* Ball Indicator */
+        .ball-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .ball-indicator.your-turn {
+            background: var(--bg-warning);
+            color: #92400e;
+        }
+
+        .ball-indicator.waiting {
+            background: var(--bg-info);
+            color: var(--color-info);
+        }
+
+        /* Countdown */
+        .countdown {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .countdown-bar {
+            flex: 1;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .countdown-fill {
+            height: 100%;
+            background: var(--color-warning);
+            transition: width 0.3s;
+        }
+
+        /* Error Recovery */
+        .error-card {
+            background: var(--bg-danger);
+            border: 2px solid var(--color-danger);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .error-card h4 {
+            color: var(--color-danger);
+            margin-bottom: 12px;
+        }
+
+        .recovery-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .recovery-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: white;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e2e8f0;
+        }
+
+        .recovery-option:hover {
+            border-color: var(--color-info);
+            background: var(--bg-info);
+        }
+
+        /* State Preservation Table */
+        .preservation-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        .preservation-table th,
+        .preservation-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .preservation-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .preservation-table .check {
+            color: var(--color-success);
+        }
+
+        .preservation-table .cross {
+            color: var(--color-danger);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+
+            nav {
+                margin: -16px -16px 16px -16px;
+                padding: 12px 16px;
+            }
+
+            section {
+                padding: 20px;
+            }
+
+            .parallel-flows {
+                grid-template-columns: 1fr;
+            }
+
+            .outcome-split {
+                grid-template-columns: 1fr;
+            }
+
+            .entry-points {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Interaction Flow Diagrams</h1>
+    <p class="subtitle">Don Norman - Run 006B - Leases Management Pages</p>
+
+    <nav>
+        <a href="#state-machine">1. Lifecycle States</a>
+        <a href="#sign-lease">2. Sign Lease</a>
+        <a href="#pay-invoice">3. Pay Invoice</a>
+        <a href="#dct-flows">4. DCT Request/Response</a>
+        <a href="#error-recovery">5. Error Recovery</a>
+        <a href="#state-preservation">6. State Preservation</a>
+    </nav>
+
+    <!-- ==================== SECTION 1: STATE MACHINE ==================== -->
+    <section id="state-machine">
+        <h2>1. Lease Lifecycle State Machine <span>Clickable Diagram</span></h2>
+        <p class="section-desc">
+            Click any state to see details. This diagram shows all lease states and transitions.
+            Charles: Note where empty states occur. Dieter: Note trust-critical transitions.
+        </p>
+
+        <div class="state-machine">
+            <!-- Row 1: Initial Flow -->
+            <div class="state-row">
+                <div class="state-node" data-state="proposal-accepted">
+                    <div class="title">PROPOSAL ACCEPTED</div>
+                    <div class="desc">Entry point</div>
+                </div>
+                <span class="arrow">&rarr;</span>
+                <div class="state-node" data-state="docs-drafting">
+                    <div class="title">DOCS DRAFTING</div>
+                    <div class="desc">System generating</div>
+                </div>
+                <span class="arrow">&rarr;</span>
+                <div class="state-node" data-state="ready-to-sign">
+                    <div class="title">READY TO SIGN</div>
+                    <div class="desc">Awaiting first signature</div>
+                </div>
+                <span class="arrow">&rarr;</span>
+                <div class="state-node" data-state="awaiting-2nd">
+                    <div class="title">AWAITING 2ND PARTY</div>
+                    <div class="desc">One party signed</div>
+                </div>
+                <span class="arrow">&rarr;</span>
+                <div class="state-node success" data-state="lease-active">
+                    <div class="title">LEASE ACTIVE</div>
+                    <div class="desc">Fully executed</div>
+                </div>
+            </div>
+
+            <!-- Branch: Changes Requested -->
+            <div style="margin-left: 200px;">
+                <div class="arrow-down">
+                    <span class="branch-label">Changes Requested</span>
+                    <span>&darr;</span>
+                </div>
+                <div class="state-node warning" data-state="changes-requested" style="margin-top: 8px;">
+                    <div class="title">CHANGES REQUESTED</div>
+                    <div class="desc">Negotiation in progress</div>
+                </div>
+                <div class="arrow-down" style="margin-top: 8px;">
+                    <span>&uarr;</span>
+                    <span class="branch-label">Back to Drafting</span>
+                </div>
+            </div>
+
+            <!-- Row 2: Active Lease Cycles -->
+            <div style="margin-top: 24px; padding-top: 24px; border-top: 2px dashed #e2e8f0;">
+                <p style="font-size: 12px; color: #64748b; margin-bottom: 16px;">From LEASE ACTIVE, these cycles occur:</p>
+                <div class="state-row">
+                    <div class="state-node" data-state="payment-cycle">
+                        <div class="title">PAYMENT CYCLE</div>
+                        <div class="desc">Recurring payments</div>
+                    </div>
+                    <div class="state-node" data-state="dct-requests">
+                        <div class="title">DCT REQUESTS</div>
+                        <div class="desc">Date change tool</div>
+                    </div>
+                    <div class="state-node" data-state="stay-cycle">
+                        <div class="title">STAY CYCLE</div>
+                        <div class="desc">Check-in/out</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 3: Terminal States -->
+            <div style="margin-top: 24px; padding-top: 24px; border-top: 2px dashed #e2e8f0;">
+                <p style="font-size: 12px; color: #64748b; margin-bottom: 16px;">Terminal states:</p>
+                <div class="state-row">
+                    <div class="state-node success" data-state="lease-completed">
+                        <div class="title">LEASE COMPLETED</div>
+                        <div class="desc">Natural end</div>
+                    </div>
+                    <div class="state-node danger" data-state="lease-terminated">
+                        <div class="title">LEASE TERMINATED</div>
+                        <div class="desc">Early termination</div>
+                    </div>
+                    <div class="state-node danger" data-state="lease-disputed">
+                        <div class="title">DISPUTED</div>
+                        <div class="desc">Support intervention</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- State Details (populated by JS) -->
+        <div id="state-detail" class="state-detail" style="display: none;">
+            <h4 id="state-detail-title">State Details</h4>
+            <div id="state-detail-content"></div>
+        </div>
+    </section>
+
+    <!-- ==================== SECTION 2: SIGN LEASE FLOW ==================== -->
+    <section id="sign-lease">
+        <h2>2. Sign Lease Flow <span>Click Through</span></h2>
+        <p class="section-desc">
+            Step-by-step signing flow. Conversion estimates based on proposal flow learnings.
+            Luke: Note friction points at each step.
+        </p>
+
+        <div class="flow-container">
+            <!-- Progress Indicator -->
+            <div class="flow-progress" id="sign-progress">
+                <div class="progress-dot active" data-step="1"></div>
+                <div class="progress-line"></div>
+                <div class="progress-dot" data-step="2"></div>
+                <div class="progress-line"></div>
+                <div class="progress-dot" data-step="3"></div>
+                <div class="progress-line"></div>
+                <div class="progress-dot" data-step="4"></div>
+                <div class="progress-line"></div>
+                <div class="progress-dot" data-step="5"></div>
+            </div>
+
+            <!-- Step 1: Action Center -->
+            <div class="flow-step active" id="sign-step-1">
+                <div class="step-content">
+                    <div class="step-header">
+                        <div>
+                            <div class="step-number">Step 1 of 5</div>
+                            <div class="step-title">Action Center Shows "Sign Lease"</div>
+                        </div>
+                        <div class="conversion-badge">Entry: 100%</div>
+                    </div>
+
+                    <div class="mock-card">
+                        <div style="background: var(--bg-warning); padding: 16px; border-radius: var(--border-radius); margin-bottom: 16px;">
+                            <strong style="color: #92400e;">Action Required</strong>
+                        </div>
+                        <h4>Sign Your Lease Agreement</h4>
+                        <p style="color: #64748b; margin-bottom: 16px;">Your Periodic Tenancy Agreement is ready for review and signature.</p>
+                        <p style="font-size: 14px;"><strong>With:</strong> Sarah Chen</p>
+                        <p style="font-size: 14px;"><strong>Property:</strong> 123 East 45th St, Apt 4A</p>
+                        <p style="font-size: 14px;"><strong>Monthly Rate:</strong> $2,400</p>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="advanceSignFlow(2)">Review & Sign</button>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 13px; color: #64748b; margin-top: 16px;">
+                        <strong>Charles (Empty State):</strong> This card appears immediately after proposal acceptance.
+                        Before this, the lease page shows "Preparing your documents..." placeholder.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 2: Document Summary -->
+            <div class="flow-step" id="sign-step-2">
+                <div class="step-content">
+                    <div class="step-header">
+                        <div>
+                            <div class="step-number">Step 2 of 5</div>
+                            <div class="step-title">Document Summary Modal</div>
+                        </div>
+                        <div class="conversion-badge">Est: 95%</div>
+                    </div>
+
+                    <div class="mock-card">
+                        <h4>Periodic Tenancy Agreement Summary</h4>
+                        <p style="color: #64748b; margin-bottom: 16px;">Plain English summary of key terms:</p>
+                        <ul>
+                            <li>You will stay Monday through Thursday each week</li>
+                            <li>Monthly rent is $2,400, due on the 1st</li>
+                            <li>Either party can request date changes with 48-hour notice</li>
+                            <li>30-day notice required to terminate</li>
+                            <li>Security deposit: $1,200 (50% of monthly rent)</li>
+                        </ul>
+                        <p style="font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 12px; margin-top: 16px;">
+                            This summary is for convenience. The full legal document governs the agreement.
+                        </p>
+                        <div class="button-group">
+                            <button class="btn btn-secondary" onclick="advanceSignFlow(3, 'full')">Read Full Document</button>
+                            <button class="btn btn-warning" onclick="advanceSignFlow('changes')">Request Changes</button>
+                            <button class="btn btn-primary" onclick="advanceSignFlow(4)">I've Read & Agree</button>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 13px; color: #64748b; margin-top: 16px;">
+                        <strong>Dieter (Trust):</strong> "Request Changes" button has equal visual weight to proceed.
+                        No forced scroll-to-sign or dark patterns.
+                    </p>
+                </div>
+
+                <div class="flow-nav">
+                    <button class="btn btn-secondary" onclick="advanceSignFlow(1)">Back</button>
+                    <span style="font-size: 12px; color: #64748b;">Decision point: 3 options</span>
+                </div>
+            </div>
+
+            <!-- Step 3: Full Document (Branch) -->
+            <div class="flow-step" id="sign-step-3">
+                <div class="step-content">
+                    <div class="step-header">
+                        <div>
+                            <div class="step-number">Step 3 of 5 (Optional)</div>
+                            <div class="step-title">Full Document View</div>
+                        </div>
+                        <div class="conversion-badge warning">Est: 85%</div>
+                    </div>
+
+                    <div class="mock-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h4>Periodic Tenancy Agreement</h4>
+                            <button class="btn btn-secondary" style="padding: 8px 12px; font-size: 12px;">Download PDF</button>
+                        </div>
+                        <div style="background: #f8fafc; padding: 16px; border-radius: var(--border-radius); height: 200px; overflow: auto; font-size: 13px; line-height: 1.8;">
+                            <p><strong>PERIODIC TENANCY AGREEMENT</strong></p>
+                            <p style="margin-top: 12px;">This Agreement is entered into as of [Date] between:</p>
+                            <p style="margin-top: 12px;"><strong>LANDLORD:</strong> Sarah Chen, residing at...</p>
+                            <p style="margin-top: 12px;"><strong>TENANT:</strong> [Your Name], residing at...</p>
+                            <p style="margin-top: 12px;"><strong>PREMISES:</strong> 123 East 45th Street, Apartment 4A, New York, NY 10017</p>
+                            <p style="margin-top: 12px;"><strong>TERM:</strong> This tenancy shall be periodic, commencing on...</p>
+                            <p style="color: #64748b; margin-top: 24px;">[Scrollable full legal text...]</p>
+                        </div>
+                        <div class="button-group">
+                            <button class="btn btn-secondary" onclick="advanceSignFlow(2)">Back to Summary</button>
+                            <button class="btn btn-primary" onclick="advanceSignFlow(4)">I've Read & Agree</button>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 13px; color: #64748b; margin-top: 16px;">
+                        <strong>Luke (Conversion):</strong> 10% drop expected when users read full doc.
+                        Keep it clean and scannable.
+                    </p>
+                </div>
+
+                <div class="flow-nav">
+                    <button class="btn btn-secondary" onclick="advanceSignFlow(2)">Back to Summary</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Sign Confirmation -->
+            <div class="flow-step" id="sign-step-4">
+                <div class="step-content">
+                    <div class="step-header">
+                        <div>
+                            <div class="step-number">Step 4 of 5</div>
+                            <div class="step-title">Sign Confirmation Modal</div>
+                        </div>
+                        <div class="conversion-badge">Est: 92%</div>
+                    </div>
+
+                    <div class="mock-card">
+                        <h4>Confirm Your Signature</h4>
+                        <p style="color: #64748b; margin-bottom: 20px;">
+                            By clicking "Sign Agreement", you agree to the terms of the Periodic Tenancy Agreement.
+                        </p>
+
+                        <div style="background: #f8fafc; padding: 16px; border-radius: var(--border-radius); margin-bottom: 16px;">
+                            <p style="font-size: 14px;"><strong>Signing as:</strong> John Smith</p>
+                            <p style="font-size: 14px;"><strong>Email:</strong> john.smith@email.com</p>
+                            <p style="font-size: 14px;"><strong>Date:</strong> February 2, 2026</p>
+                        </div>
+
+                        <label style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px; cursor: pointer;">
+                            <input type="checkbox" id="sign-checkbox" style="margin-top: 4px;">
+                            <span style="font-size: 14px;">I confirm I have read and understood the agreement and am authorized to sign.</span>
+                        </label>
+
+                        <div class="button-group">
+                            <button class="btn btn-secondary" onclick="advanceSignFlow(2)">Back</button>
+                            <button class="btn btn-success" onclick="advanceSignFlow(5)" id="sign-btn">Sign Agreement</button>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 13px; color: #64748b; margin-top: 16px;">
+                        <strong>Dieter (Trust):</strong> Explicit checkbox prevents accidental signing.
+                        Clear identity confirmation builds legal trust.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 5: Success -->
+            <div class="flow-step" id="sign-step-5">
+                <div class="step-content">
+                    <div class="step-header">
+                        <div>
+                            <div class="step-number">Step 5 of 5</div>
+                            <div class="step-title">Success State</div>
+                        </div>
+                        <div class="conversion-badge">Complete</div>
+                    </div>
+
+                    <div class="mock-card" style="text-align: center; padding: 40px;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">&#10003;</div>
+                        <h4 style="color: var(--color-success);">Agreement Signed Successfully</h4>
+                        <p style="color: #64748b; margin: 16px 0;">Your signature has been recorded. Waiting for Sarah Chen to sign.</p>
+
+                        <div style="background: var(--bg-info); padding: 16px; border-radius: var(--border-radius); margin: 24px auto; max-width: 400px;">
+                            <p style="font-size: 14px; color: var(--color-info);">
+                                <strong>What's Next:</strong> We'll notify you when Sarah signs.
+                                Your lease will be active and you can start your first stay.
+                            </p>
+                        </div>
+
+                        <div class="button-group" style="justify-content: center;">
+                            <button class="btn btn-secondary" onclick="advanceSignFlow(1)">View Lease Details</button>
+                            <button class="btn btn-primary" onclick="alert('Download initiated')">Download Signed Copy</button>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 13px; color: #64748b; margin-top: 16px;">
+                        <strong>Charles (First-time):</strong> This is the user's first "victory" in the lease flow.
+                        Celebrate it, but stay professional. Show clear next steps.
+                    </p>
+                </div>
+
+                <div class="flow-nav">
+                    <button class="btn btn-secondary" onclick="advanceSignFlow(1)">Restart Flow Demo</button>
+                    <span style="font-size: 12px; color: var(--color-success);">Flow Complete</span>
+                </div>
+            </div>
+
+            <!-- Changes Requested Branch -->
+            <div class="flow-step" id="sign-step-changes">
+                <div class="step-content">
+                    <div class="step-header">
+                        <div>
+                            <div class="step-number">Branch: Changes Requested</div>
+                            <div class="step-title">Request Changes Modal</div>
+                        </div>
+                        <div class="conversion-badge warning">Exits Flow</div>
+                    </div>
+
+                    <div class="mock-card">
+                        <h4>Request Changes to Agreement</h4>
+                        <p style="color: #64748b; margin-bottom: 16px;">
+                            Describe the changes you'd like to request. Your host will review and respond.
+                        </p>
+
+                        <div style="margin-bottom: 16px;">
+                            <label style="font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">What would you like to change?</label>
+                            <textarea style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: var(--border-radius); min-height: 100px; font-family: inherit;" placeholder="e.g., I'd like to request a lower security deposit..."></textarea>
+                        </div>
+
+                        <div class="button-group">
+                            <button class="btn btn-secondary" onclick="advanceSignFlow(2)">Cancel</button>
+                            <button class="btn btn-warning" onclick="alert('Request sent to host')">Submit Request</button>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 13px; color: #64748b; margin-top: 16px;">
+                        <strong>Don (Flow):</strong> This exits the signing flow and enters negotiation state.
+                        User returns to "CHANGES REQUESTED" in the state machine.
+                    </p>
+                </div>
+
+                <div class="flow-nav">
+                    <button class="btn btn-secondary" onclick="advanceSignFlow(2)">Back to Summary</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SECTION 3: PAY INVOICE FLOW ==================== -->
+    <section id="pay-invoice">
+        <h2>3. Pay Invoice Flow <span>Click Through</span></h2>
+        <p class="section-desc">
+            Payment flow with multiple entry points and success/failure branches.
+            Shows saved method vs. new method paths.
+        </p>
+
+        <div class="flow-container">
+            <!-- Entry Points -->
+            <h4 style="margin-bottom: 12px;">Entry Points (click to start):</h4>
+            <div class="entry-points">
+                <div class="entry-point selected" onclick="selectPayEntry(this, 'action')" data-entry="action">
+                    <div class="icon">&#128221;</div>
+                    <div><strong>Action Center</strong></div>
+                    <div style="font-size: 12px; color: #64748b;">Most common</div>
+                </div>
+                <div class="entry-point" onclick="selectPayEntry(this, 'financials')" data-entry="financials">
+                    <div class="icon">&#128176;</div>
+                    <div><strong>Financials Tab</strong></div>
+                    <div style="font-size: 12px; color: #64748b;">Direct navigation</div>
+                </div>
+                <div class="entry-point" onclick="selectPayEntry(this, 'push')" data-entry="push">
+                    <div class="icon">&#128276;</div>
+                    <div><strong>Push Notification</strong></div>
+                    <div style="font-size: 12px; color: #64748b;">Mobile deep link</div>
+                </div>
+            </div>
+
+            <!-- Progress -->
+            <div class="flow-progress" id="pay-progress">
+                <div class="progress-dot active" data-step="1"></div>
+                <div class="progress-line"></div>
+                <div class="progress-dot" data-step="2"></div>
+                <div class="progress-line"></div>
+                <div class="progress-dot" data-step="3"></div>
+                <div class="progress-line"></div>
+                <div class="progress-dot" data-step="4"></div>
+                <div class="progress-line"></div>
+                <div class="progress-dot" data-step="5"></div>
+            </div>
+
+            <!-- Step 1: Entry Context -->
+            <div class="flow-step active" id="pay-step-1">
+                <div class="step-content">
+                    <div class="step-header">
+                        <div>
+                            <div class="step-number">Step 1 of 5</div>
+                            <div class="step-title" id="pay-entry-title">Action Center Card</div>
+                        </div>
+                        <div class="conversion-badge">Entry: 100%</div>
+                    </div>
+
+                    <div class="mock-card" id="pay-entry-content">
+                        <div style="background: var(--bg-warning); padding: 16px; border-radius: var(--border-radius); margin-bottom: 16px;">
+                            <strong style="color: #92400e;">Payment Due Feb 1</strong>
+                        </div>
+                        <h4>February Rent Payment</h4>
+                        <p style="font-size: 24px; font-weight: 700; margin: 16px 0;">$2,400.00</p>
+                        <p style="font-size: 14px; color: #64748b;">Due in 3 days</p>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="advancePayFlow(2)">Pay Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Payment Review -->
+            <div class="flow-step" id="pay-step-2">
+                <div class="step-content">
+                    <div class="step-header">
+                        <div>
+                            <div class="step-number">Step 2 of 5</div>
+                            <div class="step-title">Payment Review Modal</div>
+                        </div>
+                        <div class="conversion-badge">Est: 95%</div>
+                    </div>
+
+                    <div class="mock-card">
+                        <h4>Review Payment</h4>
+
+                        <div style="margin: 20px 0; padding: 16px; background: #f8fafc; border-radius: var(--border-radius);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Monthly Rent</span>
+                                <span>$2,400.00</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Date Change Credit</span>
+                                <span style="color: var(--color-success);">-$150.00</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid #e2e8f0; font-weight: 600;">
+                                <span>Total Due</span>
+                                <span>$2,250.00</span>
+                            </div>
+                        </div>
+
+                        <div style="font-size: 14px; color: #64748b;">
+                            <p><strong>Due Date:</strong> February 1, 2026</p>
+                            <p><strong>Lease:</strong> 123 East 45th St, Apt 4A</p>
+                            <p><strong>Host:</strong> Sarah Chen</p>
+                        </div>
+
+                        <div class="button-group">
+                            <button class="btn btn-secondary" onclick="advancePayFlow(1)">Back</button>
+                            <button class="btn btn-primary" onclick="advancePayFlow(3)">Continue to Payment</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Payment Method -->
+            <div class="flow-step" id="pay-step-3">
+                <div class="step-content">
+                    <div class="step-header">
+                        <div>
+                            <div class="step-number">Step 3 of 5</div>
+                            <div class="step-title">Select Payment Method</div>
+                        </div>
+                        <div class="conversion-badge">Est: 90%</div>
+                    </div>
+
+                    <div class="mock-card">
+                        <h4>Payment Method</h4>
+
+                        <!-- Saved Method -->
+                        <div style="margin: 16px 0;">
+                            <label style="display: flex; align-items: center; gap: 12px; padding: 16px; border: 2px solid var(--color-info); border-radius: var(--border-radius); cursor: pointer; background: var(--bg-info);">
+                                <input type="radio" name="payment-method" checked>
+                                <div>
+                                    <div style="font-weight: 600;">Visa ending in 4242</div>
+                                    <div style="font-size: 12px; color: #64748b;">Expires 12/27</div>
+                                </div>
+                                <span style="margin-left: auto; font-size: 12px; color: var(--color-success);">&#10003; Default</span>
+                            </label>
+                        </div>
+
+                        <!-- New Method -->
+                        <div style="margin: 16px 0;">
+                            <label style="display: flex; align-items: center; gap: 12px; padding: 16px; border: 2px solid #e2e8f0; border-radius: var(--border-radius); cursor: pointer;">
+                                <input type="radio" name="payment-method">
+                                <div>
+                                    <div style="font-weight: 600;">Add New Payment Method</div>
+                                    <div style="font-size: 12px; color: #64748b;">Card, Bank Account, or Apple Pay</div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="button-group">
+                            <button class="btn btn-secondary" onclick="advancePayFlow(2)">Back</button>
+                            <button class="btn btn-success" onclick="advancePayFlow(4)">Pay $2,250.00</button>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 13px; color: #64748b; margin-top: 16px;">
+                        <strong>Luke (Conversion):</strong> Saved method enables 1-click payment.
+                        5% drop-off expected if user needs to add new method.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 4: Processing -->
+            <div class="flow-step" id="pay-step-4">
+                <div class="step-content">
+                    <div class="step-header">
+                        <div>
+                            <div class="step-number">Step 4 of 5</div>
+                            <div class="step-title">Processing Payment</div>
+                        </div>
+                        <div class="conversion-badge">Processing...</div>
+                    </div>
+
+                    <div class="mock-card" style="text-align: center; padding: 60px 40px;">
+                        <div class="spinner" style="width: 48px; height: 48px; border: 4px solid #e2e8f0; border-top-color: var(--color-info); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 24px;"></div>
+                        <h4>Processing your payment...</h4>
+                        <p style="color: #64748b; margin-top: 12px;">This usually takes 2-5 seconds. Please don't close this window.</p>
+                    </div>
+
+                    <style>
+                        @keyframes spin {
+                            to { transform: rotate(360deg); }
+                        }
+                    </style>
+
+                    <div class="outcome-split">
+                        <div class="outcome-card success" onclick="advancePayFlow(5, 'success')" style="cursor: pointer;">
+                            <h4><span style="font-size: 20px;">&#10003;</span> Success Path</h4>
+                            <p style="font-size: 14px;">Click to see success state</p>
+                        </div>
+                        <div class="outcome-card failure" onclick="advancePayFlow(5, 'failure')" style="cursor: pointer;">
+                            <h4><span style="font-size: 20px;">&#10007;</span> Failure Path</h4>
+                            <p style="font-size: 14px;">Click to see error recovery</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Success -->
+            <div class="flow-step" id="pay-step-5-success">
+                <div class="step-content">
+                    <div class="step-header">
+                        <div>
+                            <div class="step-number">Step 5 of 5</div>
+                            <div class="step-title">Payment Successful</div>
+                        </div>
+                        <div class="conversion-badge" style="background: var(--bg-success); color: var(--color-success);">Complete</div>
+                    </div>
+
+                    <div class="mock-card" style="text-align: center; padding: 40px;">
+                        <div style="width: 64px; height: 64px; background: var(--bg-success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--color-success); font-size: 32px;">&#10003;</div>
+                        <h4 style="color: var(--color-success);">Payment Successful!</h4>
+                        <p style="color: #64748b; margin: 16px 0;">$2,250.00 paid to Sarah Chen</p>
+
+                        <div style="background: #f8fafc; padding: 16px; border-radius: var(--border-radius); margin: 24px auto; max-width: 300px; text-align: left;">
+                            <p style="font-size: 14px;"><strong>Confirmation:</strong> PAY-2026-0201-A7X3</p>
+                            <p style="font-size: 14px;"><strong>Method:</strong> Visa ...4242</p>
+                            <p style="font-size: 14px;"><strong>Date:</strong> Feb 1, 2026 at 10:32 AM</p>
+                        </div>
+
+                        <div class="button-group" style="justify-content: center;">
+                            <button class="btn btn-secondary" onclick="alert('Receipt downloaded')">Download Receipt</button>
+                            <button class="btn btn-primary" onclick="advancePayFlow(1)">Done</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flow-nav">
+                    <button class="btn btn-secondary" onclick="advancePayFlow(1)">Restart Flow Demo</button>
+                </div>
+            </div>
+
+            <!-- Step 5: Failure -->
+            <div class="flow-step" id="pay-step-5-failure">
+                <div class="step-content">
+                    <div class="step-header">
+                        <div>
+                            <div class="step-number">Step 5 of 5</div>
+                            <div class="step-title">Payment Failed</div>
+                        </div>
+                        <div class="conversion-badge" style="background: var(--bg-danger); color: var(--color-danger);">Recovery Required</div>
+                    </div>
+
+                    <div class="error-card">
+                        <h4>Payment couldn't be processed</h4>
+                        <p style="margin-bottom: 16px;">Your card ending in 4242 was declined. This can happen if:</p>
+                        <ul style="margin-left: 20px; margin-bottom: 16px;">
+                            <li>The card has expired or been cancelled</li>
+                            <li>There are insufficient funds</li>
+                            <li>Your bank flagged the transaction</li>
+                        </ul>
+
+                        <div class="recovery-options">
+                            <div class="recovery-option" onclick="advancePayFlow(3)">
+                                <span style="font-size: 20px;">&#128179;</span>
+                                <div>
+                                    <strong>Try a Different Card</strong>
+                                    <div style="font-size: 12px; color: #64748b;">Use another payment method</div>
+                                </div>
+                            </div>
+                            <div class="recovery-option" onclick="advancePayFlow(4)">
+                                <span style="font-size: 20px;">&#128260;</span>
+                                <div>
+                                    <strong>Try Again</strong>
+                                    <div style="font-size: 12px; color: #64748b;">Retry with same card</div>
+                                </div>
+                            </div>
+                            <div class="recovery-option" onclick="alert('Opening support chat')">
+                                <span style="font-size: 20px;">&#128172;</span>
+                                <div>
+                                    <strong>Contact Support</strong>
+                                    <div style="font-size: 12px; color: #64748b;">Get help with payment issues</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 13px; color: #64748b; margin-top: 16px;">
+                        <strong>Dieter (Trust):</strong> Factual language, not shaming. "Couldn't be processed" not "failed."
+                        Multiple recovery paths ensure users aren't stuck.
+                    </p>
+                </div>
+
+                <div class="flow-nav">
+                    <button class="btn btn-secondary" onclick="advancePayFlow(1)">Restart Flow Demo</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SECTION 4: DCT FLOWS ==================== -->
+    <section id="dct-flows">
+        <h2>4. DCT Request/Response Flows <span>Parallel Flows</span></h2>
+        <p class="section-desc">
+            Two parallel flows: Requester (initiating change) and Responder (receiving request).
+            The "Ball Metaphor" indicates whose turn it is to act.
+        </p>
+
+        <div class="parallel-flows">
+            <!-- REQUESTER FLOW -->
+            <div class="flow-column">
+                <h3 class="requester">Requester Flow</h3>
+
+                <div id="requester-flow">
+                    <!-- Step 1: Entry -->
+                    <div class="flow-step active" id="req-step-1">
+                        <div class="mock-card">
+                            <p style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Step 1: Entry Point</p>
+                            <h4>Request Date Change</h4>
+                            <p style="color: #64748b; margin: 12px 0;">Modify your upcoming stay dates.</p>
+                            <button class="btn btn-primary" onclick="advanceReqFlow(2)">Request Date Change</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Choose Action -->
+                    <div class="flow-step" id="req-step-2">
+                        <div class="mock-card">
+                            <p style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Step 2: Choose Action</p>
+                            <h4>What would you like to do?</h4>
+                            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 16px;">
+                                <button class="btn btn-secondary" style="text-align: left; padding: 16px;" onclick="advanceReqFlow(3, 'add')">
+                                    <strong>Add Dates</strong><br>
+                                    <span style="font-size: 12px; color: #64748b;">Request additional nights</span>
+                                </button>
+                                <button class="btn btn-secondary" style="text-align: left; padding: 16px;" onclick="advanceReqFlow(3, 'remove')">
+                                    <strong>Remove Dates</strong><br>
+                                    <span style="font-size: 12px; color: #64748b;">Shorten your stay</span>
+                                </button>
+                                <button class="btn btn-secondary" style="text-align: left; padding: 16px;" onclick="advanceReqFlow(3, 'swap')">
+                                    <strong>Swap Dates</strong><br>
+                                    <span style="font-size: 12px; color: #64748b;">Trade one date for another</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Calendar Selection -->
+                    <div class="flow-step" id="req-step-3">
+                        <div class="mock-card">
+                            <p style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Step 3: Select Dates</p>
+                            <h4 id="req-calendar-title">Select Dates to Add</h4>
+
+                            <div class="calendar-mock">
+                                <div class="calendar-day header">Sun</div>
+                                <div class="calendar-day header">Mon</div>
+                                <div class="calendar-day header">Tue</div>
+                                <div class="calendar-day header">Wed</div>
+                                <div class="calendar-day header">Thu</div>
+                                <div class="calendar-day header">Fri</div>
+                                <div class="calendar-day header">Sat</div>
+
+                                <div class="calendar-day disabled"></div>
+                                <div class="calendar-day disabled"></div>
+                                <div class="calendar-day disabled"></div>
+                                <div class="calendar-day disabled"></div>
+                                <div class="calendar-day disabled"></div>
+                                <div class="calendar-day disabled">1</div>
+                                <div class="calendar-day available" onclick="toggleCalDay(this)">2</div>
+
+                                <div class="calendar-day available" onclick="toggleCalDay(this)">3</div>
+                                <div class="calendar-day existing">4</div>
+                                <div class="calendar-day existing">5</div>
+                                <div class="calendar-day existing">6</div>
+                                <div class="calendar-day existing">7</div>
+                                <div class="calendar-day available" onclick="toggleCalDay(this)">8</div>
+                                <div class="calendar-day available" onclick="toggleCalDay(this)">9</div>
+
+                                <div class="calendar-day available" onclick="toggleCalDay(this)">10</div>
+                                <div class="calendar-day existing">11</div>
+                                <div class="calendar-day existing">12</div>
+                                <div class="calendar-day existing">13</div>
+                                <div class="calendar-day existing">14</div>
+                                <div class="calendar-day available" onclick="toggleCalDay(this)">15</div>
+                                <div class="calendar-day available" onclick="toggleCalDay(this)">16</div>
+                            </div>
+
+                            <div class="calendar-legend">
+                                <div class="legend-item">
+                                    <div class="legend-dot" style="background: var(--bg-info);"></div>
+                                    <span>Existing</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-dot" style="background: var(--color-success);"></div>
+                                    <span>Adding</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-dot" style="background: var(--color-danger);"></div>
+                                    <span>Removing</span>
+                                </div>
+                            </div>
+
+                            <div style="background: #f8fafc; padding: 12px; border-radius: var(--border-radius); margin-top: 12px;">
+                                <strong id="price-impact">+$0</strong>
+                                <span style="font-size: 12px; color: #64748b;"> estimated impact</span>
+                            </div>
+
+                            <div class="button-group">
+                                <button class="btn btn-secondary" onclick="advanceReqFlow(2)">Back</button>
+                                <button class="btn btn-primary" onclick="advanceReqFlow(4)">Review Request</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Review Summary -->
+                    <div class="flow-step" id="req-step-4">
+                        <div class="mock-card">
+                            <p style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Step 4: Review</p>
+                            <h4>Review Your Request</h4>
+
+                            <div style="margin: 16px 0; padding: 16px; background: #f8fafc; border-radius: var(--border-radius);">
+                                <p style="margin-bottom: 8px;"><strong>Current:</strong> Mon-Thu (4 nights)</p>
+                                <p><strong>Proposed:</strong> Mon-Fri (5 nights)</p>
+                            </div>
+
+                            <div style="padding: 12px; background: var(--bg-warning); border-radius: var(--border-radius); margin-bottom: 16px;">
+                                <strong>+$50.00</strong> added to next payment
+                            </div>
+
+                            <div style="margin-bottom: 16px;">
+                                <label style="font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">Add a note (optional)</label>
+                                <textarea style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: var(--border-radius); min-height: 60px; font-family: inherit;" placeholder="e.g., I have a meeting on Friday morning..."></textarea>
+                            </div>
+
+                            <div class="button-group">
+                                <button class="btn btn-secondary" onclick="advanceReqFlow(3)">Back</button>
+                                <button class="btn btn-success" onclick="advanceReqFlow(5)">Submit Request</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Waiting State -->
+                    <div class="flow-step" id="req-step-5">
+                        <div class="mock-card">
+                            <p style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Step 5: Awaiting Response</p>
+
+                            <div class="ball-indicator waiting">
+                                <span>&#8987;</span> WAITING FOR SARAH
+                            </div>
+
+                            <h4 style="margin-top: 16px;">Request Submitted</h4>
+                            <p style="color: #64748b; margin: 12px 0;">You requested to add Friday, Feb 8.</p>
+
+                            <div class="countdown" style="margin: 16px 0;">
+                                <span>Expires in 22h 14m</span>
+                                <div class="countdown-bar">
+                                    <div class="countdown-fill" style="width: 92%;"></div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-secondary" onclick="advanceReqFlow(1)">Cancel Request</button>
+
+                            <p style="font-size: 12px; color: #64748b; margin-top: 16px;">
+                                We'll notify you when Sarah responds.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 16px;">
+                    <button class="btn btn-secondary" onclick="advanceReqFlow(1)" style="width: 100%;">Reset Requester Flow</button>
+                </div>
+            </div>
+
+            <!-- RESPONDER FLOW -->
+            <div class="flow-column">
+                <h3 class="responder">Responder Flow</h3>
+
+                <div id="responder-flow">
+                    <!-- Step 1: Entry -->
+                    <div class="flow-step active" id="resp-step-1">
+                        <div class="mock-card">
+                            <p style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Entry Points</p>
+                            <h4>Incoming Request</h4>
+                            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px;">
+                                <div style="padding: 12px; background: var(--bg-warning); border-radius: var(--border-radius); font-size: 14px;">
+                                    <strong>Action Center:</strong> "Respond to date change request"
+                                </div>
+                                <div style="padding: 12px; background: #f8fafc; border-radius: var(--border-radius); font-size: 14px;">
+                                    <strong>Push:</strong> "John wants to add Feb 8"
+                                </div>
+                                <div style="padding: 12px; background: #f8fafc; border-radius: var(--border-radius); font-size: 14px;">
+                                    <strong>Email:</strong> Link to request
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="advanceRespFlow(2)" style="margin-top: 16px;">View Request</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Request Detail -->
+                    <div class="flow-step" id="resp-step-2">
+                        <div class="mock-card">
+                            <p style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Step 2: Review Request</p>
+
+                            <div class="ball-indicator your-turn">
+                                <span>&#127952;</span> BALL IN YOUR COURT
+                            </div>
+
+                            <h4 style="margin-top: 16px;">Date Change Request</h4>
+
+                            <div style="margin: 16px 0; padding: 16px; background: #f8fafc; border-radius: var(--border-radius);">
+                                <p><strong>From:</strong> John Smith</p>
+                                <p><strong>Request:</strong> Add Friday, Feb 8</p>
+                                <p><strong>Impact:</strong> +$50 to their payment</p>
+                                <p style="color: #64748b; font-size: 14px; margin-top: 8px;">"I have a meeting on Friday morning, would be great to stay Thursday night."</p>
+                            </div>
+
+                            <div class="countdown" style="margin: 16px 0;">
+                                <span>Expires in 18h 42m</span>
+                                <div class="countdown-bar">
+                                    <div class="countdown-fill" style="width: 78%;"></div>
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px;">
+                                <button class="btn btn-success" onclick="advanceRespFlow(3, 'accept')">Accept</button>
+                                <button class="btn btn-danger" onclick="advanceRespFlow(3, 'decline')">Decline</button>
+                                <button class="btn btn-warning" onclick="advanceRespFlow(3, 'counter')">Counter</button>
+                                <button class="btn btn-secondary" onclick="advanceRespFlow(3, 'time')">Need More Time</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Confirmation/Action -->
+                    <div class="flow-step" id="resp-step-3">
+                        <div class="mock-card" id="resp-action-card">
+                            <!-- Populated by JS based on choice -->
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Success -->
+                    <div class="flow-step" id="resp-step-4">
+                        <div class="mock-card" style="text-align: center;">
+                            <div style="font-size: 48px; margin-bottom: 16px;" id="resp-success-icon">&#10003;</div>
+                            <h4 id="resp-success-title" style="color: var(--color-success);">Request Accepted</h4>
+                            <p id="resp-success-desc" style="color: #64748b; margin: 12px 0;">John's stay is now Mon-Fri. Their payment has been adjusted.</p>
+                            <button class="btn btn-primary" onclick="advanceRespFlow(1)">Done</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 16px;">
+                    <button class="btn btn-secondary" onclick="advanceRespFlow(1)" style="width: 100%;">Reset Responder Flow</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SECTION 5: ERROR RECOVERY ==================== -->
+    <section id="error-recovery">
+        <h2>5. Error Recovery Flows <span>Interactive</span></h2>
+        <p class="section-desc">
+            Every error must have a recovery path. Click each error to see recovery options.
+            Dieter: Trust-critical - language must be factual, not shaming.
+        </p>
+
+        <div style="display: grid; gap: 24px;">
+            <!-- Document Generation Failure -->
+            <div class="error-card" style="cursor: pointer;" onclick="toggleErrorDetail('doc-gen')">
+                <h4>Document Generation Failed</h4>
+                <p>The system couldn't generate your PDF. Your lease agreement is still valid.</p>
+                <div id="doc-gen-detail" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(239,68,68,0.3);">
+                    <p style="font-weight: 600; margin-bottom: 12px;">Recovery Options:</p>
+                    <div class="recovery-options">
+                        <div class="recovery-option">
+                            <span style="font-size: 20px;">&#128260;</span>
+                            <div>
+                                <strong>Try Again</strong>
+                                <div style="font-size: 12px; color: #64748b;">Regenerate the document</div>
+                            </div>
+                        </div>
+                        <div class="recovery-option">
+                            <span style="font-size: 20px;">&#128276;</span>
+                            <div>
+                                <strong>Notify Me When Ready</strong>
+                                <div style="font-size: 12px; color: #64748b;">We'll email you when the PDF is available</div>
+                            </div>
+                        </div>
+                        <div class="recovery-option">
+                            <span style="font-size: 20px;">&#128172;</span>
+                            <div>
+                                <strong>Contact Support</strong>
+                                <div style="font-size: 12px; color: #64748b;">Get help from our team</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="background: var(--bg-success); padding: 12px; border-radius: var(--border-radius); margin-top: 16px;">
+                        <p style="font-size: 14px; color: var(--color-success);">
+                            <strong>Important:</strong> Your lease agreement is legally valid even without the PDF.
+                            The document is just a copy for your records.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Method Expired -->
+            <div class="error-card" style="cursor: pointer;" onclick="toggleErrorDetail('card-exp')">
+                <h4>Payment Method Needs Attention</h4>
+                <p>Your card ending in 4242 has expired. Update it before your next payment.</p>
+                <div id="card-exp-detail" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(239,68,68,0.3);">
+                    <p style="font-weight: 600; margin-bottom: 12px;">Recovery Options:</p>
+                    <div class="recovery-options">
+                        <div class="recovery-option">
+                            <span style="font-size: 20px;">&#128179;</span>
+                            <div>
+                                <strong>Update Card</strong>
+                                <div style="font-size: 12px; color: #64748b;">Enter new expiration date</div>
+                            </div>
+                        </div>
+                        <div class="recovery-option">
+                            <span style="font-size: 20px;">&#128179;</span>
+                            <div>
+                                <strong>Add Different Card</strong>
+                                <div style="font-size: 12px; color: #64748b;">Use a new payment method</div>
+                            </div>
+                        </div>
+                        <div class="recovery-option">
+                            <span style="font-size: 20px;">&#127974;</span>
+                            <div>
+                                <strong>Add Bank Account</strong>
+                                <div style="font-size: 12px; color: #64748b;">Pay directly from your bank</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="background: var(--bg-warning); padding: 12px; border-radius: var(--border-radius); margin-top: 16px;">
+                        <p style="font-size: 14px; color: #92400e;">
+                            <strong>Next Payment:</strong> $2,400 due in 5 days (Feb 1).
+                            Update your method before then to avoid interruption.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DCT Expired -->
+            <div class="error-card" style="cursor: pointer;" onclick="toggleErrorDetail('dct-exp')">
+                <h4>Date Change Request Expired</h4>
+                <p>The request to add Feb 8 expired without a response. No changes were made.</p>
+                <div id="dct-exp-detail" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(239,68,68,0.3);">
+                    <p style="font-weight: 600; margin-bottom: 12px;">Recovery Options:</p>
+                    <div class="recovery-options">
+                        <div class="recovery-option">
+                            <span style="font-size: 20px;">&#128172;</span>
+                            <div>
+                                <strong>Message Sarah</strong>
+                                <div style="font-size: 12px; color: #64748b;">Discuss and re-submit if agreed</div>
+                            </div>
+                        </div>
+                        <div class="recovery-option">
+                            <span style="font-size: 20px;">&#128197;</span>
+                            <div>
+                                <strong>Submit New Request</strong>
+                                <div style="font-size: 12px; color: #64748b;">Try a different date</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="background: var(--bg-info); padding: 12px; border-radius: var(--border-radius); margin-top: 16px;">
+                        <p style="font-size: 14px; color: var(--color-info);">
+                            <strong>Tip:</strong> Messaging your host first often leads to faster approvals.
+                            They may have had a busy day and missed the notification.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session Expired -->
+            <div class="error-card" style="cursor: pointer;" onclick="toggleErrorDetail('session')">
+                <h4>Your Session Has Expired</h4>
+                <p>For security, we've logged you out after 30 minutes of inactivity.</p>
+                <div id="session-detail" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(239,68,68,0.3);">
+                    <p style="font-weight: 600; margin-bottom: 12px;">Recovery:</p>
+                    <div class="recovery-options">
+                        <div class="recovery-option">
+                            <span style="font-size: 20px;">&#128274;</span>
+                            <div>
+                                <strong>Log Back In</strong>
+                                <div style="font-size: 12px; color: #64748b;">Your progress has been saved</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="background: var(--bg-success); padding: 12px; border-radius: var(--border-radius); margin-top: 16px;">
+                        <p style="font-size: 14px; color: var(--color-success);">
+                            <strong>Good news:</strong> Any forms or requests you were working on have been saved.
+                            You'll pick up right where you left off.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SECTION 6: STATE PRESERVATION ==================== -->
+    <section id="state-preservation">
+        <h2>6. State Preservation Table <span>Reference</span></h2>
+        <p class="section-desc">
+            What gets preserved when users are interrupted mid-flow.
+            Critical for mobile users who may switch apps or lose connectivity.
+        </p>
+
+        <table class="preservation-table">
+            <thead>
+                <tr>
+                    <th>Flow</th>
+                    <th>Field/State</th>
+                    <th>Preserved?</th>
+                    <th>Duration</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="3"><strong>Sign Lease</strong></td>
+                    <td>Current step</td>
+                    <td class="check">&#10003;</td>
+                    <td>24 hours</td>
+                    <td>Resume from same step</td>
+                </tr>
+                <tr>
+                    <td>Document scroll position</td>
+                    <td class="check">&#10003;</td>
+                    <td>Session</td>
+                    <td>Within same session only</td>
+                </tr>
+                <tr>
+                    <td>Checkbox state</td>
+                    <td class="cross">&#10007;</td>
+                    <td>-</td>
+                    <td>Security: require re-confirmation</td>
+                </tr>
+                <tr>
+                    <td rowspan="3"><strong>Pay Invoice</strong></td>
+                    <td>Selected payment method</td>
+                    <td class="check">&#10003;</td>
+                    <td>Permanent</td>
+                    <td>Default method saved</td>
+                </tr>
+                <tr>
+                    <td>Processing state</td>
+                    <td class="check">&#10003;</td>
+                    <td>Until resolution</td>
+                    <td>Never lose in-flight payment</td>
+                </tr>
+                <tr>
+                    <td>New card details</td>
+                    <td class="cross">&#10007;</td>
+                    <td>-</td>
+                    <td>Security: don't store unsaved cards</td>
+                </tr>
+                <tr>
+                    <td rowspan="4"><strong>DCT Request</strong></td>
+                    <td>Selected dates</td>
+                    <td class="check">&#10003;</td>
+                    <td>24 hours</td>
+                    <td>Draft state saved</td>
+                </tr>
+                <tr>
+                    <td>Request type (add/remove/swap)</td>
+                    <td class="check">&#10003;</td>
+                    <td>24 hours</td>
+                    <td>Part of draft</td>
+                </tr>
+                <tr>
+                    <td>Note text</td>
+                    <td class="check">&#10003;</td>
+                    <td>24 hours</td>
+                    <td>Draft includes notes</td>
+                </tr>
+                <tr>
+                    <td>Submitted request</td>
+                    <td class="check">&#10003;</td>
+                    <td>Until expiration</td>
+                    <td>24h countdown from submission</td>
+                </tr>
+                <tr>
+                    <td rowspan="2"><strong>DCT Response</strong></td>
+                    <td>Counter-offer draft</td>
+                    <td class="check">&#10003;</td>
+                    <td>Until original expires</td>
+                    <td>Can resume counter</td>
+                </tr>
+                <tr>
+                    <td>Decision (accept/decline)</td>
+                    <td class="cross">&#10007;</td>
+                    <td>-</td>
+                    <td>Require explicit re-confirmation</td>
+                </tr>
+                <tr>
+                    <td rowspan="2"><strong>Changes Requested</strong></td>
+                    <td>Change request text</td>
+                    <td class="check">&#10003;</td>
+                    <td>7 days</td>
+                    <td>Long-form text preserved</td>
+                </tr>
+                <tr>
+                    <td>Negotiation history</td>
+                    <td class="check">&#10003;</td>
+                    <td>Permanent</td>
+                    <td>Full audit trail</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="margin-top: 24px; padding: 20px; background: var(--bg-info); border-radius: var(--border-radius);">
+            <h4 style="color: var(--color-info); margin-bottom: 12px;">Implementation Notes</h4>
+            <ul style="margin-left: 20px;">
+                <li><strong>Draft auto-save:</strong> Save to localStorage every 5 seconds + on blur</li>
+                <li><strong>Server sync:</strong> Drafts sync to server on explicit "Save Draft" or background sync every 60s</li>
+                <li><strong>"Welcome back" message:</strong> Show when resuming an interrupted flow with specific context</li>
+                <li><strong>Conflict resolution:</strong> If server state changed, show comparison modal</li>
+            </ul>
+        </div>
+    </section>
+
+    <script>
+        // ==================== STATE MACHINE ====================
+        const stateDetails = {
+            'proposal-accepted': {
+                title: 'PROPOSAL ACCEPTED',
+                content: `
+                    <p><strong>Entry Condition:</strong> Both parties accepted proposal terms.</p>
+                    <ul>
+                        <li><strong>What Happens:</strong> System begins document generation</li>
+                        <li><strong>User Sees:</strong> "Preparing your lease documents..."</li>
+                        <li><strong>Duration:</strong> 1-5 minutes (usually instant)</li>
+                        <li><strong>Next:</strong> Automatic transition to DOCS DRAFTING</li>
+                    </ul>
+                    <p style="margin-top: 12px;"><strong>Charles (Empty State):</strong> This is the brief loading state between proposal and lease.</p>
+                `
+            },
+            'docs-drafting': {
+                title: 'DOCS DRAFTING',
+                content: `
+                    <p><strong>System State:</strong> PTA being generated with proposal terms.</p>
+                    <ul>
+                        <li><strong>What Happens:</strong> Legal templates populated with agreed terms</li>
+                        <li><strong>Error Handling:</strong> If generation fails, retry 3x then notify support</li>
+                        <li><strong>Duration:</strong> Usually < 30 seconds</li>
+                        <li><strong>Next:</strong> READY TO SIGN (or error recovery)</li>
+                    </ul>
+                    <p style="margin-top: 12px;"><strong>Dieter (Trust):</strong> Show progress indicator. Never leave user wondering.</p>
+                `
+            },
+            'ready-to-sign': {
+                title: 'READY TO SIGN',
+                content: `
+                    <p><strong>Action Required:</strong> First party to sign the document.</p>
+                    <ul>
+                        <li><strong>Who Can Act:</strong> Either host or guest (first to sign)</li>
+                        <li><strong>Action:</strong> Sign Lease flow (see Section 2)</li>
+                        <li><strong>Timeout:</strong> 7 days before expiration warning</li>
+                        <li><strong>Branch:</strong> "Request Changes" returns to DOCS DRAFTING</li>
+                        <li><strong>Next:</strong> AWAITING 2ND PARTY</li>
+                    </ul>
+                `
+            },
+            'awaiting-2nd': {
+                title: 'AWAITING 2ND PARTY',
+                content: `
+                    <p><strong>Partial Signature:</strong> One party has signed, waiting for other.</p>
+                    <ul>
+                        <li><strong>First Signer Sees:</strong> "Waiting for [Name] to sign"</li>
+                        <li><strong>Second Signer Sees:</strong> Same Sign flow, but with "co-signer pending" badge</li>
+                        <li><strong>Notifications:</strong> Reminder at 24h, 72h if unsigned</li>
+                        <li><strong>Next:</strong> LEASE ACTIVE</li>
+                    </ul>
+                    <p style="margin-top: 12px;"><strong>Milton (Copy):</strong> "Ball in your court" indicator for the unsigned party.</p>
+                `
+            },
+            'changes-requested': {
+                title: 'CHANGES REQUESTED',
+                content: `
+                    <p><strong>Negotiation State:</strong> One party requested document changes.</p>
+                    <ul>
+                        <li><strong>What Happens:</strong> Request sent to other party for review</li>
+                        <li><strong>Both Parties See:</strong> Change request with diff highlighting</li>
+                        <li><strong>Options:</strong> Accept changes | Counter-propose | Decline</li>
+                        <li><strong>Timeout:</strong> 72h expiration on requests</li>
+                        <li><strong>Next:</strong> Back to DOCS DRAFTING (if accepted) or terminal</li>
+                    </ul>
+                    <p style="margin-top: 12px;"><strong>Risk:</strong> Multi-cycle negotiation fatigue. Show counter count.</p>
+                `
+            },
+            'lease-active': {
+                title: 'LEASE ACTIVE',
+                content: `
+                    <p><strong>Success State:</strong> Both parties signed, lease is live.</p>
+                    <ul>
+                        <li><strong>Full Dashboard Access:</strong> All tabs, features, financials</li>
+                        <li><strong>Recurring Cycles:</strong> Payment, Stay, DCT now available</li>
+                        <li><strong>Duration:</strong> Until completion or termination</li>
+                    </ul>
+                    <p style="margin-top: 12px;"><strong>Paula (Visual):</strong> Money becomes hero. Show total earned/paid prominently.</p>
+                `
+            },
+            'payment-cycle': {
+                title: 'PAYMENT CYCLE',
+                content: `
+                    <p><strong>Recurring:</strong> Monthly payment collection.</p>
+                    <ul>
+                        <li><strong>States:</strong> Upcoming > Due > Paid OR Past Due</li>
+                        <li><strong>Guest Flow:</strong> Pay Invoice (see Section 3)</li>
+                        <li><strong>Host Flow:</strong> View receipts, payment status</li>
+                        <li><strong>Error:</strong> Payment failure triggers recovery flow</li>
+                    </ul>
+                `
+            },
+            'dct-requests': {
+                title: 'DCT REQUESTS',
+                content: `
+                    <p><strong>Date Change Tool:</strong> Add, remove, or swap dates.</p>
+                    <ul>
+                        <li><strong>Either Party Can Initiate:</strong> Requester/Responder flows (Section 4)</li>
+                        <li><strong>24h Response Window:</strong> Countdown visible to both</li>
+                        <li><strong>Financial Impact:</strong> Calculated and shown before submit</li>
+                        <li><strong>Outcomes:</strong> Accept | Decline | Counter | Expire</li>
+                    </ul>
+                    <p style="margin-top: 12px;"><strong>Jony (Mobile):</strong> Week strip calendar for touch interaction.</p>
+                `
+            },
+            'stay-cycle': {
+                title: 'STAY CYCLE',
+                content: `
+                    <p><strong>Recurring:</strong> Individual stay periods within the lease.</p>
+                    <ul>
+                        <li><strong>States:</strong> Upcoming > In Progress > Completed</li>
+                        <li><strong>Check-In:</strong> Access instructions, keycode delivery</li>
+                        <li><strong>During Stay:</strong> Support access, emergency contacts</li>
+                        <li><strong>Check-Out:</strong> Confirmation, next stay preview</li>
+                    </ul>
+                `
+            },
+            'lease-completed': {
+                title: 'LEASE COMPLETED',
+                content: `
+                    <p><strong>Terminal - Success:</strong> Lease ended naturally at agreed end date.</p>
+                    <ul>
+                        <li><strong>Final Actions:</strong> Security deposit return, final receipt</li>
+                        <li><strong>Data Retained:</strong> Full history accessible for 7 years</li>
+                        <li><strong>Re-engagement:</strong> Prompt to renew or book again</li>
+                    </ul>
+                `
+            },
+            'lease-terminated': {
+                title: 'LEASE TERMINATED',
+                content: `
+                    <p><strong>Terminal - Early End:</strong> Lease ended before scheduled completion.</p>
+                    <ul>
+                        <li><strong>Causes:</strong> Mutual agreement, 30-day notice, breach</li>
+                        <li><strong>Final Settlement:</strong> Prorated amounts, deposit handling</li>
+                        <li><strong>Documentation:</strong> Termination agreement generated</li>
+                    </ul>
+                    <p style="margin-top: 12px;"><strong>Dieter (Trust):</strong> Clear, fair language. No blame.</p>
+                `
+            },
+            'lease-disputed': {
+                title: 'DISPUTED',
+                content: `
+                    <p><strong>Terminal - Conflict:</strong> Requires Split Lease support intervention.</p>
+                    <ul>
+                        <li><strong>Triggers:</strong> Payment dispute, rule violation claim, damage claim</li>
+                        <li><strong>Process:</strong> Both parties submit evidence, support mediates</li>
+                        <li><strong>Resolution:</strong> Binding decision or escalation to arbitration</li>
+                    </ul>
+                    <p style="margin-top: 12px;"><strong>Risk:</strong> This should be rare. Good UX prevents most disputes.</p>
+                `
+            }
+        };
+
+        document.querySelectorAll('.state-node').forEach(node => {
+            node.addEventListener('click', function() {
+                const state = this.dataset.state;
+                const detail = stateDetails[state];
+                if (detail) {
+                    document.querySelectorAll('.state-node').forEach(n => n.classList.remove('active'));
+                    this.classList.add('active');
+
+                    document.getElementById('state-detail').style.display = 'block';
+                    document.getElementById('state-detail-title').textContent = detail.title;
+                    document.getElementById('state-detail-content').innerHTML = detail.content;
+                }
+            });
+        });
+
+        // ==================== SIGN LEASE FLOW ====================
+        let currentSignStep = 1;
+
+        function advanceSignFlow(step, variant) {
+            // Handle branch
+            if (step === 'changes') {
+                document.querySelectorAll('#sign-lease .flow-step').forEach(s => s.classList.remove('active'));
+                document.getElementById('sign-step-changes').classList.add('active');
+                return;
+            }
+
+            currentSignStep = step;
+
+            // Update progress dots
+            document.querySelectorAll('#sign-progress .progress-dot').forEach((dot, i) => {
+                dot.classList.remove('active', 'completed');
+                if (i + 1 < step) dot.classList.add('completed');
+                if (i + 1 === step) dot.classList.add('active');
+            });
+
+            document.querySelectorAll('#sign-progress .progress-line').forEach((line, i) => {
+                line.classList.remove('completed');
+                if (i + 1 < step) line.classList.add('completed');
+            });
+
+            // Show correct step
+            document.querySelectorAll('#sign-lease .flow-step').forEach(s => s.classList.remove('active'));
+            document.getElementById('sign-step-' + step).classList.add('active');
+        }
+
+        // ==================== PAY INVOICE FLOW ====================
+        let currentPayStep = 1;
+        let payEntryType = 'action';
+
+        function selectPayEntry(el, type) {
+            document.querySelectorAll('.entry-point').forEach(e => e.classList.remove('selected'));
+            el.classList.add('selected');
+            payEntryType = type;
+
+            const titles = {
+                'action': 'Action Center Card',
+                'financials': 'Financials Tab Entry',
+                'push': 'Push Notification Deep Link'
+            };
+            document.getElementById('pay-entry-title').textContent = titles[type];
+        }
+
+        function advancePayFlow(step, outcome) {
+            currentPayStep = step;
+
+            // Update progress
+            document.querySelectorAll('#pay-progress .progress-dot').forEach((dot, i) => {
+                dot.classList.remove('active', 'completed');
+                if (i + 1 < step) dot.classList.add('completed');
+                if (i + 1 === step) dot.classList.add('active');
+            });
+
+            document.querySelectorAll('#pay-progress .progress-line').forEach((line, i) => {
+                line.classList.remove('completed');
+                if (i + 1 < step) line.classList.add('completed');
+            });
+
+            // Hide all steps
+            document.querySelectorAll('#pay-invoice .flow-step').forEach(s => s.classList.remove('active'));
+
+            // Show correct step
+            if (step === 5) {
+                if (outcome === 'success') {
+                    document.getElementById('pay-step-5-success').classList.add('active');
+                } else {
+                    document.getElementById('pay-step-5-failure').classList.add('active');
+                }
+            } else {
+                document.getElementById('pay-step-' + step).classList.add('active');
+            }
+        }
+
+        // ==================== DCT REQUESTER FLOW ====================
+        let dctAction = 'add';
+
+        function advanceReqFlow(step, action) {
+            if (action) dctAction = action;
+
+            document.querySelectorAll('#requester-flow .flow-step').forEach(s => s.classList.remove('active'));
+            document.getElementById('req-step-' + step).classList.add('active');
+
+            // Update calendar title based on action
+            if (step === 3) {
+                const titles = {
+                    'add': 'Select Dates to Add',
+                    'remove': 'Select Dates to Remove',
+                    'swap': 'Select Dates to Swap'
+                };
+                document.getElementById('req-calendar-title').textContent = titles[dctAction];
+            }
+        }
+
+        function toggleCalDay(el) {
+            if (el.classList.contains('existing') || el.classList.contains('disabled')) return;
+
+            if (dctAction === 'add') {
+                el.classList.toggle('selected-add');
+            } else if (dctAction === 'remove') {
+                el.classList.toggle('selected-remove');
+            }
+
+            // Update price impact
+            const addedDays = document.querySelectorAll('.calendar-day.selected-add').length;
+            const removedDays = document.querySelectorAll('.calendar-day.selected-remove').length;
+            const impact = (addedDays * 50) - (removedDays * 50);
+            const sign = impact >= 0 ? '+' : '';
+            document.getElementById('price-impact').textContent = sign + '$' + impact;
+        }
+
+        // ==================== DCT RESPONDER FLOW ====================
+        let respAction = 'accept';
+
+        function advanceRespFlow(step, action) {
+            if (action) respAction = action;
+
+            document.querySelectorAll('#responder-flow .flow-step').forEach(s => s.classList.remove('active'));
+            document.getElementById('resp-step-' + step).classList.add('active');
+
+            // Populate step 3 based on action
+            if (step === 3) {
+                const card = document.getElementById('resp-action-card');
+
+                if (respAction === 'accept') {
+                    card.innerHTML = `
+                        <p style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Step 3: Confirm Accept</p>
+                        <h4>Accept Date Change?</h4>
+                        <p style="margin: 12px 0;">John's stay will be extended to include Friday, Feb 8.</p>
+                        <p style="color: #64748b;">Their payment will increase by $50.</p>
+                        <div class="button-group" style="margin-top: 20px;">
+                            <button class="btn btn-secondary" onclick="advanceRespFlow(2)">Back</button>
+                            <button class="btn btn-success" onclick="confirmResp('accept')">Confirm Accept</button>
+                        </div>
+                    `;
+                } else if (respAction === 'decline') {
+                    card.innerHTML = `
+                        <p style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Step 3: Confirm Decline</p>
+                        <h4>Decline Date Change?</h4>
+                        <p style="margin: 12px 0;">John's request will be declined. Their schedule remains unchanged.</p>
+                        <div style="margin: 16px 0;">
+                            <label style="font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">Reason (optional, visible to John)</label>
+                            <textarea style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; min-height: 60px; font-family: inherit;" placeholder="e.g., I have another booking that day..."></textarea>
+                        </div>
+                        <div class="button-group" style="margin-top: 20px;">
+                            <button class="btn btn-secondary" onclick="advanceRespFlow(2)">Back</button>
+                            <button class="btn btn-danger" onclick="confirmResp('decline')">Confirm Decline</button>
+                        </div>
+                    `;
+                } else if (respAction === 'counter') {
+                    card.innerHTML = `
+                        <p style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Step 3: Counter Proposal</p>
+                        <h4>Suggest Alternative Date</h4>
+                        <p style="margin: 12px 0;">Instead of Feb 8, suggest a different date:</p>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0;">
+                            <label style="padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="counter-date" style="margin-right: 8px;">Feb 9 (Sat)
+                            </label>
+                            <label style="padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="counter-date" style="margin-right: 8px;">Feb 15 (Fri)
+                            </label>
+                            <label style="padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer;">
+                                <input type="radio" name="counter-date" style="margin-right: 8px;">Feb 22 (Fri)
+                            </label>
+                        </div>
+                        <div class="button-group" style="margin-top: 20px;">
+                            <button class="btn btn-secondary" onclick="advanceRespFlow(2)">Back</button>
+                            <button class="btn btn-warning" onclick="confirmResp('counter')">Send Counter</button>
+                        </div>
+                    `;
+                } else if (respAction === 'time') {
+                    card.innerHTML = `
+                        <p style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Step 3: Request Extension</p>
+                        <h4>Need More Time?</h4>
+                        <p style="margin: 12px 0;">Request a 24-hour extension to respond.</p>
+                        <p style="color: #64748b; font-size: 14px;">John will be notified. If approved, the deadline extends to Feb 3 at 6pm.</p>
+                        <div class="button-group" style="margin-top: 20px;">
+                            <button class="btn btn-secondary" onclick="advanceRespFlow(2)">Back</button>
+                            <button class="btn btn-primary" onclick="confirmResp('time')">Request Extension</button>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        function confirmResp(action) {
+            const icons = {
+                'accept': '&#10003;',
+                'decline': '&#10007;',
+                'counter': '&#8644;',
+                'time': '&#8987;'
+            };
+            const titles = {
+                'accept': 'Request Accepted',
+                'decline': 'Request Declined',
+                'counter': 'Counter Sent',
+                'time': 'Extension Requested'
+            };
+            const descs = {
+                'accept': "John's stay is now Mon-Fri. Their payment has been adjusted.",
+                'decline': "John has been notified. Their schedule remains Mon-Thu.",
+                'counter': "John has 24 hours to respond to your counter-proposal.",
+                'time': "John has been asked to extend the deadline. You'll be notified of their response."
+            };
+
+            document.getElementById('resp-success-icon').innerHTML = icons[action];
+            document.getElementById('resp-success-title').textContent = titles[action];
+            document.getElementById('resp-success-desc').textContent = descs[action];
+
+            if (action === 'decline') {
+                document.getElementById('resp-success-title').style.color = 'var(--color-danger)';
+            } else if (action === 'counter' || action === 'time') {
+                document.getElementById('resp-success-title').style.color = 'var(--color-warning)';
+            } else {
+                document.getElementById('resp-success-title').style.color = 'var(--color-success)';
+            }
+
+            advanceRespFlow(4);
+        }
+
+        // ==================== ERROR RECOVERY ====================
+        function toggleErrorDetail(id) {
+            const detail = document.getElementById(id + '-detail');
+            detail.style.display = detail.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>

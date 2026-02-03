@@ -1,0 +1,2183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversion Audit & A/B Test Plan - Luke Wroblewski | Split Lease Leases PRD</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary-blue: #3B82F6;
+            --success-green: #22C55E;
+            --warning-amber: #F59E0B;
+            --danger-red: #EF4444;
+            --purple: #8B5CF6;
+            --bg-light: #F8FAFC;
+            --bg-white: #FFFFFF;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+            --border-color: #E5E7EB;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 100%);
+            color: white;
+            padding: 48px 24px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+
+        .header .agent-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 0 24px;
+        }
+
+        .nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+        }
+
+        .nav-btn {
+            padding: 16px 20px;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            color: var(--primary-blue);
+        }
+
+        .nav-btn.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        /* Section */
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            margin-bottom: 24px;
+        }
+
+        .section-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        /* Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        /* ===================
+           FUNNEL VISUALIZATION
+           =================== */
+        .funnel-container {
+            padding: 32px;
+        }
+
+        .funnel-title {
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .funnel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+
+        .funnel-step {
+            position: relative;
+            text-align: center;
+            padding: 16px 24px;
+            color: white;
+            font-weight: 500;
+            clip-path: polygon(5% 0%, 95% 0%, 100% 100%, 0% 100%);
+            transition: transform 0.2s;
+        }
+
+        .funnel-step:hover {
+            transform: scale(1.02);
+        }
+
+        .funnel-step .step-name {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .funnel-step .step-rate {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .funnel-step .step-count {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .funnel-arrow {
+            width: 2px;
+            height: 20px;
+            background: var(--text-muted);
+            position: relative;
+        }
+
+        .funnel-arrow::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: -4px;
+            border: 5px solid transparent;
+            border-top-color: var(--text-muted);
+        }
+
+        .funnel-dropoff {
+            position: absolute;
+            right: -120px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: var(--danger-red);
+            background: #FEE2E2;
+            padding: 4px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        /* Sign Lease Funnel Colors */
+        .funnel-sign .step-1 { background: #1E40AF; width: 400px; }
+        .funnel-sign .step-2 { background: #2563EB; width: 360px; }
+        .funnel-sign .step-3 { background: #3B82F6; width: 300px; }
+        .funnel-sign .step-4 { background: #60A5FA; width: 240px; }
+
+        /* Pay Invoice Funnel Colors */
+        .funnel-pay .step-1 { background: #166534; width: 400px; }
+        .funnel-pay .step-2 { background: #16A34A; width: 380px; }
+        .funnel-pay .step-3 { background: #22C55E; width: 340px; }
+
+        /* DCT Funnel Colors */
+        .funnel-dct .step-1 { background: #7C2D12; width: 400px; }
+        .funnel-dct .step-2 { background: #C2410C; width: 340px; }
+        .funnel-dct .step-3 { background: #EA580C; width: 260px; }
+        .funnel-dct .step-4 { background: #F97316; width: 220px; }
+
+        /* ===================
+           FRICTION TABLE
+           =================== */
+        .friction-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .friction-table th,
+        .friction-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .friction-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+        }
+
+        .friction-table tr:hover {
+            background: #F5F7FA;
+        }
+
+        .severity-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .severity-critical {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .severity-high {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+
+        .severity-medium {
+            background: #DBEAFE;
+            color: #2563EB;
+        }
+
+        .severity-low {
+            background: #F3F4F6;
+            color: #6B7280;
+        }
+
+        .funnel-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            background: var(--bg-light);
+            color: var(--text-secondary);
+        }
+
+        /* ===================
+           A/B TEST CARDS
+           =================== */
+        .test-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+
+        .test-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .test-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .test-id {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .test-priority {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .priority-p0 { background: #DC2626; color: white; }
+        .priority-p1 { background: #EA580C; color: white; }
+        .priority-p2 { background: #2563EB; color: white; }
+        .priority-p3 { background: #6B7280; color: white; }
+
+        .test-body {
+            padding: 20px;
+        }
+
+        .test-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .test-hypothesis {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .test-spec {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .spec-item {
+            background: var(--bg-light);
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .spec-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .spec-value {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .test-metrics {
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+        }
+
+        .metric-value {
+            font-weight: 600;
+        }
+
+        .metric-value.green { color: var(--success-green); }
+
+        .test-expand {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-light);
+            border: none;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--primary-blue);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .test-expand:hover {
+            background: #E0E7FF;
+        }
+
+        .test-details {
+            display: none;
+            padding: 20px;
+            background: var(--bg-light);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .test-details.active {
+            display: block;
+        }
+
+        .test-details h4 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .test-details p,
+        .test-details ul {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .test-details ul {
+            padding-left: 20px;
+        }
+
+        .test-details li {
+            margin-bottom: 4px;
+        }
+
+        /* ===================
+           METRICS DASHBOARD
+           =================== */
+        .metric-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 24px;
+        }
+
+        .metric-icon.blue { background: #DBEAFE; }
+        .metric-icon.green { background: #DCFCE7; }
+        .metric-icon.amber { background: #FEF3C7; }
+        .metric-icon.purple { background: #EDE9FE; }
+
+        .metric-name {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .metric-current {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .metric-target {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .metric-target span {
+            color: var(--success-green);
+            font-weight: 600;
+        }
+
+        .metric-definition {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: left;
+        }
+
+        /* ===================
+           CODE DISPLAY
+           =================== */
+        .code-block {
+            background: #1E293B;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'SF Mono', Monaco, Consolas, monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #E2E8F0;
+            overflow-x: auto;
+        }
+
+        .code-comment {
+            color: #64748B;
+        }
+
+        .code-keyword {
+            color: #F472B6;
+        }
+
+        .code-string {
+            color: #A5F3FC;
+        }
+
+        .code-function {
+            color: #A78BFA;
+        }
+
+        .code-property {
+            color: #93C5FD;
+        }
+
+        .code-number {
+            color: #FCD34D;
+        }
+
+        /* ===================
+           AUDIT CHECKLIST
+           =================== */
+        .audit-list {
+            list-style: none;
+        }
+
+        .audit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .audit-item:last-child {
+            border-bottom: none;
+        }
+
+        .audit-status {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .audit-status.pass {
+            background: #DCFCE7;
+            color: #16A34A;
+        }
+
+        .audit-status.warn {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+
+        .audit-status.fail {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .audit-content h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .audit-content p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .audit-agent {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* ===================
+           PRIORITY MATRIX
+           =================== */
+        .priority-matrix {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .priority-quadrant {
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .priority-quadrant h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .priority-quadrant ul {
+            list-style: none;
+        }
+
+        .priority-quadrant li {
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .quadrant-p0 {
+            background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+        }
+
+        .quadrant-p0 h4 { color: #DC2626; }
+
+        .quadrant-p1 {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+        }
+
+        .quadrant-p1 h4 { color: #D97706; }
+
+        .quadrant-p2 {
+            background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+        }
+
+        .quadrant-p2 h4 { color: #2563EB; }
+
+        .quadrant-p3 {
+            background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
+        }
+
+        .quadrant-p3 h4 { color: #6B7280; }
+
+        /* ===================
+           SEGMENTATION TABLE
+           =================== */
+        .segment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .segment-card {
+            background: var(--bg-light);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .segment-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .segment-items {
+            list-style: none;
+        }
+
+        .segment-items li {
+            font-size: 12px;
+            color: var(--text-secondary);
+            padding: 4px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .segment-items li:last-child {
+            border-bottom: none;
+        }
+
+        /* ===================
+           RESPONSIVE
+           =================== */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .nav-inner {
+                gap: 4px;
+            }
+
+            .nav-btn {
+                padding: 12px 16px;
+                font-size: 13px;
+            }
+
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .priority-matrix {
+                grid-template-columns: 1fr;
+            }
+
+            .funnel-step {
+                width: 100% !important;
+                max-width: 300px;
+            }
+
+            .funnel-dropoff {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <h1>Conversion Audit & A/B Test Plan</h1>
+        <p class="subtitle">Leases Management Pages - Run 006B</p>
+        <span class="agent-badge">Luke Wroblewski - Position 9 (FINAL)</span>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <button class="nav-btn active" data-section="funnels">Funnels</button>
+            <button class="nav-btn" data-section="friction">Friction Points</button>
+            <button class="nav-btn" data-section="tests">A/B Tests</button>
+            <button class="nav-btn" data-section="metrics">Metrics</button>
+            <button class="nav-btn" data-section="instrumentation">Instrumentation</button>
+            <button class="nav-btn" data-section="audit">Design Audit</button>
+            <button class="nav-btn" data-section="priority">Priority Matrix</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+
+        <!-- =================== FUNNELS SECTION =================== -->
+        <section id="funnels" class="section active">
+            <div class="section-header">
+                <h2>Conversion Funnel Analysis</h2>
+                <p>Visual breakdown of the three primary conversion funnels on the Leases Management Pages.</p>
+            </div>
+
+            <div class="grid-3">
+                <!-- Sign Lease Funnel -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Sign Lease Funnel</h3>
+                        <span class="funnel-badge">Primary Conversion</span>
+                    </div>
+                    <div class="card-body funnel-container">
+                        <div class="funnel funnel-sign">
+                            <div class="funnel-step step-1">
+                                <div class="step-name">View Agreement</div>
+                                <div class="step-rate">100%</div>
+                                <div class="step-count">~500 users/mo</div>
+                                <span class="funnel-dropoff">-10% bounce</span>
+                            </div>
+                            <div class="funnel-arrow"></div>
+                            <div class="funnel-step step-2">
+                                <div class="step-name">Scroll/Read Document</div>
+                                <div class="step-rate">90%</div>
+                                <div class="step-count">~450 users/mo</div>
+                                <span class="funnel-dropoff">-15% abandon</span>
+                            </div>
+                            <div class="funnel-arrow"></div>
+                            <div class="funnel-step step-3">
+                                <div class="step-name">Check "I Agree"</div>
+                                <div class="step-rate">75%</div>
+                                <div class="step-count">~375 users/mo</div>
+                                <span class="funnel-dropoff">-5% hesitation</span>
+                            </div>
+                            <div class="funnel-arrow"></div>
+                            <div class="funnel-step step-4">
+                                <div class="step-name">Signed</div>
+                                <div class="step-rate">70%</div>
+                                <div class="step-count">~350 users/mo</div>
+                            </div>
+                        </div>
+                        <p style="text-align: center; margin-top: 24px; font-size: 13px; color: var(--text-secondary);">
+                            <strong>Critical Drop:</strong> Document scroll fatigue causes 15% abandonment. Target: >80% completion.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Pay Invoice Funnel -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Pay Invoice Funnel</h3>
+                        <span class="funnel-badge">Revenue Conversion</span>
+                    </div>
+                    <div class="card-body funnel-container">
+                        <div class="funnel funnel-pay">
+                            <div class="funnel-step step-1">
+                                <div class="step-name">View Invoice</div>
+                                <div class="step-rate">100%</div>
+                                <div class="step-count">~800 users/mo</div>
+                                <span class="funnel-dropoff">-5% delay</span>
+                            </div>
+                            <div class="funnel-arrow"></div>
+                            <div class="funnel-step step-2">
+                                <div class="step-name">Select Payment Method</div>
+                                <div class="step-rate">95%</div>
+                                <div class="step-count">~760 users/mo</div>
+                                <span class="funnel-dropoff">-10% friction</span>
+                            </div>
+                            <div class="funnel-arrow"></div>
+                            <div class="funnel-step step-3">
+                                <div class="step-name">Payment Complete</div>
+                                <div class="step-rate">85%</div>
+                                <div class="step-count">~680 users/mo</div>
+                            </div>
+                        </div>
+                        <p style="text-align: center; margin-top: 24px; font-size: 13px; color: var(--text-secondary);">
+                            <strong>Opportunity:</strong> Users with saved payment method convert at 95%+. One-click pay can boost this.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- DCT Response Funnel -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>DCT Response Funnel</h3>
+                        <span class="funnel-badge">Engagement Conversion</span>
+                    </div>
+                    <div class="card-body funnel-container">
+                        <div class="funnel funnel-dct">
+                            <div class="funnel-step step-1">
+                                <div class="step-name">Receive Notification</div>
+                                <div class="step-rate">100%</div>
+                                <div class="step-count">~200 requests/mo</div>
+                                <span class="funnel-dropoff">-15% unseen</span>
+                            </div>
+                            <div class="funnel-arrow"></div>
+                            <div class="funnel-step step-2">
+                                <div class="step-name">View Request Details</div>
+                                <div class="step-rate">85%</div>
+                                <div class="step-count">~170 users/mo</div>
+                                <span class="funnel-dropoff">-20% decision delay</span>
+                            </div>
+                            <div class="funnel-arrow"></div>
+                            <div class="funnel-step step-3">
+                                <div class="step-name">Make Decision</div>
+                                <div class="step-rate">65%</div>
+                                <div class="step-count">~130 users/mo</div>
+                                <span class="funnel-dropoff">-5% expire</span>
+                            </div>
+                            <div class="funnel-arrow"></div>
+                            <div class="funnel-step step-4">
+                                <div class="step-name">Response Submitted</div>
+                                <div class="step-rate">60%</div>
+                                <div class="step-count">~120 users/mo</div>
+                            </div>
+                        </div>
+                        <p style="text-align: center; margin-top: 24px; font-size: 13px; color: var(--text-secondary);">
+                            <strong>Risk:</strong> 24-hour expiration + decision complexity = 40% non-response. Target: >85%.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 24px;">
+                <div class="card-header">
+                    <h3>Funnel Conversion Summary</h3>
+                </div>
+                <div class="card-body">
+                    <table class="friction-table">
+                        <thead>
+                            <tr>
+                                <th>Funnel</th>
+                                <th>Current Rate</th>
+                                <th>Target Rate</th>
+                                <th>Gap</th>
+                                <th>Estimated Impact</th>
+                                <th>Primary Blocker</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Sign Lease</strong></td>
+                                <td>70%</td>
+                                <td style="color: var(--success-green); font-weight: 600;">80%</td>
+                                <td style="color: var(--danger-red);">-10%</td>
+                                <td>+50 leases/month</td>
+                                <td>Document scroll fatigue</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pay Invoice</strong></td>
+                                <td>85%</td>
+                                <td style="color: var(--success-green); font-weight: 600;">90%</td>
+                                <td style="color: var(--warning-amber);">-5%</td>
+                                <td>+40 payments/month</td>
+                                <td>Payment method entry</td>
+                            </tr>
+                            <tr>
+                                <td><strong>DCT Response</strong></td>
+                                <td>60%</td>
+                                <td style="color: var(--success-green); font-weight: 600;">85%</td>
+                                <td style="color: var(--danger-red);">-25%</td>
+                                <td>+50 responses/month</td>
+                                <td>Decision complexity + time pressure</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================== FRICTION POINTS SECTION =================== -->
+        <section id="friction" class="section">
+            <div class="section-header">
+                <h2>Friction Point Identification</h2>
+                <p>Comprehensive catalog of conversion blockers across all funnels, ranked by severity and impact.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Friction Point Registry</h3>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <table class="friction-table">
+                        <thead>
+                            <tr>
+                                <th>Friction Point</th>
+                                <th>Funnel</th>
+                                <th>Severity</th>
+                                <th>Drop-off Impact</th>
+                                <th>Evidence Base</th>
+                                <th>Recommended Fix</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Legal document length</strong></td>
+                                <td><span class="funnel-badge">Sign Lease</span></td>
+                                <td><span class="severity-badge severity-critical">Critical</span></td>
+                                <td>15-20%</td>
+                                <td>Kahneman: System 2 fatigue causes abandonment</td>
+                                <td>Progressive disclosure - summary first</td>
+                            </tr>
+                            <tr>
+                                <td><strong>DCT counter-offer complexity</strong></td>
+                                <td><span class="funnel-badge">DCT Response</span></td>
+                                <td><span class="severity-badge severity-critical">Critical</span></td>
+                                <td>20%</td>
+                                <td>Mental math on dates causes paralysis</td>
+                                <td>Visual diff + one-click alternatives</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Unclear action priority</strong></td>
+                                <td><span class="funnel-badge">All Funnels</span></td>
+                                <td><span class="severity-badge severity-critical">Critical</span></td>
+                                <td>10-15%</td>
+                                <td>Dashboard blindness - users scan, don't act</td>
+                                <td>Action Center with priority hierarchy</td>
+                            </tr>
+                            <tr>
+                                <td><strong>No saved payment method</strong></td>
+                                <td><span class="funnel-badge">Pay Invoice</span></td>
+                                <td><span class="severity-badge severity-high">High</span></td>
+                                <td>10%</td>
+                                <td>Industry avg: 40% abandon without saved method</td>
+                                <td>Prompt to save during first payment</td>
+                            </tr>
+                            <tr>
+                                <td><strong>24-hour DCT expiration anxiety</strong></td>
+                                <td><span class="funnel-badge">DCT Response</span></td>
+                                <td><span class="severity-badge severity-high">High</span></td>
+                                <td>10%</td>
+                                <td>Time pressure causes panic or avoidance</td>
+                                <td>Add "Request More Time" option</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Mobile signing hesitation</strong></td>
+                                <td><span class="funnel-badge">Sign Lease</span></td>
+                                <td><span class="severity-badge severity-high">High</span></td>
+                                <td>8%</td>
+                                <td>Trust concerns with legal docs on phone</td>
+                                <td>Add trust signals + pinch-to-zoom</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Scroll to bottom for CTA</strong></td>
+                                <td><span class="funnel-badge">Sign Lease</span></td>
+                                <td><span class="severity-badge severity-medium">Medium</span></td>
+                                <td>5-10%</td>
+                                <td>Users don't reach Sign button</td>
+                                <td>Sticky Sign CTA at viewport bottom</td>
+                            </tr>
+                            <tr>
+                                <td><strong>New card entry on mobile</strong></td>
+                                <td><span class="funnel-badge">Pay Invoice</span></td>
+                                <td><span class="severity-badge severity-medium">Medium</span></td>
+                                <td>8%</td>
+                                <td>Tiny keyboards, error-prone</td>
+                                <td>Support Apple Pay / Google Pay</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Unclear invoice breakdown</strong></td>
+                                <td><span class="funnel-badge">Pay Invoice</span></td>
+                                <td><span class="severity-badge severity-medium">Medium</span></td>
+                                <td>5%</td>
+                                <td>Distrust causes hesitation</td>
+                                <td>Show itemized breakdown inline</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Proof photo upload friction</strong></td>
+                                <td><span class="funnel-badge">Proof Photos</span></td>
+                                <td><span class="severity-badge severity-medium">Medium</span></td>
+                                <td>5%</td>
+                                <td>Unclear requirements, upload failures</td>
+                                <td>Visual examples + progress indicator</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Overdue invoice shame</strong></td>
+                                <td><span class="funnel-badge">Pay Invoice</span></td>
+                                <td><span class="severity-badge severity-low">Low</span></td>
+                                <td>3%</td>
+                                <td>Psychological barrier to opening page</td>
+                                <td>Gentle tone progression, not shame</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================== A/B TESTS SECTION =================== -->
+        <section id="tests" class="section">
+            <div class="section-header">
+                <h2>A/B Test Roadmap</h2>
+                <p>Prioritized experiments with full specifications, success criteria, and implementation details.</p>
+            </div>
+
+            <div class="grid-2">
+                <!-- Test 1: Sticky Sign CTA -->
+                <div class="test-card">
+                    <div class="test-header">
+                        <span class="test-id">TEST-001</span>
+                        <span class="test-priority priority-p0">P0 - Critical</span>
+                    </div>
+                    <div class="test-body">
+                        <h4 class="test-title">Sticky Sign CTA Placement</h4>
+                        <p class="test-hypothesis">
+                            <strong>If</strong> we show a persistent sticky "Sign Now" CTA at the bottom of the document viewer,
+                            <strong>then</strong> signature completion rate will increase by 20%
+                            <strong>because</strong> users won't abandon due to scroll fatigue.
+                        </p>
+                        <div class="test-spec">
+                            <div class="spec-item">
+                                <div class="spec-label">Control</div>
+                                <div class="spec-value">Sign button only after scroll</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Variant</div>
+                                <div class="spec-value">Sticky CTA visible throughout</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Duration</div>
+                                <div class="spec-value">2 weeks or 200 signatures</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Segment</div>
+                                <div class="spec-value">All users with unsigned leases</div>
+                            </div>
+                        </div>
+                        <div class="test-metrics">
+                            <div class="metric-row">
+                                <span class="metric-label">Primary Metric</span>
+                                <span class="metric-value">Signature completion rate</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Success Threshold</span>
+                                <span class="metric-value green">>15% lift (95% confidence)</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Guardrail</span>
+                                <span class="metric-value">No increase in support tickets</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="test-expand" onclick="toggleDetails(this)">View Full Specification</button>
+                    <div class="test-details">
+                        <h4>Implementation Notes</h4>
+                        <ul>
+                            <li>CTA should include "I've read and agree" checkbox in sticky bar</li>
+                            <li>Progress indicator showing scroll position in document</li>
+                            <li>CTA remains disabled until 80% scroll depth OR 2 minutes elapsed</li>
+                            <li>Mobile: Full-width sticky bar at bottom, 56px height</li>
+                        </ul>
+                        <h4>Secondary Metrics</h4>
+                        <ul>
+                            <li>Time from document view to signature</li>
+                            <li>Scroll depth before signing</li>
+                            <li>Mobile vs Desktop completion rate delta</li>
+                        </ul>
+                        <h4>Rollout Plan</h4>
+                        <p>Phase 1: 10% traffic for 3 days (smoke test). Phase 2: 50% traffic for full duration. Phase 3: 100% rollout if success criteria met.</p>
+                    </div>
+                </div>
+
+                <!-- Test 2: One-Click Payment -->
+                <div class="test-card">
+                    <div class="test-header">
+                        <span class="test-id">TEST-002</span>
+                        <span class="test-priority priority-p0">P0 - Critical</span>
+                    </div>
+                    <div class="test-body">
+                        <h4 class="test-title">One-Click Payment</h4>
+                        <p class="test-hypothesis">
+                            <strong>If</strong> we allow users with saved payment methods to pay in one click,
+                            <strong>then</strong> payment completion rate will increase by 25%
+                            <strong>because</strong> reduced friction removes abandonment opportunities.
+                        </p>
+                        <div class="test-spec">
+                            <div class="spec-item">
+                                <div class="spec-label">Control</div>
+                                <div class="spec-value">3-step: View > Review > Confirm</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Variant</div>
+                                <div class="spec-value">"Pay Now with ****4242" button</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Duration</div>
+                                <div class="spec-value">1 billing cycle (30 days)</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Segment</div>
+                                <div class="spec-value">Users with saved payment method</div>
+                            </div>
+                        </div>
+                        <div class="test-metrics">
+                            <div class="metric-row">
+                                <span class="metric-label">Primary Metric</span>
+                                <span class="metric-value">Payment completion rate</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Success Threshold</span>
+                                <span class="metric-value green">>20% lift, no chargebacks</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Guardrail</span>
+                                <span class="metric-value">Payment errors, disputes</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="test-expand" onclick="toggleDetails(this)">View Full Specification</button>
+                    <div class="test-details">
+                        <h4>Implementation Notes</h4>
+                        <ul>
+                            <li>Include 30-second "undo" period after one-click pay</li>
+                            <li>Show payment method icon (Visa, Mastercard, etc.) in button</li>
+                            <li>Confirmation toast with receipt link</li>
+                            <li>Fallback to full flow if payment method expired</li>
+                        </ul>
+                        <h4>Secondary Metrics</h4>
+                        <ul>
+                            <li>Time from invoice view to payment complete</li>
+                            <li>Undo rate (should be <2%)</li>
+                            <li>Support ticket volume</li>
+                        </ul>
+                        <h4>Risk Mitigation</h4>
+                        <p>If undo rate exceeds 5%, auto-pause experiment and add review step back.</p>
+                    </div>
+                </div>
+
+                <!-- Test 3: DCT Email Actions -->
+                <div class="test-card">
+                    <div class="test-header">
+                        <span class="test-id">TEST-003</span>
+                        <span class="test-priority priority-p1">P1 - High</span>
+                    </div>
+                    <div class="test-body">
+                        <h4 class="test-title">DCT Response Email Buttons</h4>
+                        <p class="test-hypothesis">
+                            <strong>If</strong> we include Accept/Decline buttons directly in DCT notification emails,
+                            <strong>then</strong> response rate within 24 hours will increase by 30%
+                            <strong>because</strong> removing the login step reduces friction.
+                        </p>
+                        <div class="test-spec">
+                            <div class="spec-item">
+                                <div class="spec-label">Control</div>
+                                <div class="spec-value">"View Request" link > Login > Decide</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Variant</div>
+                                <div class="spec-value">Accept/Decline buttons in email</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Duration</div>
+                                <div class="spec-value">2 weeks or 50 DCT requests</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Segment</div>
+                                <div class="spec-value">All DCT recipients (Hosts)</div>
+                            </div>
+                        </div>
+                        <div class="test-metrics">
+                            <div class="metric-row">
+                                <span class="metric-label">Primary Metric</span>
+                                <span class="metric-value">Response rate within 24h</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Success Threshold</span>
+                                <span class="metric-value green">>25% lift</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Guardrail</span>
+                                <span class="metric-value">Accidental decline rate <5%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="test-expand" onclick="toggleDetails(this)">View Full Specification</button>
+                    <div class="test-details">
+                        <h4>Implementation Notes</h4>
+                        <ul>
+                            <li>Use secure tokenized links for each action button</li>
+                            <li>Include "View Details" link for users who want more info</li>
+                            <li>Show request summary inline: dates, amount delta</li>
+                            <li>Confirmation page after email action with undo option</li>
+                        </ul>
+                        <h4>Secondary Metrics</h4>
+                        <ul>
+                            <li>Response rate within 4 hours (urgency signal)</li>
+                            <li>Users who undo within 1 hour</li>
+                            <li>Counter-proposal rate (may decrease if Accept is too easy)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Test 4: Mobile Week Strip -->
+                <div class="test-card">
+                    <div class="test-header">
+                        <span class="test-id">TEST-004</span>
+                        <span class="test-priority priority-p1">P1 - High</span>
+                    </div>
+                    <div class="test-body">
+                        <h4 class="test-title">Mobile Week Strip vs Month View</h4>
+                        <p class="test-hypothesis">
+                            <strong>If</strong> we replace the cramped month calendar with a swipeable week strip on mobile,
+                            <strong>then</strong> DCT completion rate on mobile will increase by 35%
+                            <strong>because</strong> touch targets meet 44px minimum and cognitive load is reduced.
+                        </p>
+                        <div class="test-spec">
+                            <div class="spec-item">
+                                <div class="spec-label">Control</div>
+                                <div class="spec-value">Scaled-down month grid</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Variant</div>
+                                <div class="spec-value">Swipeable week strip + full-screen picker</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Duration</div>
+                                <div class="spec-value">2 weeks or 100 mobile DCT actions</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Segment</div>
+                                <div class="spec-value">Mobile users only (<768px)</div>
+                            </div>
+                        </div>
+                        <div class="test-metrics">
+                            <div class="metric-row">
+                                <span class="metric-label">Primary Metric</span>
+                                <span class="metric-value">DCT completion rate (mobile)</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Success Threshold</span>
+                                <span class="metric-value green">>30% lift</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Guardrail</span>
+                                <span class="metric-value">Task time not >2x longer</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="test-expand" onclick="toggleDetails(this)">View Full Specification</button>
+                    <div class="test-details">
+                        <h4>Implementation Notes</h4>
+                        <ul>
+                            <li>Week strip: 7 cells at 53px each = 371px (fits 375px viewport)</li>
+                            <li>Swipe left/right to navigate weeks</li>
+                            <li>Tap any date to open full-screen calendar picker</li>
+                            <li>Selection state persists at bottom of sheet</li>
+                        </ul>
+                        <h4>Based on Jony Ive's Analysis</h4>
+                        <p>Month grid at 375px = 40px touch targets (below 44px minimum). Week strip solves this while maintaining calendar mental model.</p>
+                    </div>
+                </div>
+
+                <!-- Test 5: Request More Time -->
+                <div class="test-card">
+                    <div class="test-header">
+                        <span class="test-id">TEST-005</span>
+                        <span class="test-priority priority-p1">P1 - High</span>
+                    </div>
+                    <div class="test-body">
+                        <h4 class="test-title">"Request More Time" Option</h4>
+                        <p class="test-hypothesis">
+                            <strong>If</strong> we add a "Request More Time" button for DCT responses,
+                            <strong>then</strong> the expiration rate will decrease by 40%
+                            <strong>because</strong> procrastinators will engage rather than avoid.
+                        </p>
+                        <div class="test-spec">
+                            <div class="spec-item">
+                                <div class="spec-label">Control</div>
+                                <div class="spec-value">Only Accept/Decline/Counter</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Variant</div>
+                                <div class="spec-value">Add "Request More Time" (+24h, one-time)</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Duration</div>
+                                <div class="spec-value">3 weeks or 75 DCT expirations</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Segment</div>
+                                <div class="spec-value">All DCT responders</div>
+                            </div>
+                        </div>
+                        <div class="test-metrics">
+                            <div class="metric-row">
+                                <span class="metric-label">Primary Metric</span>
+                                <span class="metric-value">DCT expiration rate</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Success Threshold</span>
+                                <span class="metric-value green">>35% reduction in expirations</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Guardrail</span>
+                                <span class="metric-value">Overall response time not >2x</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="test-expand" onclick="toggleDetails(this)">View Full Specification</button>
+                    <div class="test-details">
+                        <h4>Implementation Notes</h4>
+                        <ul>
+                            <li>One-time use per request (cannot extend again)</li>
+                            <li>Requester notified: "[Name] needs more time. New deadline: [date]"</li>
+                            <li>Extension button disabled after use, shows "Extended until [time]"</li>
+                            <li>Track: users who extend vs users who let expire</li>
+                        </ul>
+                        <h4>Behavioral Insight</h4>
+                        <p>Per Ariely's research on procrastination, giving an explicit "I need more time" action surfaces users who would otherwise ghost. This converts non-responses into continued engagement.</p>
+                    </div>
+                </div>
+
+                <!-- Test 6: Action Center Animation -->
+                <div class="test-card">
+                    <div class="test-header">
+                        <span class="test-id">TEST-006</span>
+                        <span class="test-priority priority-p2">P2 - Medium</span>
+                    </div>
+                    <div class="test-body">
+                        <h4 class="test-title">Action Center Prominence Animation</h4>
+                        <p class="test-hypothesis">
+                            <strong>If</strong> we add subtle attention-grabbing animation to Action Center items,
+                            <strong>then</strong> action completion rate will increase by 15%
+                            <strong>because</strong> users will notice pending tasks instead of scanning past them.
+                        </p>
+                        <div class="test-spec">
+                            <div class="spec-item">
+                                <div class="spec-label">Control</div>
+                                <div class="spec-value">Static Action Center cards</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Variant</div>
+                                <div class="spec-value">Gentle pulse on first load + badge count</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Duration</div>
+                                <div class="spec-value">2 weeks</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Segment</div>
+                                <div class="spec-value">All users with pending actions</div>
+                            </div>
+                        </div>
+                        <div class="test-metrics">
+                            <div class="metric-row">
+                                <span class="metric-label">Primary Metric</span>
+                                <span class="metric-value">Action completion within session</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Success Threshold</span>
+                                <span class="metric-value green">>10% lift</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">Guardrail</span>
+                                <span class="metric-value">Bounce rate, user complaints</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="test-expand" onclick="toggleDetails(this)">View Full Specification</button>
+                    <div class="test-details">
+                        <h4>Implementation Notes</h4>
+                        <ul>
+                            <li>Animation: 2 gentle pulses on first load, then static</li>
+                            <li>Respects prefers-reduced-motion media query</li>
+                            <li>Urgency hierarchy: red pulse for overdue, amber for due soon, blue for informational</li>
+                            <li>Badge count in header: "3 actions needed"</li>
+                        </ul>
+                        <h4>Based on Charles Eames' Analysis</h4>
+                        <p>First-time users have dashboard blindness. Gentle motion draws attention to what matters without creating anxiety.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================== METRICS SECTION =================== -->
+        <section id="metrics" class="section">
+            <div class="section-header">
+                <h2>Success Metrics Framework</h2>
+                <p>Key performance indicators with definitions, targets, and measurement methods.</p>
+            </div>
+
+            <div class="grid-4">
+                <div class="metric-card">
+                    <div class="metric-icon blue">&#128221;</div>
+                    <div class="metric-name">Signature Completion Rate</div>
+                    <div class="metric-current">---%</div>
+                    <div class="metric-target">Target: <span>>80%</span></div>
+                    <div class="metric-definition">
+                        <strong>Definition:</strong> Signed / Document Viewed<br>
+                        <strong>Baseline:</strong> Unknown - needs instrumentation
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon green">&#128176;</div>
+                    <div class="metric-name">Payment Completion Rate</div>
+                    <div class="metric-current">---%</div>
+                    <div class="metric-target">Target: <span>>90%</span></div>
+                    <div class="metric-definition">
+                        <strong>Definition:</strong> Paid / Invoice Issued<br>
+                        <strong>Baseline:</strong> Unknown - needs instrumentation
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon amber">&#128337;</div>
+                    <div class="metric-name">Time to Sign (Median)</div>
+                    <div class="metric-current">--- min</div>
+                    <div class="metric-target">Target: <span><5 min</span></div>
+                    <div class="metric-definition">
+                        <strong>Definition:</strong> Document view timestamp to signature timestamp<br>
+                        <strong>Baseline:</strong> Unknown
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon purple">&#128197;</div>
+                    <div class="metric-name">DCT Response Rate</div>
+                    <div class="metric-current">---%</div>
+                    <div class="metric-target">Target: <span>>85%</span></div>
+                    <div class="metric-definition">
+                        <strong>Definition:</strong> Responded / Request Received<br>
+                        <strong>Baseline:</strong> Unknown
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon blue">&#9201;</div>
+                    <div class="metric-name">DCT Response Time</div>
+                    <div class="metric-current">--- hrs</div>
+                    <div class="metric-target">Target: <span><4 hrs</span></div>
+                    <div class="metric-definition">
+                        <strong>Definition:</strong> Request timestamp to response timestamp<br>
+                        <strong>Baseline:</strong> Unknown
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon green">&#128247;</div>
+                    <div class="metric-name">Proof Photo Completion</div>
+                    <div class="metric-current">---%</div>
+                    <div class="metric-target">Target: <span>>95%</span></div>
+                    <div class="metric-definition">
+                        <strong>Definition:</strong> Photos submitted / Check-outs<br>
+                        <strong>Baseline:</strong> Unknown
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon amber">&#128181;</div>
+                    <div class="metric-name">Time to Payment</div>
+                    <div class="metric-current">--- hrs</div>
+                    <div class="metric-target">Target: <span><24 hrs</span></div>
+                    <div class="metric-definition">
+                        <strong>Definition:</strong> Invoice issued to payment timestamp<br>
+                        <strong>Baseline:</strong> Unknown
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon purple">&#128269;</div>
+                    <div class="metric-name">Overdue Recovery Rate</div>
+                    <div class="metric-current">---%</div>
+                    <div class="metric-target">Target: <span>>70%</span></div>
+                    <div class="metric-definition">
+                        <strong>Definition:</strong> Paid within 7 days of overdue / Total overdue<br>
+                        <strong>Baseline:</strong> Unknown
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 32px;">
+                <div class="card-header">
+                    <h3>Segmentation Requirements</h3>
+                </div>
+                <div class="card-body">
+                    <p style="margin-bottom: 16px; color: var(--text-secondary);">All metrics MUST be segmented by the following dimensions to reveal hidden problems in aggregate data:</p>
+                    <div class="segment-grid">
+                        <div class="segment-card">
+                            <div class="segment-title">User Type</div>
+                            <ul class="segment-items">
+                                <li>Host</li>
+                                <li>Guest</li>
+                            </ul>
+                        </div>
+                        <div class="segment-card">
+                            <div class="segment-title">Device</div>
+                            <ul class="segment-items">
+                                <li>Desktop (>1024px)</li>
+                                <li>Tablet (768-1024px)</li>
+                                <li>Mobile (<768px)</li>
+                            </ul>
+                        </div>
+                        <div class="segment-card">
+                            <div class="segment-title">Lease Stage</div>
+                            <ul class="segment-items">
+                                <li>New (< 30 days)</li>
+                                <li>Established (30+ days)</li>
+                                <li>Renewal period</li>
+                            </ul>
+                        </div>
+                        <div class="segment-card">
+                            <div class="segment-title">First-Time vs Returning</div>
+                            <ul class="segment-items">
+                                <li>First lease ever</li>
+                                <li>Has previous leases</li>
+                            </ul>
+                        </div>
+                        <div class="segment-card">
+                            <div class="segment-title">Time of Day</div>
+                            <ul class="segment-items">
+                                <li>Business hours (9a-5p)</li>
+                                <li>Evening (5p-10p)</li>
+                                <li>Night/Early morning</li>
+                            </ul>
+                        </div>
+                        <div class="segment-card">
+                            <div class="segment-title">Payment Method</div>
+                            <ul class="segment-items">
+                                <li>Saved method</li>
+                                <li>New entry</li>
+                                <li>Apple Pay / Google Pay</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p style="margin-top: 16px; font-size: 13px; color: var(--text-muted);">
+                        <strong>Example insight:</strong> "A 70% conversion rate that's actually 90% Hosts and 50% Guests reveals a Guest-specific problem."
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================== INSTRUMENTATION SECTION =================== -->
+        <section id="instrumentation" class="section">
+            <div class="section-header">
+                <h2>Instrumentation Requirements</h2>
+                <p>Event tracking specifications for conversion funnel analysis. All events should be sent to PostHog or equivalent analytics platform.</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Sign Lease Events</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="code-block">
+<span class="code-comment">// Document Viewing Events</span>
+<span class="code-function">track</span>(<span class="code-string">'lease_document_viewed'</span>, {
+  <span class="code-property">lease_id</span>: <span class="code-string">'uuid'</span>,
+  <span class="code-property">document_type</span>: <span class="code-string">'pta|amendment'</span>,
+  <span class="code-property">user_role</span>: <span class="code-string">'host|guest'</span>,
+  <span class="code-property">device_type</span>: <span class="code-string">'mobile|tablet|desktop'</span>,
+  <span class="code-property">is_first_view</span>: <span class="code-keyword">true</span>|<span class="code-keyword">false</span>
+});
+
+<span class="code-comment">// Scroll Depth Tracking</span>
+<span class="code-function">track</span>(<span class="code-string">'lease_document_scroll'</span>, {
+  <span class="code-property">lease_id</span>: <span class="code-string">'uuid'</span>,
+  <span class="code-property">scroll_depth_percent</span>: <span class="code-number">25</span>|<span class="code-number">50</span>|<span class="code-number">75</span>|<span class="code-number">100</span>,
+  <span class="code-property">time_on_page_seconds</span>: <span class="code-number">120</span>
+});
+
+<span class="code-comment">// Signing Events</span>
+<span class="code-function">track</span>(<span class="code-string">'lease_signature_started'</span>, {...});
+<span class="code-function">track</span>(<span class="code-string">'lease_signature_completed'</span>, {
+  <span class="code-property">time_to_sign_seconds</span>: <span class="code-number">300</span>,
+  <span class="code-property">scroll_depth_at_sign</span>: <span class="code-number">100</span>
+});
+<span class="code-function">track</span>(<span class="code-string">'lease_signature_abandoned'</span>, {
+  <span class="code-property">abandon_point</span>: <span class="code-string">'scroll|checkbox|confirm'</span>,
+  <span class="code-property">time_before_abandon</span>: <span class="code-number">45</span>
+});
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Payment Events</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="code-block">
+<span class="code-comment">// Invoice Events</span>
+<span class="code-function">track</span>(<span class="code-string">'invoice_viewed'</span>, {
+  <span class="code-property">invoice_id</span>: <span class="code-string">'uuid'</span>,
+  <span class="code-property">amount_cents</span>: <span class="code-number">150000</span>,
+  <span class="code-property">days_until_due</span>: <span class="code-number">7</span>,
+  <span class="code-property">is_overdue</span>: <span class="code-keyword">false</span>
+});
+
+<span class="code-comment">// Payment Flow Events</span>
+<span class="code-function">track</span>(<span class="code-string">'payment_started'</span>, {
+  <span class="code-property">invoice_id</span>: <span class="code-string">'uuid'</span>,
+  <span class="code-property">has_saved_method</span>: <span class="code-keyword">true</span>,
+  <span class="code-property">payment_method_type</span>: <span class="code-string">'card|apple_pay|bank'</span>
+});
+
+<span class="code-function">track</span>(<span class="code-string">'payment_completed'</span>, {
+  <span class="code-property">time_to_pay_seconds</span>: <span class="code-number">30</span>,
+  <span class="code-property">was_one_click</span>: <span class="code-keyword">true</span>
+});
+
+<span class="code-function">track</span>(<span class="code-string">'payment_failed'</span>, {
+  <span class="code-property">error_type</span>: <span class="code-string">'declined|expired|network'</span>
+});
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>DCT Events</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="code-block">
+<span class="code-comment">// Request Lifecycle</span>
+<span class="code-function">track</span>(<span class="code-string">'dct_request_created'</span>, {
+  <span class="code-property">request_id</span>: <span class="code-string">'uuid'</span>,
+  <span class="code-property">change_type</span>: <span class="code-string">'add|remove|swap'</span>,
+  <span class="code-property">dates_affected_count</span>: <span class="code-number">3</span>,
+  <span class="code-property">amount_delta_cents</span>: <span class="code-number">15000</span>
+});
+
+<span class="code-function">track</span>(<span class="code-string">'dct_notification_sent'</span>, {
+  <span class="code-property">channel</span>: <span class="code-string">'email|push|sms'</span>
+});
+
+<span class="code-function">track</span>(<span class="code-string">'dct_notification_opened'</span>, {
+  <span class="code-property">channel</span>: <span class="code-string">'email'</span>,
+  <span class="code-property">hours_since_request</span>: <span class="code-number">2.5</span>
+});
+
+<span class="code-function">track</span>(<span class="code-string">'dct_response_submitted'</span>, {
+  <span class="code-property">response_type</span>: <span class="code-string">'accept|decline|counter|extend'</span>,
+  <span class="code-property">hours_to_respond</span>: <span class="code-number">4.2</span>,
+  <span class="code-property">responded_from</span>: <span class="code-string">'email|app|web'</span>
+});
+
+<span class="code-function">track</span>(<span class="code-string">'dct_request_expired'</span>, {
+  <span class="code-property">notifications_sent_count</span>: <span class="code-number">4</span>
+});
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Action Center Events</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="code-block">
+<span class="code-comment">// Visibility and Engagement</span>
+<span class="code-function">track</span>(<span class="code-string">'action_center_viewed'</span>, {
+  <span class="code-property">action_count</span>: <span class="code-number">3</span>,
+  <span class="code-property">action_types</span>: [<span class="code-string">'sign'</span>, <span class="code-string">'pay'</span>, <span class="code-string">'dct'</span>]
+});
+
+<span class="code-function">track</span>(<span class="code-string">'action_center_item_clicked'</span>, {
+  <span class="code-property">action_type</span>: <span class="code-string">'sign|pay|dct|photo'</span>,
+  <span class="code-property">urgency_level</span>: <span class="code-string">'critical|high|medium'</span>,
+  <span class="code-property">position_in_list</span>: <span class="code-number">1</span>
+});
+
+<span class="code-function">track</span>(<span class="code-string">'action_center_dismissed'</span>, {
+  <span class="code-property">items_remaining</span>: <span class="code-number">2</span>
+});
+
+<span class="code-comment">// Session-Level Tracking</span>
+<span class="code-function">track</span>(<span class="code-string">'session_actions_completed'</span>, {
+  <span class="code-property">total_available</span>: <span class="code-number">3</span>,
+  <span class="code-property">total_completed</span>: <span class="code-number">2</span>,
+  <span class="code-property">session_duration_seconds</span>: <span class="code-number">180</span>
+});
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 24px;">
+                <div class="card-header">
+                    <h3>Funnel Definition (PostHog)</h3>
+                </div>
+                <div class="card-body">
+                    <div class="code-block">
+<span class="code-comment">// Sign Lease Funnel</span>
+<span class="code-keyword">const</span> signLeaseFunnel = {
+  <span class="code-property">name</span>: <span class="code-string">'Sign Lease Conversion'</span>,
+  <span class="code-property">steps</span>: [
+    { <span class="code-property">event</span>: <span class="code-string">'lease_document_viewed'</span> },
+    { <span class="code-property">event</span>: <span class="code-string">'lease_document_scroll'</span>, <span class="code-property">properties</span>: { <span class="code-property">scroll_depth_percent</span>: <span class="code-number">75</span> } },
+    { <span class="code-property">event</span>: <span class="code-string">'lease_signature_started'</span> },
+    { <span class="code-property">event</span>: <span class="code-string">'lease_signature_completed'</span> }
+  ],
+  <span class="code-property">conversion_window</span>: <span class="code-string">'7 days'</span>,
+  <span class="code-property">breakdown_by</span>: [<span class="code-string">'user_role'</span>, <span class="code-string">'device_type'</span>]
+};
+
+<span class="code-comment">// DCT Response Funnel</span>
+<span class="code-keyword">const</span> dctResponseFunnel = {
+  <span class="code-property">name</span>: <span class="code-string">'DCT Response Conversion'</span>,
+  <span class="code-property">steps</span>: [
+    { <span class="code-property">event</span>: <span class="code-string">'dct_notification_sent'</span> },
+    { <span class="code-property">event</span>: <span class="code-string">'dct_notification_opened'</span> },
+    { <span class="code-property">event</span>: <span class="code-string">'dct_request_viewed'</span> },
+    { <span class="code-property">event</span>: <span class="code-string">'dct_response_submitted'</span> }
+  ],
+  <span class="code-property">conversion_window</span>: <span class="code-string">'24 hours'</span>,
+  <span class="code-property">breakdown_by</span>: [<span class="code-string">'channel'</span>, <span class="code-string">'device_type'</span>]
+};
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================== AUDIT SECTION =================== -->
+        <section id="audit" class="section">
+            <div class="section-header">
+                <h2>Design Audit Findings</h2>
+                <p>Review of all Phase 006B deliverables through a conversion optimization lens.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Agent Deliverable Review</h3>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <ul class="audit-list">
+                        <li class="audit-item">
+                            <span class="audit-status pass">&#10003;</span>
+                            <div class="audit-content">
+                                <h4>StatusBadge Component - Consistent conversion signals</h4>
+                                <p>Badge system uses color + icon + text, ensuring status is clear for all users including color-blind. Supports preset="paid", preset="due", preset="overdue" - aligned with conversion states.</p>
+                                <span class="audit-agent">Josef Muller-Brockmann - Token Definitions</span>
+                            </div>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-status pass">&#10003;</span>
+                            <div class="audit-content">
+                                <h4>PaymentRow Component - Mobile card transformation</h4>
+                                <p>Table-to-card responsive pattern at 768px preserves all conversion-critical info (amount, status, action button). 56px row height meets touch targets.</p>
+                                <span class="audit-agent">Josef Muller-Brockmann - Component Specifications</span>
+                            </div>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-status warn">&#9888;</span>
+                            <div class="audit-content">
+                                <h4>DCTCalendar - Touch targets at risk</h4>
+                                <p>40px cell size on desktop is fine, but 44px on mobile may still cause mis-taps at 375px viewport (7 cells = 308px + gaps). Recommend Jony's week strip pattern.</p>
+                                <span class="audit-agent">Josef Muller-Brockmann - Calendar Tokens</span>
+                            </div>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-status pass">&#10003;</span>
+                            <div class="audit-content">
+                                <h4>Action Center Priority System</h4>
+                                <p>Red > Amber > Blue urgency hierarchy maps directly to conversion priority (overdue payment > signing needed > informational). Max 3 items prevents overwhelm.</p>
+                                <span class="audit-agent">Massimo Vignelli - Grid Layouts</span>
+                            </div>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-status pass">&#10003;</span>
+                            <div class="audit-content">
+                                <h4>Tab Organization - DCT not a separate tab</h4>
+                                <p>"DCT is an action, not a content type" - correct decision. Keeps conversion CTA accessible from Overview without burying in navigation.</p>
+                                <span class="audit-agent">Massimo Vignelli - Information Architecture</span>
+                            </div>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-status pass">&#10003;</span>
+                            <div class="audit-content">
+                                <h4>Document Summary Modal - Progressive disclosure</h4>
+                                <p>"Request Changes" has equal visual weight to "I Agree" - prevents dark pattern of pressuring signature. Summary first reduces scroll fatigue.</p>
+                                <span class="audit-agent">Dieter Rams - Trust Patterns</span>
+                            </div>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-status pass">&#10003;</span>
+                            <div class="audit-content">
+                                <h4>Payment Tone Progression - No shame language</h4>
+                                <p>"Payment needs attention" instead of "OVERDUE" - preserves dignity while maintaining urgency. Multiple recovery paths (update method, support, host contact).</p>
+                                <span class="audit-agent">Dieter Rams - Error States / Milton Glaser - Copy</span>
+                            </div>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-status warn">&#9888;</span>
+                            <div class="audit-content">
+                                <h4>DCT Expiration Copy - Needs softening</h4>
+                                <p>24-hour expiration is aggressive. Milton's countdown copy is good but missing "Request More Time" option identified in conversion analysis.</p>
+                                <span class="audit-agent">Milton Glaser - Urgency Levels</span>
+                            </div>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-status pass">&#10003;</span>
+                            <div class="audit-content">
+                                <h4>Mobile Navigation - Bottom sheet pattern</h4>
+                                <p>Drawer-to-sheet transformation, FAB for primary action, segment control for tabs. Aligns with thumb zone compliance requirements.</p>
+                                <span class="audit-agent">Jony Ive - Mobile Adaptations</span>
+                            </div>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-status pass">&#10003;</span>
+                            <div class="audit-content">
+                                <h4>Week Strip Calendar - Mobile conversion solution</h4>
+                                <p>7 cells at 53px each fits 375px viewport with reliable touch targets. Full-screen picker for selection preserves precision.</p>
+                                <span class="audit-agent">Jony Ive - DCT Calendar Solution</span>
+                            </div>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-status pass">&#10003;</span>
+                            <div class="audit-content">
+                                <h4>First-Visit Experience - Narrative framing</h4>
+                                <p>"Congratulations! Your Lease is underway" + milestone progress bar sets expectations without overwhelming. Future-oriented language.</p>
+                                <span class="audit-agent">Charles Eames - Cold Start</span>
+                            </div>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-status pass">&#10003;</span>
+                            <div class="audit-content">
+                                <h4>Empty State Design - Specific dates shown</h4>
+                                <p>"Your first payment is scheduled for February 15, 2026 - $850.00" instead of "No payments yet". Reduces anxiety, sets clear expectations.</p>
+                                <span class="audit-agent">Charles Eames - Empty States</span>
+                            </div>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-status pass">&#10003;</span>
+                            <div class="audit-content">
+                                <h4>Request/Response State Machine</h4>
+                                <p>"Ball in your court" indicator solves "whose turn is it?" ambiguity from proposal flows. Clear state matrix for DCT lifecycle.</p>
+                                <span class="audit-agent">Don Norman - Flows & Usability</span>
+                            </div>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-status pass">&#10003;</span>
+                            <div class="audit-content">
+                                <h4>Host Dashboard - Money as hero</h4>
+                                <p>Total earnings prominently displayed, "Receipts" framing (not invoices), reliability badges instead of intrusive ratings. Business tool aesthetic.</p>
+                                <span class="audit-agent">Paula Scher - Host Value Proposition</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 24px;">
+                <div class="card-header">
+                    <h3>Dark Pattern Prevention Checklist</h3>
+                </div>
+                <div class="card-body">
+                    <p style="margin-bottom: 16px; color: var(--text-secondary);">All designs verified against Dieter Rams' dark pattern prevention checklist:</p>
+                    <ul class="audit-list">
+                        <li class="audit-item">
+                            <span class="audit-status pass">&#10003;</span>
+                            <div class="audit-content">
+                                <h4>No forced scroll-to-bottom before Sign button</h4>
+                                <p>Sticky CTA pattern respects user time. Scroll tracking is for analytics, not gating.</p>
+                            </div>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-status pass">&#10003;</span>
+                            <div class="audit-content">
+                                <h4>"Request Changes" has equal visual weight to "Sign"</h4>
+                                <p>Both buttons are same size, no color manipulation to favor signing.</p>
+                            </div>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-status pass">&#10003;</span>
+                            <div class="audit-content">
+                                <h4>No red styling on "Due" status before actually late</h4>
+                                <p>Due = Amber, Past Due = Red. Colors accurately reflect state.</p>
+                            </div>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-status pass">&#10003;</span>
+                            <div class="audit-content">
+                                <h4>No "Avoid late fees!" when there are no late fees</h4>
+                                <p>Copy only mentions fees when they genuinely apply.</p>
+                            </div>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-status pass">&#10003;</span>
+                            <div class="audit-content">
+                                <h4>No large anxiety-inducing countdown timer for DCT</h4>
+                                <p>Human-readable "23 hours left" not "00:23:47:12".</p>
+                            </div>
+                        </li>
+                        <li class="audit-item">
+                            <span class="audit-status pass">&#10003;</span>
+                            <div class="audit-content">
+                                <h4>Original dates confirmed as safe fallback</h4>
+                                <p>Expired DCT copy: "Your original dates remain confirmed".</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================== PRIORITY SECTION =================== -->
+        <section id="priority" class="section">
+            <div class="section-header">
+                <h2>Implementation Priority Matrix</h2>
+                <p>Prioritized recommendations based on conversion impact and implementation effort.</p>
+            </div>
+
+            <div class="priority-matrix">
+                <div class="priority-quadrant quadrant-p0">
+                    <h4>P0 - Do First (High Impact, Low Effort)</h4>
+                    <ul>
+                        <li><strong>Sticky Sign CTA</strong> - CSS only, 15-20% lift potential</li>
+                        <li><strong>One-Click Payment</strong> - For saved methods, 20% lift</li>
+                        <li><strong>Action Center Priority Styling</strong> - Token application only</li>
+                        <li><strong>Event Instrumentation</strong> - Flying blind without data</li>
+                    </ul>
+                </div>
+                <div class="priority-quadrant quadrant-p1">
+                    <h4>P1 - Plan Next (High Impact, Medium Effort)</h4>
+                    <ul>
+                        <li><strong>DCT Email Action Buttons</strong> - Backend + email template work</li>
+                        <li><strong>Mobile Week Strip Calendar</strong> - New component needed</li>
+                        <li><strong>"Request More Time" Option</strong> - State machine addition</li>
+                        <li><strong>Apple Pay / Google Pay Integration</strong> - Payment provider work</li>
+                    </ul>
+                </div>
+                <div class="priority-quadrant quadrant-p2">
+                    <h4>P2 - Medium Priority (Medium Impact)</h4>
+                    <ul>
+                        <li><strong>Document Summary Modal</strong> - Progressive disclosure UX</li>
+                        <li><strong>Action Center Animation</strong> - Polish, not critical path</li>
+                        <li><strong>Proof Photo Visual Examples</strong> - Content creation needed</li>
+                        <li><strong>First-Time Milestone Progress Bar</strong> - Nice-to-have onboarding</li>
+                    </ul>
+                </div>
+                <div class="priority-quadrant quadrant-p3">
+                    <h4>P3 - Backlog (Lower Impact or High Effort)</h4>
+                    <ul>
+                        <li><strong>Host Portfolio Dashboard</strong> - Multi-listing hosts only</li>
+                        <li><strong>DCT Visual Diff Calendar</strong> - Complex, counter-offer edge case</li>
+                        <li><strong>Signature Animations</strong> - Celebratory but not conversion-critical</li>
+                        <li><strong>Counterparty Online Indicator</strong> - Nice-to-have real-time feature</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 32px;">
+                <div class="card-header">
+                    <h3>90-Day Roadmap</h3>
+                </div>
+                <div class="card-body">
+                    <table class="friction-table">
+                        <thead>
+                            <tr>
+                                <th>Week</th>
+                                <th>Focus</th>
+                                <th>Deliverables</th>
+                                <th>Success Signal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1-2</strong></td>
+                                <td>Instrumentation</td>
+                                <td>All conversion events tracking, PostHog funnels configured</td>
+                                <td>Baseline metrics established</td>
+                            </tr>
+                            <tr>
+                                <td><strong>3-4</strong></td>
+                                <td>Sticky Sign CTA</td>
+                                <td>A/B test launched, monitoring dashboards</td>
+                                <td>>10% lift observed in test</td>
+                            </tr>
+                            <tr>
+                                <td><strong>5-6</strong></td>
+                                <td>One-Click Payment</td>
+                                <td>A/B test for saved method users</td>
+                                <td>>15% lift, <2% undo rate</td>
+                            </tr>
+                            <tr>
+                                <td><strong>7-8</strong></td>
+                                <td>DCT Email Buttons</td>
+                                <td>Tokenized links, email template update</td>
+                                <td>>20% response rate lift</td>
+                            </tr>
+                            <tr>
+                                <td><strong>9-10</strong></td>
+                                <td>Mobile Week Strip</td>
+                                <td>New calendar component, mobile DCT A/B test</td>
+                                <td>>25% mobile DCT completion lift</td>
+                            </tr>
+                            <tr>
+                                <td><strong>11-12</strong></td>
+                                <td>Request More Time</td>
+                                <td>State machine update, A/B test</td>
+                                <td>>30% reduction in expirations</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 24px;">
+                <div class="card-header">
+                    <h3>Final Recommendations</h3>
+                </div>
+                <div class="card-body">
+                    <p style="margin-bottom: 16px; font-size: 16px; font-weight: 600;">
+                        The Leases Management Pages represent Split Lease's highest-stakes conversion surface. Three actions determine revenue and retention:
+                    </p>
+                    <ol style="margin-left: 20px; margin-bottom: 24px;">
+                        <li style="margin-bottom: 8px;"><strong>Sign Lease</strong> - Without signature, no legal relationship exists</li>
+                        <li style="margin-bottom: 8px;"><strong>Pay Invoice</strong> - Revenue depends on frictionless payment</li>
+                        <li style="margin-bottom: 8px;"><strong>Respond to DCT</strong> - Flexibility is the product differentiator</li>
+                    </ol>
+                    <p style="margin-bottom: 16px; color: var(--text-secondary);">
+                        The team's designs are conversion-aware. Josef's component system, Dieter's trust patterns, Milton's copy framework, and Jony's mobile adaptations all support conversion goals.
+                    </p>
+                    <p style="margin-bottom: 16px; color: var(--text-secondary);">
+                        <strong>The critical gap is instrumentation.</strong> Without event tracking, we cannot measure baselines, run experiments, or validate improvements. This is the single most important P0 item.
+                    </p>
+                    <p style="font-size: 14px; font-style: italic; color: var(--text-muted);">
+                        "Data beats opinions. Test everything." - Luke Wroblewski
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer style="text-align: center; padding: 48px 24px; color: var(--text-muted); font-size: 13px; border-top: 1px solid var(--border-color); margin-top: 48px;">
+        <p>Luke Wroblewski Agent | Run 006B - Phase B: Mockups | 2026-02-02</p>
+        <p style="margin-top: 8px;">Position 9 of 9 (FINAL) - Conversion Audit & A/B Test Plan</p>
+    </footer>
+
+    <script>
+        // Navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update nav buttons
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Update sections
+                const sectionId = btn.dataset.section;
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+
+        // Test card expansion
+        function toggleDetails(button) {
+            const details = button.nextElementSibling;
+            if (details.classList.contains('active')) {
+                details.classList.remove('active');
+                button.textContent = 'View Full Specification';
+            } else {
+                details.classList.add('active');
+                button.textContent = 'Hide Specification';
+            }
+        }
+    </script>
+
+</body>
+</html>

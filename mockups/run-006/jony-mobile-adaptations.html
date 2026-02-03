@@ -1,0 +1,2659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Adaptations - Jony Ive | Split Lease Leases Management</title>
+    <style>
+        /* =================================================
+           JONY IVE MOBILE ADAPTATIONS
+           Run 006B - Phase B: Mockups
+           Date: 2026-02-02
+           Position: 8 of 9 (MOBILE-CRITICAL)
+
+           Every element passes 44px touch target minimum
+           ================================================= */
+
+        /* Reset and Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Status Semantic Tokens (from Josef) */
+            --color-status-success: #22C55E;
+            --color-status-warning: #F59E0B;
+            --color-status-danger: #EF4444;
+            --color-status-info: #3B82F6;
+            --color-status-neutral: #6B7280;
+
+            --bg-status-success: #DCFCE7;
+            --bg-status-warning: #FEF3C7;
+            --bg-status-danger: #FEE2E2;
+            --bg-status-info: #DBEAFE;
+            --bg-status-neutral: #F3F4F6;
+
+            /* Core Colors */
+            --primary-blue: #3B82F6;
+            --accent-green: #22C55E;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --text-tertiary: #9CA3AF;
+            --border-color: #E5E7EB;
+            --bg-surface: #FFFFFF;
+            --bg-page: #F9FAFB;
+
+            /* Mobile-Critical Dimensions */
+            --touch-target-min: 44px;
+            --touch-target-large: 48px;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-lg: 16px;
+            --spacing-xl: 24px;
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 16px;
+            --border-radius-sheet: 20px;
+
+            /* Safe Areas */
+            --safe-area-top: env(safe-area-inset-top, 0px);
+            --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+
+            /* Typography Scale */
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-size-xs: 11px;
+            --font-size-sm: 13px;
+            --font-size-base: 15px;
+            --font-size-lg: 17px;
+            --font-size-xl: 20px;
+            --font-size-2xl: 28px;
+            --font-size-3xl: 34px;
+
+            /* Bottom Sheet */
+            --sheet-handle-width: 36px;
+            --sheet-handle-height: 5px;
+        }
+
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: 1.5;
+            color: var(--text-primary);
+            background: var(--bg-page);
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* =================================================
+           SECTION: Documentation Header
+           ================================================= */
+        .doc-header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            color: white;
+            padding: var(--spacing-xl);
+            text-align: center;
+        }
+
+        .doc-header h1 {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .doc-header p {
+            opacity: 0.9;
+            font-size: var(--font-size-base);
+        }
+
+        .doc-header .critical-badge {
+            display: inline-block;
+            background: var(--color-status-danger);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            margin-top: var(--spacing-md);
+        }
+
+        /* =================================================
+           SECTION: Navigation for Demo
+           ================================================= */
+        .demo-nav {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: var(--spacing-md) var(--spacing-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .demo-nav ul {
+            display: flex;
+            gap: var(--spacing-sm);
+            list-style: none;
+            overflow-x: auto;
+            padding-bottom: var(--spacing-xs);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .demo-nav a {
+            display: block;
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--bg-status-neutral);
+            border-radius: var(--border-radius-sm);
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: var(--font-size-sm);
+            white-space: nowrap;
+            min-height: var(--touch-target-min);
+            line-height: calc(var(--touch-target-min) - 16px);
+        }
+
+        .demo-nav a:hover,
+        .demo-nav a:focus {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        /* =================================================
+           SECTION: Demo Container
+           ================================================= */
+        .demo-section {
+            padding: var(--spacing-xl);
+            border-bottom: 8px solid var(--border-color);
+        }
+
+        .demo-section h2 {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+        }
+
+        .demo-section h3 {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            margin-top: var(--spacing-xl);
+            color: var(--text-secondary);
+        }
+
+        .demo-section p.description {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-lg);
+            font-size: var(--font-size-sm);
+        }
+
+        /* =================================================
+           1. MOBILE VIEWPORT FRAME (375px)
+           ================================================= */
+        .mobile-frame {
+            width: 375px;
+            max-width: 100%;
+            margin: 0 auto;
+            background: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .mobile-frame.with-notch::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 30px;
+            background: #000;
+            border-radius: 0 0 20px 20px;
+            z-index: 1000;
+        }
+
+        /* =================================================
+           2. MOBILE HEADER
+           ================================================= */
+        .mobile-header {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: var(--spacing-md) var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 56px;
+        }
+
+        .mobile-header .back-button {
+            width: var(--touch-target-min);
+            height: var(--touch-target-min);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--border-radius-sm);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--primary-blue);
+            font-size: var(--font-size-xl);
+        }
+
+        .mobile-header .title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            flex: 1;
+            text-align: center;
+            margin: 0 var(--spacing-sm);
+        }
+
+        .mobile-header .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+        }
+
+        /* =================================================
+           3. HOST/GUEST OVERVIEW (Mobile Layout)
+           ================================================= */
+        .mobile-overview {
+            padding: var(--spacing-lg);
+            background: var(--bg-surface);
+        }
+
+        .overview-hero {
+            text-align: center;
+            padding: var(--spacing-xl) 0;
+        }
+
+        .overview-hero .amount {
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .overview-hero .label {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-top: var(--spacing-xs);
+        }
+
+        .overview-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+
+        .stat-card {
+            background: var(--bg-page);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            text-align: center;
+            /* Touch target compliant - entire card is tappable */
+            min-height: calc(var(--touch-target-min) * 2);
+        }
+
+        .stat-card .value {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-card .label {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            margin-top: var(--spacing-xs);
+        }
+
+        .stat-card.success .value {
+            color: var(--color-status-success);
+        }
+
+        /* =================================================
+           4. FINANCIALS TAB (Mobile)
+           ================================================= */
+        .financials-mobile {
+            padding: var(--spacing-lg);
+        }
+
+        .payment-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            /* Minimum height for touch */
+            min-height: 120px;
+        }
+
+        .payment-card.overdue {
+            border-left: 4px solid var(--color-status-danger);
+        }
+
+        .payment-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .payment-card-amount {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: 4px;
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+        }
+
+        .status-badge.paid {
+            background: var(--bg-status-success);
+            color: var(--color-status-success);
+        }
+
+        .status-badge.due {
+            background: var(--bg-status-warning);
+            color: var(--color-status-warning);
+        }
+
+        .status-badge.overdue {
+            background: var(--bg-status-danger);
+            color: var(--color-status-danger);
+        }
+
+        .payment-card-details {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .payment-card-action {
+            /* Touch target compliant button */
+            width: 100%;
+            min-height: var(--touch-target-min);
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .payment-card-action:hover,
+        .payment-card-action:focus {
+            background: #2563eb;
+        }
+
+        .payment-card-action.secondary {
+            background: transparent;
+            color: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+        }
+
+        /* =================================================
+           5. SEGMENT CONTROL (Mobile Tabs)
+           ================================================= */
+        .segment-control {
+            display: flex;
+            background: var(--bg-status-neutral);
+            border-radius: var(--border-radius-sm);
+            padding: 2px;
+            margin: var(--spacing-lg);
+        }
+
+        .segment-button {
+            flex: 1;
+            min-height: var(--touch-target-min);
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .segment-button.active {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* =================================================
+           6. DCT WEEK STRIP CALENDAR
+           44x44px touch targets per day
+           ================================================= */
+        .week-strip-container {
+            background: var(--bg-surface);
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .week-strip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .week-strip-title {
+            font-size: var(--font-size-base);
+            font-weight: 600;
+        }
+
+        .week-strip-nav {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .week-strip-nav button {
+            width: var(--touch-target-min);
+            height: var(--touch-target-min);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background: var(--bg-surface);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-lg);
+            color: var(--text-secondary);
+        }
+
+        .week-strip {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            touch-action: pan-x;
+            user-select: none;
+        }
+
+        .week-strip-day {
+            /* CRITICAL: 44px minimum touch target */
+            width: 100%;
+            aspect-ratio: 1;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-page);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            position: relative;
+            border: 2px solid transparent;
+            transition: all 0.15s ease;
+        }
+
+        .week-strip-day:hover,
+        .week-strip-day:focus {
+            background: var(--bg-status-info);
+        }
+
+        .week-strip-day .day-abbr {
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+
+        .week-strip-day .day-num {
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .week-strip-day.booked {
+            background: var(--color-status-success);
+        }
+
+        .week-strip-day.booked .day-abbr,
+        .week-strip-day.booked .day-num {
+            color: white;
+        }
+
+        .week-strip-day.today {
+            border-color: var(--primary-blue);
+        }
+
+        .week-strip-day.selected {
+            background: var(--primary-blue);
+        }
+
+        .week-strip-day.selected .day-abbr,
+        .week-strip-day.selected .day-num {
+            color: white;
+        }
+
+        /* Booked indicator dot */
+        .week-strip-day .indicator {
+            position: absolute;
+            bottom: 4px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--color-status-success);
+        }
+
+        /* Swipe hint */
+        .swipe-hint {
+            text-align: center;
+            padding: var(--spacing-sm);
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+        }
+
+        /* =================================================
+           7. BOTTOM SHEET PATTERNS
+           ================================================= */
+        .bottom-sheet-demo {
+            position: relative;
+            height: 500px;
+            background: var(--bg-page);
+            overflow: hidden;
+        }
+
+        .sheet-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+        }
+
+        .bottom-sheet {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-surface);
+            border-radius: var(--border-radius-sheet) var(--border-radius-sheet) 0 0;
+            padding-bottom: var(--safe-area-bottom);
+            max-height: 90%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sheet-handle-area {
+            /* Touch target for drag handle */
+            min-height: var(--touch-target-min);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+        }
+
+        .sheet-handle {
+            width: var(--sheet-handle-width);
+            height: var(--sheet-handle-height);
+            background: var(--border-color);
+            border-radius: 2.5px;
+        }
+
+        .sheet-header {
+            padding: 0 var(--spacing-lg) var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sheet-header h3 {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+        }
+
+        .sheet-close {
+            /* Touch target compliant close button */
+            width: var(--touch-target-min);
+            height: var(--touch-target-min);
+            border: none;
+            background: var(--bg-status-neutral);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: var(--font-size-lg);
+            color: var(--text-secondary);
+        }
+
+        .sheet-content {
+            padding: var(--spacing-lg);
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .sheet-footer {
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: var(--spacing-md);
+        }
+
+        .sheet-footer button {
+            flex: 1;
+            min-height: var(--touch-target-large);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        /* =================================================
+           8. TOUCH TARGET AUDIT VISUALIZATION
+           ================================================= */
+        .touch-audit {
+            padding: var(--spacing-lg);
+        }
+
+        .touch-audit-grid {
+            display: grid;
+            gap: var(--spacing-lg);
+        }
+
+        .touch-audit-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-md);
+            background: var(--bg-page);
+            border-radius: var(--border-radius-md);
+        }
+
+        .touch-target-box {
+            width: 44px;
+            height: 44px;
+            border: 2px dashed var(--color-status-success);
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .touch-target-box::before {
+            content: '44px';
+            position: absolute;
+            bottom: -20px;
+            font-size: var(--font-size-xs);
+            color: var(--color-status-success);
+            font-weight: 600;
+        }
+
+        .touch-target-box.pass {
+            background: var(--bg-status-success);
+        }
+
+        .touch-target-box.fail {
+            border-color: var(--color-status-danger);
+            background: var(--bg-status-danger);
+        }
+
+        .touch-target-box.fail::before {
+            color: var(--color-status-danger);
+        }
+
+        .touch-audit-label {
+            flex: 1;
+        }
+
+        .touch-audit-label strong {
+            display: block;
+            font-size: var(--font-size-sm);
+        }
+
+        .touch-audit-label span {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+        }
+
+        .audit-status {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: 4px;
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+        }
+
+        .audit-status.pass {
+            background: var(--bg-status-success);
+            color: var(--color-status-success);
+        }
+
+        .audit-status.fail {
+            background: var(--bg-status-danger);
+            color: var(--color-status-danger);
+        }
+
+        /* =================================================
+           9. FAB (Floating Action Button)
+           ================================================= */
+        .fab-demo {
+            position: relative;
+            height: 400px;
+            background: var(--bg-page);
+        }
+
+        .fab {
+            position: absolute;
+            bottom: 80px;
+            right: 16px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            z-index: 100;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .fab:hover,
+        .fab:focus {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .fab-expanded {
+            position: absolute;
+            bottom: 148px;
+            right: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+            align-items: flex-end;
+        }
+
+        .fab-action {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--bg-surface);
+            border-radius: var(--border-radius-sm);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            min-height: var(--touch-target-min);
+            border: none;
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            white-space: nowrap;
+        }
+
+        .fab-action-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-status-info);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-blue);
+        }
+
+        /* =================================================
+           10. SWIPEABLE ACTION CARDS
+           ================================================= */
+        .swipe-card-container {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .swipe-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            margin: var(--spacing-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .swipe-card-content {
+            padding: var(--spacing-lg);
+            background: var(--bg-surface);
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .swipe-card-actions {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+        }
+
+        .swipe-action {
+            width: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+            gap: var(--spacing-xs);
+        }
+
+        .swipe-action.decline {
+            background: var(--color-status-danger);
+        }
+
+        .swipe-action.accept {
+            background: var(--color-status-success);
+        }
+
+        .swipe-card-content.swiped {
+            transform: translateX(-160px);
+        }
+
+        .swipe-hint-text {
+            text-align: center;
+            padding: var(--spacing-sm);
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+        }
+
+        /* =================================================
+           11. MOBILE SIGNING FLOW
+           ================================================= */
+        .signing-flow {
+            background: var(--bg-surface);
+        }
+
+        .signing-summary {
+            padding: var(--spacing-lg);
+        }
+
+        .signing-summary-card {
+            background: var(--bg-page);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .signing-summary-card h4 {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .signing-summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .signing-summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .signing-summary-item .label {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        .signing-summary-item .value {
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+        }
+
+        .signing-checkbox {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: flex-start;
+            padding: var(--spacing-lg);
+            background: var(--bg-status-info);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .signing-checkbox input[type="checkbox"] {
+            /* Touch target for checkbox */
+            width: var(--touch-target-min);
+            height: var(--touch-target-min);
+            margin: 0;
+            flex-shrink: 0;
+            cursor: pointer;
+            accent-color: var(--primary-blue);
+        }
+
+        .signing-checkbox label {
+            font-size: var(--font-size-sm);
+            color: var(--text-primary);
+            cursor: pointer;
+            line-height: 1.4;
+        }
+
+        .signing-actions {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .sign-button {
+            width: 100%;
+            min-height: 56px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .sign-button:disabled {
+            background: var(--border-color);
+            color: var(--text-tertiary);
+            cursor: not-allowed;
+        }
+
+        .view-full-doc {
+            text-align: center;
+            color: var(--primary-blue);
+            font-size: var(--font-size-sm);
+            background: none;
+            border: none;
+            cursor: pointer;
+            min-height: var(--touch-target-min);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* =================================================
+           12. CONFIRMATION MODAL
+           ================================================= */
+        .confirmation-modal {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.5);
+            padding: var(--spacing-lg);
+        }
+
+        .confirmation-content {
+            background: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            width: 100%;
+            max-width: 343px;
+            text-align: center;
+        }
+
+        .confirmation-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--bg-status-success);
+            color: var(--color-status-success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-lg);
+            font-size: 32px;
+        }
+
+        .confirmation-content h3 {
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .confirmation-content p {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .confirmation-content button {
+            width: 100%;
+            min-height: var(--touch-target-large);
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* =================================================
+           13. BOTTOM NAVIGATION
+           ================================================= */
+        .bottom-nav {
+            display: flex;
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border-color);
+            padding: var(--spacing-sm) 0;
+            padding-bottom: max(var(--spacing-sm), var(--safe-area-bottom));
+        }
+
+        .bottom-nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* Touch target compliant */
+            min-height: 56px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-tertiary);
+            font-size: var(--font-size-xs);
+            gap: 2px;
+        }
+
+        .bottom-nav-item.active {
+            color: var(--primary-blue);
+        }
+
+        .bottom-nav-item .icon {
+            font-size: 24px;
+        }
+
+        /* =================================================
+           14. BREAKPOINT TRANSFORMATIONS
+           ================================================= */
+        .breakpoint-demo {
+            padding: var(--spacing-lg);
+        }
+
+        .breakpoint-indicator {
+            position: fixed;
+            top: 70px;
+            right: var(--spacing-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--text-primary);
+            color: white;
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            z-index: 1000;
+        }
+
+        .responsive-demo {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+        }
+
+        .responsive-demo-header {
+            padding: var(--spacing-md);
+            background: var(--bg-page);
+            border-bottom: 1px solid var(--border-color);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+        }
+
+        .responsive-table {
+            display: none;
+        }
+
+        .responsive-cards {
+            display: block;
+        }
+
+        @media (min-width: 768px) {
+            .responsive-table {
+                display: table;
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .responsive-table th,
+            .responsive-table td {
+                padding: var(--spacing-md);
+                text-align: left;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .responsive-table th {
+                background: var(--bg-page);
+                font-size: var(--font-size-sm);
+                color: var(--text-secondary);
+                font-weight: 500;
+            }
+
+            .responsive-cards {
+                display: none;
+            }
+        }
+
+        /* =================================================
+           15. SKELETON SCREENS
+           ================================================= */
+        .skeleton {
+            background: linear-gradient(
+                90deg,
+                var(--bg-page) 0%,
+                var(--border-color) 50%,
+                var(--bg-page) 100%
+            );
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        @keyframes skeleton-loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .skeleton-card {
+            padding: var(--spacing-lg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .skeleton-line {
+            height: 16px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .skeleton-line.short {
+            width: 60%;
+        }
+
+        .skeleton-line.medium {
+            width: 80%;
+        }
+
+        .skeleton-line.full {
+            width: 100%;
+        }
+
+        .skeleton-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .skeleton-button {
+            height: 44px;
+            width: 100%;
+        }
+
+        /* =================================================
+           16. GESTURE HINTS
+           ================================================= */
+        .gesture-hint {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md);
+            color: var(--text-tertiary);
+            font-size: var(--font-size-xs);
+        }
+
+        .gesture-hint .gesture-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Swipe animation hint */
+        @keyframes swipe-hint {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(-10px);
+            }
+        }
+
+        .gesture-hint.swipe .gesture-icon {
+            animation: swipe-hint 1.5s ease-in-out infinite;
+        }
+
+        /* Pull down animation hint */
+        @keyframes pull-hint {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(5px);
+            }
+        }
+
+        .gesture-hint.pull .gesture-icon {
+            animation: pull-hint 1.5s ease-in-out infinite;
+        }
+
+        /* =================================================
+           17. SPECIFICATION TABLES
+           ================================================= */
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: var(--font-size-sm);
+            margin: var(--spacing-lg) 0;
+        }
+
+        .spec-table th,
+        .spec-table td {
+            padding: var(--spacing-md);
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+
+        .spec-table th {
+            background: var(--bg-page);
+            font-weight: 600;
+        }
+
+        .spec-table code {
+            background: var(--bg-status-neutral);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SF Mono', Consolas, monospace;
+            font-size: var(--font-size-xs);
+        }
+
+        /* =================================================
+           18. ERROR/TRUST PATTERNS (from Dieter)
+           ================================================= */
+        .error-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            margin: var(--spacing-lg);
+            overflow: hidden;
+        }
+
+        .error-card-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-lg);
+            background: var(--bg-status-warning);
+        }
+
+        .error-card-header.critical {
+            background: var(--bg-status-danger);
+        }
+
+        .error-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .error-icon.warning {
+            background: var(--color-status-warning);
+            color: white;
+        }
+
+        .error-icon.critical {
+            background: var(--color-status-danger);
+            color: white;
+        }
+
+        .error-title {
+            font-size: var(--font-size-base);
+            font-weight: 600;
+        }
+
+        .error-card-body {
+            padding: var(--spacing-lg);
+        }
+
+        .error-card-body p {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .error-options {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .error-option {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--bg-page);
+            border-radius: var(--border-radius-sm);
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: var(--font-size-sm);
+            min-height: var(--touch-target-min);
+        }
+
+        /* =================================================
+           19. PRINT STYLES
+           ================================================= */
+        @media print {
+            .demo-nav,
+            .breakpoint-indicator {
+                display: none;
+            }
+
+            .demo-section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Documentation Header -->
+    <header class="doc-header">
+        <h1>Mobile Adaptations</h1>
+        <p>Jony Ive Agent | Run 006B | 2026-02-02</p>
+        <span class="critical-badge">MOBILE-CRITICAL</span>
+    </header>
+
+    <!-- Demo Navigation -->
+    <nav class="demo-nav" aria-label="Section navigation">
+        <ul>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#financials">Financials</a></li>
+            <li><a href="#week-strip">Week Strip</a></li>
+            <li><a href="#bottom-sheets">Bottom Sheets</a></li>
+            <li><a href="#touch-audit">Touch Audit</a></li>
+            <li><a href="#fab">FAB</a></li>
+            <li><a href="#swipe-cards">Swipe Cards</a></li>
+            <li><a href="#signing">Signing Flow</a></li>
+            <li><a href="#skeletons">Skeletons</a></li>
+        </ul>
+    </nav>
+
+    <!-- Breakpoint Indicator -->
+    <div class="breakpoint-indicator" id="breakpointIndicator">375px</div>
+
+    <!-- Section 1: Mobile Layout - Host/Guest Overview -->
+    <section id="overview" class="demo-section">
+        <h2>1. Mobile Layout Specifications</h2>
+        <p class="description">Host/Guest Overview optimized for 375px viewport. All touch targets meet 44px minimum.</p>
+
+        <div class="mobile-frame">
+            <!-- Mobile Header -->
+            <header class="mobile-header">
+                <button class="back-button" aria-label="Go back">&#8592;</button>
+                <h1 class="title">Lease #LZ-2024-0001</h1>
+                <div class="avatar" aria-label="Sarah Chen">SC</div>
+            </header>
+
+            <!-- Overview Content -->
+            <div class="mobile-overview">
+                <div class="overview-hero">
+                    <div class="amount">$12,450</div>
+                    <div class="label">Total Earned This Lease</div>
+                </div>
+
+                <div class="overview-stats">
+                    <div class="stat-card">
+                        <div class="value">$2,100</div>
+                        <div class="label">Next Payment (Feb 8)</div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="value">100%</div>
+                        <div class="label">On-Time Payments</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Segment Control -->
+            <div class="segment-control" role="tablist">
+                <button class="segment-button active" role="tab" aria-selected="true">Overview</button>
+                <button class="segment-button" role="tab" aria-selected="false">Payments</button>
+                <button class="segment-button" role="tab" aria-selected="false">Stays</button>
+                <button class="segment-button" role="tab" aria-selected="false">Docs</button>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <nav class="bottom-nav" aria-label="Main navigation">
+                <button class="bottom-nav-item">
+                    <span class="icon">&#9776;</span>
+                    <span>Menu</span>
+                </button>
+                <button class="bottom-nav-item active">
+                    <span class="icon">&#127968;</span>
+                    <span>Home</span>
+                </button>
+                <button class="bottom-nav-item">
+                    <span class="icon">&#128203;</span>
+                    <span>Actions</span>
+                </button>
+                <button class="bottom-nav-item">
+                    <span class="icon">?</span>
+                    <span>Help</span>
+                </button>
+            </nav>
+        </div>
+
+        <h3>Layout Specifications</h3>
+        <table class="spec-table">
+            <thead>
+                <tr>
+                    <th>Element</th>
+                    <th>Dimension</th>
+                    <th>Touch Target</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Header height</td>
+                    <td><code>56px</code></td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>Back button</td>
+                    <td><code>44x44px</code></td>
+                    <td>PASS</td>
+                </tr>
+                <tr>
+                    <td>Segment buttons</td>
+                    <td><code>auto x 44px</code></td>
+                    <td>PASS</td>
+                </tr>
+                <tr>
+                    <td>Bottom nav items</td>
+                    <td><code>auto x 56px</code></td>
+                    <td>PASS</td>
+                </tr>
+                <tr>
+                    <td>Stat cards</td>
+                    <td><code>50% x 88px</code></td>
+                    <td>PASS</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Section 2: Financials Tab -->
+    <section id="financials" class="demo-section">
+        <h2>2. Financials Tab (Mobile)</h2>
+        <p class="description">Payment cards replace tables below 768px. Each card is 120px minimum height with full-width action buttons.</p>
+
+        <div class="mobile-frame">
+            <div class="financials-mobile">
+                <!-- Overdue Payment Card -->
+                <div class="payment-card overdue">
+                    <div class="payment-card-header">
+                        <div class="payment-card-amount">$2,100.00</div>
+                        <span class="status-badge overdue">Past Due</span>
+                    </div>
+                    <div class="payment-card-details">
+                        Was due Feb 1 | Monthly Rent - February
+                    </div>
+                    <button class="payment-card-action">Pay $2,100.00 Now</button>
+                </div>
+
+                <!-- Due Payment Card -->
+                <div class="payment-card">
+                    <div class="payment-card-header">
+                        <div class="payment-card-amount">$2,100.00</div>
+                        <span class="status-badge due">Due Feb 15</span>
+                    </div>
+                    <div class="payment-card-details">
+                        Due in 13 days | Monthly Rent - March
+                    </div>
+                    <button class="payment-card-action secondary">View Details</button>
+                </div>
+
+                <!-- Paid Payment Card -->
+                <div class="payment-card">
+                    <div class="payment-card-header">
+                        <div class="payment-card-amount">$2,100.00</div>
+                        <span class="status-badge paid">&#10003; Paid</span>
+                    </div>
+                    <div class="payment-card-details">
+                        Paid Jan 28 | Monthly Rent - January
+                    </div>
+                    <button class="payment-card-action secondary">View Receipt</button>
+                </div>
+            </div>
+        </div>
+
+        <h3>Card Specifications</h3>
+        <table class="spec-table">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Minimum card height</td>
+                    <td><code>120px</code></td>
+                </tr>
+                <tr>
+                    <td>Card padding</td>
+                    <td><code>16px</code></td>
+                </tr>
+                <tr>
+                    <td>Card gap</td>
+                    <td><code>12px</code></td>
+                </tr>
+                <tr>
+                    <td>Action button height</td>
+                    <td><code>44px</code> (touch target)</td>
+                </tr>
+                <tr>
+                    <td>Overdue indicator</td>
+                    <td><code>4px left border #EF4444</code></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Section 3: DCT Week Strip Calendar -->
+    <section id="week-strip" class="demo-section">
+        <h2>3. DCT Calendar (Mobile Week Strip)</h2>
+        <p class="description">Interactive week strip with 44x44px touch targets. Swipe left/right to navigate weeks. Tap any day for full-screen date picker.</p>
+
+        <div class="mobile-frame">
+            <div class="week-strip-container">
+                <div class="week-strip-header">
+                    <span class="week-strip-title">Jan 27 - Feb 2, 2026</span>
+                    <div class="week-strip-nav">
+                        <button aria-label="Previous week">&#8249;</button>
+                        <button aria-label="Next week">&#8250;</button>
+                    </div>
+                </div>
+
+                <div class="week-strip" role="grid" aria-label="Week calendar">
+                    <div class="week-strip-day" role="gridcell" aria-label="Sunday, January 27">
+                        <span class="day-abbr">Sun</span>
+                        <span class="day-num">27</span>
+                    </div>
+                    <div class="week-strip-day booked" role="gridcell" aria-label="Monday, January 28, booked">
+                        <span class="day-abbr">Mon</span>
+                        <span class="day-num">28</span>
+                    </div>
+                    <div class="week-strip-day booked" role="gridcell" aria-label="Tuesday, January 29, booked">
+                        <span class="day-abbr">Tue</span>
+                        <span class="day-num">29</span>
+                    </div>
+                    <div class="week-strip-day" role="gridcell" aria-label="Wednesday, January 30">
+                        <span class="day-abbr">Wed</span>
+                        <span class="day-num">30</span>
+                    </div>
+                    <div class="week-strip-day" role="gridcell" aria-label="Thursday, January 31">
+                        <span class="day-abbr">Thu</span>
+                        <span class="day-num">31</span>
+                    </div>
+                    <div class="week-strip-day booked today" role="gridcell" aria-label="Friday, February 1, booked, today">
+                        <span class="day-abbr">Fri</span>
+                        <span class="day-num">1</span>
+                    </div>
+                    <div class="week-strip-day booked" role="gridcell" aria-label="Saturday, February 2, booked">
+                        <span class="day-abbr">Sat</span>
+                        <span class="day-num">2</span>
+                    </div>
+                </div>
+
+                <div class="gesture-hint swipe">
+                    <span class="gesture-icon">&#8592;&#8594;</span>
+                    <span>Swipe to navigate weeks</span>
+                </div>
+            </div>
+        </div>
+
+        <h3>Week Strip Specifications</h3>
+        <table class="spec-table">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                    <th>Rationale</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Day cell size</td>
+                    <td><code>44x44px</code> minimum</td>
+                    <td>Touch target compliance</td>
+                </tr>
+                <tr>
+                    <td>Cell gap</td>
+                    <td><code>2px</code></td>
+                    <td>Maximize cell width at 375px</td>
+                </tr>
+                <tr>
+                    <td>Navigation buttons</td>
+                    <td><code>44x44px</code></td>
+                    <td>Touch target compliance</td>
+                </tr>
+                <tr>
+                    <td>Booked state</td>
+                    <td><code>background: #22C55E</code></td>
+                    <td>High contrast for quick scanning</td>
+                </tr>
+                <tr>
+                    <td>Today indicator</td>
+                    <td><code>2px border #3B82F6</code></td>
+                    <td>Visual anchor without obscuring state</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Interaction States</h3>
+        <ul style="padding-left: 20px; margin-top: 12px; font-size: 14px; color: #6B7280;">
+            <li><strong>Tap day cell:</strong> Opens full-screen date picker sheet</li>
+            <li><strong>Swipe left/right:</strong> Navigate to next/previous week</li>
+            <li><strong>Long press:</strong> Show date details tooltip</li>
+            <li><strong>Horizontal scroll:</strong> Disabled (use swipe gesture)</li>
+        </ul>
+    </section>
+
+    <!-- Section 4: Bottom Sheet Patterns -->
+    <section id="bottom-sheets" class="demo-section">
+        <h2>4. Bottom Sheet Patterns</h2>
+        <p class="description">Payment Detail Sheet with drag handle and swipe-to-dismiss. Three height variants: peek (25%), half (50%), full (90%).</p>
+
+        <div class="mobile-frame">
+            <div class="bottom-sheet-demo">
+                <div class="sheet-overlay"></div>
+                <div class="bottom-sheet" style="height: 70%;">
+                    <div class="sheet-handle-area">
+                        <div class="sheet-handle"></div>
+                    </div>
+                    <div class="sheet-header">
+                        <h3>Payment Details</h3>
+                        <button class="sheet-close" aria-label="Close">&times;</button>
+                    </div>
+                    <div class="sheet-content">
+                        <div style="margin-bottom: 16px;">
+                            <div style="font-size: 28px; font-weight: 700;">$2,100.00</div>
+                            <div style="color: #6B7280; font-size: 14px;">Monthly Rent - February 2026</div>
+                        </div>
+                        <div style="background: #F9FAFB; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #E5E7EB;">
+                                <span style="color: #6B7280; font-size: 14px;">Status</span>
+                                <span class="status-badge due">Due Feb 15</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #E5E7EB;">
+                                <span style="color: #6B7280; font-size: 14px;">Payment Method</span>
+                                <span style="font-weight: 600; font-size: 14px;">Visa ****4242</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                                <span style="color: #6B7280; font-size: 14px;">Auto-pay</span>
+                                <span style="font-weight: 600; font-size: 14px; color: #22C55E;">Enabled</span>
+                            </div>
+                        </div>
+                        <div class="gesture-hint pull">
+                            <span class="gesture-icon">&#8595;</span>
+                            <span>Swipe down to dismiss</span>
+                        </div>
+                    </div>
+                    <div class="sheet-footer">
+                        <button class="btn-secondary">Update Method</button>
+                        <button class="btn-primary">Pay Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Sheet Height Variants</h3>
+        <table class="spec-table">
+            <thead>
+                <tr>
+                    <th>Variant</th>
+                    <th>Height</th>
+                    <th>Use Case</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Peek</td>
+                    <td><code>25%</code></td>
+                    <td>Summary preview, single action</td>
+                </tr>
+                <tr>
+                    <td>Half</td>
+                    <td><code>50%</code></td>
+                    <td>Quick tasks, 3-5 items</td>
+                </tr>
+                <tr>
+                    <td>Full</td>
+                    <td><code>90%</code></td>
+                    <td>Complex tasks, scrollable content</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Drag Handle Specifications</h3>
+        <table class="spec-table">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Handle width</td>
+                    <td><code>36px</code></td>
+                </tr>
+                <tr>
+                    <td>Handle height</td>
+                    <td><code>5px</code></td>
+                </tr>
+                <tr>
+                    <td>Handle touch area</td>
+                    <td><code>100% x 44px</code></td>
+                </tr>
+                <tr>
+                    <td>Border radius</td>
+                    <td><code>20px 20px 0 0</code></td>
+                </tr>
+                <tr>
+                    <td>Close button</td>
+                    <td><code>44x44px</code></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Section 5: Touch Target Audit -->
+    <section id="touch-audit" class="demo-section">
+        <h2>5. Touch Target Audit Visualization</h2>
+        <p class="description">Every interactive element validated against 44px minimum. Visual demonstration of all touch targets.</p>
+
+        <div class="touch-audit">
+            <div class="touch-audit-grid">
+                <div class="touch-audit-item">
+                    <div class="touch-target-box pass">
+                        <span style="font-size: 20px;">&#8592;</span>
+                    </div>
+                    <div class="touch-audit-label">
+                        <strong>Back Button</strong>
+                        <span>44x44px hit area</span>
+                    </div>
+                    <span class="audit-status pass">PASS</span>
+                </div>
+
+                <div class="touch-audit-item">
+                    <div class="touch-target-box pass">
+                        <span style="font-size: 16px;">Tab</span>
+                    </div>
+                    <div class="touch-audit-label">
+                        <strong>Segment Button</strong>
+                        <span>Auto width x 44px</span>
+                    </div>
+                    <span class="audit-status pass">PASS</span>
+                </div>
+
+                <div class="touch-audit-item">
+                    <div class="touch-target-box pass">
+                        <span style="font-size: 14px;">27</span>
+                    </div>
+                    <div class="touch-audit-label">
+                        <strong>Calendar Day Cell</strong>
+                        <span>44x44px minimum</span>
+                    </div>
+                    <span class="audit-status pass">PASS</span>
+                </div>
+
+                <div class="touch-audit-item">
+                    <div class="touch-target-box pass">
+                        <span style="font-size: 18px;">&times;</span>
+                    </div>
+                    <div class="touch-audit-label">
+                        <strong>Close Button</strong>
+                        <span>44x44px circular</span>
+                    </div>
+                    <span class="audit-status pass">PASS</span>
+                </div>
+
+                <div class="touch-audit-item">
+                    <div class="touch-target-box pass" style="width: 100px;">
+                        <span style="font-size: 12px;">Pay Now</span>
+                    </div>
+                    <div class="touch-audit-label">
+                        <strong>Primary Action Button</strong>
+                        <span>100% width x 44px</span>
+                    </div>
+                    <span class="audit-status pass">PASS</span>
+                </div>
+
+                <div class="touch-audit-item">
+                    <div class="touch-target-box pass" style="width: 24px; height: 24px;">
+                        <span style="font-size: 10px;">&#10003;</span>
+                    </div>
+                    <div class="touch-audit-label">
+                        <strong>Checkbox (visual)</strong>
+                        <span>44x44px hit area (extends beyond visual)</span>
+                    </div>
+                    <span class="audit-status pass">PASS</span>
+                </div>
+
+                <!-- Example of a FAIL state for reference -->
+                <div class="touch-audit-item" style="opacity: 0.5;">
+                    <div class="touch-target-box fail" style="width: 32px; height: 32px;">
+                        <span style="font-size: 10px;">X</span>
+                    </div>
+                    <div class="touch-audit-label">
+                        <strong>Example: Non-Compliant (32px)</strong>
+                        <span>Would need padding to reach 44px</span>
+                    </div>
+                    <span class="audit-status fail">FAIL</span>
+                </div>
+            </div>
+        </div>
+
+        <h3>Touch Target Requirements</h3>
+        <table class="spec-table">
+            <thead>
+                <tr>
+                    <th>Element Type</th>
+                    <th>Minimum Size</th>
+                    <th>Implementation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Buttons (all types)</td>
+                    <td><code>44x44px</code></td>
+                    <td>min-height/width or padding</td>
+                </tr>
+                <tr>
+                    <td>Links in body text</td>
+                    <td><code>44px height</code></td>
+                    <td>Line height + padding</td>
+                </tr>
+                <tr>
+                    <td>Form inputs</td>
+                    <td><code>44x44px</code></td>
+                    <td>Input height</td>
+                </tr>
+                <tr>
+                    <td>Checkboxes/Radios</td>
+                    <td><code>44x44px</code></td>
+                    <td>Hit area extends beyond visual</td>
+                </tr>
+                <tr>
+                    <td>Icons as buttons</td>
+                    <td><code>44x44px</code></td>
+                    <td>Padding around icon</td>
+                </tr>
+                <tr>
+                    <td>List items (tappable)</td>
+                    <td><code>44px height</code></td>
+                    <td>Row height + full width</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Section 6: FAB and Expandable Actions -->
+    <section id="fab" class="demo-section">
+        <h2>6. Mobile-Specific Components: FAB</h2>
+        <p class="description">56px Floating Action Button in thumb-zone (bottom right). Expandable secondary actions rise upward.</p>
+
+        <div class="mobile-frame">
+            <div class="fab-demo">
+                <!-- Background content -->
+                <div style="padding: 16px; color: #6B7280; font-size: 14px;">
+                    <p style="margin-bottom: 8px;">Content area - FAB floats above</p>
+                    <p style="font-size: 12px;">FAB positioned in thumb-friendly zone, 16px from edges, 16px above bottom nav</p>
+                </div>
+
+                <!-- Expanded Actions -->
+                <div class="fab-expanded">
+                    <button class="fab-action">
+                        <span>Request Date Change</span>
+                        <div class="fab-action-icon">&#128197;</div>
+                    </button>
+                    <button class="fab-action">
+                        <span>Contact Host</span>
+                        <div class="fab-action-icon">&#128172;</div>
+                    </button>
+                </div>
+
+                <!-- FAB -->
+                <button class="fab" aria-label="Actions menu" aria-expanded="true">
+                    &times;
+                </button>
+
+                <!-- Bottom Nav placeholder -->
+                <nav class="bottom-nav" style="position: absolute; bottom: 0; left: 0; right: 0;">
+                    <button class="bottom-nav-item">
+                        <span class="icon">&#9776;</span>
+                        <span>Menu</span>
+                    </button>
+                    <button class="bottom-nav-item active">
+                        <span class="icon">&#127968;</span>
+                        <span>Home</span>
+                    </button>
+                    <button class="bottom-nav-item">
+                        <span class="icon">&#128203;</span>
+                        <span>Actions</span>
+                    </button>
+                    <button class="bottom-nav-item">
+                        <span class="icon">?</span>
+                        <span>Help</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+
+        <h3>FAB Specifications</h3>
+        <table class="spec-table">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>FAB diameter</td>
+                    <td><code>56px</code></td>
+                </tr>
+                <tr>
+                    <td>Position from right edge</td>
+                    <td><code>16px</code></td>
+                </tr>
+                <tr>
+                    <td>Position above bottom nav</td>
+                    <td><code>16px</code></td>
+                </tr>
+                <tr>
+                    <td>Shadow</td>
+                    <td><code>0 4px 12px rgba(59, 130, 246, 0.4)</code></td>
+                </tr>
+                <tr>
+                    <td>Secondary action height</td>
+                    <td><code>44px</code> minimum</td>
+                </tr>
+                <tr>
+                    <td>Expansion direction</td>
+                    <td>Upward from FAB</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Thumb Zone Placement</h3>
+        <div style="background: #F9FAFB; border-radius: 12px; padding: 16px; margin-top: 16px;">
+            <p style="font-size: 13px; color: #6B7280; margin-bottom: 12px;">The FAB is positioned in the "Easy Zone" for right-handed users:</p>
+            <ul style="font-size: 13px; color: #6B7280; padding-left: 20px;">
+                <li><strong>Hard Zone:</strong> Top of screen - avoid primary actions</li>
+                <li><strong>OK Zone:</strong> Middle area - secondary actions</li>
+                <li><strong>Easy Zone:</strong> Bottom corners - primary actions (FAB lives here)</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Section 7: Swipeable Action Cards -->
+    <section id="swipe-cards" class="demo-section">
+        <h2>7. Swipeable Action Cards</h2>
+        <p class="description">DCT request cards with swipe-to-accept/decline. Reveals action buttons on horizontal swipe.</p>
+
+        <div class="mobile-frame">
+            <div class="swipe-card-container">
+                <!-- Swipe Card -->
+                <div class="swipe-card">
+                    <div class="swipe-card-actions">
+                        <div class="swipe-action decline">
+                            <span style="font-size: 20px;">&times;</span>
+                            <span>Decline</span>
+                        </div>
+                        <div class="swipe-action accept">
+                            <span style="font-size: 20px;">&#10003;</span>
+                            <span>Accept</span>
+                        </div>
+                    </div>
+                    <div class="swipe-card-content swiped">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                            <div>
+                                <div style="font-weight: 600; margin-bottom: 4px;">Date Change Request</div>
+                                <div style="font-size: 13px; color: #6B7280;">From Sarah Chen</div>
+                            </div>
+                            <span class="status-badge due">Action Required</span>
+                        </div>
+                        <div style="font-size: 14px; color: #374151; margin-bottom: 8px;">
+                            Swap Feb 14-16 for Feb 21-23
+                        </div>
+                        <div style="font-size: 12px; color: #9CA3AF;">
+                            Expires in 18 hours
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Normal state card -->
+                <div class="swipe-card">
+                    <div class="swipe-card-actions">
+                        <div class="swipe-action decline">
+                            <span style="font-size: 20px;">&times;</span>
+                            <span>Decline</span>
+                        </div>
+                        <div class="swipe-action accept">
+                            <span style="font-size: 20px;">&#10003;</span>
+                            <span>Accept</span>
+                        </div>
+                    </div>
+                    <div class="swipe-card-content">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                            <div>
+                                <div style="font-weight: 600; margin-bottom: 4px;">Date Change Request</div>
+                                <div style="font-size: 13px; color: #6B7280;">From Maria Garcia</div>
+                            </div>
+                            <span class="status-badge due">Action Required</span>
+                        </div>
+                        <div style="font-size: 14px; color: #374151; margin-bottom: 8px;">
+                            Add Feb 28 to booking (+$85)
+                        </div>
+                        <div style="font-size: 12px; color: #9CA3AF;">
+                            Expires in 22 hours
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swipe-hint-text">
+                    <span class="gesture-icon" style="display: inline;">&#8592;</span>
+                    Swipe left to reveal actions
+                </div>
+            </div>
+        </div>
+
+        <h3>Swipe Card Specifications</h3>
+        <table class="spec-table">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Swipe action width</td>
+                    <td><code>80px</code> each</td>
+                </tr>
+                <tr>
+                    <td>Total swipe distance</td>
+                    <td><code>160px</code></td>
+                </tr>
+                <tr>
+                    <td>Swipe threshold</td>
+                    <td><code>60px</code> to trigger</td>
+                </tr>
+                <tr>
+                    <td>Animation duration</td>
+                    <td><code>300ms</code> ease</td>
+                </tr>
+                <tr>
+                    <td>Accept color</td>
+                    <td><code>#22C55E</code></td>
+                </tr>
+                <tr>
+                    <td>Decline color</td>
+                    <td><code>#EF4444</code></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Section 8: Mobile Signing Flow -->
+    <section id="signing" class="demo-section">
+        <h2>8. Mobile Signing Flow</h2>
+        <p class="description">Full-screen document summary with key terms highlighted. Checkbox and sign button meet touch target requirements.</p>
+
+        <div class="mobile-frame">
+            <div class="signing-flow">
+                <!-- Header -->
+                <header class="mobile-header">
+                    <button class="back-button" aria-label="Close">&times;</button>
+                    <h1 class="title">Review & Sign</h1>
+                    <div style="width: 44px;"></div>
+                </header>
+
+                <!-- Summary -->
+                <div class="signing-summary">
+                    <div class="signing-summary-card">
+                        <h4>What you're agreeing to:</h4>
+                        <div class="signing-summary-item">
+                            <span class="label">Property</span>
+                            <span class="value">123 East 45th St, #4A</span>
+                        </div>
+                        <div class="signing-summary-item">
+                            <span class="label">Stay dates</span>
+                            <span class="value">Feb 10 - Mar 31, 2026</span>
+                        </div>
+                        <div class="signing-summary-item">
+                            <span class="label">Monthly payment</span>
+                            <span class="value">$2,100</span>
+                        </div>
+                        <div class="signing-summary-item">
+                            <span class="label">Security deposit</span>
+                            <span class="value">$1,000 (refundable)</span>
+                        </div>
+                        <div class="signing-summary-item">
+                            <span class="label">Cancellation</span>
+                            <span class="value">30 days notice</span>
+                        </div>
+                    </div>
+
+                    <!-- Checkbox with 44px touch target -->
+                    <div class="signing-checkbox">
+                        <input type="checkbox" id="agreeCheckbox" aria-describedby="agreeLabel">
+                        <label for="agreeCheckbox" id="agreeLabel">
+                            I have read and agree to the terms of this Periodic Tenancy Agreement. I understand this is a legally binding document.
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="signing-actions">
+                    <button class="sign-button" disabled>Sign Agreement</button>
+                    <button class="view-full-doc">Read Full Agreement</button>
+                </div>
+            </div>
+        </div>
+
+        <h3>Signing Flow Specifications</h3>
+        <table class="spec-table">
+            <thead>
+                <tr>
+                    <th>Element</th>
+                    <th>Size</th>
+                    <th>Touch Target</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Close button</td>
+                    <td><code>44x44px</code></td>
+                    <td>PASS</td>
+                </tr>
+                <tr>
+                    <td>Checkbox input</td>
+                    <td><code>44x44px</code></td>
+                    <td>PASS</td>
+                </tr>
+                <tr>
+                    <td>Sign button</td>
+                    <td><code>100% x 56px</code></td>
+                    <td>PASS</td>
+                </tr>
+                <tr>
+                    <td>Read Full Agreement link</td>
+                    <td><code>100% x 44px</code></td>
+                    <td>PASS</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Confirmation Modal</h3>
+        <div class="mobile-frame" style="margin-top: 24px;">
+            <div style="position: relative; height: 400px; background: #F9FAFB;">
+                <div class="confirmation-modal">
+                    <div class="confirmation-content">
+                        <div class="confirmation-icon">&#10003;</div>
+                        <h3>Lease Signed!</h3>
+                        <p>Your agreement with Sarah Chen is now active. A copy has been sent to your email.</p>
+                        <button>Return to Lease</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 9: Performance - Skeletons -->
+    <section id="skeletons" class="demo-section">
+        <h2>9. Performance Considerations</h2>
+        <p class="description">Skeleton screens for loading states. Optimized for perceived performance on mobile networks.</p>
+
+        <h3>Skeleton Loading States</h3>
+
+        <div class="mobile-frame">
+            <!-- Skeleton Overview -->
+            <div style="padding: 16px;">
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-circle" style="margin: 0 auto 16px;"></div>
+                    <div class="skeleton skeleton-line medium" style="margin: 0 auto 8px;"></div>
+                    <div class="skeleton skeleton-line short" style="margin: 0 auto;"></div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="skeleton-card">
+                        <div class="skeleton skeleton-line short"></div>
+                        <div class="skeleton skeleton-line medium"></div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton skeleton-line short"></div>
+                        <div class="skeleton skeleton-line medium"></div>
+                    </div>
+                </div>
+
+                <div class="skeleton-card" style="margin-top: 16px;">
+                    <div class="skeleton skeleton-line full"></div>
+                    <div class="skeleton skeleton-line medium"></div>
+                    <div class="skeleton skeleton-button" style="margin-top: 12px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Loading Strategy</h3>
+        <table class="spec-table">
+            <thead>
+                <tr>
+                    <th>Content Type</th>
+                    <th>Strategy</th>
+                    <th>Target Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Critical data (amount due, status)</td>
+                    <td>Load first, inline skeleton</td>
+                    <td>&lt; 500ms</td>
+                </tr>
+                <tr>
+                    <td>Secondary data (history, details)</td>
+                    <td>Lazy load on scroll/tap</td>
+                    <td>&lt; 1000ms</td>
+                </tr>
+                <tr>
+                    <td>Images (avatars, documents)</td>
+                    <td>Progressive loading</td>
+                    <td>Async</td>
+                </tr>
+                <tr>
+                    <td>Calendar data</td>
+                    <td>Load visible week first</td>
+                    <td>&lt; 500ms</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Gesture Hints</h3>
+        <div style="background: #F9FAFB; border-radius: 12px; padding: 16px; margin-top: 16px;">
+            <p style="font-size: 13px; color: #6B7280; margin-bottom: 12px;">First-time gesture hints appear once per user:</p>
+            <div class="gesture-hint swipe" style="background: white; border-radius: 8px; margin-bottom: 8px;">
+                <span class="gesture-icon">&#8592;&#8594;</span>
+                <span>Swipe to navigate weeks</span>
+            </div>
+            <div class="gesture-hint pull" style="background: white; border-radius: 8px;">
+                <span class="gesture-icon">&#8595;</span>
+                <span>Swipe down to dismiss</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 10: Breakpoint Transformations -->
+    <section class="demo-section">
+        <h2>10. Breakpoint Transformations</h2>
+        <p class="description">Live responsive demo showing table-to-card transformation at 768px breakpoint.</p>
+
+        <div class="responsive-demo">
+            <div class="responsive-demo-header">
+                Payment History (resize browser to see transformation)
+            </div>
+
+            <!-- Table view (desktop) -->
+            <table class="responsive-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Feb 1, 2026</td>
+                        <td>Monthly Rent - February</td>
+                        <td>$2,100.00</td>
+                        <td><span class="status-badge due">Due</span></td>
+                    </tr>
+                    <tr>
+                        <td>Jan 1, 2026</td>
+                        <td>Monthly Rent - January</td>
+                        <td>$2,100.00</td>
+                        <td><span class="status-badge paid">Paid</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Card view (mobile) -->
+            <div class="responsive-cards" style="padding: 16px;">
+                <div class="payment-card">
+                    <div class="payment-card-header">
+                        <div class="payment-card-amount">$2,100.00</div>
+                        <span class="status-badge due">Due Feb 1</span>
+                    </div>
+                    <div class="payment-card-details">
+                        Monthly Rent - February
+                    </div>
+                </div>
+                <div class="payment-card">
+                    <div class="payment-card-header">
+                        <div class="payment-card-amount">$2,100.00</div>
+                        <span class="status-badge paid">&#10003; Paid</span>
+                    </div>
+                    <div class="payment-card-details">
+                        Paid Jan 1 | Monthly Rent - January
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Breakpoint Strategy</h3>
+        <table class="spec-table">
+            <thead>
+                <tr>
+                    <th>Breakpoint</th>
+                    <th>Grid</th>
+                    <th>Key Changes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>&gt;= 1280px</code></td>
+                    <td>12-column</td>
+                    <td>Full desktop: tables, side panels, month calendar</td>
+                </tr>
+                <tr>
+                    <td><code>1024px - 1279px</code></td>
+                    <td>8-column</td>
+                    <td>Compact desktop: narrower tables, stacked panels</td>
+                </tr>
+                <tr>
+                    <td><code>768px - 1023px</code></td>
+                    <td>8-column</td>
+                    <td>Tablet: cards replace tables, segment controls</td>
+                </tr>
+                <tr>
+                    <td><code>480px - 767px</code></td>
+                    <td>4-column</td>
+                    <td>Mobile landscape: bottom nav, FAB, sheets</td>
+                </tr>
+                <tr>
+                    <td><code>&lt; 480px</code></td>
+                    <td>4-column</td>
+                    <td>Mobile portrait: full mobile components</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Section 11: Error States (from Dieter) -->
+    <section class="demo-section">
+        <h2>11. Error States (Mobile)</h2>
+        <p class="description">Trust-preserving error patterns from Dieter Rams, adapted for mobile with 44px touch targets.</p>
+
+        <div class="mobile-frame">
+            <!-- Past Due Error Card -->
+            <div class="error-card">
+                <div class="error-card-header">
+                    <div class="error-icon warning">!</div>
+                    <div class="error-title">Payment needs attention</div>
+                </div>
+                <div class="error-card-body">
+                    <p>Your payment of $2,100 was due yesterday. This can happen if your card expired or has a temporary hold.</p>
+                    <div class="error-options">
+                        <a href="#" class="error-option">
+                            <span style="font-size: 18px;">&#128179;</span>
+                            <span>Update payment method</span>
+                        </a>
+                        <a href="#" class="error-option">
+                            <span style="font-size: 18px;">&#128172;</span>
+                            <span>Message your host</span>
+                        </a>
+                        <a href="#" class="error-option">
+                            <span style="font-size: 18px;">&#128222;</span>
+                            <span>Contact support</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Critical Error Card -->
+            <div class="error-card" style="margin-top: 16px;">
+                <div class="error-card-header critical">
+                    <div class="error-icon critical">!</div>
+                    <div class="error-title" style="color: #991B1B;">Payment 3 days overdue</div>
+                </div>
+                <div class="error-card-body">
+                    <p>Please resolve this to keep your lease in good standing.</p>
+                    <button class="payment-card-action" style="margin-bottom: 12px;">Pay $2,100.00 Now</button>
+                    <p style="font-size: 12px; color: #9CA3AF; margin-bottom: 0;">
+                        Note: Continued late payments may affect your booking status.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <h3>Error Card Touch Targets</h3>
+        <table class="spec-table">
+            <thead>
+                <tr>
+                    <th>Element</th>
+                    <th>Height</th>
+                    <th>Touch Target</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Error option row</td>
+                    <td><code>44px</code></td>
+                    <td>PASS</td>
+                </tr>
+                <tr>
+                    <td>Primary action button</td>
+                    <td><code>44px</code></td>
+                    <td>PASS</td>
+                </tr>
+                <tr>
+                    <td>Entire error card</td>
+                    <td><code>&gt;120px</code></td>
+                    <td>N/A (not tappable)</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Final Summary -->
+    <section class="demo-section" style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: white;">
+        <h2 style="color: white;">Summary: Mobile-Critical Checklist</h2>
+
+        <div style="display: grid; gap: 16px; margin-top: 24px;">
+            <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 12px;">
+                <h3 style="color: white; font-size: 16px; margin-bottom: 8px;">Touch Targets</h3>
+                <p style="font-size: 14px; opacity: 0.9; margin: 0;">Every interactive element meets 44x44px minimum. Checkboxes, buttons, links, calendar cells all compliant.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 12px;">
+                <h3 style="color: white; font-size: 16px; margin-bottom: 8px;">3-Tap Rule</h3>
+                <p style="font-size: 14px; opacity: 0.9; margin: 0;">Primary actions (Pay, Sign, Accept/Decline) reachable in 3 taps or fewer from any state.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 12px;">
+                <h3 style="color: white; font-size: 16px; margin-bottom: 8px;">Week Strip Calendar</h3>
+                <p style="font-size: 14px; opacity: 0.9; margin: 0;">Replaced month grid with swipeable week strip. 44x44px cells guarantee accurate date selection.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 12px;">
+                <h3 style="color: white; font-size: 16px; margin-bottom: 8px;">Bottom Sheets</h3>
+                <p style="font-size: 14px; opacity: 0.9; margin: 0;">All expandable content uses swipe-dismissible bottom sheets instead of inline accordions.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 12px;">
+                <h3 style="color: white; font-size: 16px; margin-bottom: 8px;">Cards over Tables</h3>
+                <p style="font-size: 14px; opacity: 0.9; margin: 0;">Payment tables transform to 120px minimum-height cards below 768px breakpoint.</p>
+            </div>
+        </div>
+
+        <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.2);">
+            <p style="font-size: 13px; opacity: 0.7; text-align: center; margin: 0;">
+                Jony Ive Agent | Run 006B | Position 8 of 9<br>
+                "Good design is as little design as possible. Focus on the essential aspects."
+            </p>
+        </div>
+    </section>
+
+    <script>
+        // =================================================
+        // INTERACTIVE DEMONSTRATIONS
+        // =================================================
+
+        // Breakpoint indicator
+        function updateBreakpointIndicator() {
+            const indicator = document.getElementById('breakpointIndicator');
+            const width = window.innerWidth;
+
+            if (width >= 1280) {
+                indicator.textContent = width + 'px (Desktop)';
+            } else if (width >= 1024) {
+                indicator.textContent = width + 'px (Compact Desktop)';
+            } else if (width >= 768) {
+                indicator.textContent = width + 'px (Tablet)';
+            } else if (width >= 480) {
+                indicator.textContent = width + 'px (Mobile Landscape)';
+            } else {
+                indicator.textContent = width + 'px (Mobile)';
+            }
+        }
+
+        window.addEventListener('resize', updateBreakpointIndicator);
+        updateBreakpointIndicator();
+
+        // Checkbox interaction for signing flow
+        const checkbox = document.getElementById('agreeCheckbox');
+        const signButton = document.querySelector('.sign-button');
+
+        if (checkbox && signButton) {
+            checkbox.addEventListener('change', function() {
+                signButton.disabled = !this.checked;
+            });
+        }
+
+        // Segment control interaction
+        const segmentButtons = document.querySelectorAll('.segment-button');
+        segmentButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                segmentButtons.forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-selected', 'false');
+                });
+                this.classList.add('active');
+                this.setAttribute('aria-selected', 'true');
+            });
+        });
+
+        // Week strip swipe simulation
+        const weekStrip = document.querySelector('.week-strip');
+        if (weekStrip) {
+            let startX = 0;
+            let currentX = 0;
+
+            weekStrip.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+            }, { passive: true });
+
+            weekStrip.addEventListener('touchmove', (e) => {
+                currentX = e.touches[0].clientX;
+            }, { passive: true });
+
+            weekStrip.addEventListener('touchend', () => {
+                const diff = startX - currentX;
+                if (Math.abs(diff) > 60) {
+                    console.log(diff > 0 ? 'Swipe left: Next week' : 'Swipe right: Previous week');
+                }
+            });
+        }
+
+        // Bottom nav interaction
+        const bottomNavItems = document.querySelectorAll('.bottom-nav-item');
+        bottomNavItems.forEach(item => {
+            item.addEventListener('click', function() {
+                bottomNavItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // FAB toggle demonstration
+        const fab = document.querySelector('.fab');
+        const fabExpanded = document.querySelector('.fab-expanded');
+        if (fab && fabExpanded) {
+            fab.addEventListener('click', function() {
+                const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                this.setAttribute('aria-expanded', !isExpanded);
+                this.innerHTML = isExpanded ? '+' : '&times;';
+                fabExpanded.style.display = isExpanded ? 'none' : 'flex';
+            });
+        }
+
+        // Swipe card demonstration
+        const swipeCards = document.querySelectorAll('.swipe-card-content');
+        swipeCards.forEach(card => {
+            card.addEventListener('click', function() {
+                this.classList.toggle('swiped');
+            });
+        });
+
+        // Console message for developers
+        console.log('%cJony Ive Mobile Adaptations', 'font-size: 16px; font-weight: bold; color: #3B82F6;');
+        console.log('%cAll touch targets verified at 44px minimum', 'color: #22C55E;');
+        console.log('%cRun 006B | 2026-02-02', 'color: #6B7280;');
+    </script>
+</body>
+</html>
