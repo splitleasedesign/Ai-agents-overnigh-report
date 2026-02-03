@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<!--
+LUKE'S REVIEW — FOUNDATION
+Date: 2026-02-02
+Status: APPROVED
+
+Josef, this is solid work. You've set us up for success. The token structure is exactly
+what we agreed on, and the mobile-first approach is there from the start. Let me run
+through my checklist.
+
+TOKEN COMPLETENESS:
+- Status colors (fg + bg): Complete. Success, warning, danger, info, neutral — all present.
+- Tier tokens (gold/silver/bronze): Complete with backgrounds. Nice touch.
+- Calendar states (DCT flows): Complete. Booked, available, add, remove, conflict — all there.
+- Spacing scale: Complete. Love the compact spacing tokens for data-dense views.
+- Typography: Complete. Hero sizes at 48px desktop / 34px mobile as Paula requested.
+- Touch targets: Complete. 44px minimum, 48px comfortable. Apple HIG compliant.
+- Focus ring: Present at line 168. Good for keyboard users.
+- Money Green / Stay Blue urgency colors: Present at lines 190-191.
+
+STRUCTURE CHECK:
+- Follows our consensus exactly: Foundation > Visual Language > Components > Flows
+- Each section has clear contributor attribution in the headers
+- Placeholder divs are clearly marked for each designer's work
+- Sticky nav allows jumping between sections (good for 3,000+ lines)
+
+MOBILE-FIRST CHECK:
+- Base styles target mobile: YES (line 198 comment confirms intent)
+- Media queries enhance to desktop: YES (768px breakpoints used correctly)
+- Hero numbers scale: 34px mobile -> 48px desktop. Correct.
+- Touch target token exists: YES (--touch-target-min: 44px)
+
+CONVERSION NOTES:
+- Sticky nav links have min-height: var(--touch-target-min) — good, tappable on mobile
+- Focus states present on nav links (:focus-visible) — keyboard accessibility covered
+- Device toggle buttons exist but need focus states added (minor issue, don't block)
+- The placeholder-content divs give clear instructions — designers know exactly what to add
+- Scroll spy implementation is clean and won't cause jank
+
+MINOR SUGGESTIONS (don't block progress):
+1. Device toggle buttons (line 486) should get :focus-visible styles like the nav links
+2. Consider adding skip-link for screen reader users (jump to main content)
+3. The device toggle currently doesn't change viewport — that's fine, it's scaffolding
+
+WHAT'S MISSING (for future designers to add):
+- Actual token swatches (Josef's TODO)
+- Grid demonstrations (Massimo's slot)
+- Everything else has a clear placeholder
+
+Ready for: Massimo to add grid system in the #massimo-grid section.
+
+— Luke
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Split Lease Design System - Unified Mockup by the Design Collective">
+    <meta name="author" content="Josef, Massimo, Paula, Milton, Charles, Dieter, Don, Jony, Luke">
+    <title>Split Lease - Unified Design System Mockup</title>
+
+    <style>
+        /* ============================================
+           DESIGN TOKENS - Josef Muller-Brockmann
+           ============================================
+
+           Friends, these tokens are the single source of truth.
+           Every component we build references these variables.
+           If you need a new value, add it here first - don't
+           hardcode anything. That's our deal.
+
+           Dieter, I know you'll appreciate the precision.
+           Paula, yes, the 48px hero size is here for you.
+           Milton, the font stack respects your readability concerns.
+
+           - Josef
+        */
+
+        :root {
+            /* ----------------------------------------
+               STATUS COLORS - Foreground
+               ---------------------------------------- */
+            --color-status-success: #22C55E;
+            --color-status-warning: #F59E0B;
+            --color-status-danger: #EF4444;
+            --color-status-info: #3B82F6;
+            --color-status-neutral: #6B7280;
+
+            /* ----------------------------------------
+               STATUS COLORS - Background
+               Charles: empty states use info family
+               Don: error states use danger/warning family
+               ---------------------------------------- */
+            --bg-status-success: #DCFCE7;
+            --bg-status-warning: #FEF3C7;
+            --bg-status-danger: #FEE2E2;
+            --bg-status-info: #DBEAFE;
+            --bg-status-neutral: #F3F4F6;
+
+            /* ----------------------------------------
+               TIER TOKENS
+               For host membership levels
+               ---------------------------------------- */
+            --color-tier-gold: #FFD700;
+            --color-tier-gold-bg: #FFFBEB;
+            --color-tier-silver: #9CA3AF;
+            --color-tier-silver-bg: #F9FAFB;
+            --color-tier-bronze: #CD7F32;
+            --color-tier-bronze-bg: #FEF3E2;
+
+            /* ----------------------------------------
+               CALENDAR DATE STATES
+               For DCT (Date Change Transaction) flows
+               ---------------------------------------- */
+            --color-calendar-booked: #3B82F6;
+            --color-calendar-booked-bg: #DBEAFE;
+            --color-calendar-available: #E5E7EB;
+            --color-calendar-add: #22C55E;
+            --color-calendar-add-bg: #DCFCE7;
+            --color-calendar-remove: #EF4444;
+            --color-calendar-remove-bg: #FEE2E2;
+            --color-calendar-conflict: #F59E0B;
+            --color-calendar-conflict-bg: #FEF3C7;
+
+            /* ----------------------------------------
+               SPACING SCALE
+               Massimo, your grid uses these for gutters.
+               Jony, mobile touch targets build on these.
+               ---------------------------------------- */
+            --spacing-2xs: 2px;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-base: 16px;
+            --spacing-lg: 20px;
+            --spacing-xl: 24px;
+            --spacing-2xl: 32px;
+            --spacing-3xl: 40px;
+            --spacing-4xl: 48px;
+
+            /* COMPACT SPACING (Data-dense views) */
+            --spacing-compact-cell-x: 12px;
+            --spacing-compact-cell-y: 8px;
+            --spacing-compact-row: 4px;
+            --spacing-compact-group: 12px;
+
+            /* ----------------------------------------
+               TYPOGRAPHY
+               Milton, this font stack prioritizes
+               readability across all platforms.
+               ---------------------------------------- */
+            --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+            /* FONT SIZES */
+            --text-xs: 11px;
+            --text-sm: 12px;
+            --text-base: 14px;
+            --text-md: 16px;
+            --text-lg: 18px;
+            --text-xl: 20px;
+            --text-2xl: 24px;
+            --text-3xl: 30px;
+            --text-hero: 48px;        /* Paula's hero numbers - desktop */
+            --text-hero-mobile: 34px; /* Paula's hero numbers - mobile */
+
+            /* FONT WEIGHTS */
+            --weight-normal: 400;
+            --weight-medium: 500;
+            --weight-semibold: 600;
+            --weight-bold: 700;
+
+            /* LINE HEIGHTS */
+            --leading-tight: 1.25;
+            --leading-normal: 1.5;
+            --leading-relaxed: 1.625;
+            --leading-compact: 1.3;
+
+            /* TABLE TYPOGRAPHY */
+            --font-table-header: var(--font-family-base);
+            --text-table-header: var(--text-sm);
+            --weight-table-header: var(--weight-semibold);
+            --text-table-row: var(--text-base);
+            --weight-table-row: var(--weight-normal);
+
+            /* ----------------------------------------
+               BORDER RADIUS
+               ---------------------------------------- */
+            --radius-sm: 4px;
+            --radius-md: 6px;
+            --radius-lg: 8px;
+            --radius-xl: 12px;
+            --radius-full: 9999px;
+
+            /* ----------------------------------------
+               SHADOWS
+               ---------------------------------------- */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+            /* ----------------------------------------
+               BASE COLORS (Gray Scale)
+               ---------------------------------------- */
+            --color-white: #FFFFFF;
+            --color-gray-50: #F9FAFB;
+            --color-gray-100: #F3F4F6;
+            --color-gray-200: #E5E7EB;
+            --color-gray-300: #D1D5DB;
+            --color-gray-400: #9CA3AF;
+            --color-gray-500: #6B7280;
+            --color-gray-600: #4B5563;
+            --color-gray-700: #374151;
+            --color-gray-800: #1F2937;
+            --color-gray-900: #111827;
+
+            /* ----------------------------------------
+               FOCUS RING (Accessibility)
+               ---------------------------------------- */
+            --focus-ring-color: #3B82F6;
+            --focus-ring-offset: 2px;
+
+            /* ----------------------------------------
+               TOUCH TARGETS - Jony's mobile minimums
+               44px is the Apple HIG recommendation
+               ---------------------------------------- */
+            --touch-target-min: 44px;
+            --touch-target-comfortable: 48px;
+
+            /* ----------------------------------------
+               BREAKPOINTS (as reference values)
+               Massimo's grid thresholds
+               ---------------------------------------- */
+            --breakpoint-tablet: 768px;
+            --breakpoint-desktop: 1024px;
+
+            /* ----------------------------------------
+               URGENCY COLORS - Paula's emotional accents
+               Money Green = host earnings
+               Stay Blue = guest bookings
+               ---------------------------------------- */
+            --color-money-green: #22C55E;
+            --color-stay-blue: #3B82F6;
+        }
+
+        /* ============================================
+           BASE STYLES
+           ============================================
+
+           Mobile-first as we agreed. Jony was right -
+           most users will experience this on a phone.
+           Desktop styles come later via media queries.
+
+           - Josef
+        */
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            font-size: var(--text-base);
+            line-height: var(--leading-normal);
+            color: var(--color-gray-800);
+            background: var(--color-gray-50);
+            min-height: 100vh;
+        }
+
+        /* ----------------------------------------
+           BASE TYPOGRAPHY
+           Milton, I've set this up so your copy
+           has room to breathe. No truncation.
+           ---------------------------------------- */
+
+        h1 {
+            font-size: var(--text-2xl);
+            font-weight: var(--weight-bold);
+            color: var(--color-gray-900);
+            line-height: var(--leading-tight);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        h2 {
+            font-size: var(--text-xl);
+            font-weight: var(--weight-semibold);
+            color: var(--color-gray-900);
+            line-height: var(--leading-tight);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        h3 {
+            font-size: var(--text-lg);
+            font-weight: var(--weight-semibold);
+            color: var(--color-gray-700);
+            line-height: var(--leading-tight);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        h4 {
+            font-size: var(--text-md);
+            font-weight: var(--weight-medium);
+            color: var(--color-gray-600);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        p {
+            margin-bottom: var(--spacing-md);
+            color: var(--color-gray-600);
+        }
+
+        /* Desktop typography enhancements */
+        @media (min-width: 768px) {
+            h1 {
+                font-size: var(--text-3xl);
+            }
+
+            h2 {
+                font-size: var(--text-2xl);
+            }
+        }
+
+        /* ----------------------------------------
+           HERO NUMBERS - Paula's emotional anchors
+           These are the first things users see.
+           ---------------------------------------- */
+
+        .hero-number {
+            font-size: var(--text-hero-mobile);
+            font-weight: var(--weight-bold);
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+        }
+
+        .hero-number--money {
+            color: var(--color-money-green);
+        }
+
+        .hero-number--stays {
+            color: var(--color-stay-blue);
+        }
+
+        @media (min-width: 768px) {
+            .hero-number {
+                font-size: var(--text-hero);
+            }
+        }
+
+        /* ============================================
+           STICKY NAVIGATION
+           ============================================
+
+           Luke, you wanted this for navigating the
+           3,000+ lines. Each section is one click away.
+        */
+
+        .sticky-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--color-white);
+            border-bottom: 1px solid var(--color-gray-200);
+            z-index: 100;
+            padding: var(--spacing-sm) var(--spacing-base);
+        }
+
+        .sticky-nav__inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: var(--spacing-sm);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .sticky-nav__link {
+            display: inline-flex;
+            align-items: center;
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: var(--text-sm);
+            font-weight: var(--weight-medium);
+            color: var(--color-gray-600);
+            text-decoration: none;
+            white-space: nowrap;
+            border-radius: var(--radius-md);
+            transition: all 0.15s ease;
+            min-height: var(--touch-target-min);
+        }
+
+        .sticky-nav__link:hover {
+            background: var(--color-gray-100);
+            color: var(--color-gray-900);
+        }
+
+        .sticky-nav__link:focus-visible {
+            outline: 2px solid var(--focus-ring-color);
+            outline-offset: var(--focus-ring-offset);
+        }
+
+        .sticky-nav__link--active {
+            background: var(--color-gray-900);
+            color: var(--color-white);
+        }
+
+        /* ============================================
+           PAGE CONTAINER
+           ============================================ */
+
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-base);
+            padding-top: calc(var(--touch-target-min) + var(--spacing-2xl));
+        }
+
+        @media (min-width: 768px) {
+            .page-container {
+                padding: var(--spacing-2xl);
+                padding-top: calc(var(--touch-target-min) + var(--spacing-3xl));
+            }
+        }
+
+        /* ============================================
+           SECTION CONTAINERS
+           ============================================ */
+
+        .section {
+            background: var(--color-white);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+            box-shadow: var(--shadow-sm);
+        }
+
+        @media (min-width: 768px) {
+            .section {
+                padding: var(--spacing-2xl);
+            }
+        }
+
+        .section__header {
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--color-gray-200);
+        }
+
+        .section__title {
+            font-size: var(--text-xl);
+            font-weight: var(--weight-bold);
+            color: var(--color-gray-900);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .section__subtitle {
+            font-size: var(--text-sm);
+            color: var(--color-gray-500);
+        }
+
+        .section__author {
+            font-size: var(--text-xs);
+            color: var(--color-gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: var(--spacing-sm);
+        }
+
+        /* ============================================
+           UTILITY CLASSES
+           ============================================ */
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .gap-sm {
+            gap: var(--spacing-sm);
+        }
+
+        .gap-md {
+            gap: var(--spacing-md);
+        }
+
+        .gap-lg {
+            gap: var(--spacing-lg);
+        }
+
+        /* ============================================
+           DEVICE TOGGLE
+           ============================================
+
+           Luke wanted side-by-side comparison.
+           This toggle switches between mobile and
+           desktop preview modes.
+        */
+
+        .device-toggle {
+            display: flex;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-xs);
+            background: var(--color-gray-100);
+            border-radius: var(--radius-md);
+        }
+
+        .device-toggle__btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: var(--text-sm);
+            font-weight: var(--weight-medium);
+            color: var(--color-gray-600);
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .device-toggle__btn--active {
+            background: var(--color-white);
+            color: var(--color-gray-900);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Placeholder for component work */
+        .placeholder-content {
+            background: var(--color-gray-100);
+            border: 2px dashed var(--color-gray-300);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-2xl);
+            text-align: center;
+            color: var(--color-gray-500);
+            font-style: italic;
+        }
+
+        /* ============================================
+           MASSIMO'S GRID SYSTEM
+           12-column desktop, 8-column tablet, 4-column mobile
+           ============================================
+
+           Josef, I'm building on your foundation. Every measurement
+           here references your spacing tokens — no magic numbers.
+           The grid is the skeleton; your tokens are the muscles
+           that give it form.
+
+           Jony, I've aligned the breakpoints with your mobile work:
+           - Desktop: 1024px and above (12 columns)
+           - Tablet: 768px to 1023px (8 columns)
+           - Mobile: below 768px (4 columns)
+
+           Paula, the grid creates breathing room for your drama.
+           When you place that 48px hero number, the columns will
+           frame it properly. The gutters aren't just space —
+           they're the silence between your visual notes.
+
+           — Massimo
+        */
+
+        /* ----------------------------------------
+           GRID TOKENS (extending Josef's system)
+           ---------------------------------------- */
+        :root {
+            /* Column counts per breakpoint */
+            --grid-columns-desktop: 12;
+            --grid-columns-tablet: 8;
+            --grid-columns-mobile: 4;
+
+            /* Gutters use Josef's spacing scale */
+            --grid-gutter-desktop: var(--spacing-xl);   /* 24px */
+            --grid-gutter-tablet: var(--spacing-lg);    /* 20px */
+            --grid-gutter-mobile: var(--spacing-base);  /* 16px */
+
+            /* Container margins */
+            --grid-margin-desktop: var(--spacing-4xl);  /* 48px */
+            --grid-margin-tablet: var(--spacing-xl);    /* 24px */
+            --grid-margin-mobile: var(--spacing-base);  /* 16px */
+        }
+
+        /* ----------------------------------------
+           BASE GRID CONTAINER
+           Mobile-first: 4 columns by default
+           ---------------------------------------- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(var(--grid-columns-mobile), 1fr);
+            gap: var(--grid-gutter-mobile);
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--grid-margin-mobile);
+        }
+
+        /* Tablet enhancement: 8 columns */
+        @media (min-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(var(--grid-columns-tablet), 1fr);
+                gap: var(--grid-gutter-tablet);
+                padding: 0 var(--grid-margin-tablet);
+            }
+        }
+
+        /* Desktop enhancement: 12 columns */
+        @media (min-width: 1024px) {
+            .grid-container {
+                grid-template-columns: repeat(var(--grid-columns-desktop), 1fr);
+                gap: var(--grid-gutter-desktop);
+                padding: 0 var(--grid-margin-desktop);
+            }
+        }
+
+        /* ----------------------------------------
+           COLUMN SPAN UTILITIES
+           Mobile-first spans (4-column base)
+           ---------------------------------------- */
+
+        /* Full width on all devices */
+        .col-full { grid-column: 1 / -1; }
+
+        /* Mobile spans (4-column grid) */
+        .col-1 { grid-column: span 1; }
+        .col-2 { grid-column: span 2; }
+        .col-3 { grid-column: span 3; }
+        .col-4 { grid-column: span 4; }
+
+        /* Tablet spans (8-column grid) */
+        @media (min-width: 768px) {
+            .col-md-1 { grid-column: span 1; }
+            .col-md-2 { grid-column: span 2; }
+            .col-md-3 { grid-column: span 3; }
+            .col-md-4 { grid-column: span 4; }
+            .col-md-5 { grid-column: span 5; }
+            .col-md-6 { grid-column: span 6; }
+            .col-md-7 { grid-column: span 7; }
+            .col-md-8 { grid-column: span 8; }
+        }
+
+        /* Desktop spans (12-column grid) */
+        @media (min-width: 1024px) {
+            .col-lg-1 { grid-column: span 1; }
+            .col-lg-2 { grid-column: span 2; }
+            .col-lg-3 { grid-column: span 3; }
+            .col-lg-4 { grid-column: span 4; }
+            .col-lg-5 { grid-column: span 5; }
+            .col-lg-6 { grid-column: span 6; }
+            .col-lg-7 { grid-column: span 7; }
+            .col-lg-8 { grid-column: span 8; }
+            .col-lg-9 { grid-column: span 9; }
+            .col-lg-10 { grid-column: span 10; }
+            .col-lg-11 { grid-column: span 11; }
+            .col-lg-12 { grid-column: span 12; }
+        }
+
+        /* ----------------------------------------
+           COMMON LAYOUT PATTERNS
+           These are the compositions we use most often
+           ---------------------------------------- */
+
+        /* Primary + Sidebar (8+4 desktop, 5+3 tablet, stacked mobile) */
+        .layout-primary-sidebar {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--grid-gutter-mobile);
+        }
+
+        @media (min-width: 768px) {
+            .layout-primary-sidebar {
+                grid-template-columns: 5fr 3fr;
+                gap: var(--grid-gutter-tablet);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .layout-primary-sidebar {
+                grid-template-columns: 8fr 4fr;
+                gap: var(--grid-gutter-desktop);
+            }
+        }
+
+        /* Equal columns (responsive) */
+        .layout-equal-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--grid-gutter-mobile);
+        }
+
+        @media (min-width: 768px) {
+            .layout-equal-2 {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--grid-gutter-tablet);
+            }
+        }
+
+        .layout-equal-3 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--grid-gutter-mobile);
+        }
+
+        @media (min-width: 768px) {
+            .layout-equal-3 {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--grid-gutter-tablet);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .layout-equal-3 {
+                grid-template-columns: repeat(3, 1fr);
+                gap: var(--grid-gutter-desktop);
+            }
+        }
+
+        .layout-equal-4 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--grid-gutter-mobile);
+        }
+
+        @media (min-width: 768px) {
+            .layout-equal-4 {
+                grid-template-columns: repeat(4, 1fr);
+                gap: var(--grid-gutter-tablet);
+            }
+        }
+
+        /* ----------------------------------------
+           GRID DEMONSTRATION STYLES
+           Visual aids for showing how the grid works
+           ---------------------------------------- */
+        .grid-demo {
+            margin-top: var(--spacing-xl);
+        }
+
+        .grid-demo__row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--grid-gutter-mobile);
+            margin-bottom: var(--spacing-md);
+        }
+
+        @media (min-width: 768px) {
+            .grid-demo__row {
+                grid-template-columns: repeat(8, 1fr);
+                gap: var(--grid-gutter-tablet);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .grid-demo__row {
+                grid-template-columns: repeat(12, 1fr);
+                gap: var(--grid-gutter-desktop);
+            }
+        }
+
+        .grid-demo__cell {
+            background: var(--bg-status-info);
+            border: 1px solid var(--color-status-info);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-md);
+            text-align: center;
+            font-size: var(--text-sm);
+            font-weight: var(--weight-medium);
+            color: var(--color-status-info);
+            min-height: var(--spacing-4xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .grid-demo__cell--highlight {
+            background: var(--color-status-info);
+            color: var(--color-white);
+        }
+
+        /* Breakpoint indicator for demonstrations */
+        .breakpoint-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: var(--color-gray-800);
+            color: var(--color-white);
+            border-radius: var(--radius-sm);
+            font-size: var(--text-xs);
+            font-weight: var(--weight-semibold);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .breakpoint-badge::before {
+            content: 'MOBILE (4 cols)';
+        }
+
+        @media (min-width: 768px) {
+            .breakpoint-badge::before {
+                content: 'TABLET (8 cols)';
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .breakpoint-badge::before {
+                content: 'DESKTOP (12 cols)';
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+         STICKY NAVIGATION
+         ============================================ -->
+    <nav class="sticky-nav" aria-label="Section navigation">
+        <div class="sticky-nav__inner">
+            <a href="#section-foundation" class="sticky-nav__link sticky-nav__link--active">
+                1. Foundation
+            </a>
+            <a href="#section-visual-language" class="sticky-nav__link">
+                2. Visual Language
+            </a>
+            <a href="#section-components" class="sticky-nav__link">
+                3. Components
+            </a>
+            <a href="#section-flows" class="sticky-nav__link">
+                4. Flows
+            </a>
+        </div>
+    </nav>
+
+    <!-- ============================================
+         PAGE CONTAINER
+         ============================================ -->
+    <main class="page-container">
+
+        <!-- ============================================
+             SECTION 1: DESIGN SYSTEM FOUNDATION
+             Contributors: Josef + Massimo
+             ============================================
+
+             Josef: My tokens are already in the :root block above.
+             Below I'll add the token reference swatches so everyone
+             can see what they're working with.
+
+             Massimo: Your grid system goes after my tokens demo.
+             12-column desktop, 8-column tablet, 4-column mobile.
+             Breakpoints at 768px and 1024px as we agreed.
+        -->
+        <section id="section-foundation" class="section">
+            <header class="section__header">
+                <h2 class="section__title">1. Design System Foundation</h2>
+                <p class="section__subtitle">Tokens, spacing, typography, and grid architecture</p>
+                <p class="section__author">Josef Muller-Brockmann + Massimo Vignelli</p>
+            </header>
+
+            <!-- ----------------------------------------
+                 JOSEF'S TOKENS DEMONSTRATION
+                 ----------------------------------------
+
+                 Josef: I'll show the color swatches, spacing scale,
+                 and typography samples here. This is the reference
+                 palette everyone pulls from.
+            -->
+            <div id="josef-tokens">
+                <h3>Design Tokens Reference</h3>
+                <p class="placeholder-content">
+                    Josef: Add color swatches, spacing scale visualization,
+                    typography specimens, and shadow/radius examples here.
+                </p>
+            </div>
+
+            <!-- ----------------------------------------
+                 MASSIMO'S GRID SYSTEM
+                 ----------------------------------------
+
+                 Josef, your tokens gave me the vocabulary.
+                 Now here's the grammar: 12/8/4 columns that
+                 breathe at your spacing intervals.
+
+                 Resize your browser to see the breakpoints shift.
+                 The grid doesn't just shrink — it recomposes.
+
+                 — Massimo
+            -->
+            <div id="massimo-grid" style="margin-top: var(--spacing-2xl);">
+                <h3>Grid System</h3>
+                <p style="color: var(--color-gray-600); margin-bottom: var(--spacing-lg);">
+                    The grid is the skeleton of the interface. Every component lives within its columns.
+                    Resize your browser to see how the grid adapts: 12 columns on desktop (1024px+),
+                    8 columns on tablet (768-1023px), 4 columns on mobile (below 768px).
+                </p>
+
+                <!-- Current Breakpoint Indicator -->
+                <div style="margin-bottom: var(--spacing-xl);">
+                    <span class="breakpoint-badge"></span>
+                    <span style="margin-left: var(--spacing-sm); font-size: var(--text-sm); color: var(--color-gray-500);">
+                        Current viewport
+                    </span>
+                </div>
+
+                <!-- ========================================
+                     GRID DEMONSTRATION: Column Visualization
+                     ======================================== -->
+                <div class="grid-demo">
+                    <h4 style="margin-bottom: var(--spacing-md);">Column Structure</h4>
+                    <p style="font-size: var(--text-sm); color: var(--color-gray-500); margin-bottom: var(--spacing-md);">
+                        Each cell represents one column. Gutters between columns use Josef's spacing tokens:
+                        24px desktop, 20px tablet, 16px mobile.
+                    </p>
+
+                    <!-- Visual representation of all columns -->
+                    <div class="grid-demo__row">
+                        <div class="grid-demo__cell">1</div>
+                        <div class="grid-demo__cell">2</div>
+                        <div class="grid-demo__cell">3</div>
+                        <div class="grid-demo__cell">4</div>
+                        <!-- Columns 5-8 visible on tablet+ -->
+                        <div class="grid-demo__cell" style="display: none;">5</div>
+                        <div class="grid-demo__cell" style="display: none;">6</div>
+                        <div class="grid-demo__cell" style="display: none;">7</div>
+                        <div class="grid-demo__cell" style="display: none;">8</div>
+                        <!-- Columns 9-12 visible on desktop only -->
+                        <div class="grid-demo__cell" style="display: none;">9</div>
+                        <div class="grid-demo__cell" style="display: none;">10</div>
+                        <div class="grid-demo__cell" style="display: none;">11</div>
+                        <div class="grid-demo__cell" style="display: none;">12</div>
+                    </div>
+
+                    <!-- Responsive column visibility via CSS -->
+                    <style>
+                        @media (min-width: 768px) {
+                            .grid-demo__row .grid-demo__cell:nth-child(5),
+                            .grid-demo__row .grid-demo__cell:nth-child(6),
+                            .grid-demo__row .grid-demo__cell:nth-child(7),
+                            .grid-demo__row .grid-demo__cell:nth-child(8) {
+                                display: flex !important;
+                            }
+                        }
+                        @media (min-width: 1024px) {
+                            .grid-demo__row .grid-demo__cell:nth-child(9),
+                            .grid-demo__row .grid-demo__cell:nth-child(10),
+                            .grid-demo__row .grid-demo__cell:nth-child(11),
+                            .grid-demo__row .grid-demo__cell:nth-child(12) {
+                                display: flex !important;
+                            }
+                        }
+                    </style>
+                </div>
+
+                <!-- ========================================
+                     LAYOUT PATTERN: Primary + Sidebar
+                     ======================================== -->
+                <div style="margin-top: var(--spacing-2xl);">
+                    <h4 style="margin-bottom: var(--spacing-md);">Layout Pattern: Primary + Sidebar</h4>
+                    <p style="font-size: var(--text-sm); color: var(--color-gray-500); margin-bottom: var(--spacing-md);">
+                        8+4 columns on desktop, 5+3 on tablet, stacked on mobile.
+                        This is the workhorse layout for lease detail views.
+                    </p>
+
+                    <div class="layout-primary-sidebar">
+                        <div class="grid-demo__cell grid-demo__cell--highlight" style="min-height: 120px;">
+                            <div>
+                                <strong>Primary Content</strong><br>
+                                <span style="font-size: var(--text-xs); opacity: 0.8;">
+                                    8 cols desktop / 5 cols tablet / full width mobile
+                                </span>
+                            </div>
+                        </div>
+                        <div class="grid-demo__cell" style="min-height: 120px;">
+                            <div>
+                                <strong>Sidebar</strong><br>
+                                <span style="font-size: var(--text-xs);">
+                                    4 cols desktop / 3 cols tablet / full width mobile
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================
+                     LAYOUT PATTERN: Equal Columns
+                     ======================================== -->
+                <div style="margin-top: var(--spacing-2xl);">
+                    <h4 style="margin-bottom: var(--spacing-md);">Layout Pattern: Equal Columns</h4>
+                    <p style="font-size: var(--text-sm); color: var(--color-gray-500); margin-bottom: var(--spacing-md);">
+                        For dashboard cards, stat displays, and grouped content.
+                        Columns stack gracefully at smaller viewports.
+                    </p>
+
+                    <!-- 3-column layout -->
+                    <p style="font-size: var(--text-xs); color: var(--color-gray-400); margin-bottom: var(--spacing-sm); text-transform: uppercase; letter-spacing: 0.5px;">
+                        Three Equal Columns
+                    </p>
+                    <div class="layout-equal-3" style="margin-bottom: var(--spacing-xl);">
+                        <div class="grid-demo__cell">
+                            <div>
+                                <strong>Card 1</strong><br>
+                                <span style="font-size: var(--text-xs);">4 cols each on desktop</span>
+                            </div>
+                        </div>
+                        <div class="grid-demo__cell">
+                            <div>
+                                <strong>Card 2</strong><br>
+                                <span style="font-size: var(--text-xs);">4 cols each on tablet</span>
+                            </div>
+                        </div>
+                        <div class="grid-demo__cell">
+                            <div>
+                                <strong>Card 3</strong><br>
+                                <span style="font-size: var(--text-xs);">Full width on mobile</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4-column layout -->
+                    <p style="font-size: var(--text-xs); color: var(--color-gray-400); margin-bottom: var(--spacing-sm); text-transform: uppercase; letter-spacing: 0.5px;">
+                        Four Equal Columns (Stats Display)
+                    </p>
+                    <div class="layout-equal-4">
+                        <div class="grid-demo__cell" style="flex-direction: column; gap: var(--spacing-xs);">
+                            <span class="hero-number hero-number--money" style="font-size: var(--text-2xl);">$2,450</span>
+                            <span style="font-size: var(--text-xs);">This Month</span>
+                        </div>
+                        <div class="grid-demo__cell" style="flex-direction: column; gap: var(--spacing-xs);">
+                            <span class="hero-number hero-number--stays" style="font-size: var(--text-2xl);">12</span>
+                            <span style="font-size: var(--text-xs);">Total Stays</span>
+                        </div>
+                        <div class="grid-demo__cell" style="flex-direction: column; gap: var(--spacing-xs);">
+                            <span style="font-size: var(--text-2xl); font-weight: var(--weight-bold);">98%</span>
+                            <span style="font-size: var(--text-xs);">Response Rate</span>
+                        </div>
+                        <div class="grid-demo__cell" style="flex-direction: column; gap: var(--spacing-xs);">
+                            <span style="font-size: var(--text-2xl); font-weight: var(--weight-bold);">4.9</span>
+                            <span style="font-size: var(--text-xs);">Rating</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================
+                     CONTAINER CLASSES REFERENCE
+                     ======================================== -->
+                <div style="margin-top: var(--spacing-2xl);">
+                    <h4 style="margin-bottom: var(--spacing-md);">Container Classes Reference</h4>
+                    <p style="font-size: var(--text-sm); color: var(--color-gray-500); margin-bottom: var(--spacing-md);">
+                        Use these classes to build layouts. The grid is mobile-first —
+                        base styles target mobile, then enhance at breakpoints.
+                    </p>
+
+                    <div style="background: var(--color-gray-100); border-radius: var(--radius-lg); padding: var(--spacing-lg); font-family: var(--font-family-mono); font-size: var(--text-sm);">
+                        <p style="color: var(--color-gray-500); margin-bottom: var(--spacing-md);">/* Base container */</p>
+                        <p style="color: var(--color-gray-800); margin-bottom: var(--spacing-lg);"><strong>.grid-container</strong> — 12/8/4 column grid with responsive gutters</p>
+
+                        <p style="color: var(--color-gray-500); margin-bottom: var(--spacing-md);">/* Column spans */</p>
+                        <p style="color: var(--color-gray-800);"><strong>.col-1</strong> to <strong>.col-4</strong> — Mobile spans (4-col grid)</p>
+                        <p style="color: var(--color-gray-800);"><strong>.col-md-1</strong> to <strong>.col-md-8</strong> — Tablet spans (8-col grid)</p>
+                        <p style="color: var(--color-gray-800); margin-bottom: var(--spacing-lg);"><strong>.col-lg-1</strong> to <strong>.col-lg-12</strong> — Desktop spans (12-col grid)</p>
+
+                        <p style="color: var(--color-gray-500); margin-bottom: var(--spacing-md);">/* Layout patterns */</p>
+                        <p style="color: var(--color-gray-800);"><strong>.layout-primary-sidebar</strong> — 8+4 desktop, 5+3 tablet, stacked mobile</p>
+                        <p style="color: var(--color-gray-800);"><strong>.layout-equal-2</strong> — Two equal columns</p>
+                        <p style="color: var(--color-gray-800);"><strong>.layout-equal-3</strong> — Three equal columns</p>
+                        <p style="color: var(--color-gray-800);"><strong>.layout-equal-4</strong> — Four equal columns (2x2 on mobile)</p>
+                    </div>
+                </div>
+
+                <!-- ========================================
+                     BREAKPOINT SPECIFICATIONS
+                     ======================================== -->
+                <div style="margin-top: var(--spacing-2xl);">
+                    <h4 style="margin-bottom: var(--spacing-md);">Breakpoint Specifications</h4>
+
+                    <div class="layout-equal-3">
+                        <!-- Mobile -->
+                        <div style="background: var(--color-white); border: 1px solid var(--color-gray-200); border-radius: var(--radius-lg); padding: var(--spacing-lg);">
+                            <div style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-md);">
+                                <span style="font-size: var(--text-xl);">📱</span>
+                                <strong>Mobile</strong>
+                            </div>
+                            <ul style="list-style: none; font-size: var(--text-sm); color: var(--color-gray-600);">
+                                <li style="margin-bottom: var(--spacing-xs);">Viewport: &lt; 768px</li>
+                                <li style="margin-bottom: var(--spacing-xs);">Columns: <strong>4</strong></li>
+                                <li style="margin-bottom: var(--spacing-xs);">Gutter: 16px</li>
+                                <li>Margin: 16px</li>
+                            </ul>
+                        </div>
+
+                        <!-- Tablet -->
+                        <div style="background: var(--color-white); border: 1px solid var(--color-gray-200); border-radius: var(--radius-lg); padding: var(--spacing-lg);">
+                            <div style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-md);">
+                                <span style="font-size: var(--text-xl);">📋</span>
+                                <strong>Tablet</strong>
+                            </div>
+                            <ul style="list-style: none; font-size: var(--text-sm); color: var(--color-gray-600);">
+                                <li style="margin-bottom: var(--spacing-xs);">Viewport: 768px - 1023px</li>
+                                <li style="margin-bottom: var(--spacing-xs);">Columns: <strong>8</strong></li>
+                                <li style="margin-bottom: var(--spacing-xs);">Gutter: 20px</li>
+                                <li>Margin: 24px</li>
+                            </ul>
+                        </div>
+
+                        <!-- Desktop -->
+                        <div style="background: var(--color-white); border: 1px solid var(--color-gray-200); border-radius: var(--radius-lg); padding: var(--spacing-lg);">
+                            <div style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-md);">
+                                <span style="font-size: var(--text-xl);">🖥️</span>
+                                <strong>Desktop</strong>
+                            </div>
+                            <ul style="list-style: none; font-size: var(--text-sm); color: var(--color-gray-600);">
+                                <li style="margin-bottom: var(--spacing-xs);">Viewport: 1024px+</li>
+                                <li style="margin-bottom: var(--spacing-xs);">Columns: <strong>12</strong></li>
+                                <li style="margin-bottom: var(--spacing-xs);">Gutter: 24px</li>
+                                <li>Margin: 48px</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Massimo's closing note -->
+                <p style="margin-top: var(--spacing-2xl); font-size: var(--text-sm); color: var(--color-gray-400); font-style: italic; border-top: 1px solid var(--color-gray-200); padding-top: var(--spacing-lg);">
+                    "The grid is not a limitation, it is a framework for freedom."
+                    Every component Paula, Charles, and Don create will live within these columns.
+                    Jony, your 44px touch targets align perfectly with the 4-column mobile grid.
+                    The math works. — Massimo
+                </p>
+            </div>
+        </section>
+
+
+        <!-- ============================================
+             SECTION 2: VISUAL LANGUAGE
+             Contributors: Paula + Milton
+             ============================================
+
+             Paula: Your hierarchy work goes first - the hero numbers,
+             the urgency cards, the status badges. Show how the eye
+             moves through the interface. That 48px drama you wanted?
+             It's in the tokens as --text-hero. Use it proudly.
+
+             Milton: After Paula shows the visual weight, you add
+             the copy deck. All three registers - hopeful for empty
+             states, joyful for celebrations, calm-factual for errors.
+             Your 1,700 characters of carefully crafted words.
+        -->
+        <section id="section-visual-language" class="section">
+            <header class="section__header">
+                <h2 class="section__title">2. Visual Language</h2>
+                <p class="section__subtitle">Hierarchy patterns and copy guidelines</p>
+                <p class="section__author">Paula Scher + Milton Glaser</p>
+            </header>
+
+            <!-- ----------------------------------------
+                 PAULA'S VISUAL HIERARCHY
+                 ----------------------------------------
+
+                 Paula: Show the emotional architecture. Hero numbers
+                 in Money Green and Stay Blue. Urgency cards with
+                 their colored left borders. The 200ms first impression.
+                 Make it sing.
+            -->
+            <div id="paula-hierarchy">
+                <h3>Visual Hierarchy Patterns</h3>
+                <p class="placeholder-content">
+                    Paula: Add hero number demonstrations ($12,450 in Money Green),
+                    status badge hierarchy, urgency cards with 4px colored borders,
+                    and the "where should my eye go first" patterns.
+                </p>
+            </div>
+
+            <!-- ----------------------------------------
+                 MILTON'S COPY DECK
+                 ----------------------------------------
+
+                 Milton: Your words do work that colors alone cannot.
+                 Show the three emotional registers. "Payment due tomorrow"
+                 not "Payment Due: February 3rd, 2026". Let it breathe.
+            -->
+            <div id="milton-copy" style="margin-top: var(--spacing-2xl);">
+                <h3>Copy Deck and Voice Guidelines</h3>
+                <p class="placeholder-content">
+                    Milton: Add the complete copy deck with character counts.
+                    Three registers: hopeful (empty states), joyful (celebrations),
+                    calm-factual (errors). Include the button labels, status text,
+                    modal messages, and error copy. No truncation - let words breathe.
+                </p>
+            </div>
+        </section>
+
+
+        <!-- ============================================
+             SECTION 3: COMPONENTS BY STATE
+             Contributors: Charles + Dieter + Luke
+             ============================================
+
+             Charles: Empty states and onboarding first. The info-blue
+             family for "not yet" states. Milestone celebrations with
+             that confetti you love. The journey progress bar showing
+             Matched -> Docs Signed -> First Payment -> First Stay -> Established.
+
+             Dieter: Your trust patterns and dark pattern checklist
+             come next. Payment status cards that show facts, not pressure.
+             Signature verification UI. The checklist itself - that's our
+             contract with ourselves that we won't manipulate users.
+
+             Luke: Conversion audit last. Show which components perform
+             in the funnel, where the friction points are, the A/B test
+             specs. Connect Charles and Dieter's work to actual outcomes.
+        -->
+        <section id="section-components" class="section">
+            <header class="section__header">
+                <h2 class="section__title">3. Components by State</h2>
+                <p class="section__subtitle">Empty states, trust patterns, and conversion analysis</p>
+                <p class="section__author">Charles Eames + Dieter Rams + Luke Wroblewski</p>
+            </header>
+
+            <!-- ----------------------------------------
+                 CHARLES'S EMPTY STATES
+                 ----------------------------------------
+
+                 Charles: Every user starts with nothing. Show them
+                 that empty isn't scary - it's a beginning. Use the
+                 info-blue family (--bg-status-info). Journey progress
+                 bar at the top. Details aren't just details.
+            -->
+            <div id="charles-empty-states">
+                <h3>Empty States and Onboarding</h3>
+                <p class="placeholder-content">
+                    Charles: Add the lease journey progress bar (5 stages),
+                    empty dashboard states, first-time tooltips, welcome modal,
+                    milestone celebration animations. Use info-blue family only.
+                    These states are hopeful and forward-looking.
+                </p>
+            </div>
+
+            <!-- ----------------------------------------
+                 DIETER'S TRUST PATTERNS
+                 ----------------------------------------
+
+                 Dieter: Honest design. Payment status cards that state
+                 facts clearly. Signature verification with clear attribution.
+                 And most importantly - the dark pattern checklist that
+                 every element must pass. Less, but better.
+            -->
+            <div id="dieter-trust" style="margin-top: var(--spacing-2xl);">
+                <h3>Trust Patterns and Dark Pattern Prevention</h3>
+                <p class="placeholder-content">
+                    Dieter: Add payment status cards (facts, not pressure),
+                    signature verification UI, error attribution ("This is our
+                    error, not yours"), and the dark pattern prevention checklist.
+                    Every element must pass before inclusion.
+                </p>
+            </div>
+
+            <!-- ----------------------------------------
+                 LUKE'S CONVERSION AUDIT
+                 ----------------------------------------
+
+                 Luke: You're thinking end-to-end. Show how Charles's
+                 empty states and Dieter's trust patterns affect actual
+                 conversions. Friction points. A/B test specifications.
+                 Beautiful doesn't matter if they abandon halfway through.
+            -->
+            <div id="luke-conversion" style="margin-top: var(--spacing-2xl);">
+                <h3>Conversion Audit and Funnel Analysis</h3>
+                <p class="placeholder-content">
+                    Luke: Add funnel stage analysis, friction point identification,
+                    A/B test specifications, and conversion metrics for key components.
+                    Connect the design decisions to actual user completion rates.
+                </p>
+            </div>
+        </section>
+
+
+        <!-- ============================================
+             SECTION 4: FLOWS AND INTERACTIONS
+             Contributors: Don + Jony
+             ============================================
+
+             Don: Your state machines and error recovery paths.
+             The six user journeys you mapped. Clickable walkthroughs
+             that show how users move through states, not just how
+             screens look. What happens when things go wrong matters
+             more than the happy path.
+
+             Jony: Mobile adaptations side by side with desktop.
+             44px touch targets that work on a cold morning with gloves.
+             Week-strip calendar with swipe gestures. Bottom sheets
+             for date selection. This isn't the degraded version -
+             for most users, this IS the product.
+        -->
+        <section id="section-flows" class="section">
+            <header class="section__header">
+                <h2 class="section__title">4. Flows and Interactions</h2>
+                <p class="section__subtitle">User journeys, error recovery, and mobile adaptations</p>
+                <p class="section__author">Don Norman + Jony Ive</p>
+            </header>
+
+            <!-- Device Toggle for Desktop/Mobile comparison -->
+            <div class="flex justify-between items-center" style="margin-bottom: var(--spacing-xl);">
+                <span style="font-size: var(--text-sm); color: var(--color-gray-500);">
+                    Compare desktop and mobile experiences
+                </span>
+                <div class="device-toggle">
+                    <button class="device-toggle__btn device-toggle__btn--active" type="button">
+                        Desktop
+                    </button>
+                    <button class="device-toggle__btn" type="button">
+                        Mobile
+                    </button>
+                </div>
+            </div>
+
+            <!-- ----------------------------------------
+                 DON'S USER FLOWS
+                 ----------------------------------------
+
+                 Don: You think in flows, not screens. Show the six
+                 journeys - lease signing, payment processing, DCT
+                 requests, and the rest. State machines with transitions.
+                 Error recovery that guides users back on track.
+                 What persists when they navigate away and come back.
+            -->
+            <div id="don-flows">
+                <h3>User Flows and State Machines</h3>
+                <p class="placeholder-content">
+                    Don: Add the six user journey state machines, clickable
+                    flow walkthroughs, error recovery paths, and state
+                    preservation documentation. Show what happens when
+                    payments fail, signatures timeout, DCT requests conflict.
+                </p>
+            </div>
+
+            <!-- ----------------------------------------
+                 JONY'S MOBILE ADAPTATIONS
+                 ----------------------------------------
+
+                 Jony: The 375px viewport isn't a degraded desktop.
+                 It's where most users live. 44px touch targets.
+                 Week-strip calendar. Bottom sheets. Swipe gestures.
+                 Show it side by side with desktop so we can see
+                 both experiences as equal citizens.
+            -->
+            <div id="jony-mobile" style="margin-top: var(--spacing-2xl);">
+                <h3>Mobile Adaptations</h3>
+                <p class="placeholder-content">
+                    Jony: Add touch target demonstrations (44px minimum),
+                    week-strip calendar with swipe, bottom sheet patterns,
+                    thumb-zone heat maps, and side-by-side comparisons
+                    with desktop equivalents. Mobile-first is not mobile-less.
+                </p>
+            </div>
+        </section>
+
+
+        <!-- ============================================
+             FOOTER
+             ============================================ -->
+        <footer style="text-align: center; padding: var(--spacing-2xl); color: var(--color-gray-400); font-size: var(--text-sm);">
+            <p>Split Lease Design System - Unified Mockup</p>
+            <p style="margin-top: var(--spacing-sm);">
+                Josef Muller-Brockmann, Massimo Vignelli, Paula Scher, Milton Glaser,
+                Charles Eames, Dieter Rams, Don Norman, Jony Ive, Luke Wroblewski
+            </p>
+            <p style="margin-top: var(--spacing-sm);">
+                Run 006B - February 2026
+            </p>
+        </footer>
+
+    </main>
+
+    <!-- ============================================
+         NAVIGATION INTERACTIVITY
+         ============================================
+
+         Simple scroll spy to highlight active section.
+         Luke, this is just the scaffold - feel free to
+         enhance when you're synthesizing.
+    -->
+    <script>
+        // Update active nav link on scroll
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.sticky-nav__link');
+
+        function updateActiveNav() {
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('sticky-nav__link--active');
+                        if (link.getAttribute('href') === '#' + sectionId) {
+                            link.classList.add('sticky-nav__link--active');
+                        }
+                    });
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveNav);
+
+        // Smooth scroll for nav links
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Device toggle (placeholder - wire up actual behavior)
+        const toggleBtns = document.querySelectorAll('.device-toggle__btn');
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                toggleBtns.forEach(b => b.classList.remove('device-toggle__btn--active'));
+                this.classList.add('device-toggle__btn--active');
+                // TODO: Implement actual viewport switching
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,3827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="View and manage your Split Lease rental agreements, payments, and scheduled stays.">
+    <title>Guest Leases - Split Lease</title>
+    <style>
+        /* =================================================
+           SECTION 1: ACCESSIBLE DESIGN SYSTEM FOUNDATION
+           Based on Split Lease Accessibility Guidelines
+           ================================================= */
+        :root {
+            /* TYPOGRAPHY - Elderly-friendly (WCAG AAA) */
+            --font-size-sm: 15px;       /* Small text minimum */
+            --font-size-base: 17px;     /* Body text minimum */
+            --font-size-md: 18px;       /* Medium emphasis */
+            --font-size-lg: 22px;       /* Section titles */
+            --font-size-xl: 28px;       /* Page titles */
+            --font-size-2xl: 36px;      /* Hero numbers */
+            --font-size-label: 14px;    /* Form labels, uppercase */
+            --font-size-hero: 48px;     /* Paula's hero numbers */
+
+            /* LINE HEIGHTS - Accessibility compliant */
+            --line-height-tight: 1.3;   /* Headings */
+            --line-height-normal: 1.6;  /* Body text */
+            --line-height-relaxed: 1.8; /* Long paragraphs */
+
+            /* FONT WEIGHTS */
+            --weight-normal: 400;
+            --weight-medium: 500;
+            --weight-semibold: 600;
+            --weight-bold: 700;
+
+            /* TEXT COLORS - WCAG AAA Compliant */
+            --color-text: #111111;           /* Primary text */
+            --color-text-secondary: #374151; /* Secondary text */
+            --color-text-muted: #4b5563;     /* Muted text */
+            --text-primary: #111111;
+            --text-secondary: #374151;
+            --text-muted: #4b5563;
+            --text-light: #6b7280;
+
+            /* STATUS COLORS - WCAG AAA */
+            --color-status-success: #047857;  /* Success text */
+            --color-status-warning: #b45309;  /* Warning text */
+            --color-status-danger: #b91c1c;   /* Danger text */
+            --color-status-info: #1d4ed8;     /* Info text */
+            --color-status-neutral: #4b5563;  /* Neutral text */
+
+            /* STATUS BACKGROUNDS */
+            --bg-status-success: #d1fae5;
+            --bg-status-warning: #fef3c7;
+            --bg-status-danger: #fee2e2;
+            --bg-status-info: #dbeafe;
+            --bg-status-neutral: #f3f4f6;
+
+            /* PRIMARY BRAND COLOR */
+            --color-primary: #31135D;
+            --color-primary-dark: #5B27A3;
+            --color-primary-light: #f8f5ff;
+
+            /* VIEW-SPECIFIC ACCENT COLORS */
+            --accent-host: #047857;
+            --accent-host-light: #d1fae5;
+            --accent-guest: #1d4ed8;
+            --accent-guest-light: #dbeafe;
+
+            /* SURFACE COLORS */
+            --surface-primary: #FFFFFF;
+            --surface-secondary: #F9FAFB;
+            --surface-tertiary: #F3F4F6;
+            --surface-page: #F7F8F9;
+
+            /* BORDER COLORS */
+            --border-light: #E5E7EB;
+            --border-medium: #D1D5DB;
+            --border-strong: #6B6B6B;
+            --color-border: #D1D5DB;
+
+            /* TOUCH TARGETS - 48px minimum */
+            --min-touch-target: 48px;
+            --touch-target-large: 52px;
+            --min-button-width: 120px;
+            --interactive-row-height: 88px;
+            --touch-gap: 8px;
+
+            /* FOCUS RING */
+            --focus-ring: 0 0 0 4px rgba(109, 49, 194, 0.5);
+
+            /* SPACING SCALE */
+            --spacing-2xs: 2px;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-base: 16px;
+            --spacing-lg: 20px;
+            --spacing-xl: 24px;
+            --spacing-2xl: 32px;
+            --spacing-3xl: 40px;
+            --spacing-4xl: 48px;
+
+            /* FONT FAMILY */
+            --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+            /* BORDER RADIUS */
+            --radius-sm: 4px;
+            --radius-md: 6px;
+            --radius-lg: 8px;
+            --radius-xl: 12px;
+            --radius-2xl: 16px;
+            --radius-full: 9999px;
+
+            /* SHADOWS */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+            /* MOBILE-CRITICAL */
+            --safe-area-top: env(safe-area-inset-top, 0px);
+            --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+
+            /* LAYOUT */
+            --header-height: 70px;
+            --header-height-mobile: 56px;
+            --max-width: 1440px;
+            --content-width: 900px;
+
+            /* TRANSITIONS */
+            --transition-fast: 150ms ease;
+            --transition-normal: 200ms ease;
+        }
+
+        /* =================================================
+           RESET & BASE STYLES
+           ================================================= */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height-normal);
+            color: var(--text-primary);
+            background: var(--surface-page);
+            min-height: 100vh;
+        }
+
+        /* =================================================
+           SCREEN READER ONLY TEXT
+           ================================================= */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* =================================================
+           SKIP LINK - Keyboard navigation
+           ================================================= */
+        .skip-link {
+            position: absolute;
+            top: -100%;
+            left: var(--spacing-base);
+            padding: var(--spacing-base) var(--spacing-xl);
+            background: var(--color-primary);
+            color: white;
+            text-decoration: none;
+            font-weight: var(--weight-semibold);
+            font-size: var(--font-size-base);
+            border-radius: var(--radius-xl);
+            z-index: 10000;
+            transition: top var(--transition-fast);
+        }
+
+        .skip-link:focus {
+            top: var(--spacing-base);
+            outline: none;
+            box-shadow: var(--focus-ring);
+        }
+
+        /* =================================================
+           FOCUS STATES - WCAG AAA
+           ================================================= */
+        :focus-visible {
+            outline: 3px solid var(--color-primary);
+            outline-offset: 3px;
+        }
+
+        :focus:not(:focus-visible) {
+            outline: none;
+        }
+
+        /* =================================================
+           REDUCED MOTION
+           ================================================= */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            html {
+                scroll-behavior: auto;
+            }
+        }
+
+        /* =================================================
+           HIGH CONTRAST MODE
+           ================================================= */
+        @media (prefers-contrast: high) {
+            :root {
+                --color-border: #000;
+                --border-light: #000;
+                --border-medium: #000;
+                --color-text-muted: var(--text-secondary);
+            }
+
+            .btn,
+            .card,
+            .lease-card,
+            .modal {
+                border-width: 3px;
+            }
+        }
+
+        /* =================================================
+           GRID SYSTEM
+           ================================================= */
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--spacing-3xl);
+        }
+
+        .content-container {
+            max-width: var(--content-width);
+            margin: 0 auto;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 var(--spacing-xl);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 var(--spacing-base);
+            }
+        }
+
+        /* =================================================
+           HEADER - Fixed Navigation with Scroll Behavior
+           ================================================= */
+        .main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: #31135D;
+            border-bottom: none;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .main-header.header-hidden {
+            transform: translateY(-100%);
+        }
+
+        .main-header.header-visible {
+            transform: translateY(0);
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--spacing-3xl);
+        }
+
+        /* Logo Section */
+        .nav-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            text-decoration: none;
+            min-height: var(--min-touch-target);
+        }
+
+        .logo-image {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: var(--font-size-lg);
+            font-weight: var(--weight-bold);
+            color: white;
+        }
+
+        /* Center Navigation */
+        .nav-center {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-base);
+        }
+
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: white;
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            font-weight: var(--weight-medium);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-normal);
+            min-height: var(--min-touch-target);
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .dropdown-trigger {
+            position: relative;
+        }
+
+        .dropdown-arrow {
+            transition: transform 0.2s ease;
+        }
+
+        .nav-dropdown:hover .dropdown-arrow,
+        .dropdown-trigger[aria-expanded="true"] .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--surface-primary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            min-width: 500px;
+            padding: var(--spacing-xl);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            z-index: 1100;
+        }
+
+        .dropdown-menu.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Mega Menu Layout */
+        .mega-menu-content {
+            display: flex;
+            gap: var(--spacing-xl);
+        }
+
+        .mega-menu-featured {
+            flex: 0 0 180px;
+        }
+
+        .featured-image {
+            width: 100%;
+            height: 100px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: var(--spacing-md);
+            background: linear-gradient(135deg, var(--color-primary-light), var(--accent-guest-light));
+        }
+
+        .featured-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .featured-title {
+            font-size: var(--font-size-base);
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .featured-desc {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-md);
+            line-height: var(--line-height-normal);
+        }
+
+        .featured-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            color: var(--color-primary);
+            font-size: var(--font-size-sm);
+            font-weight: var(--weight-medium);
+            text-decoration: none;
+        }
+
+        .featured-link:hover {
+            text-decoration: underline;
+        }
+
+        .menu-separator {
+            width: 1px;
+            background: var(--border-light);
+            align-self: stretch;
+        }
+
+        .mega-menu-columns {
+            display: flex;
+            gap: var(--spacing-xl);
+            flex: 1;
+        }
+
+        .menu-column {
+            flex: 1;
+        }
+
+        .menu-column-title {
+            font-size: var(--font-size-label);
+            font-weight: var(--weight-semibold);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: var(--spacing-sm) 0;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            transition: color var(--transition-fast);
+            min-height: var(--min-touch-target);
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-item:hover {
+            color: var(--color-primary);
+        }
+
+        .dropdown-title {
+            font-weight: var(--weight-medium);
+        }
+
+        .dropdown-separator {
+            height: 1px;
+            background: var(--border-light);
+            margin: var(--spacing-md) 0;
+        }
+
+        .dropdown-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: var(--color-primary);
+            color: white;
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            font-weight: var(--weight-semibold);
+            border-radius: var(--radius-lg);
+            min-height: var(--min-touch-target);
+            transition: background var(--transition-fast);
+        }
+
+        .dropdown-cta:hover {
+            background: var(--color-primary-dark);
+        }
+
+        /* Right Navigation */
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .explore-rentals-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: white;
+            color: #31135D;
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            font-weight: var(--weight-semibold);
+            border-radius: var(--radius-lg);
+            min-height: var(--min-touch-target);
+            min-width: var(--min-button-width);
+            transition: all var(--transition-fast);
+        }
+
+        .explore-rentals-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-1px);
+        }
+
+        /* User Avatar */
+        .user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #31135D;
+            font-weight: var(--weight-semibold);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            min-width: var(--min-touch-target);
+            min-height: var(--min-touch-target);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: transform var(--transition-fast);
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        /* Hamburger Menu */
+        .hamburger-menu {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: var(--min-touch-target);
+            height: var(--min-touch-target);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: var(--spacing-sm);
+            gap: 5px;
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 2px;
+            background: white;
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-menu.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger-menu.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-menu.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .main-header {
+                height: var(--header-height-mobile);
+            }
+
+            .nav-container {
+                padding: 0 var(--spacing-base);
+            }
+
+            .logo-text {
+                display: none;
+            }
+
+            .nav-center {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--surface-primary);
+                flex-direction: column;
+                padding: var(--spacing-lg);
+                border-bottom: 1px solid var(--border-light);
+                box-shadow: var(--shadow-lg);
+            }
+
+            .nav-center.mobile-active {
+                display: flex;
+            }
+
+            .nav-right {
+                display: none;
+                position: absolute;
+                top: calc(100% + 200px);
+                left: 0;
+                right: 0;
+                background: var(--surface-primary);
+                flex-direction: column;
+                padding: var(--spacing-lg);
+                border-bottom: 1px solid var(--border-light);
+            }
+
+            .nav-right.mobile-active {
+                display: flex;
+            }
+
+            .hamburger-menu {
+                display: flex;
+            }
+
+            .dropdown-menu {
+                position: static;
+                transform: none;
+                box-shadow: none;
+                border: none;
+                border-radius: 0;
+                min-width: 100%;
+                padding: var(--spacing-md) 0;
+                background: var(--surface-secondary);
+            }
+
+            .mega-menu-content {
+                flex-direction: column;
+            }
+
+            .mega-menu-featured {
+                display: none;
+            }
+
+            .menu-separator {
+                display: none;
+            }
+
+            .mega-menu-columns {
+                flex-direction: column;
+            }
+
+            .desktop-text {
+                display: none;
+            }
+
+            .mobile-text {
+                display: inline;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-text {
+                display: none;
+            }
+
+            .desktop-text {
+                display: inline;
+            }
+        }
+
+        /* =================================================
+           MAIN CONTENT AREA
+           ================================================= */
+        .main-content {
+            padding-top: calc(var(--header-height) + var(--spacing-2xl));
+            padding-bottom: var(--spacing-4xl);
+            min-height: 100vh;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding-top: calc(var(--header-height-mobile) + var(--spacing-xl));
+            }
+        }
+
+        /* =================================================
+           PAGE TITLE & HERO
+           ================================================= */
+        .page-header {
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .page-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+            line-height: var(--line-height-tight);
+        }
+
+        .page-subtitle {
+            font-size: var(--font-size-base);
+            color: var(--text-muted);
+            line-height: var(--line-height-normal);
+        }
+
+        /* Hero Stats Section */
+        .hero-section {
+            background: var(--surface-primary);
+            border-radius: var(--radius-2xl);
+            padding: var(--spacing-2xl);
+            margin-bottom: var(--spacing-xl);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Colored top border removed per design request */
+
+        .hero-label {
+            font-size: var(--font-size-label);
+            font-weight: var(--weight-semibold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-guest);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .hero-value {
+            font-size: var(--font-size-hero);
+            font-weight: var(--weight-bold);
+            line-height: var(--line-height-tight);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+            font-feature-settings: 'tnum' 1;
+        }
+
+        .hero-subtitle {
+            font-size: var(--font-size-base);
+            color: var(--text-muted);
+            line-height: var(--line-height-normal);
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: var(--spacing-2xl);
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--border-light);
+        }
+
+        .hero-stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-stat-value {
+            font-size: var(--font-size-lg);
+            font-weight: var(--weight-semibold);
+            color: var(--accent-guest);
+        }
+
+        .hero-stat-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: var(--spacing-xl);
+            }
+            .hero-value {
+                font-size: 34px;
+            }
+            .hero-meta {
+                flex-wrap: wrap;
+                gap: var(--spacing-xl);
+            }
+        }
+
+        /* =================================================
+           LEASE CARDS
+           ================================================= */
+        .lease-cards {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-base);
+        }
+
+        .lease-card {
+            background: var(--surface-primary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            transition: box-shadow var(--transition-normal);
+        }
+
+        .lease-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .lease-card.expanded {
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Card Header */
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-xl);
+            cursor: pointer;
+            transition: background var(--transition-normal);
+            min-height: var(--interactive-row-height);
+        }
+
+        .card-header:hover {
+            background: var(--surface-secondary);
+        }
+
+        .card-header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .property-image {
+            width: 72px;
+            height: 64px;
+            border-radius: var(--radius-lg);
+            background: linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .property-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .property-info h3 {
+            font-size: var(--font-size-md);
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+            line-height: var(--line-height-tight);
+        }
+
+        .property-info p {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+            line-height: var(--line-height-normal);
+        }
+
+        .card-header-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .card-header-badges {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .expand-icon {
+            width: var(--min-touch-target);
+            height: var(--min-touch-target);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            transition: transform 0.3s ease;
+        }
+
+        .lease-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        @media (max-width: 768px) {
+            .card-header {
+                padding: var(--spacing-base);
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-md);
+            }
+            .card-header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        /* Card Body */
+        .card-body {
+            display: none;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .lease-card.expanded .card-body {
+            display: block;
+        }
+
+        /* Card Sections */
+        .card-section {
+            padding: var(--spacing-xl);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .card-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: var(--font-size-md);
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            line-height: var(--line-height-tight);
+        }
+
+        .section-title-icon {
+            width: 24px;
+            height: 24px;
+            color: var(--accent-guest);
+        }
+
+        @media (max-width: 768px) {
+            .card-section {
+                padding: var(--spacing-base);
+            }
+        }
+
+        /* =================================================
+           HOST CONTACT INFO
+           ================================================= */
+        .host-contact {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-xl);
+            background: var(--surface-secondary);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+        }
+
+        .host-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: var(--weight-semibold);
+            font-size: var(--font-size-md);
+            flex-shrink: 0;
+        }
+
+        .host-details {
+            flex: 1;
+        }
+
+        .host-name {
+            font-size: var(--font-size-base);
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .host-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .contact-items {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: var(--spacing-sm) 0;
+            min-height: var(--min-touch-target);
+        }
+
+        .contact-item:hover {
+            color: var(--accent-guest);
+        }
+
+        .contact-item svg {
+            width: 18px;
+            height: 18px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            .host-contact {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .contact-items {
+                width: 100%;
+            }
+            .contact-item {
+                justify-content: center;
+            }
+        }
+
+        /* =================================================
+           PT AGREEMENT SECTION
+           ================================================= */
+        .agreement-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+
+        .agreement-number {
+            font-size: var(--font-size-md);
+            font-weight: var(--weight-bold);
+            color: var(--text-primary);
+        }
+
+        .agreement-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+
+        /* =================================================
+           PAYMENT RECORDS TABLE - Accessible
+           ================================================= */
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .payment-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        .payment-table caption {
+            text-align: left;
+            padding: var(--spacing-md) 0;
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+        }
+
+        .payment-table th {
+            text-align: left;
+            padding: var(--spacing-md) var(--spacing-base);
+            font-size: var(--font-size-label);
+            font-weight: var(--weight-semibold);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border-light);
+            white-space: nowrap;
+        }
+
+        .payment-table th.text-right {
+            text-align: right;
+        }
+
+        .payment-table td {
+            padding: var(--spacing-md) var(--spacing-base);
+            font-size: var(--font-size-sm);
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: middle;
+        }
+
+        .payment-table tbody tr:hover {
+            background: var(--surface-secondary);
+        }
+
+        .payment-table tr.overdue {
+            background: var(--bg-status-danger);
+        }
+
+        .payment-table tr.overdue:hover {
+            background: #FECACA;
+        }
+
+        .payment-amount {
+            font-weight: var(--weight-semibold);
+            font-variant-numeric: tabular-nums;
+            text-align: right;
+        }
+
+        .receipt-btn {
+            width: var(--min-touch-target);
+            height: var(--min-touch-target);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--accent-guest);
+            border-radius: var(--radius-md);
+            transition: background var(--transition-normal);
+        }
+
+        .receipt-btn:hover {
+            background: var(--accent-guest-light);
+        }
+
+        /* =================================================
+           STATUS BADGES - WCAG AAA Colors
+           ================================================= */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-label);
+            font-weight: var(--weight-semibold);
+            white-space: nowrap;
+        }
+
+        .status-badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .status-badge.paid,
+        .status-badge.signed,
+        .status-badge.accepted,
+        .status-badge.success {
+            background: var(--bg-status-success);
+            color: var(--color-status-success);
+        }
+
+        .status-badge.due,
+        .status-badge.pending,
+        .status-badge.awaiting,
+        .status-badge.warning {
+            background: var(--bg-status-warning);
+            color: var(--color-status-warning);
+        }
+
+        .status-badge.overdue,
+        .status-badge.past-due,
+        .status-badge.declined,
+        .status-badge.danger {
+            background: var(--bg-status-danger);
+            color: var(--color-status-danger);
+        }
+
+        .status-badge.processing,
+        .status-badge.info,
+        .status-badge.draft {
+            background: var(--bg-status-info);
+            color: var(--color-status-info);
+        }
+
+        .status-badge.neutral {
+            background: var(--bg-status-neutral);
+            color: var(--text-muted);
+        }
+
+        /* =================================================
+           BUTTONS - 48px Touch Targets, 120px Min Width
+           ================================================= */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md) var(--spacing-xl);
+            min-height: var(--min-touch-target);
+            min-width: var(--min-button-width);
+            border-radius: var(--radius-xl);
+            font-size: var(--font-size-base);
+            font-weight: var(--weight-semibold);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border: 2px solid transparent;
+            white-space: nowrap;
+        }
+
+        .btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .btn-primary {
+            background: var(--accent-guest);
+            color: white;
+            border-color: var(--accent-guest);
+        }
+
+        .btn-primary:hover {
+            background: #1e40af;
+            border-color: #1e40af;
+        }
+
+        .btn-secondary {
+            background: var(--surface-primary);
+            color: var(--text-primary);
+            border: 2px solid var(--border-medium);
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-secondary);
+            border-color: var(--border-strong);
+        }
+
+        .btn-success {
+            background: var(--color-status-success);
+            color: white;
+            border-color: var(--color-status-success);
+        }
+
+        .btn-success:hover {
+            background: #065f46;
+            border-color: #065f46;
+        }
+
+        .btn-danger {
+            background: var(--color-status-danger);
+            color: white;
+            border-color: var(--color-status-danger);
+        }
+
+        .btn-danger:hover {
+            background: #991b1b;
+            border-color: #991b1b;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 2px solid transparent;
+            min-width: auto;
+        }
+
+        .btn-ghost:hover {
+            background: var(--surface-secondary);
+            color: var(--text-primary);
+        }
+
+        .btn-emergency {
+            background: #b91c1c;
+            color: white;
+            font-size: var(--font-size-base);
+            padding: var(--spacing-base) var(--spacing-xl);
+            border-color: #b91c1c;
+        }
+
+        .btn-emergency:hover {
+            background: #991b1b;
+            border-color: #991b1b;
+        }
+
+        .button-group {
+            display: flex;
+            gap: var(--touch-gap);
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .button-group {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* =================================================
+           STAYS TABLE
+           ================================================= */
+        .stays-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .stays-table caption {
+            text-align: left;
+            padding: var(--spacing-md) 0;
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+        }
+
+        .stays-table th {
+            text-align: left;
+            padding: var(--spacing-md) var(--spacing-base);
+            font-size: var(--font-size-label);
+            font-weight: var(--weight-semibold);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .stays-table td {
+            padding: var(--spacing-md) var(--spacing-base);
+            font-size: var(--font-size-sm);
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: middle;
+        }
+
+        .stays-table tbody tr:hover {
+            background: var(--surface-secondary);
+        }
+
+        .stay-actions {
+            display: flex;
+            gap: var(--touch-gap);
+            flex-wrap: wrap;
+        }
+
+        .btn-sm {
+            padding: var(--spacing-sm) var(--spacing-md);
+            min-height: 40px;
+            min-width: auto;
+            font-size: var(--font-size-sm);
+        }
+
+        .show-all-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            color: var(--accent-guest);
+            font-size: var(--font-size-sm);
+            font-weight: var(--weight-medium);
+            text-decoration: none;
+            padding: var(--spacing-md) 0;
+            min-height: var(--min-touch-target);
+        }
+
+        .show-all-link:hover {
+            text-decoration: underline;
+        }
+
+        /* =================================================
+           DATE CHANGE REQUEST SECTION
+           ================================================= */
+        .dct-section {
+            background: var(--surface-secondary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+        }
+
+        .dct-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+
+        .dct-request-card {
+            background: var(--surface-primary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .dct-request-card.pending {
+            /* No colored border - status conveyed via badge */
+        }
+
+        .dct-request-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr 1fr auto;
+            gap: var(--spacing-lg);
+            align-items: center;
+        }
+
+        .dct-label {
+            font-size: var(--font-size-label);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .dct-value {
+            font-size: var(--font-size-sm);
+            font-weight: var(--weight-medium);
+            color: var(--text-primary);
+        }
+
+        .dct-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        @media (max-width: 768px) {
+            .dct-request-row {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+            .dct-actions {
+                width: 100%;
+            }
+            .dct-actions .btn {
+                flex: 1;
+            }
+        }
+
+        /* =================================================
+           FLEXIBILITY SCORE SECTION
+           ================================================= */
+        .flexibility-section {
+            background: linear-gradient(135deg, var(--bg-status-info) 0%, #EBF5FF 100%);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+        }
+
+        .flexibility-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .flexibility-score-display {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .score-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--surface-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+        }
+
+        .score-value {
+            font-size: var(--font-size-lg);
+            font-weight: var(--weight-bold);
+            color: var(--accent-guest);
+            line-height: 1;
+        }
+
+        .score-label {
+            font-size: var(--font-size-label);
+            color: var(--text-muted);
+        }
+
+        .score-info h4 {
+            font-size: var(--font-size-base);
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .score-info a {
+            font-size: var(--font-size-sm);
+            color: var(--accent-guest);
+            text-decoration: none;
+        }
+
+        .score-info a:hover {
+            text-decoration: underline;
+        }
+
+        .flexibility-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-md);
+        }
+
+        .flex-stat {
+            background: var(--surface-primary);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            text-align: center;
+        }
+
+        .flex-stat-value {
+            font-size: var(--font-size-md);
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+        }
+
+        .flex-stat-label {
+            font-size: var(--font-size-label);
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .flexibility-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* =================================================
+           CHECK-IN/CHECKOUT MODAL - Accessible
+           ================================================= */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: var(--spacing-base);
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--surface-primary);
+            border-radius: var(--radius-2xl);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s ease;
+            border: 2px solid var(--border-light);
+        }
+
+        .modal-overlay.visible .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-xl);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .modal-title {
+            font-size: var(--font-size-md);
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            width: var(--min-touch-target);
+            height: var(--min-touch-target);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            border-radius: var(--radius-md);
+            font-size: 24px;
+        }
+
+        .modal-close:hover {
+            background: var(--surface-secondary);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: var(--spacing-xl);
+        }
+
+        .modal-section {
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .modal-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-section-title {
+            font-size: var(--font-size-base);
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .day-selector {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            overflow-x: auto;
+            padding-bottom: var(--spacing-sm);
+        }
+
+        .day-option {
+            flex: 0 0 auto;
+            min-width: var(--touch-target-large);
+            min-height: var(--touch-target-large);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            background: var(--surface-primary);
+            cursor: pointer;
+            text-align: center;
+            transition: all var(--transition-normal);
+        }
+
+        .day-option:hover {
+            border-color: var(--accent-guest);
+        }
+
+        .day-option.selected {
+            border-color: var(--accent-guest);
+            background: var(--accent-guest-light);
+        }
+
+        .day-option-day {
+            font-size: var(--font-size-label);
+            color: var(--text-muted);
+        }
+
+        .day-option-date {
+            font-size: var(--font-size-base);
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+        }
+
+        .checkin-actions,
+        .checkout-actions {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .action-btn-large {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-lg);
+            background: var(--surface-secondary);
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            min-height: 60px;
+            text-align: left;
+        }
+
+        .action-btn-large:hover {
+            border-color: var(--accent-guest);
+            background: var(--accent-guest-light);
+        }
+
+        .action-btn-large.primary {
+            background: var(--accent-guest);
+            border-color: var(--accent-guest);
+            color: white;
+        }
+
+        .action-btn-large.primary:hover {
+            background: #1e40af;
+        }
+
+        .action-btn-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .action-btn-text {
+            flex: 1;
+        }
+
+        .action-btn-text strong {
+            display: block;
+            font-size: var(--font-size-base);
+            font-weight: var(--weight-semibold);
+        }
+
+        .action-btn-text span {
+            font-size: var(--font-size-sm);
+            opacity: 0.8;
+        }
+
+        .message-area {
+            margin-top: var(--spacing-lg);
+        }
+
+        .message-area label {
+            display: block;
+            font-size: var(--font-size-sm);
+            font-weight: var(--weight-medium);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .message-area textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: var(--spacing-md);
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-sm);
+            resize: vertical;
+        }
+
+        .message-area textarea:focus {
+            outline: none;
+            border-color: var(--accent-guest);
+            box-shadow: var(--focus-ring);
+        }
+
+        .send-message-btn {
+            margin-top: var(--spacing-md);
+            width: 100%;
+        }
+
+        /* =================================================
+           EMPTY STATE
+           ================================================= */
+        .empty-state {
+            background: var(--surface-primary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-4xl);
+            text-align: center;
+        }
+
+        .empty-state-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--bg-status-info);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-xl);
+            font-size: 32px;
+        }
+
+        .empty-state-title {
+            font-size: var(--font-size-md);
+            font-weight: var(--weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .empty-state-description {
+            font-size: var(--font-size-base);
+            color: var(--text-secondary);
+            max-width: 400px;
+            margin: 0 auto var(--spacing-xl);
+            line-height: var(--line-height-normal);
+        }
+
+        .empty-state-highlight {
+            background: var(--bg-status-info);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+            display: inline-block;
+        }
+
+        .highlight-value {
+            font-size: var(--font-size-lg);
+            font-weight: var(--weight-bold);
+            color: var(--accent-guest);
+        }
+
+        .highlight-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        /* Journey Progress Bar */
+        .lease-journey {
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .journey-track {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .journey-track::before {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 48px;
+            right: 48px;
+            height: 4px;
+            background: var(--border-light);
+            border-radius: 2px;
+        }
+
+        .journey-progress-fill {
+            position: absolute;
+            top: 18px;
+            left: 48px;
+            height: 4px;
+            background: var(--color-status-success);
+            border-radius: 2px;
+            transition: width 0.8s ease;
+        }
+
+        .journey-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            min-width: 80px;
+        }
+
+        .stage-node {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--surface-primary);
+            border: 3px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-base);
+            margin-bottom: var(--spacing-sm);
+            transition: all 0.3s ease;
+        }
+
+        .stage-node.complete {
+            background: var(--color-status-success);
+            border-color: var(--color-status-success);
+            color: white;
+        }
+
+        .stage-node.current {
+            border-color: var(--accent-guest);
+            animation: pulse-border 2s ease-in-out infinite;
+        }
+
+        .stage-node.upcoming {
+            opacity: 0.5;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(29, 78, 216, 0); }
+        }
+
+        .stage-label {
+            font-size: var(--font-size-label);
+            font-weight: var(--weight-medium);
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .stage-label.complete {
+            color: var(--color-status-success);
+        }
+
+        .stage-label.current {
+            color: var(--accent-guest);
+            font-weight: var(--weight-semibold);
+        }
+
+        @media (max-width: 768px) {
+            .journey-track {
+                padding: 0;
+            }
+            .journey-stage {
+                min-width: 60px;
+            }
+            .stage-label {
+                font-size: 11px;
+            }
+        }
+
+        /* =================================================
+           FOOTER - Main Section
+           ================================================= */
+        .main-footer {
+            background: #31135D;
+            color: white;
+            padding: var(--spacing-4xl) 0;
+            margin-top: var(--spacing-4xl);
+        }
+
+        .footer-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--spacing-3xl);
+            display: grid;
+            grid-template-columns: repeat(5, 1fr) auto;
+            gap: var(--spacing-2xl);
+        }
+
+        .footer-column h4 {
+            font-size: var(--font-size-sm);
+            font-weight: var(--weight-semibold);
+            margin-bottom: var(--spacing-lg);
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-column a {
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            padding: var(--spacing-xs) 0;
+            min-height: calc(var(--min-touch-target) - 8px);
+            transition: color var(--transition-fast);
+        }
+
+        .footer-column a:hover {
+            color: white;
+        }
+
+        .footer-divider-vertical {
+            width: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 0 var(--spacing-md);
+        }
+
+        /* Referral Section */
+        .referral-text {
+            font-size: var(--font-size-lg);
+            font-weight: var(--weight-bold);
+            color: white;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .referral-subtext {
+            font-size: var(--font-size-sm);
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: var(--spacing-lg);
+            line-height: var(--line-height-normal);
+        }
+
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-sm);
+            font-weight: var(--weight-semibold);
+            cursor: pointer;
+            min-height: var(--min-touch-target);
+            transition: background var(--transition-fast);
+        }
+
+        .share-btn:hover {
+            background: var(--color-primary-dark);
+        }
+
+        /* Import Listing Section */
+        .import-column {
+            min-width: 220px;
+        }
+
+        .import-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .import-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-primary);
+        }
+
+        .import-tagline {
+            font-size: var(--font-size-base);
+            font-weight: var(--weight-semibold);
+            color: white;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .import-text {
+            font-size: var(--font-size-sm);
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: var(--spacing-md);
+            line-height: var(--line-height-normal);
+        }
+
+        .import-input {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-sm);
+            min-height: calc(var(--min-touch-target) - 4px);
+        }
+
+        .import-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .import-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .import-btn {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: white;
+            color: var(--text-primary);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: var(--weight-semibold);
+            cursor: pointer;
+            min-height: var(--min-touch-target);
+            transition: all var(--transition-fast);
+        }
+
+        .import-btn:hover {
+            background: var(--surface-secondary);
+        }
+
+        .import-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* App Download Section */
+        .app-download-section {
+            background: var(--surface-secondary);
+            padding: var(--spacing-3xl) 0;
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-2xl);
+            flex-wrap: wrap;
+        }
+
+        .app-card,
+        .alexa-card {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xl);
+            background: var(--surface-primary);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-md);
+            max-width: 420px;
+        }
+
+        .app-phone-image {
+            width: 120px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .alexa-device-image {
+            width: 100px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .app-content,
+        .alexa-content {
+            flex: 1;
+        }
+
+        .app-tagline,
+        .alexa-tagline {
+            font-size: var(--font-size-lg);
+            font-weight: var(--weight-bold);
+            color: var(--text-primary);
+            line-height: var(--line-height-tight);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .app-tagline em,
+        .alexa-tagline em {
+            font-style: normal;
+            color: var(--color-primary);
+        }
+
+        .app-subtitle,
+        .alexa-subtitle {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-lg);
+            line-height: var(--line-height-normal);
+        }
+
+        .app-store-btn img,
+        .alexa-btn img {
+            height: 44px;
+            width: auto;
+        }
+
+        .app-divider {
+            width: 1px;
+            height: 180px;
+            background: var(--border-light);
+        }
+
+        /* Footer Bottom */
+        .footer-bottom {
+            background: var(--text-primary);
+            padding: var(--spacing-xl) 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-bottom-left,
+        .footer-bottom-center,
+        .footer-bottom-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-bottom {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: var(--spacing-xl) var(--spacing-3xl);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: var(--font-size-sm);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .footer-bottom .footer-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            min-height: var(--min-touch-target);
+            display: inline-flex;
+            align-items: center;
+            padding: 0 var(--spacing-sm);
+        }
+
+        .footer-bottom .footer-link:hover {
+            color: white;
+        }
+
+        .footer-bottom .footer-divider {
+            color: rgba(255, 255, 255, 0.3);
+            padding: 0 var(--spacing-sm);
+        }
+
+        /* Footer Responsive */
+        @media (max-width: 1024px) {
+            .footer-container {
+                grid-template-columns: repeat(3, 1fr);
+                padding: 0 var(--spacing-xl);
+            }
+
+            .footer-divider-vertical {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .footer-container {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 0 var(--spacing-base);
+            }
+
+            .app-download-section {
+                flex-direction: column;
+                align-items: center;
+                padding: var(--spacing-2xl) var(--spacing-base);
+            }
+
+            .app-card,
+            .alexa-card {
+                flex-direction: column;
+                text-align: center;
+                max-width: 100%;
+            }
+
+            .app-divider {
+                width: 80%;
+                height: 1px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: var(--spacing-md);
+                text-align: center;
+                padding: var(--spacing-xl) var(--spacing-base);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* =================================================
+           CELEBRATION MODAL
+           ================================================= */
+        .celebration-modal {
+            background: var(--surface-primary);
+            border-radius: var(--radius-2xl);
+            max-width: 420px;
+            width: 100%;
+            padding: var(--spacing-2xl);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--border-light);
+        }
+
+        .celebration-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background: linear-gradient(135deg, var(--bg-status-success) 0%, #86EFAC 100%);
+        }
+
+        .celebration-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .celebration-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--surface-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-lg);
+            font-size: 40px;
+            box-shadow: var(--shadow-lg);
+            animation: pop-in 0.5s ease-out;
+        }
+
+        @keyframes pop-in {
+            0% { transform: scale(0); }
+            60% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .celebration-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .celebration-message {
+            font-size: var(--font-size-base);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xl);
+            line-height: var(--line-height-normal);
+        }
+
+        .celebration-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+        }
+
+        /* Confetti Animation */
+        .confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-50px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(400px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* =================================================
+           UTILITY CLASSES
+           ================================================= */
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-lg {
+            margin-top: var(--spacing-lg);
+        }
+
+        .mb-lg {
+            margin-bottom: var(--spacing-lg);
+        }
+    </style>
+</head>
+<body>
+    <!-- =================================================
+         SKIP LINK - First element in body
+         ================================================= -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- =================================================
+         HEADER - Split Lease App Header
+         ================================================= -->
+    <header class="main-header header-visible" role="banner" id="main-header">
+        <nav class="nav-container" role="navigation" aria-label="Main navigation">
+            <!-- Logo Section -->
+            <div class="nav-left">
+                <a href="/" class="logo" aria-label="Split Lease - Home">
+                    <svg class="logo-icon" width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                        <rect width="36" height="36" rx="8" fill="white"/>
+                        <path d="M10 12C10 10.8954 10.8954 10 12 10H17V26H12C10.8954 26 10 25.1046 10 24V12Z" fill="#31135D"/>
+                        <path d="M19 10H24C25.1046 10 26 10.8954 26 12V24C26 25.1046 25.1046 26 24 26H19V10Z" fill="#9061E0"/>
+                    </svg>
+                    <span class="logo-text">Split Lease</span>
+                </a>
+            </div>
+
+            <!-- Mobile Hamburger Menu -->
+            <button
+                class="hamburger-menu"
+                aria-label="Toggle navigation menu"
+                aria-expanded="false"
+                aria-controls="nav-center nav-right"
+                onclick="toggleMobileMenu()"
+            >
+                <span class="hamburger-line" aria-hidden="true"></span>
+                <span class="hamburger-line" aria-hidden="true"></span>
+                <span class="hamburger-line" aria-hidden="true"></span>
+            </button>
+
+            <!-- Center Navigation with Dropdowns -->
+            <div class="nav-center" id="nav-center">
+                <!-- Host with Us Dropdown -->
+                <div class="nav-dropdown">
+                    <a
+                        href="#host"
+                        class="nav-link dropdown-trigger"
+                        role="button"
+                        aria-expanded="false"
+                        aria-haspopup="true"
+                        onclick="event.preventDefault(); toggleDropdown('host')"
+                        onkeydown="handleDropdownKeydown(event, 'host')"
+                    >
+                        <span class="mobile-text">Host</span>
+                        <span class="desktop-text">Host with Us</span>
+                        <svg class="dropdown-arrow" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+                            <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-host" id="dropdown-host" role="menu" aria-label="Host with Us menu">
+                        <div class="mega-menu-content">
+                            <!-- Featured Section -->
+                            <div class="mega-menu-featured">
+                                <div class="featured-image">
+                                    <img src="/assets/images/host-featured.jpg" alt="" loading="lazy">
+                                </div>
+                                <h3 class="featured-title">Earn Extra Income</h3>
+                                <p class="featured-desc">List your space and start earning with flexible scheduling.</p>
+                                <a href="/list-with-us" class="featured-link" onclick="closeAllDropdowns()">
+                                    <span>Learn more</span>
+                                    <svg class="featured-link-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </a>
+                            </div>
+
+                            <div class="menu-separator" aria-hidden="true"></div>
+
+                            <!-- Menu Columns -->
+                            <div class="mega-menu-columns">
+                                <div class="menu-column">
+                                    <div class="menu-column-title">Learn</div>
+                                    <a href="/list-with-us" class="dropdown-item" role="menuitem" onclick="closeAllDropdowns()">
+                                        <span class="dropdown-title">How to List</span>
+                                    </a>
+                                    <a href="/host-success" class="dropdown-item" role="menuitem" onclick="closeAllDropdowns()">
+                                        <span class="dropdown-title">Host Success Stories</span>
+                                    </a>
+                                </div>
+                                <div class="menu-column">
+                                    <div class="menu-column-title">Get Started</div>
+                                    <a href="/self-listing" class="dropdown-item" role="menuitem" onclick="closeAllDropdowns()">
+                                        <span class="dropdown-title">List Your Property</span>
+                                    </a>
+                                    <a href="/host-guarantee" class="dropdown-item" role="menuitem" onclick="closeAllDropdowns()">
+                                        <span class="dropdown-title">Host Guarantee</span>
+                                    </a>
+                                    <div class="dropdown-separator" aria-hidden="true"></div>
+                                    <a href="/self-listing" class="dropdown-cta" role="menuitem" onclick="closeAllDropdowns()">
+                                        Start Listing Now
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stay with Us Dropdown -->
+                <div class="nav-dropdown">
+                    <a
+                        href="#stay"
+                        class="nav-link dropdown-trigger"
+                        role="button"
+                        aria-expanded="false"
+                        aria-haspopup="true"
+                        onclick="event.preventDefault(); toggleDropdown('stay')"
+                        onkeydown="handleDropdownKeydown(event, 'stay')"
+                    >
+                        <span class="mobile-text">Guest</span>
+                        <span class="desktop-text">Stay with Us</span>
+                        <svg class="dropdown-arrow" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+                            <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-guest" id="dropdown-stay" role="menu" aria-label="Stay with Us menu">
+                        <div class="mega-menu-content">
+                            <!-- Featured Section -->
+                            <div class="mega-menu-featured">
+                                <div class="featured-image">
+                                    <img src="/assets/images/guest-featured.jpg" alt="" loading="lazy">
+                                </div>
+                                <h3 class="featured-title">Find Your Next Stay</h3>
+                                <p class="featured-desc">Discover flexible rentals that fit your lifestyle.</p>
+                                <a href="/search" class="featured-link" onclick="closeAllDropdowns()">
+                                    <span>Browse listings</span>
+                                    <svg class="featured-link-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </a>
+                            </div>
+
+                            <div class="menu-separator" aria-hidden="true"></div>
+
+                            <!-- Menu Columns -->
+                            <div class="mega-menu-columns">
+                                <div class="menu-column">
+                                    <div class="menu-column-title">Discover</div>
+                                    <a href="/search" class="dropdown-item" role="menuitem" onclick="closeAllDropdowns()">
+                                        <span class="dropdown-title">Explore Rentals</span>
+                                    </a>
+                                    <a href="/why-split-lease" class="dropdown-item" role="menuitem" onclick="closeAllDropdowns()">
+                                        <span class="dropdown-title">How It Works</span>
+                                    </a>
+                                </div>
+                                <div class="menu-column">
+                                    <div class="menu-column-title">Get Started</div>
+                                    <a href="/guest-success" class="dropdown-item" role="menuitem" onclick="closeAllDropdowns()">
+                                        <span class="dropdown-title">Guest Success Stories</span>
+                                    </a>
+                                    <a href="/faq" class="dropdown-item" role="menuitem" onclick="closeAllDropdowns()">
+                                        <span class="dropdown-title">FAQ</span>
+                                    </a>
+                                    <div class="dropdown-separator" aria-hidden="true"></div>
+                                    <a href="/search" class="dropdown-cta" role="menuitem" onclick="closeAllDropdowns()">
+                                        Find Your Stay
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Navigation -->
+            <div class="nav-right" id="nav-right">
+                <a href="/search" class="explore-rentals-btn">
+                    Explore Rentals
+                </a>
+
+                <!-- User Avatar (Logged In State) -->
+                <button
+                    class="user-avatar"
+                    aria-label="User menu for John Davis"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    onclick="toggleUserMenu()"
+                >
+                    <span aria-hidden="true">JD</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- =================================================
+         MAIN CONTENT
+         ================================================= -->
+    <main id="main-content" class="main-content" role="main">
+        <div class="container">
+            <div class="content-container">
+
+                <!-- Page Header -->
+                <header class="page-header">
+                    <h1 class="page-title">John's Leases</h1>
+                    <p class="page-subtitle">View and manage your active lease agreements</p>
+                </header>
+
+                <!-- Hero Stats Section (Guest View) -->
+                <section class="hero-section" aria-labelledby="hero-heading">
+                    <h2 id="hero-heading" class="sr-only">Your next stay summary</h2>
+                    <div class="hero-label">Your Next Stay</div>
+                    <div class="hero-value" aria-label="February 15th">
+                        <time datetime="2026-02-15">Feb 15</time>
+                    </div>
+                    <div class="hero-subtitle">Chelsea 2BR at 245 W 23rd St, Unit 5A</div>
+
+                    <dl class="hero-meta">
+                        <div class="hero-stat">
+                            <dt class="sr-only">Nights remaining</dt>
+                            <dd class="hero-stat-value">12</dd>
+                            <dd class="hero-stat-label" aria-hidden="true">Nights remaining</dd>
+                        </div>
+                        <div class="hero-stat">
+                            <dt class="sr-only">Stays completed</dt>
+                            <dd class="hero-stat-value">3</dd>
+                            <dd class="hero-stat-label" aria-hidden="true">Stays completed</dd>
+                        </div>
+                        <div class="hero-stat">
+                            <dt class="sr-only">Total paid</dt>
+                            <dd class="hero-stat-value">$4,200</dd>
+                            <dd class="hero-stat-label" aria-hidden="true">Total paid</dd>
+                        </div>
+                    </dl>
+                </section>
+
+                <!-- Lease Journey Progress -->
+                <section class="lease-journey" aria-labelledby="journey-heading">
+                    <h2 id="journey-heading" class="sr-only">Your lease journey progress</h2>
+                    <div
+                        class="journey-track"
+                        role="progressbar"
+                        aria-label="Lease progress: Step 4 of 5 - First Stay"
+                        aria-valuenow="4"
+                        aria-valuemin="1"
+                        aria-valuemax="5"
+                    >
+                        <div class="journey-progress-fill" style="width: 60%;" aria-hidden="true"></div>
+
+                        <div class="journey-stage">
+                            <div class="stage-node complete" aria-hidden="true">&#10003;</div>
+                            <span class="stage-label complete">Matched</span>
+                        </div>
+
+                        <div class="journey-stage">
+                            <div class="stage-node complete" aria-hidden="true">&#10003;</div>
+                            <span class="stage-label complete">Docs Signed</span>
+                        </div>
+
+                        <div class="journey-stage">
+                            <div class="stage-node complete" aria-hidden="true">&#10003;</div>
+                            <span class="stage-label complete">First Payment</span>
+                        </div>
+
+                        <div class="journey-stage">
+                            <div class="stage-node current" aria-hidden="true">4</div>
+                            <span class="stage-label current">First Stay</span>
+                        </div>
+
+                        <div class="journey-stage">
+                            <div class="stage-node upcoming" aria-hidden="true">5</div>
+                            <span class="stage-label">Established</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Lease Cards -->
+                <section aria-labelledby="leases-heading">
+                    <h2 id="leases-heading" class="sr-only">Your lease agreements</h2>
+                    <div class="lease-cards" role="list">
+
+                        <!-- Lease Card 1 - Expanded -->
+                        <article class="lease-card expanded" id="lease-1" role="listitem" aria-labelledby="lease-1-title">
+                            <div
+                                class="card-header"
+                                role="button"
+                                tabindex="0"
+                                aria-expanded="true"
+                                aria-controls="lease-1-body"
+                                onclick="toggleCard('lease-1')"
+                                onkeydown="handleCardKeydown(event, 'lease-1')"
+                            >
+                                <div class="card-header-left">
+                                    <div class="property-image" aria-hidden="true">
+                                        <div style="width:100%;height:100%;background:linear-gradient(135deg,#667eea,#764ba2);"></div>
+                                    </div>
+                                    <div class="property-info">
+                                        <h3 id="lease-1-title">Chelsea 2BR at 245 W 23rd St</h3>
+                                        <p>Unit 5A - <time datetime="2026-02-01">Feb 1, 2026</time> to <time datetime="2026-07-31">Jul 31, 2026</time></p>
+                                    </div>
+                                </div>
+                                <div class="card-header-right">
+                                    <div class="card-header-badges" aria-label="Lease status: Signed and Active">
+                                        <span class="status-badge signed" id="lease-1-status-signed">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                            Signed
+                                        </span>
+                                        <span class="status-badge success" id="lease-1-status-active">Active</span>
+                                    </div>
+                                    <div class="expand-icon" aria-hidden="true">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body" id="lease-1-body">
+                                <!-- Host Contact Info -->
+                                <section class="card-section" aria-labelledby="host-contact-heading-1">
+                                    <h4 class="section-title" id="host-contact-heading-1">
+                                        <svg class="section-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                        Host Contact
+                                    </h4>
+                                    <div class="host-contact">
+                                        <div class="host-avatar" aria-hidden="true">SM</div>
+                                        <div class="host-details">
+                                            <div class="host-name">Sarah Mitchell</div>
+                                            <div class="host-label">Your host</div>
+                                            <address class="contact-items">
+                                                <a href="tel:+12125551234" class="contact-item" aria-label="Call Sarah at (212) 555-1234">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                                    (212) 555-1234
+                                                </a>
+                                                <a href="mailto:sarah@example.com" class="contact-item" aria-label="Email Sarah at sarah@example.com">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                                    sarah@example.com
+                                                </a>
+                                                <a href="https://maps.google.com/?q=245+W+23rd+St,+Unit+5A,+New+York,+NY+10011" class="contact-item" aria-label="View property address on map: 245 W 23rd St, Unit 5A, New York, NY 10011">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                    245 W 23rd St, Unit 5A, New York, NY 10011
+                                                </a>
+                                            </address>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <!-- PT Agreement Section -->
+                                <section class="card-section" aria-labelledby="agreement-heading-1">
+                                    <div class="agreement-header">
+                                        <h4 class="agreement-number" id="agreement-heading-1">PT Agreement #SL-2026-00421</h4>
+                                        <span class="status-badge signed" aria-label="Agreement status: Signed">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                            Signed
+                                        </span>
+                                    </div>
+                                    <div class="button-group agreement-actions">
+                                        <button type="button" class="btn btn-primary" aria-label="Download Periodic Tenancy Agreement PDF">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                            Periodic Tenancy Agreement (PDF)
+                                        </button>
+                                        <button type="button" class="btn btn-primary" aria-label="Download Supplemental Terms PDF">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                            Supplemental Terms (PDF)
+                                        </button>
+                                        <button type="button" class="btn btn-secondary">View/Change Dates</button>
+                                        <button type="button" class="btn btn-primary">Credit Card Auth Form</button>
+                                        <button type="button" class="btn btn-secondary">Payment Summary</button>
+                                        <button type="button" class="btn btn-secondary">Reservation Details</button>
+                                    </div>
+                                </section>
+
+                                <!-- Payment Records Table -->
+                                <section class="card-section" aria-labelledby="payments-heading-1">
+                                    <h4 class="section-title" id="payments-heading-1">
+                                        <svg class="section-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                                        Payment Records
+                                    </h4>
+                                    <div class="table-container">
+                                        <table class="payment-table" aria-describedby="payments-heading-1">
+                                            <caption class="sr-only">Payment history for Chelsea 2BR lease</caption>
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Scheduled</th>
+                                                    <th scope="col">Actual</th>
+                                                    <th scope="col" class="text-right">Rent</th>
+                                                    <th scope="col" class="text-right">Maint.</th>
+                                                    <th scope="col" class="text-right">Deposit</th>
+                                                    <th scope="col" class="text-right">Total</th>
+                                                    <th scope="col">Status</th>
+                                                    <th scope="col">Receipt</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><time datetime="2026-02-01">Feb 1, 2026</time></td>
+                                                    <td><time datetime="2026-01-30">Jan 30, 2026</time></td>
+                                                    <td class="payment-amount">$2,100</td>
+                                                    <td class="payment-amount">$150</td>
+                                                    <td class="payment-amount">$500</td>
+                                                    <td class="payment-amount">$2,750</td>
+                                                    <td><span class="status-badge paid" role="status">Paid</span></td>
+                                                    <td>
+                                                        <button type="button" class="receipt-btn" aria-label="Download receipt for February 1, 2026 payment">
+                                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td><time datetime="2026-03-01">Mar 1, 2026</time></td>
+                                                    <td><time datetime="2026-02-28">Feb 28, 2026</time></td>
+                                                    <td class="payment-amount">$2,100</td>
+                                                    <td class="payment-amount">$150</td>
+                                                    <td class="payment-amount">-</td>
+                                                    <td class="payment-amount">$2,250</td>
+                                                    <td><span class="status-badge paid" role="status">Paid</span></td>
+                                                    <td>
+                                                        <button type="button" class="receipt-btn" aria-label="Download receipt for March 1, 2026 payment">
+                                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td><time datetime="2026-04-01">Apr 1, 2026</time></td>
+                                                    <td>-</td>
+                                                    <td class="payment-amount">$2,100</td>
+                                                    <td class="payment-amount">$150</td>
+                                                    <td class="payment-amount">-</td>
+                                                    <td class="payment-amount">$2,250</td>
+                                                    <td><span class="status-badge due" role="status" aria-label="Payment due April 1st">Due Apr 1</span></td>
+                                                    <td><span aria-label="No receipt available">-</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
+
+                                <!-- Stays Table -->
+                                <section class="card-section" aria-labelledby="stays-heading-1">
+                                    <h4 class="section-title" id="stays-heading-1">
+                                        <svg class="section-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                        Your Stays
+                                    </h4>
+                                    <div class="table-container">
+                                        <table class="stays-table" aria-describedby="stays-heading-1">
+                                            <caption class="sr-only">Scheduled stays for Chelsea 2BR lease</caption>
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Week</th>
+                                                    <th scope="col">Period</th>
+                                                    <th scope="col">Status</th>
+                                                    <th scope="col">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Week 1</td>
+                                                    <td><time datetime="2026-02-01">Feb 1</time> - <time datetime="2026-02-07">Feb 7, 2026</time></td>
+                                                    <td><span class="status-badge success" role="status">Completed</span></td>
+                                                    <td class="stay-actions">
+                                                        <button type="button" class="btn btn-sm btn-secondary">See Review</button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Week 2</td>
+                                                    <td><time datetime="2026-02-08">Feb 8</time> - <time datetime="2026-02-14">Feb 14, 2026</time></td>
+                                                    <td><span class="status-badge success" role="status">Completed</span></td>
+                                                    <td class="stay-actions">
+                                                        <button type="button" class="btn btn-sm btn-secondary">See Review</button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Week 3</td>
+                                                    <td><time datetime="2026-02-15">Feb 15</time> - <time datetime="2026-02-21">Feb 21, 2026</time></td>
+                                                    <td><span class="status-badge info" role="status">Upcoming</span></td>
+                                                    <td class="stay-actions">
+                                                        <button type="button" class="btn btn-sm btn-primary" onclick="openCheckinModal()">Check In</button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Week 4</td>
+                                                    <td><time datetime="2026-02-22">Feb 22</time> - <time datetime="2026-02-28">Feb 28, 2026</time></td>
+                                                    <td><span class="status-badge neutral" role="status">Scheduled</span></td>
+                                                    <td class="stay-actions"><span aria-label="No actions available">-</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <a href="#" class="show-all-link" aria-label="Show all stays for Chelsea 2BR lease">
+                                        Show all stays
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+                                    </a>
+                                </section>
+
+                                <!-- Date Change Request Section -->
+                                <section class="card-section" aria-labelledby="dct-heading-1">
+                                    <h4 class="section-title" id="dct-heading-1">
+                                        <svg class="section-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                                        Date Change Requests
+                                    </h4>
+                                    <div class="dct-section">
+                                        <div class="dct-header">
+                                            <span class="section-subtitle">Manage your schedule changes</span>
+                                            <button type="button" class="btn btn-primary">Request Date Change</button>
+                                        </div>
+
+                                        <!-- Pending Request -->
+                                        <article class="dct-request-card pending" aria-labelledby="dct-request-1-title">
+                                            <h5 id="dct-request-1-title" class="sr-only">Pending date change request</h5>
+                                            <dl class="dct-request-row">
+                                                <div>
+                                                    <dt class="dct-label">Requested by</dt>
+                                                    <dd class="dct-value">You</dd>
+                                                </div>
+                                                <div>
+                                                    <dt class="dct-label">Request</dt>
+                                                    <dd class="dct-value">Move Week 5 (Mar 1-7) to Week 6 (Mar 8-14)</dd>
+                                                </div>
+                                                <div>
+                                                    <dt class="dct-label">Status</dt>
+                                                    <dd><span class="status-badge awaiting" role="status">Awaiting Response</span></dd>
+                                                </div>
+                                                <div>
+                                                    <dt class="dct-label">Price Impact</dt>
+                                                    <dd class="dct-value">No change</dd>
+                                                </div>
+                                                <div class="dct-actions">
+                                                    <button type="button" class="btn btn-ghost">Cancel Request</button>
+                                                </div>
+                                            </dl>
+                                        </article>
+
+                                        <!-- Completed Request -->
+                                        <article class="dct-request-card" aria-labelledby="dct-request-2-title">
+                                            <h5 id="dct-request-2-title" class="sr-only">Completed date change request</h5>
+                                            <dl class="dct-request-row">
+                                                <div>
+                                                    <dt class="dct-label">Requested by</dt>
+                                                    <dd class="dct-value">Sarah (Host)</dd>
+                                                </div>
+                                                <div>
+                                                    <dt class="dct-label">Request</dt>
+                                                    <dd class="dct-value">Move Week 2 (Feb 8-14) to Week 3 (Feb 15-21)</dd>
+                                                </div>
+                                                <div>
+                                                    <dt class="dct-label">Status</dt>
+                                                    <dd><span class="status-badge accepted" role="status">Accepted</span></dd>
+                                                </div>
+                                                <div>
+                                                    <dt class="dct-label">Price Impact</dt>
+                                                    <dd class="dct-value">-$50 credit</dd>
+                                                </div>
+                                                <div class="dct-actions">
+                                                    <span style="color: var(--text-muted); font-size: var(--font-size-sm);">Completed <time datetime="2026-01-28">Jan 28</time></span>
+                                                </div>
+                                            </dl>
+                                        </article>
+                                    </div>
+                                </section>
+
+                                <!-- Flexibility Score Section -->
+                                <section class="card-section" aria-labelledby="flexibility-heading-1">
+                                    <h4 class="section-title" id="flexibility-heading-1">
+                                        <svg class="section-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
+                                        Flexibility Score
+                                    </h4>
+                                    <div class="flexibility-section">
+                                        <div class="flexibility-header">
+                                            <div class="flexibility-score-display">
+                                                <div class="score-circle" role="img" aria-label="Flexibility score: 87 percent">
+                                                    <div class="score-value">87%</div>
+                                                    <div class="score-label" aria-hidden="true">Score</div>
+                                                </div>
+                                                <div class="score-info">
+                                                    <h4>Great Flexibility Rating</h4>
+                                                    <a href="#">See your reputation</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <dl class="flexibility-stats">
+                                            <div class="flex-stat">
+                                                <dt class="sr-only">Nights Used</dt>
+                                                <dd class="flex-stat-value">21</dd>
+                                                <dd class="flex-stat-label" aria-hidden="true">Nights Used</dd>
+                                            </div>
+                                            <div class="flex-stat">
+                                                <dt class="sr-only">Nights Remaining</dt>
+                                                <dd class="flex-stat-value">12</dd>
+                                                <dd class="flex-stat-label" aria-hidden="true">Nights Remaining</dd>
+                                            </div>
+                                            <div class="flex-stat">
+                                                <dt class="sr-only">Requests Made</dt>
+                                                <dd class="flex-stat-value">3</dd>
+                                                <dd class="flex-stat-label" aria-hidden="true">Requests Made</dd>
+                                            </div>
+                                            <div class="flex-stat">
+                                                <dt class="sr-only">Requests Received</dt>
+                                                <dd class="flex-stat-value">2</dd>
+                                                <dd class="flex-stat-label" aria-hidden="true">Requests Received</dd>
+                                            </div>
+                                        </dl>
+                                    </div>
+                                </section>
+
+                                <!-- Emergency Assistance -->
+                                <section class="card-section" style="text-align: center;" aria-labelledby="emergency-heading-1">
+                                    <h4 id="emergency-heading-1" class="sr-only">Emergency Assistance</h4>
+                                    <button type="button" class="btn btn-emergency" onclick="openEmergencyModal()" aria-describedby="emergency-desc">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                        Report Emergency or Issue
+                                    </button>
+                                    <p id="emergency-desc" class="sr-only">Opens emergency contact form to report urgent issues with your stay</p>
+                                </section>
+                            </div>
+                        </article>
+
+                        <!-- Lease Card 2 - Collapsed -->
+                        <article class="lease-card" id="lease-2" role="listitem" aria-labelledby="lease-2-title">
+                            <div
+                                class="card-header"
+                                role="button"
+                                tabindex="0"
+                                aria-expanded="false"
+                                aria-controls="lease-2-body"
+                                onclick="toggleCard('lease-2')"
+                                onkeydown="handleCardKeydown(event, 'lease-2')"
+                            >
+                                <div class="card-header-left">
+                                    <div class="property-image" aria-hidden="true">
+                                        <div style="width:100%;height:100%;background:linear-gradient(135deg,#f093fb,#f5576c);"></div>
+                                    </div>
+                                    <div class="property-info">
+                                        <h3 id="lease-2-title">Williamsburg Loft at 89 Berry St</h3>
+                                        <p>Unit 3C - <time datetime="2025-08-01">Aug 1, 2025</time> to <time datetime="2026-01-31">Jan 31, 2026</time></p>
+                                    </div>
+                                </div>
+                                <div class="card-header-right">
+                                    <div class="card-header-badges">
+                                        <span class="status-badge neutral" id="lease-2-status">Completed</span>
+                                    </div>
+                                    <div class="expand-icon" aria-hidden="true">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body" id="lease-2-body">
+                                <section class="card-section" aria-labelledby="archived-heading-2">
+                                    <h4 id="archived-heading-2" class="sr-only">Archived Lease Information</h4>
+                                    <p style="color: var(--text-muted); text-align: center; padding: var(--spacing-xl);">
+                                        This lease has been completed. All documents and payment records are archived.
+                                    </p>
+                                    <div class="button-group" style="justify-content: center;">
+                                        <button type="button" class="btn btn-secondary">View Archived Documents</button>
+                                        <button type="button" class="btn btn-secondary">Payment History</button>
+                                    </div>
+                                </section>
+                            </div>
+                        </article>
+
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- =================================================
+         CHECK-IN/CHECKOUT MODAL - Accessible
+         ================================================= -->
+    <div
+        class="modal-overlay"
+        id="checkin-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="checkin-modal-title"
+        aria-describedby="checkin-modal-desc"
+    >
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="checkin-modal-title">Check In - Week 3</h2>
+                <button
+                    type="button"
+                    class="modal-close"
+                    onclick="closeCheckinModal()"
+                    aria-label="Close check-in modal"
+                >
+                    <span aria-hidden="true">&#10005;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="checkin-modal-desc" class="sr-only">Check in and check out options for your Week 3 stay at Chelsea 2BR</p>
+
+                <!-- Check-in Section -->
+                <section class="modal-section" aria-labelledby="checkin-section-title">
+                    <h3 class="modal-section-title" id="checkin-section-title">
+                        <span aria-hidden="true" style="font-size: 20px;">&#128663;</span>
+                        Check In
+                    </h3>
+
+                    <fieldset class="day-selector" role="group" aria-label="Select check-in day">
+                        <legend class="sr-only">Select your check-in day</legend>
+                        <button type="button" class="day-option" role="radio" aria-checked="false" tabindex="0">
+                            <div class="day-option-day">Sat</div>
+                            <div class="day-option-date">15</div>
+                        </button>
+                        <button type="button" class="day-option selected" role="radio" aria-checked="true" tabindex="-1">
+                            <div class="day-option-day">Sun</div>
+                            <div class="day-option-date">16</div>
+                        </button>
+                        <button type="button" class="day-option" role="radio" aria-checked="false" tabindex="-1">
+                            <div class="day-option-day">Mon</div>
+                            <div class="day-option-date">17</div>
+                        </button>
+                        <button type="button" class="day-option" role="radio" aria-checked="false" tabindex="-1">
+                            <div class="day-option-day">Tue</div>
+                            <div class="day-option-date">18</div>
+                        </button>
+                        <button type="button" class="day-option" role="radio" aria-checked="false" tabindex="-1">
+                            <div class="day-option-day">Wed</div>
+                            <div class="day-option-date">19</div>
+                        </button>
+                        <button type="button" class="day-option" role="radio" aria-checked="false" tabindex="-1">
+                            <div class="day-option-day">Thu</div>
+                            <div class="day-option-date">20</div>
+                        </button>
+                        <button type="button" class="day-option" role="radio" aria-checked="false" tabindex="-1">
+                            <div class="day-option-day">Fri</div>
+                            <div class="day-option-date">21</div>
+                        </button>
+                    </fieldset>
+
+                    <div class="checkin-actions" role="group" aria-label="Check-in actions">
+                        <button type="button" class="action-btn-large" onclick="sendOnMyWay()">
+                            <div class="action-btn-icon" aria-hidden="true">&#128663;</div>
+                            <div class="action-btn-text">
+                                <strong>I'm on my way</strong>
+                                <span>Let Sarah know you're heading over</span>
+                            </div>
+                        </button>
+
+                        <button type="button" class="action-btn-large primary" onclick="sendImHere()">
+                            <div class="action-btn-icon" aria-hidden="true">&#127968;</div>
+                            <div class="action-btn-text">
+                                <strong>I'm here!</strong>
+                                <span>Confirm you've arrived at the property</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="message-area">
+                        <label for="checkin-message">Message for Sarah (optional)</label>
+                        <textarea
+                            id="checkin-message"
+                            placeholder="Add a note to your host..."
+                            aria-describedby="checkin-message-hint"
+                        ></textarea>
+                        <p id="checkin-message-hint" class="sr-only">Optional message to send to your host Sarah when checking in</p>
+                        <button type="button" class="btn btn-secondary send-message-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                            Send Message
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Checkout Section -->
+                <section class="modal-section" aria-labelledby="checkout-section-title">
+                    <h3 class="modal-section-title" id="checkout-section-title">
+                        <span aria-hidden="true" style="font-size: 20px;">&#128682;</span>
+                        Check Out
+                    </h3>
+
+                    <div class="checkout-actions" role="group" aria-label="Check-out actions">
+                        <button type="button" class="action-btn-large">
+                            <div class="action-btn-icon" aria-hidden="true">&#128248;</div>
+                            <div class="action-btn-text">
+                                <strong>Submit cleaning photos</strong>
+                                <span>Document the condition when leaving</span>
+                            </div>
+                        </button>
+
+                        <button type="button" class="action-btn-large">
+                            <div class="action-btn-icon" aria-hidden="true">&#128230;</div>
+                            <div class="action-btn-text">
+                                <strong>I'm leaving belongings at the property</strong>
+                                <span>Let your host know about stored items</span>
+                            </div>
+                        </button>
+
+                        <button type="button" class="action-btn-large">
+                            <div class="action-btn-icon" aria-hidden="true">&#11088;</div>
+                            <div class="action-btn-text">
+                                <strong>Submit a Review</strong>
+                                <span>Rate your experience with Sarah</span>
+                            </div>
+                        </button>
+
+                        <button type="button" class="action-btn-large primary">
+                            <div class="action-btn-icon" aria-hidden="true">&#128682;</div>
+                            <div class="action-btn-text">
+                                <strong>I'm leaving the property</strong>
+                                <span>Confirm you've checked out</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="message-area">
+                        <label for="checkout-message">Message for Sarah (optional)</label>
+                        <textarea
+                            id="checkout-message"
+                            placeholder="Thank your host or add checkout notes..."
+                            aria-describedby="checkout-message-hint"
+                        ></textarea>
+                        <p id="checkout-message-hint" class="sr-only">Optional message to send to your host Sarah when checking out</p>
+                        <button type="button" class="btn btn-secondary send-message-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                            Send Message
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================================================
+         EMPTY STATE DEMO (Hidden - Show when no leases)
+         ================================================= -->
+    <div style="display: none;">
+        <div class="empty-state" id="empty-state-demo" role="status">
+            <div class="empty-state-icon" aria-hidden="true">&#128218;</div>
+            <h3 class="empty-state-title">No leases yet</h3>
+            <p class="empty-state-description">
+                Start your Split Lease journey by finding a flexible rental that fits your schedule.
+            </p>
+            <div class="empty-state-highlight">
+                <div class="highlight-value">$0</div>
+                <div class="highlight-label">First month's rent due after approval</div>
+            </div>
+            <button type="button" class="btn btn-primary">Explore Rentals</button>
+        </div>
+    </div>
+
+    <!-- =================================================
+         CELEBRATION MODAL (Hidden - Show on milestones)
+         ================================================= -->
+    <div
+        class="modal-overlay"
+        id="celebration-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="celebration-modal-title"
+    >
+        <div class="celebration-modal">
+            <div class="confetti-container" id="confetti-container" aria-hidden="true"></div>
+            <div class="celebration-bg" aria-hidden="true"></div>
+            <div class="celebration-content">
+                <div class="celebration-icon" aria-hidden="true">&#127881;</div>
+                <h2 class="celebration-title" id="celebration-modal-title">Lease signed - you're all set!</h2>
+                <p class="celebration-message">
+                    Your PT Agreement with Sarah has been finalized. Your first stay begins <time datetime="2026-02-15">February 15, 2026</time>.
+                </p>
+                <div class="celebration-actions">
+                    <button type="button" class="btn btn-success" onclick="closeCelebrationModal()">View My Lease</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeCelebrationModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================================================
+         FOOTER
+         ================================================= -->
+    <!-- =================================================
+         FOOTER - Split Lease App Footer
+         ================================================= -->
+    <!-- Main Footer -->
+    <footer class="main-footer" role="contentinfo">
+        <div class="footer-container">
+            <!-- Company Column -->
+            <div class="footer-column">
+                <h4 id="footer-company-heading">Company</h4>
+                <nav aria-labelledby="footer-company-heading">
+                    <a href="/faq?section=travelers&question=1692211080963x751695924087252700">About Periodic Tenancy</a>
+                    <a href="/about-us">About the Team</a>
+                    <a href="/careers">Careers at Split Lease</a>
+                    <a href="/help-center/knowledge-base">Blog</a>
+                </nav>
+            </div>
+
+            <!-- For Hosts Column -->
+            <div class="footer-column">
+                <h4 id="footer-hosts-heading">For Hosts</h4>
+                <nav aria-labelledby="footer-hosts-heading">
+                    <a href="/self-listing">List Property Now</a>
+                    <a href="/list-with-us">How to List</a>
+                    <a href="/host-success">Success Stories</a>
+                    <a href="/policies">Legal Section</a>
+                    <a href="/host-guarantee">Guarantees</a>
+                    <a href="https://app.split.lease/demo-house-manual" target="_blank" rel="noopener noreferrer">Free House Manual</a>
+                </nav>
+            </div>
+
+            <!-- For Guests Column -->
+            <div class="footer-column">
+                <h4 id="footer-guests-heading">For Guests</h4>
+                <nav aria-labelledby="footer-guests-heading">
+                    <a href="/search">Explore Split Leases</a>
+                    <a href="/guest-success">Success Stories</a>
+                    <a href="#" onclick="event.preventDefault(); openAuthModal();">Speak to an Agent</a>
+                    <a href="/faq?section=travelers">View FAQ</a>
+                </nav>
+            </div>
+
+            <!-- Divider -->
+            <div class="footer-divider-vertical" aria-hidden="true"></div>
+
+            <!-- Referral Column -->
+            <div class="footer-column">
+                <h4 id="footer-referral-heading">Refer a Friend</h4>
+                <p class="referral-text">Give $50, Get $50</p>
+                <p class="referral-subtext">Share via WhatsApp, Email, SMS, or copy your unique link</p>
+                <button class="share-btn" onclick="openReferralModal()" aria-label="Invite friends to earn referral bonus">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="20 12 20 22 4 22 4 12"></polyline>
+                        <rect x="2" y="7" width="20" height="5"></rect>
+                        <line x1="12" y1="22" x2="12" y2="7"></line>
+                        <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+                        <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+                    </svg>
+                    Invite Friends
+                </button>
+            </div>
+
+            <!-- Import Listing Column -->
+            <div class="footer-column import-column">
+                <div class="import-header">
+                    <div class="import-icon" aria-hidden="true">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </div>
+                    <h4>Import Your Listing</h4>
+                </div>
+                <p class="import-tagline">Already listed elsewhere?</p>
+                <p class="import-text">We'll copy everything over for you in minutes.</p>
+                <form onsubmit="event.preventDefault(); handleImportSubmit();" aria-label="Import listing form">
+                    <input
+                        type="url"
+                        id="import-url"
+                        placeholder="Paste your listing URL"
+                        class="import-input"
+                        aria-label="Listing URL"
+                        required
+                    >
+                    <input
+                        type="email"
+                        id="import-email"
+                        placeholder="Your email address"
+                        class="import-input"
+                        aria-label="Email address"
+                        required
+                    >
+                    <button type="submit" class="import-btn" id="import-submit-btn">
+                        Import Now
+                    </button>
+                </form>
+            </div>
+        </div>
+    </footer>
+
+    <!-- App Download Section -->
+    <div class="app-download-section">
+        <div class="app-card">
+            <img
+                src="/images/iphone-app-mockup.png"
+                alt="Split Lease iPhone App"
+                class="app-phone-image"
+                loading="lazy"
+            >
+            <div class="app-content">
+                <p class="app-tagline">
+                    Manage your stays<br><em>on the go.</em>
+                </p>
+                <p class="app-subtitle">Book, message hosts, and track your reservations from anywhere.</p>
+                <a href="https://apps.apple.com/app/split-lease" class="app-store-btn" aria-label="Download Split Lease on the App Store">
+                    <img
+                        src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
+                        alt="Download on the App Store"
+                        height="44"
+                    >
+                </a>
+            </div>
+        </div>
+
+        <div class="app-divider" aria-hidden="true"></div>
+
+        <div class="alexa-card">
+            <img
+                src="https://50bf0464e4735aabad1cc8848a0e8b8a.cdn.bubble.io/cdn-cgi/image/w=256,h=225,f=auto,dpr=1,fit=cover,q=75/f1625329487406x361063433051586300/402087-smart-speakers-amazon-echo-dot-4th-gen-10015594%201.png"
+                alt="Amazon Alexa Echo Dot"
+                class="alexa-device-image"
+                loading="lazy"
+            >
+            <div class="alexa-content">
+                <p class="alexa-tagline">
+                    Voice-controlled<br><em>concierge.</em>
+                </p>
+                <p class="alexa-subtitle">Check in, get property info, and request support hands-free.</p>
+                <a href="https://www.amazon.com/dp/B08XYZ123" class="alexa-btn" aria-label="Get Split Lease skill on Amazon">
+                    <img
+                        src="https://images-na.ssl-images-amazon.com/images/G/01/mobile-apps/devportal2/res/images/amazon-appstore-badge-english-black.png"
+                        alt="Available on Amazon"
+                        height="44"
+                    >
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div class="footer-bottom">
+        <div class="footer-bottom-left">
+            <a href="https://app.split.lease/terms" class="footer-link">Terms of Use</a>
+            <span class="footer-divider" aria-hidden="true">|</span>
+            <a href="/policies" class="footer-link">Privacy Policy</a>
+        </div>
+        <div class="footer-bottom-center">
+            <span>Made with love in New York City</span>
+        </div>
+        <div class="footer-bottom-right">
+            <span>&copy; 2026 Split Lease Inc.</span>
+        </div>
+    </div>
+
+    <!-- =================================================
+         JAVASCRIPT - Accessible Interactive Behaviors
+         ================================================= -->
+    <script>
+        // =================================================
+        // HEADER - Scroll Behavior & Dropdown Navigation
+        // =================================================
+
+        // Header scroll behavior - hide on scroll down, show on scroll up
+        let lastScrollY = 0;
+        let headerVisible = true;
+
+        function handleHeaderScroll() {
+            const header = document.getElementById('main-header');
+            const currentScrollY = window.scrollY;
+
+            if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                // Scrolling down & past 100px - hide header
+                if (headerVisible) {
+                    header.classList.remove('header-visible');
+                    header.classList.add('header-hidden');
+                    headerVisible = false;
+                }
+            } else {
+                // Scrolling up - show header
+                if (!headerVisible) {
+                    header.classList.remove('header-hidden');
+                    header.classList.add('header-visible');
+                    headerVisible = true;
+                }
+            }
+
+            lastScrollY = currentScrollY;
+        }
+
+        // Initialize scroll listener
+        window.addEventListener('scroll', handleHeaderScroll, { passive: true });
+
+        // Mobile Menu Toggle
+        let mobileMenuActive = false;
+
+        function toggleMobileMenu() {
+            const hamburger = document.querySelector('.hamburger-menu');
+            const navCenter = document.getElementById('nav-center');
+            const navRight = document.getElementById('nav-right');
+
+            mobileMenuActive = !mobileMenuActive;
+
+            hamburger.classList.toggle('active', mobileMenuActive);
+            hamburger.setAttribute('aria-expanded', mobileMenuActive);
+            navCenter.classList.toggle('mobile-active', mobileMenuActive);
+            navRight.classList.toggle('mobile-active', mobileMenuActive);
+        }
+
+        // Dropdown Toggle
+        let activeDropdown = null;
+
+        function toggleDropdown(dropdownName) {
+            const dropdown = document.getElementById(`dropdown-${dropdownName}`);
+            const trigger = dropdown.previousElementSibling;
+
+            if (activeDropdown === dropdownName) {
+                // Close current dropdown
+                dropdown.classList.remove('active');
+                trigger.setAttribute('aria-expanded', 'false');
+                activeDropdown = null;
+            } else {
+                // Close any open dropdown first
+                closeAllDropdowns();
+                // Open the clicked dropdown
+                dropdown.classList.add('active');
+                trigger.setAttribute('aria-expanded', 'true');
+                activeDropdown = dropdownName;
+            }
+        }
+
+        function closeAllDropdowns() {
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                menu.classList.remove('active');
+            });
+            document.querySelectorAll('.dropdown-trigger').forEach(trigger => {
+                trigger.setAttribute('aria-expanded', 'false');
+            });
+            activeDropdown = null;
+        }
+
+        // Handle keyboard navigation for dropdowns
+        function handleDropdownKeydown(event, dropdownName) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                toggleDropdown(dropdownName);
+            } else if (event.key === 'Escape') {
+                closeAllDropdowns();
+            }
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.nav-dropdown')) {
+                closeAllDropdowns();
+            }
+        });
+
+        // User Menu Toggle (placeholder - would connect to user menu component)
+        function toggleUserMenu() {
+            // In the actual app, this would open the LoggedInAvatar dropdown
+            console.log('User menu toggled');
+        }
+
+        // =================================================
+        // FOOTER - Form Handlers
+        // =================================================
+
+        // Import listing form handler
+        function handleImportSubmit() {
+            const urlInput = document.getElementById('import-url');
+            const emailInput = document.getElementById('import-email');
+            const submitBtn = document.getElementById('import-submit-btn');
+
+            const url = urlInput.value.trim();
+            const email = emailInput.value.trim();
+
+            if (!url || !email) {
+                alert('Please fill in both fields.');
+                return;
+            }
+
+            // Validate email
+            if (!email.includes('@') || !email.includes('.')) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+
+            // Show loading state
+            submitBtn.textContent = 'Importing...';
+            submitBtn.disabled = true;
+
+            // Simulate API call (in real app, this would call the import endpoint)
+            setTimeout(() => {
+                alert('Request submitted! We will email you when your listing is ready.');
+                urlInput.value = '';
+                emailInput.value = '';
+                submitBtn.textContent = 'Import Now';
+                submitBtn.disabled = false;
+            }, 1500);
+        }
+
+        // Referral modal (placeholder)
+        function openReferralModal() {
+            alert('Referral modal would open here. Share your unique link to earn $50!');
+        }
+
+        // Auth modal (placeholder)
+        function openAuthModal() {
+            alert('Sign up / Login modal would open here.');
+        }
+
+        // =================================================
+        // MODAL UTILITIES - Focus Trap
+        // =================================================
+
+        // Focus trap for modals
+        let focusableElements = [];
+        let firstFocusable = null;
+        let lastFocusable = null;
+
+        function setupFocusTrap(modalId) {
+            const modal = document.getElementById(modalId);
+            focusableElements = modal.querySelectorAll(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            );
+            firstFocusable = focusableElements[0];
+            lastFocusable = focusableElements[focusableElements.length - 1];
+
+            if (firstFocusable) {
+                firstFocusable.focus();
+            }
+        }
+
+        function handleFocusTrap(e) {
+            if (e.key !== 'Tab') return;
+
+            if (e.shiftKey) {
+                if (document.activeElement === firstFocusable) {
+                    e.preventDefault();
+                    lastFocusable.focus();
+                }
+            } else {
+                if (document.activeElement === lastFocusable) {
+                    e.preventDefault();
+                    firstFocusable.focus();
+                }
+            }
+        }
+
+        // Card Expand/Collapse
+        function toggleCard(cardId) {
+            const card = document.getElementById(cardId);
+            const header = card.querySelector('.card-header');
+            const isExpanded = card.classList.contains('expanded');
+
+            card.classList.toggle('expanded');
+            header.setAttribute('aria-expanded', !isExpanded);
+        }
+
+        // Handle keyboard navigation on cards
+        function handleCardKeydown(event, cardId) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                toggleCard(cardId);
+            }
+        }
+
+        // Check-in Modal
+        let previousActiveElement = null;
+
+        function openCheckinModal() {
+            previousActiveElement = document.activeElement;
+            const modal = document.getElementById('checkin-modal');
+            modal.classList.add('visible');
+            document.body.style.overflow = 'hidden';
+
+            setupFocusTrap('checkin-modal');
+            modal.addEventListener('keydown', handleFocusTrap);
+        }
+
+        function closeCheckinModal() {
+            const modal = document.getElementById('checkin-modal');
+            modal.classList.remove('visible');
+            document.body.style.overflow = '';
+            modal.removeEventListener('keydown', handleFocusTrap);
+
+            if (previousActiveElement) {
+                previousActiveElement.focus();
+            }
+        }
+
+        // Emergency Modal (placeholder)
+        function openEmergencyModal() {
+            alert('Emergency assistance modal would open here. In the real implementation, this would connect you with support.');
+        }
+
+        // Check-in Actions
+        function sendOnMyWay() {
+            const button = event.currentTarget;
+            button.innerHTML = `
+                <div class="action-btn-icon" aria-hidden="true">&#10003;</div>
+                <div class="action-btn-text">
+                    <strong>Notification sent!</strong>
+                    <span>Sarah has been notified you're on your way</span>
+                </div>
+            `;
+            button.style.background = 'var(--bg-status-success)';
+            button.style.borderColor = 'var(--color-status-success)';
+
+            // Announce to screen readers
+            announceToScreenReader('Notification sent! Sarah has been notified you are on your way.');
+        }
+
+        function sendImHere() {
+            const button = event.currentTarget;
+            button.innerHTML = `
+                <div class="action-btn-icon" style="color: white;" aria-hidden="true">&#10003;</div>
+                <div class="action-btn-text">
+                    <strong>You're checked in!</strong>
+                    <span>Enjoy your stay at Chelsea 2BR</span>
+                </div>
+            `;
+            button.style.background = 'var(--color-status-success)';
+
+            // Announce to screen readers
+            announceToScreenReader('You are checked in! Enjoy your stay at Chelsea 2BR.');
+        }
+
+        // Live region announcements
+        function announceToScreenReader(message) {
+            const liveRegion = document.createElement('div');
+            liveRegion.setAttribute('role', 'status');
+            liveRegion.setAttribute('aria-live', 'polite');
+            liveRegion.setAttribute('aria-atomic', 'true');
+            liveRegion.className = 'sr-only';
+            liveRegion.textContent = message;
+            document.body.appendChild(liveRegion);
+
+            setTimeout(() => {
+                document.body.removeChild(liveRegion);
+            }, 1000);
+        }
+
+        // Day Selector - Accessible radio group behavior
+        document.querySelectorAll('.day-selector').forEach(selector => {
+            const options = selector.querySelectorAll('.day-option');
+
+            options.forEach((option, index) => {
+                option.addEventListener('click', function() {
+                    options.forEach(o => {
+                        o.classList.remove('selected');
+                        o.setAttribute('aria-checked', 'false');
+                        o.setAttribute('tabindex', '-1');
+                    });
+                    this.classList.add('selected');
+                    this.setAttribute('aria-checked', 'true');
+                    this.setAttribute('tabindex', '0');
+                    this.focus();
+                });
+
+                option.addEventListener('keydown', function(e) {
+                    let targetIndex;
+
+                    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        targetIndex = (index + 1) % options.length;
+                    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        targetIndex = (index - 1 + options.length) % options.length;
+                    }
+
+                    if (targetIndex !== undefined) {
+                        options[targetIndex].click();
+                    }
+                });
+            });
+        });
+
+        // Celebration Modal
+        function openCelebrationModal() {
+            previousActiveElement = document.activeElement;
+            const modal = document.getElementById('celebration-modal');
+            modal.classList.add('visible');
+            document.body.style.overflow = 'hidden';
+            createConfetti();
+
+            setupFocusTrap('celebration-modal');
+            modal.addEventListener('keydown', handleFocusTrap);
+        }
+
+        function closeCelebrationModal() {
+            const modal = document.getElementById('celebration-modal');
+            modal.classList.remove('visible');
+            document.body.style.overflow = '';
+            modal.removeEventListener('keydown', handleFocusTrap);
+
+            if (previousActiveElement) {
+                previousActiveElement.focus();
+            }
+        }
+
+        // Confetti Animation
+        function createConfetti() {
+            const container = document.getElementById('confetti-container');
+            container.innerHTML = '';
+            const colors = ['#047857', '#1d4ed8', '#b45309', '#b91c1c', '#7c3aed', '#db2777'];
+
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                container.appendChild(confetti);
+            }
+        }
+
+        // Close modals on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('visible');
+                    document.body.style.overflow = '';
+
+                    if (previousActiveElement) {
+                        previousActiveElement.focus();
+                    }
+                }
+            });
+        });
+
+        // Keyboard navigation - Escape to close modals
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const visibleModals = document.querySelectorAll('.modal-overlay.visible');
+                visibleModals.forEach(modal => {
+                    modal.classList.remove('visible');
+                });
+                document.body.style.overflow = '';
+
+                if (previousActiveElement) {
+                    previousActiveElement.focus();
+                }
+            }
+        });
+
+        // Demo: Uncomment to show celebration modal on load
+        // setTimeout(openCelebrationModal, 1000);
+    </script>
+</body>
+</html>
