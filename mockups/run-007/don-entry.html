@@ -1,0 +1,2432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Leases - Split Lease (Don Norman - Run 007)</title>
+    <style>
+        /* =================================================
+           DON NORMAN'S EVOLVED USABILITY SYSTEM - RUN 007
+           Philosophy: Respect users enough to challenge them
+           Core Principles:
+           1. Productive friction at commitment points
+           2. Error states that TEACH not just forgive
+           3. Mental models that EXPAND not just match
+           4. Discoverable features that reward exploration
+
+           NOW USING: Split Lease Official Design System v2.0
+           ================================================= */
+
+        :root {
+            /* ========================================
+               COLOR VARIABLES
+               ======================================== */
+
+            /* Primary Colors
+               Usage Guide:
+               - primary-purple (#31135D): Brand color, headings, important UI
+               - primary-purple-hover (#251047): Hover state for primary
+               - secondary-purple (#6D31C2): Interactive buttons, links, CTAs
+               - accent-purple (#8C68EE): Hover state for secondary, highlights
+               - chat-purple (#4B47CE): Day badges, chat elements
+            */
+            --primary-purple: #31135D;
+            --primary-purple-hover: #251047;
+            --primary-purple-dark: #1f0a3d;
+            --secondary-purple: rgb(109, 49, 194);
+            --accent-purple: rgb(140, 104, 238);
+            --selected-purple: rgb(79, 48, 151);
+            --text-purple: rgb(82, 31, 147);
+            --chat-purple: rgb(75, 71, 206);
+
+            /* Secondary Colors */
+            --accent-blue: #4A90E2;
+            --accent-blue-hover: #357ABD;
+
+            /* Status Colors */
+            --success-green: #22C55E;
+            --success-teal: #10B981;
+
+            /* Text Colors */
+            --text-dark: #1a1a1a;
+            --text-gray: #6b7280;
+            --text-light-gray: #9ca3af;
+            --text-medium-gray: #666666;
+            --text-description: #374151;
+
+            /* Background Colors */
+            --bg-white: #ffffff;
+            --bg-light: #f9fafb;
+            --bg-light-gray: #f3f4f6;
+            --bg-lighter-gray: #f5f5f5;
+            --bg-off-white: rgb(252, 250, 255);
+
+            /* Border Colors */
+            --border-color: #e5e7eb;
+            --border-light: #f3f4f6;
+            --border-gray: rgba(107, 107, 107, 0.7);
+            --border-gray-light: #e0e0e0;
+            --border-gray-lighter: #ddd;
+
+            /* Neutral Colors */
+            --white: rgb(255, 255, 255);
+            --black: rgb(0, 0, 0);
+            --off-white: rgb(252, 250, 255);
+
+            /* Info/Link Colors */
+            --info-blue: #2196F3;
+            --info-indigo: #6366F1;
+            --info-indigo-hover: #3b82f6;
+            --bg-info: #f0f7ff;
+
+            /* Subtle/Overlay Colors */
+            --overlay-dark: rgba(0, 0, 0, 0.7);
+            --overlay-light: rgba(255, 255, 255, 0.9);
+            --overlay-light-blur: rgba(255, 255, 255, 0.2);
+
+            /* Gradient Colors */
+            --gradient-purple-primary: linear-gradient(135deg, #31135D 0%, #5a2d8f 100%);
+            --gradient-purple-button: linear-gradient(135deg, #6D31C2 0%, #7C3AED 100%);
+            --gradient-purple-hover: linear-gradient(135deg, #5B2AA5 0%, #6D28D9 100%);
+            --gradient-purple-dark: linear-gradient(135deg, rgba(47, 20, 91, 0.85), rgba(109, 49, 194, 0.75));
+            --gradient-purple-dark-hover: linear-gradient(135deg, rgba(47, 20, 91, 0.9), rgba(109, 49, 194, 0.8));
+
+            /* ========================================
+               FONT VARIABLES
+               ======================================== */
+
+            /* Font Families */
+            --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-dm: 'DM Sans', sans-serif;
+            --font-primary: 'Helvetica', Arial, sans-serif;
+            --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+            /* Font Sizes */
+            --text-xs: 11px;
+            --text-sm: 12px;
+            --text-sm-md: 13px;
+            --text-base: 14px;
+            --text-md: 16px;
+            --text-lg: 18px;
+            --text-xl: 20px;
+            --text-2xl: 28px;
+            --text-3xl: 32px;
+            --text-4xl: 36px;
+
+            /* Font Weights */
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+
+            /* Line Heights */
+            --line-height-tight: 1.2;
+            --line-height-normal: 1.5;
+            --line-height-relaxed: 1.6;
+            --line-height-loose: 1.8;
+
+            /* Letter Spacing */
+            --letter-spacing-normal: normal;
+            --letter-spacing-small: 0.5px;
+            --letter-spacing-medium: 0.05em;
+
+            /* ========================================
+               SPACING VARIABLES
+               ======================================== */
+
+            /* Padding & Margin */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-lg: 16px;
+            --spacing-xl: 20px;
+            --spacing-2xl: 24px;
+            --spacing-3xl: 28px;
+            --spacing-4xl: 32px;
+            --spacing-5xl: 2rem;
+            --spacing-6xl: 2.5rem;
+            --spacing-7xl: 3rem;
+
+            /* Component Spacing */
+            --gap-sm: 0.5rem;
+            --gap-md: 0.75rem;
+            --gap-lg: 1rem;
+            --gap-xl: 1.5rem;
+            --gap-2xl: 2rem;
+            --gap-3xl: 2.5rem;
+
+            /* Padding */
+            --padding-sm: 0.5rem;
+            --padding-md: 0.75rem;
+            --padding-lg: 1rem;
+            --padding-xl: 1.5rem;
+            --padding-2xl: 2rem;
+
+            /* ========================================
+               BORDER RADIUS VARIABLES
+               ======================================== */
+
+            --rounded-sm: 4px;
+            --rounded-md: 6px;
+            --rounded-lg: 8px;
+            --rounded-xl: 12px;
+            --rounded-2xl: 16px;
+            --rounded-full: 50%;
+            --rounded-pill: 20px;
+
+            /* ========================================
+               BREAKPOINT VARIABLES
+               ======================================== */
+
+            --breakpoint-sm: 600px;
+            --breakpoint-md: 768px;
+            --breakpoint-lg: 1024px;
+            --breakpoint-xl: 1080px;
+            --breakpoint-2xl: 1200px;
+            --breakpoint-3xl: 1280px;
+            --breakpoint-max: 1440px;
+
+            /* ========================================
+               SHADOW VARIABLES
+               ======================================== */
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 4px 16px rgba(49, 19, 93, 0.35);
+            --shadow-2xl: 0 6px 24px rgba(49, 19, 93, 0.5);
+            --shadow-purple-sm: 0 2px 4px rgba(49, 19, 93, 0.2);
+            --shadow-purple-md: 0 4px 8px rgba(49, 19, 93, 0.15);
+            --shadow-purple-lg: 0 6px 20px rgba(109, 49, 194, 0.35);
+            --shadow-dark-sm: 0 2px 6px rgba(0, 0, 0, 0.2);
+            --shadow-dark-md: 0 4px 8px rgba(0, 0, 0, 0.25);
+
+            /* ========================================
+               TRANSITION & ANIMATION VARIABLES
+               ======================================== */
+
+            --transition-fast: 0.1s;
+            --transition-base: 0.2s;
+            --transition-slow: 0.3s;
+            --transition-slower: 0.4s;
+
+            --easing-ease: ease;
+            --easing-ease-in: ease-in;
+            --easing-ease-out: ease-out;
+            --easing-ease-in-out: ease-in-out;
+            --easing-linear: linear;
+
+            --animation-duration: 1.5s;
+
+            /* ========================================
+               SIZING VARIABLES
+               ======================================== */
+
+            /* Icon Sizes */
+            --icon-xs: 16px;
+            --icon-sm: 20px;
+            --icon-md: 24px;
+            --icon-lg: 28px;
+            --icon-xl: 32px;
+            --icon-2xl: 36px;
+            --icon-3xl: 60px;
+
+            /* Avatar Sizes */
+            --avatar-sm: 36px;
+            --avatar-md: 48px;
+            --avatar-lg: 80px;
+
+            /* Container Sizes */
+            --container-sm: 640px;
+            --container-md: 900px;
+            --container-lg: 1280px;
+            --container-max: 1440px;
+            --container-width: 95vw;
+
+            /* Form Input Sizes */
+            --input-height: 42px;
+            --input-height-lg: 48px;
+            --input-height-sm: 36px;
+
+            /* ========================================
+               Z-INDEX VARIABLES
+               ======================================== */
+
+            --z-dropdown: 100;
+            --z-sticky: 500;
+            --z-floating: 999;
+            --z-modal: 10000;
+
+            /* ========================================
+               OPACITY VARIABLES
+               ======================================== */
+
+            --opacity-disabled: 0.5;
+            --opacity-hover: 0.8;
+            --opacity-focus: 0.9;
+
+            /* ========================================
+               BORDER VARIABLES
+               ======================================== */
+
+            --border-width-thin: 1px;
+            --border-width-md: 1.5px;
+            --border-width-thick: 2px;
+
+            /* ========================================
+               MAX-WIDTH VARIABLES
+               ======================================== */
+
+            --max-width-sidebar: 380px;
+            --max-width-modal: 400px;
+            --max-width-map: 100%;
+
+            /* ========================================
+               FAVORITES PAGE REDESIGN TOKENS
+               ======================================== */
+
+            /* Primary Colors */
+            --favorites-purple: #6B4EE6;
+            --favorites-purple-light: #F0EBFF;
+            --favorites-purple-dark: #5A3ED5;
+            --favorites-purple-gradient: linear-gradient(135deg, #6B4EE6 0%, #8B6CF5 100%);
+
+            /* Text Colors */
+            --favorites-text-dark: #1a1a2e;
+            --favorites-text-medium: #64748B;
+            --favorites-text-light: #94A3B8;
+
+            /* Background & Border */
+            --favorites-bg: #FAFBFC;
+            --favorites-border: #E8ECF0;
+            --favorites-card-bg: #ffffff;
+
+            /* Status Colors */
+            --favorites-success: #10B981;
+            --favorites-heart: #FF6B5B;
+            --favorites-heart-hover: #e55a4a;
+
+            /* ========================================
+               POPUP REPLICATION PROTOCOL TOKENS
+               Monochromatic purple design system
+               STRICT: NO GREEN, NO YELLOW
+               ======================================== */
+
+            /* Protocol Colors */
+            --protocol-primary: #31135D;
+            --protocol-action: #5B5FCF;
+            --protocol-action-hover: #4A4EBF;
+            --protocol-action-disabled: #B8BAE0;
+            --protocol-secondary: #6D31C2;
+            --protocol-surface: #F7F2FA;
+            --protocol-danger: #DC3545;
+            --protocol-danger-hover: rgba(220, 53, 69, 0.1);
+            --protocol-white: #FFFFFF;
+            --protocol-overlay: rgba(0, 0, 0, 0.5);
+            --protocol-border: #E5E7EB;
+            --protocol-border-light: #E7E0EC;
+            --protocol-text-muted: #6B7280;
+            --protocol-text-secondary: #49454F;
+
+            /* Protocol Spacing (STRICT: 8px, 16px, 24px only) */
+            --protocol-space-sm: 8px;
+            --protocol-space-md: 16px;
+            --protocol-space-lg: 24px;
+
+            /* Protocol Radii */
+            --protocol-radius-button: 100px;
+            --protocol-radius-card: 8px;
+            --protocol-radius-modal: 16px;
+            --protocol-radius-modal-mobile: 24px;
+
+            /* Protocol Transitions */
+            --protocol-transition: 0.2s ease;
+            --protocol-transition-slow: 0.3s ease-out;
+
+            /* ========================================
+               DON NORMAN COGNITIVE EXTENSIONS
+               Additional semantic tokens for usability
+               ======================================== */
+
+            /* State Colors - Triggering appropriate cognitive responses */
+            --state-success: var(--success-green);
+            --state-success-bg: #D1FAE5;
+            --state-warning: #D97706;
+            --state-warning-bg: #FEF3C7;
+            --state-danger: var(--protocol-danger);
+            --state-danger-bg: #FEE2E2;
+            --state-info: var(--info-indigo);
+            --state-info-bg: var(--bg-info);
+
+            /* Investment Colors - Reframing payments as investment */
+            --investment: var(--secondary-purple);
+            --investment-bg: var(--favorites-purple-light);
+
+            /* Partnership Colors - Host collaboration */
+            --partnership: var(--chat-purple);
+            --partnership-bg: #E0E7FF;
+
+            /* Touch Targets - WCAG AAA: 44px minimum, using 48px */
+            --touch-min: var(--input-height-lg);
+            --touch-comfortable: 56px;
+
+            /* Layout */
+            --header-height: 64px;
+            --max-width: 480px;
+
+            /* Friction Timing - Deliberate delays for cognitive processing */
+            --friction-confirm: 800ms;
+            --friction-think: 400ms;
+        }
+
+        /* Respect motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+            :root {
+                --transition-fast: 0ms;
+                --transition-base: 0ms;
+                --transition-slow: 0ms;
+                --friction-confirm: 400ms;
+            }
+        }
+
+        /* =================================================
+           RESET - Clean foundation
+           ================================================= */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+        }
+
+        body {
+            font-family: var(--font-inter);
+            font-size: var(--text-lg);
+            line-height: var(--line-height-normal);
+            color: var(--text-dark);
+            background: var(--bg-light);
+            min-height: 100vh;
+        }
+
+        /* =================================================
+           FOCUS STATES - Visible for keyboard navigation
+           WCAG AAA: Focus indicators must be visible
+           ================================================= */
+        :focus {
+            outline: 3px solid var(--secondary-purple);
+            outline-offset: 2px;
+        }
+
+        :focus:not(:focus-visible) {
+            outline: none;
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--secondary-purple);
+            outline-offset: 2px;
+        }
+
+        /* =================================================
+           HEADER - Minimal cognitive load
+           ================================================= */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: var(--bg-white);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            z-index: var(--z-sticky);
+            display: flex;
+            align-items: center;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: var(--text-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            min-height: var(--touch-min);
+        }
+
+        .logo-mark {
+            width: var(--icon-xl);
+            height: var(--icon-xl);
+            background: var(--secondary-purple);
+            border-radius: var(--rounded-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-bold);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .icon-btn {
+            width: var(--touch-min);
+            height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            border-radius: var(--rounded-lg);
+            color: var(--text-description);
+            cursor: pointer;
+            position: relative;
+            transition: background var(--transition-fast) var(--easing-ease);
+        }
+
+        .icon-btn:active {
+            background: var(--bg-light-gray);
+            transform: scale(0.96);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: var(--spacing-sm);
+            right: var(--spacing-sm);
+            min-width: var(--text-lg);
+            height: var(--text-lg);
+            background: var(--state-danger);
+            color: var(--white);
+            font-size: var(--text-xs);
+            font-weight: var(--font-weight-bold);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 var(--spacing-xs);
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--rounded-full);
+            background: var(--gradient-purple-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--text-md);
+        }
+
+        /* =================================================
+           MAIN CONTENT
+           ================================================= */
+        .main {
+            padding-top: calc(var(--header-height) + var(--spacing-lg));
+            padding-bottom: calc(var(--spacing-6xl) * 2);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        /* =================================================
+           TEACHING ALERT BANNER
+           COGNITIVE PRINCIPLE: Errors are learning opportunities
+           Shows not just WHAT went wrong, but WHY and HOW TO PREVENT
+           ================================================= */
+        .teaching-alert {
+            background: var(--state-warning-bg);
+            border-left: var(--spacing-xs) solid var(--state-warning);
+            margin: 0 calc(-1 * var(--spacing-lg)) var(--spacing-lg);
+            padding: var(--spacing-lg);
+        }
+
+        .teaching-alert.urgent {
+            background: var(--state-danger-bg);
+            border-left-color: var(--state-danger);
+        }
+
+        .teaching-alert-content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .teaching-header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .teaching-icon {
+            width: var(--icon-md);
+            height: var(--icon-md);
+            flex-shrink: 0;
+            color: var(--state-warning);
+        }
+
+        .teaching-alert.urgent .teaching-icon {
+            color: var(--state-danger);
+        }
+
+        .teaching-what {
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            font-size: var(--text-lg);
+        }
+
+        .teaching-why {
+            font-size: var(--text-lg);
+            color: var(--text-description);
+            margin-bottom: var(--spacing-lg);
+            line-height: var(--line-height-loose);
+        }
+
+        /* Expandable "Why this happens" section */
+        .teaching-learn {
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: var(--rounded-lg);
+            margin-bottom: var(--spacing-lg);
+            overflow: hidden;
+        }
+
+        .teaching-learn-toggle {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-lg);
+            background: none;
+            border: none;
+            font-size: var(--text-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--state-info);
+            cursor: pointer;
+            text-align: left;
+            min-height: var(--touch-min);
+        }
+
+        .teaching-learn-toggle svg {
+            transition: transform var(--transition-base) var(--easing-ease);
+        }
+
+        .teaching-learn.expanded .teaching-learn-toggle svg {
+            transform: rotate(180deg);
+        }
+
+        .teaching-learn-content {
+            display: none;
+            padding: 0 var(--spacing-lg) var(--spacing-lg);
+            font-size: var(--text-lg);
+            color: var(--text-description);
+            line-height: var(--line-height-loose);
+        }
+
+        .teaching-learn.expanded .teaching-learn-content {
+            display: block;
+        }
+
+        .teaching-learn-content ul {
+            margin-left: var(--spacing-lg);
+            margin-top: var(--spacing-sm);
+        }
+
+        .teaching-learn-content li {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .teaching-prevention {
+            background: var(--state-info-bg);
+            border-radius: var(--rounded-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .teaching-prevention-title {
+            font-weight: var(--font-weight-bold);
+            color: var(--state-info);
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .teaching-prevention-text {
+            font-size: var(--text-lg);
+            color: var(--text-description);
+        }
+
+        .teaching-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+
+        /* =================================================
+           HERO SECTION - RELATIONSHIP FRAMING
+           COGNITIVE PRINCIPLE: Reframe transaction as relationship
+           "Your next stay" not "Next booking"
+           ================================================= */
+        .hero {
+            background: var(--bg-white);
+            margin: 0 calc(-1 * var(--spacing-lg));
+            padding: var(--spacing-6xl) var(--spacing-lg);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            position: relative;
+            cursor: pointer;
+            transition: background var(--transition-fast) var(--easing-ease);
+        }
+
+        .hero:active {
+            background: var(--bg-light-gray);
+        }
+
+        .hero-content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .hero-main {
+            flex: 1;
+        }
+
+        .hero-label {
+            font-size: var(--text-base);
+            font-weight: var(--font-weight-bold);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-medium);
+            color: var(--secondary-purple);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .hero-date {
+            font-size: var(--text-4xl);
+            font-weight: 800;
+            line-height: var(--line-height-tight);
+            color: var(--text-dark);
+            letter-spacing: -2px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        @media (min-width: 480px) {
+            .hero-date {
+                font-size: 64px;
+            }
+        }
+
+        .hero-property {
+            font-size: var(--text-lg);
+            color: var(--text-description);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .hero-countdown {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            background: var(--favorites-purple-light);
+            color: var(--secondary-purple);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: var(--rounded-pill);
+            font-size: var(--text-lg);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .hero-chevron {
+            width: var(--touch-min);
+            height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light-gray);
+        }
+
+        /* =================================================
+           JOURNEY PROGRESS - STORY-BASED MILESTONES
+           COGNITIVE PRINCIPLE: Expand mental model from
+           "tracking progress" to "telling your story"
+           ================================================= */
+        .journey-section {
+            padding: var(--spacing-6xl) 0;
+        }
+
+        .journey-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .journey-title {
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-description);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-small);
+        }
+
+        .journey-link {
+            font-size: var(--text-lg);
+            color: var(--secondary-purple);
+            text-decoration: none;
+            min-height: var(--touch-min);
+            display: flex;
+            align-items: center;
+        }
+
+        .journey-track {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .journey-track::before {
+            content: '';
+            position: absolute;
+            top: var(--spacing-xl);
+            left: var(--spacing-6xl);
+            right: var(--spacing-6xl);
+            height: var(--spacing-xs);
+            background: var(--border-color);
+            border-radius: 2px;
+        }
+
+        .journey-fill {
+            position: absolute;
+            top: var(--spacing-xl);
+            left: var(--spacing-6xl);
+            height: var(--spacing-xs);
+            background: var(--state-success);
+            border-radius: 2px;
+            width: 60%;
+            transition: width var(--transition-slow) var(--easing-ease);
+        }
+
+        .journey-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            cursor: pointer;
+            min-width: 56px;
+            padding: var(--spacing-sm);
+            border-radius: var(--rounded-lg);
+            transition: background var(--transition-fast) var(--easing-ease);
+        }
+
+        .journey-node:active {
+            background: var(--bg-light-gray);
+        }
+
+        .node-circle {
+            width: var(--spacing-6xl);
+            height: var(--spacing-6xl);
+            border-radius: var(--rounded-full);
+            background: var(--bg-white);
+            border: 3px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-light-gray);
+            margin-bottom: var(--spacing-sm);
+            transition: all var(--transition-base) var(--easing-ease);
+        }
+
+        .journey-node.complete .node-circle {
+            background: var(--state-success);
+            border-color: var(--state-success);
+            color: var(--white);
+        }
+
+        .journey-node.current .node-circle {
+            border-color: var(--secondary-purple);
+            border-width: 3px;
+            color: var(--secondary-purple);
+            box-shadow: 0 0 0 var(--spacing-xs) var(--favorites-purple-light);
+        }
+
+        .journey-node.upcoming .node-circle {
+            opacity: var(--opacity-disabled);
+        }
+
+        .node-label {
+            font-size: var(--text-base);
+            color: var(--text-light-gray);
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .journey-node.complete .node-label {
+            color: var(--state-success);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .journey-node.current .node-label {
+            color: var(--secondary-purple);
+            font-weight: var(--font-weight-bold);
+        }
+
+        /* Discovery Zone: Journey story details */
+        .journey-story {
+            display: none;
+            background: var(--bg-white);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--rounded-xl);
+            padding: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+
+        .journey-story.visible {
+            display: block;
+        }
+
+        .journey-story-title {
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .journey-story-text {
+            font-size: var(--text-lg);
+            color: var(--text-description);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .journey-story-date {
+            font-size: var(--text-md);
+            color: var(--text-light-gray);
+        }
+
+        /* =================================================
+           INVESTMENT SUMMARY - REFRAMING PAYMENTS
+           COGNITIVE PRINCIPLE: "Investment" triggers different
+           behavior than "payment" - ownership vs. obligation
+           ================================================= */
+        .investment-section {
+            margin-bottom: var(--spacing-6xl);
+        }
+
+        .investment-header {
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-description);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-small);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .investment-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-sm);
+        }
+
+        .investment-card {
+            background: var(--bg-white);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--rounded-xl);
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            transition: all var(--transition-fast) var(--easing-ease);
+            min-height: var(--touch-min);
+        }
+
+        .investment-card:active {
+            transform: scale(0.98);
+            background: var(--bg-light-gray);
+        }
+
+        .investment-card.highlight {
+            border-color: var(--investment);
+            background: var(--investment-bg);
+        }
+
+        .investment-value {
+            font-size: var(--text-2xl);
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .investment-card.highlight .investment-value {
+            color: var(--investment);
+        }
+
+        .investment-label {
+            font-size: var(--text-md);
+            color: var(--text-light-gray);
+        }
+
+        .investment-card.full-width {
+            grid-column: span 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .investment-card.full-width .investment-value {
+            font-size: var(--text-lg);
+        }
+
+        .investment-card.action {
+            border-color: var(--secondary-purple);
+        }
+
+        .investment-card.action .investment-value {
+            color: var(--secondary-purple);
+        }
+
+        /* =================================================
+           LEASE CARD - PROGRESSIVE DISCLOSURE
+           Collapsed: Core answer
+           Expanded: Full context
+           ================================================= */
+        .lease-section {
+            margin-bottom: var(--spacing-6xl);
+        }
+
+        .lease-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .lease-section-title {
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-description);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-small);
+        }
+
+        .lease-card {
+            background: var(--bg-white);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--rounded-xl);
+            overflow: hidden;
+            transition: box-shadow var(--transition-base) var(--easing-ease);
+        }
+
+        .lease-card.expanded {
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Card Header - Always visible */
+        .lease-header {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            min-height: 80px;
+            transition: background var(--transition-fast) var(--easing-ease);
+        }
+
+        .lease-header:active {
+            background: var(--bg-light-gray);
+        }
+
+        .lease-thumb {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--rounded-lg);
+            background: var(--gradient-purple-primary);
+            flex-shrink: 0;
+            margin-right: var(--spacing-lg);
+        }
+
+        .lease-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .lease-name {
+            font-size: var(--text-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .lease-summary {
+            font-size: var(--text-lg);
+            color: var(--text-light-gray);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+
+        .lease-status {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--rounded-sm);
+            font-size: var(--text-sm);
+            font-weight: var(--font-weight-bold);
+        }
+
+        .lease-status.active {
+            background: var(--state-success-bg);
+            color: var(--state-success);
+        }
+
+        .lease-status.pending {
+            background: var(--state-warning-bg);
+            color: var(--state-warning);
+        }
+
+        .lease-expand {
+            width: var(--touch-min);
+            height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light-gray);
+            transition: transform var(--transition-base) var(--easing-ease);
+        }
+
+        .lease-card.expanded .lease-expand {
+            transform: rotate(180deg);
+        }
+
+        /* Card Body - Expanded content */
+        .lease-body {
+            display: none;
+            border-top: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .lease-card.expanded .lease-body {
+            display: block;
+        }
+
+        /* =================================================
+           HOST PARTNERSHIP SECTION
+           COGNITIVE PRINCIPLE: "Partner" triggers collaboration
+           ================================================= */
+        .partner-section {
+            padding: var(--spacing-lg);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .partner-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .partner-title {
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-bold);
+            color: var(--partnership);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-small);
+        }
+
+        .partner-card {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            background: var(--partnership-bg);
+            padding: var(--spacing-lg);
+            border-radius: var(--rounded-lg);
+        }
+
+        .partner-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--rounded-full);
+            background: linear-gradient(135deg, var(--partnership) 0%, #0E7490 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: var(--font-weight-bold);
+            font-size: var(--text-lg);
+            flex-shrink: 0;
+        }
+
+        .partner-info {
+            flex: 1;
+        }
+
+        .partner-name {
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .partner-label {
+            font-size: var(--text-lg);
+            color: var(--text-description);
+        }
+
+        .partner-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        /* =================================================
+           PAYMENT SECTION - WITH PRODUCTIVE FRICTION
+           ================================================= */
+        .payment-section {
+            padding: var(--spacing-lg);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .payment-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .payment-title {
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-description);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-small);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .payment-summary {
+            background: var(--bg-light-gray);
+            border-radius: var(--rounded-lg);
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            transition: background var(--transition-fast) var(--easing-ease);
+        }
+
+        .payment-summary:active {
+            background: var(--border-color);
+        }
+
+        .payment-summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .payment-summary-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .payment-summary-label {
+            font-size: var(--text-lg);
+            color: var(--text-description);
+        }
+
+        .payment-summary-value {
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+        }
+
+        .payment-summary-value.investment {
+            color: var(--investment);
+        }
+
+        /* Expandable payment history */
+        .payment-history {
+            display: none;
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-lg);
+            border-top: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .payment-summary.expanded .payment-history {
+            display: block;
+        }
+
+        .payment-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-lg) 0;
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .payment-item:last-child {
+            border-bottom: none;
+        }
+
+        .payment-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+
+        .payment-item-desc {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+        }
+
+        .payment-item-date {
+            font-size: var(--text-md);
+            color: var(--text-light-gray);
+        }
+
+        .payment-item-amount {
+            font-weight: var(--font-weight-bold);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .payment-item-amount.paid {
+            color: var(--state-success);
+        }
+
+        .payment-item-amount.due {
+            color: var(--secondary-purple);
+        }
+
+        /* =================================================
+           PRODUCTIVE FRICTION: HOLD-TO-CONFIRM
+           ================================================= */
+        .hold-to-confirm {
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .hold-to-confirm::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0;
+            background: var(--primary-purple-hover);
+            transition: width var(--friction-confirm) linear;
+        }
+
+        .hold-to-confirm.holding::before {
+            width: 100%;
+        }
+
+        .hold-to-confirm-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hold-to-confirm-hint {
+            position: absolute;
+            bottom: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: var(--text-base);
+            color: var(--text-light-gray);
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity var(--transition-fast) var(--easing-ease);
+        }
+
+        .hold-to-confirm:active .hold-to-confirm-hint {
+            opacity: 1;
+        }
+
+        /* =================================================
+           STAYS SECTION
+           ================================================= */
+        .stays-section {
+            padding: var(--spacing-lg);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .stays-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .stays-title {
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-description);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-small);
+        }
+
+        .stays-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .stay-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-lg);
+            background: var(--bg-light-gray);
+            border-radius: var(--rounded-lg);
+            cursor: pointer;
+            transition: background var(--transition-fast) var(--easing-ease);
+            min-height: var(--touch-min);
+        }
+
+        .stay-item:active {
+            background: var(--border-color);
+        }
+
+        .stay-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+
+        .stay-dates {
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+        }
+
+        .stay-duration {
+            font-size: var(--text-lg);
+            color: var(--text-light-gray);
+        }
+
+        .stay-status {
+            font-size: var(--text-sm);
+            font-weight: var(--font-weight-bold);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--rounded-sm);
+        }
+
+        .stay-status.completed {
+            background: var(--state-success-bg);
+            color: var(--state-success);
+        }
+
+        .stay-status.upcoming {
+            background: var(--favorites-purple-light);
+            color: var(--secondary-purple);
+        }
+
+        .stay-status.current {
+            background: var(--investment-bg);
+            color: var(--investment);
+        }
+
+        /* =================================================
+           DOCUMENTS SECTION - WITH PREVIEW FRICTION
+           ================================================= */
+        .docs-section {
+            padding: var(--spacing-lg);
+        }
+
+        .docs-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .docs-title {
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-description);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-small);
+        }
+
+        .docs-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .doc-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            background: var(--bg-light-gray);
+            border-radius: var(--rounded-lg);
+            cursor: pointer;
+            transition: background var(--transition-fast) var(--easing-ease);
+            min-height: var(--touch-min);
+        }
+
+        .doc-item:active {
+            background: var(--border-color);
+        }
+
+        .doc-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--state-danger-bg);
+            border-radius: var(--rounded-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--state-danger);
+            flex-shrink: 0;
+        }
+
+        .doc-info {
+            flex: 1;
+        }
+
+        .doc-name {
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .doc-meta {
+            font-size: var(--text-lg);
+            color: var(--text-light-gray);
+        }
+
+        /* Document preview modal with friction */
+        .doc-preview {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--overlay-dark);
+            z-index: var(--z-modal);
+            align-items: flex-end;
+            justify-content: center;
+            padding: var(--spacing-lg);
+        }
+
+        .doc-preview.visible {
+            display: flex;
+        }
+
+        .doc-preview-card {
+            background: var(--bg-white);
+            border-radius: var(--rounded-2xl) var(--rounded-2xl) 0 0;
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .doc-preview-header {
+            padding: var(--spacing-lg);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .doc-preview-title {
+            font-size: var(--text-lg);
+            font-weight: var(--font-weight-bold);
+        }
+
+        .doc-preview-body {
+            padding: var(--spacing-lg);
+        }
+
+        .doc-preview-summary {
+            background: var(--bg-light-gray);
+            border-radius: var(--rounded-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .doc-preview-item {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-sm) 0;
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .doc-preview-item:last-child {
+            border-bottom: none;
+        }
+
+        .doc-preview-label {
+            color: var(--text-light-gray);
+        }
+
+        .doc-preview-value {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+        }
+
+        .doc-preview-footer {
+            padding: var(--spacing-lg);
+            border-top: var(--border-width-thin) solid var(--border-color);
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .doc-preview-footer .btn {
+            flex: 1;
+        }
+
+        /* =================================================
+           BUTTONS - CLEAR HIERARCHY
+           ================================================= */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            min-height: var(--touch-min);
+            padding: 0 var(--spacing-lg);
+            border-radius: var(--rounded-lg);
+            font-size: var(--text-lg);
+            font-weight: var(--font-weight-bold);
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition-fast) var(--easing-ease);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn svg {
+            width: var(--icon-sm);
+            height: var(--icon-sm);
+        }
+
+        /* Primary - THE action */
+        .btn-primary {
+            background: var(--secondary-purple);
+            color: var(--white);
+        }
+
+        .btn-primary:active {
+            background: var(--accent-purple);
+        }
+
+        /* Secondary */
+        .btn-secondary {
+            background: var(--bg-white);
+            color: var(--text-dark);
+            border: var(--border-width-thick) solid var(--border-color);
+        }
+
+        .btn-secondary:active {
+            background: var(--bg-light-gray);
+        }
+
+        /* Ghost */
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-description);
+        }
+
+        .btn-ghost:active {
+            background: var(--bg-light-gray);
+        }
+
+        /* Danger */
+        .btn-danger {
+            background: var(--state-danger);
+            color: var(--white);
+        }
+
+        .btn-danger:active {
+            background: #B91C1C;
+        }
+
+        /* Icon only */
+        .btn-icon {
+            width: var(--touch-min);
+            padding: 0;
+        }
+
+        /* Full width */
+        .btn-full {
+            width: 100%;
+        }
+
+        /* =================================================
+           DISCOVERY HINT
+           Appears after 3 seconds of inactivity
+           Rewards exploration
+           ================================================= */
+        .discovery-hint {
+            position: fixed;
+            bottom: var(--spacing-lg);
+            left: var(--spacing-lg);
+            right: var(--spacing-lg);
+            background: var(--text-dark);
+            color: var(--white);
+            padding: var(--spacing-lg);
+            border-radius: var(--rounded-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            opacity: 0;
+            transform: translateY(100%);
+            transition: all var(--transition-base) var(--easing-ease);
+            z-index: var(--z-floating);
+        }
+
+        .discovery-hint.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .discovery-hint-icon {
+            width: var(--icon-md);
+            height: var(--icon-md);
+            color: var(--secondary-purple);
+            flex-shrink: 0;
+        }
+
+        .discovery-hint-text {
+            flex: 1;
+            font-size: var(--text-lg);
+        }
+
+        .discovery-hint-dismiss {
+            width: var(--touch-min);
+            height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            opacity: var(--opacity-hover);
+        }
+
+        /* =================================================
+           ACCESSIBILITY: Skip link
+           ================================================= */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: var(--spacing-lg);
+            background: var(--secondary-purple);
+            color: var(--white);
+            padding: var(--spacing-lg);
+            border-radius: var(--rounded-lg);
+            z-index: 9999;
+            font-weight: var(--font-weight-bold);
+        }
+
+        .skip-link:focus {
+            top: var(--spacing-lg);
+        }
+
+        /* =================================================
+           SCREEN READER ONLY
+           ================================================= */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <!--
+        ACCESSIBILITY: Skip link for keyboard users
+        WCAG AAA requirement
+    -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- =================================================
+         HEADER
+         COGNITIVE PRINCIPLE: Minimal header reduces cognitive load
+         ================================================= -->
+    <header class="header" role="banner">
+        <div class="header-inner">
+            <a href="/" class="logo" aria-label="Split Lease home">
+                <span class="logo-mark" aria-hidden="true">SL</span>
+                <span>Split Lease</span>
+            </a>
+
+            <nav class="header-actions" aria-label="User menu">
+                <button class="icon-btn" aria-label="Notifications - 2 unread">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                    <span class="notification-badge" aria-hidden="true">2</span>
+                </button>
+                <div class="avatar" role="img" aria-label="User avatar: Jane Doe">JD</div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- =================================================
+         MAIN CONTENT
+         ================================================= -->
+    <main class="main" id="main-content" role="main">
+        <div class="container">
+
+            <!-- =================================================
+                 TEACHING ALERT - Example: Date Change Learning
+                 COGNITIVE PRINCIPLE: Errors teach, not just inform
+                 This alert shows when a date change was declined
+                 ================================================= -->
+            <!--
+            <div class="teaching-alert" role="alert">
+                <div class="teaching-alert-content">
+                    <div class="teaching-header">
+                        <svg class="teaching-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        <span class="teaching-what">Date change request declined</span>
+                    </div>
+                    <p class="teaching-why">Sarah was unable to accommodate your request to move check-in from Feb 15 to Feb 17.</p>
+
+                    <div class="teaching-learn" id="teaching-learn-1">
+                        <button class="teaching-learn-toggle" onclick="toggleTeachingLearn('teaching-learn-1')" aria-expanded="false">
+                            <span>Why do hosts decline?</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </button>
+                        <div class="teaching-learn-content">
+                            <ul>
+                                <li>The requested dates may conflict with another guest</li>
+                                <li>The host may need the property themselves</li>
+                                <li>Short notice requests are harder to accommodate</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="teaching-prevention">
+                        <div class="teaching-prevention-title">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 16v-4"/>
+                                <path d="M12 8h.01"/>
+                            </svg>
+                            For next time
+                        </div>
+                        <p class="teaching-prevention-text">Requests with 7+ days notice are approved 94% of the time. Consider messaging Sarah informally before submitting formal requests.</p>
+                    </div>
+
+                    <div class="teaching-actions">
+                        <button class="btn btn-secondary">Try Different Dates</button>
+                        <button class="btn btn-ghost">Message Sarah</button>
+                    </div>
+                </div>
+            </div>
+            -->
+
+            <!-- =================================================
+                 HERO SECTION - YOUR STORY
+                 COGNITIVE PRINCIPLE: Relationship framing
+                 "Your next chapter" not "Next booking"
+                 Tappable - leads to stay details
+                 ================================================= -->
+            <section class="hero" onclick="showStayDetails()" role="region" aria-label="Next stay summary">
+                <div class="hero-content">
+                    <div class="hero-main">
+                        <!--
+                            LANGUAGE CHOICE: "Your next chapter" creates
+                            narrative ownership vs. transactional "Next booking"
+                        -->
+                        <div class="hero-label">Your Next Chapter</div>
+                        <!--
+                            TYPOGRAPHIC EVENT per Paula Scher
+                            48px mobile, dominates viewport
+                        -->
+                        <div class="hero-date">Feb 15</div>
+                        <div class="hero-property">Chelsea 2BR at 245 W 23rd St</div>
+                        <div class="hero-countdown">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                            <span>13 days until check-in</span>
+                        </div>
+                    </div>
+                    <div class="hero-chevron" aria-hidden="true">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </div>
+                </div>
+                <span class="sr-only">Tap to view stay details</span>
+            </section>
+
+            <!-- =================================================
+                 JOURNEY PROGRESS - YOUR STORY TOGETHER
+                 COGNITIVE PRINCIPLE: Story-based milestones
+                 Expand mental model from tracking to storytelling
+                 ================================================= -->
+            <section class="journey-section" aria-label="Lease journey progress">
+                <div class="journey-header">
+                    <h2 class="journey-title">Your Story Together</h2>
+                    <a href="#" class="journey-link">See milestones</a>
+                </div>
+
+                <div class="journey-track" role="list">
+                    <!--
+                        DISCOVERY ZONE: Tapping nodes reveals story context
+                        Rewards curious users with richer narrative
+                    -->
+                    <div class="journey-fill" style="width: 60%;" aria-hidden="true"></div>
+
+                    <div class="journey-node complete" role="listitem" onclick="showJourneyStory('matched')" tabindex="0" aria-label="Matched - completed">
+                        <div class="node-circle" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="node-label">Matched</div>
+                    </div>
+
+                    <div class="journey-node complete" role="listitem" onclick="showJourneyStory('signed')" tabindex="0" aria-label="Agreement signed - completed">
+                        <div class="node-circle" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="node-label">Signed</div>
+                    </div>
+
+                    <div class="journey-node complete" role="listitem" onclick="showJourneyStory('invested')" tabindex="0" aria-label="First investment - completed">
+                        <div class="node-circle" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="node-label">Invested</div>
+                    </div>
+
+                    <div class="journey-node current" role="listitem" onclick="showJourneyStory('first-stay')" tabindex="0" aria-label="First stay - current milestone">
+                        <div class="node-circle">4</div>
+                        <div class="node-label">First Stay</div>
+                    </div>
+
+                    <div class="journey-node upcoming" role="listitem" tabindex="0" aria-label="Established regular - upcoming">
+                        <div class="node-circle">5</div>
+                        <div class="node-label">Regular</div>
+                    </div>
+                </div>
+
+                <!--
+                    DISCOVERY: Story details revealed on tap
+                    Hidden by default, rewards exploration
+                -->
+                <div class="journey-story" id="journey-story-matched">
+                    <div class="journey-story-title">How You Met</div>
+                    <div class="journey-story-text">You discovered Chelsea 2BR while searching for flexible monthly stays in Manhattan. Sarah's listing stood out for its home office setup and quiet neighborhood.</div>
+                    <div class="journey-story-date">December 15, 2025</div>
+                </div>
+
+                <div class="journey-story" id="journey-story-signed">
+                    <div class="journey-story-title">Making It Official</div>
+                    <div class="journey-story-text">After exchanging messages about your work schedule and flexibility needs, you and Sarah agreed on terms. The agreement covers 5 monthly stays through June 2026.</div>
+                    <div class="journey-story-date">December 28, 2025</div>
+                </div>
+
+                <div class="journey-story" id="journey-story-invested">
+                    <div class="journey-story-title">Your First Commitment</div>
+                    <div class="journey-story-text">Your first payment of $2,100 secured your place in the Chelsea 2BR community. This investment gives you priority access for date changes and renewal.</div>
+                    <div class="journey-story-date">January 1, 2026</div>
+                </div>
+
+                <div class="journey-story" id="journey-story-first-stay">
+                    <div class="journey-story-title">Your First Time There</div>
+                    <div class="journey-story-text">In 13 days, you will walk into your NYC home base for the first time. Sarah has prepared a welcome guide with neighborhood tips and apartment instructions.</div>
+                    <div class="journey-story-date">February 15, 2026</div>
+                </div>
+            </section>
+
+            <!-- =================================================
+                 INVESTMENT SUMMARY
+                 COGNITIVE PRINCIPLE: Reframe payments as investment
+                 "Your stake" not "Amount paid"
+                 ================================================= -->
+            <section class="investment-section" aria-label="Your investment summary">
+                <h2 class="investment-header">Your Investment</h2>
+
+                <div class="investment-grid">
+                    <!--
+                        LANGUAGE: "Your stake" creates ownership
+                        vs. "Paid" which feels transactional
+                    -->
+                    <div class="investment-card highlight" onclick="scrollToPayments()" tabindex="0" role="button" aria-label="Your stake: $4,200">
+                        <div class="investment-value">$4,200</div>
+                        <div class="investment-label">Your stake in Chelsea</div>
+                    </div>
+
+                    <div class="investment-card" onclick="scrollToStays()" tabindex="0" role="button" aria-label="Stays: 2 of 5 complete">
+                        <div class="investment-value">2 of 5</div>
+                        <div class="investment-label">Stays completed</div>
+                    </div>
+
+                    <div class="investment-card full-width action" onclick="showNextPayment()" tabindex="0" role="button" aria-label="Next investment: $2,100 due April 1">
+                        <div>
+                            <div class="investment-label">Next investment due</div>
+                            <div class="investment-value">$2,100 on Apr 1</div>
+                        </div>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================
+                 ACTIVE LEASE CARD
+                 PROGRESSIVE DISCLOSURE: Summary -> Detail
+                 ================================================= -->
+            <section class="lease-section" aria-label="Your leases">
+                <div class="lease-section-header">
+                    <h2 class="lease-section-title">Active Lease</h2>
+                </div>
+
+                <article class="lease-card expanded" id="lease-chelsea">
+                    <div class="lease-header" onclick="toggleLease('lease-chelsea')" role="button" aria-expanded="true" aria-controls="lease-chelsea-body">
+                        <div class="lease-thumb" aria-hidden="true"></div>
+                        <div class="lease-info">
+                            <h3 class="lease-name">Chelsea 2BR</h3>
+                            <div class="lease-summary">
+                                <span class="lease-status active">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                        <circle cx="12" cy="12" r="6"/>
+                                    </svg>
+                                    Active
+                                </span>
+                                <span>Next: Feb 15</span>
+                            </div>
+                        </div>
+                        <div class="lease-expand" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="lease-body" id="lease-chelsea-body">
+
+                        <!-- =================================================
+                             HOST PARTNERSHIP SECTION
+                             COGNITIVE PRINCIPLE: Partner vs. Landlord framing
+                             ================================================= -->
+                        <section class="partner-section" aria-label="Your host partner">
+                            <div class="partner-header">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--partnership);" aria-hidden="true">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="9" cy="7" r="4"/>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                </svg>
+                                <h3 class="partner-title">Your Host Partner</h3>
+                            </div>
+
+                            <div class="partner-card">
+                                <div class="partner-avatar" aria-hidden="true">SM</div>
+                                <div class="partner-info">
+                                    <div class="partner-name">Sarah Martinez</div>
+                                    <div class="partner-label">Usually responds within 2 hours</div>
+                                </div>
+                                <div class="partner-actions">
+                                    <button class="btn btn-icon btn-secondary" aria-label="Message Sarah">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- =================================================
+                             PAYMENT SECTION - WITH FRICTION
+                             ================================================= -->
+                        <section class="payment-section" aria-label="Payment history">
+                            <div class="payment-header">
+                                <h3 class="payment-title">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                                        <line x1="1" y1="10" x2="23" y2="10"/>
+                                    </svg>
+                                    Payment History
+                                </h3>
+                            </div>
+
+                            <div class="payment-summary" id="payment-summary" onclick="togglePayments()" role="button" aria-expanded="false" aria-controls="payment-history">
+                                <div class="payment-summary-row">
+                                    <span class="payment-summary-label">Total invested</span>
+                                    <span class="payment-summary-value investment">$4,200</span>
+                                </div>
+                                <div class="payment-summary-row">
+                                    <span class="payment-summary-label">Status</span>
+                                    <span class="payment-summary-value" style="color: var(--state-success);">All current</span>
+                                </div>
+                                <div class="payment-summary-row">
+                                    <span class="payment-summary-label">Tap for details</span>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-light-gray);" aria-hidden="true">
+                                        <polyline points="6 9 12 15 18 9"/>
+                                    </svg>
+                                </div>
+
+                                <div class="payment-history" id="payment-history">
+                                    <div class="payment-item">
+                                        <div class="payment-item-info">
+                                            <span class="payment-item-desc">April investment</span>
+                                            <span class="payment-item-date">Due Apr 1</span>
+                                        </div>
+                                        <span class="payment-item-amount due">$2,100</span>
+                                    </div>
+                                    <div class="payment-item">
+                                        <div class="payment-item-info">
+                                            <span class="payment-item-desc">February investment</span>
+                                            <span class="payment-item-date">Paid Feb 1</span>
+                                        </div>
+                                        <span class="payment-item-amount paid">$2,100</span>
+                                    </div>
+                                    <div class="payment-item">
+                                        <div class="payment-item-info">
+                                            <span class="payment-item-desc">January investment</span>
+                                            <span class="payment-item-date">Paid Jan 1</span>
+                                        </div>
+                                        <span class="payment-item-amount paid">$2,100</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- =================================================
+                             STAYS SECTION
+                             ================================================= -->
+                        <section class="stays-section" aria-label="Your stays">
+                            <div class="stays-header">
+                                <h3 class="stays-title">Your Stays</h3>
+                            </div>
+
+                            <div class="stays-list" role="list">
+                                <div class="stay-item" role="listitem" tabindex="0">
+                                    <div class="stay-info">
+                                        <span class="stay-dates">Feb 15 - Feb 28</span>
+                                        <span class="stay-duration">14 nights</span>
+                                    </div>
+                                    <span class="stay-status upcoming">Upcoming</span>
+                                </div>
+
+                                <div class="stay-item" role="listitem" tabindex="0">
+                                    <div class="stay-info">
+                                        <span class="stay-dates">Jan 15 - Jan 28</span>
+                                        <span class="stay-duration">14 nights</span>
+                                    </div>
+                                    <span class="stay-status completed">Completed</span>
+                                </div>
+
+                                <div class="stay-item" role="listitem" tabindex="0">
+                                    <div class="stay-info">
+                                        <span class="stay-dates">Dec 20 - Jan 3</span>
+                                        <span class="stay-duration">15 nights</span>
+                                    </div>
+                                    <span class="stay-status completed">Completed</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- =================================================
+                             DOCUMENTS SECTION - WITH PREVIEW FRICTION
+                             COGNITIVE PRINCIPLE: Understanding before downloading
+                             ================================================= -->
+                        <section class="docs-section" aria-label="Lease documents">
+                            <div class="docs-header">
+                                <h3 class="docs-title">Documents</h3>
+                            </div>
+
+                            <div class="docs-list" role="list">
+                                <div class="doc-item" role="listitem" onclick="showDocPreview('agreement')" tabindex="0">
+                                    <div class="doc-icon" aria-hidden="true">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                            <polyline points="14 2 14 8 20 8"/>
+                                            <line x1="16" y1="13" x2="8" y2="13"/>
+                                            <line x1="16" y1="17" x2="8" y2="17"/>
+                                        </svg>
+                                    </div>
+                                    <div class="doc-info">
+                                        <div class="doc-name">Lease Agreement</div>
+                                        <div class="doc-meta">Signed Dec 28, 2025</div>
+                                    </div>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-light-gray);" aria-hidden="true">
+                                        <polyline points="9 18 15 12 9 6"/>
+                                    </svg>
+                                </div>
+
+                                <div class="doc-item" role="listitem" onclick="showDocPreview('rules')" tabindex="0">
+                                    <div class="doc-icon" aria-hidden="true">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                            <polyline points="14 2 14 8 20 8"/>
+                                        </svg>
+                                    </div>
+                                    <div class="doc-info">
+                                        <div class="doc-name">House Rules</div>
+                                        <div class="doc-meta">2 pages</div>
+                                    </div>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-light-gray);" aria-hidden="true">
+                                        <polyline points="9 18 15 12 9 6"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </section>
+
+                    </div>
+                </article>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- =================================================
+         DOCUMENT PREVIEW MODAL - FRICTION BEFORE DOWNLOAD
+         COGNITIVE PRINCIPLE: Ensure understanding before action
+         ================================================= -->
+    <div class="doc-preview" id="doc-preview-agreement" role="dialog" aria-modal="true" aria-labelledby="doc-preview-title">
+        <div class="doc-preview-card">
+            <div class="doc-preview-header">
+                <h2 id="doc-preview-title" class="doc-preview-title">Lease Agreement</h2>
+                <button class="btn btn-icon btn-ghost" onclick="hideDocPreview('agreement')" aria-label="Close preview">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="doc-preview-body">
+                <!--
+                    FRICTION: Show key terms before download
+                    Users often download without understanding
+                -->
+                <h3 style="font-size: var(--text-lg); margin-bottom: var(--spacing-lg); color: var(--text-description);">What you are downloading:</h3>
+                <div class="doc-preview-summary">
+                    <div class="doc-preview-item">
+                        <span class="doc-preview-label">Property</span>
+                        <span class="doc-preview-value">Chelsea 2BR</span>
+                    </div>
+                    <div class="doc-preview-item">
+                        <span class="doc-preview-label">Duration</span>
+                        <span class="doc-preview-value">Jan 2026 - Jun 2026</span>
+                    </div>
+                    <div class="doc-preview-item">
+                        <span class="doc-preview-label">Monthly amount</span>
+                        <span class="doc-preview-value">$2,100</span>
+                    </div>
+                    <div class="doc-preview-item">
+                        <span class="doc-preview-label">Signed by you</span>
+                        <span class="doc-preview-value">Dec 28, 2025</span>
+                    </div>
+                    <div class="doc-preview-item">
+                        <span class="doc-preview-label">Signed by Sarah</span>
+                        <span class="doc-preview-value">Dec 28, 2025</span>
+                    </div>
+                </div>
+            </div>
+            <div class="doc-preview-footer">
+                <button class="btn btn-secondary" onclick="hideDocPreview('agreement')">Cancel</button>
+                <button class="btn btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Download PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================================================
+         DISCOVERY HINT
+         Appears to reward exploration
+         ================================================= -->
+    <div class="discovery-hint" id="discovery-hint" role="status" aria-live="polite">
+        <svg class="discovery-hint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4"/>
+            <path d="M12 8h.01"/>
+        </svg>
+        <span class="discovery-hint-text">Tap journey milestones to see your story with Sarah</span>
+        <button class="discovery-hint-dismiss" onclick="dismissDiscoveryHint()" aria-label="Dismiss hint">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        /* =================================================
+           INTERACTION SCRIPTS
+           ================================================= */
+
+        // Toggle lease card expansion
+        function toggleLease(leaseId) {
+            const card = document.getElementById(leaseId);
+            const header = card.querySelector('.lease-header');
+            const isExpanded = card.classList.toggle('expanded');
+            header.setAttribute('aria-expanded', isExpanded);
+        }
+
+        // Toggle payment history
+        function togglePayments() {
+            const summary = document.getElementById('payment-summary');
+            const isExpanded = summary.classList.toggle('expanded');
+            summary.setAttribute('aria-expanded', isExpanded);
+        }
+
+        // Show journey story (discovery feature)
+        let currentStory = null;
+        function showJourneyStory(storyId) {
+            // Hide current story
+            if (currentStory) {
+                document.getElementById('journey-story-' + currentStory).classList.remove('visible');
+            }
+
+            // Show new story (or toggle off if same)
+            if (currentStory === storyId) {
+                currentStory = null;
+            } else {
+                currentStory = storyId;
+                document.getElementById('journey-story-' + storyId).classList.add('visible');
+            }
+        }
+
+        // Toggle teaching learn section
+        function toggleTeachingLearn(learnId) {
+            const learn = document.getElementById(learnId);
+            const toggle = learn.querySelector('.teaching-learn-toggle');
+            const isExpanded = learn.classList.toggle('expanded');
+            toggle.setAttribute('aria-expanded', isExpanded);
+        }
+
+        // Document preview modal
+        function showDocPreview(docId) {
+            document.getElementById('doc-preview-' + docId).classList.add('visible');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideDocPreview(docId) {
+            document.getElementById('doc-preview-' + docId).classList.remove('visible');
+            document.body.style.overflow = '';
+        }
+
+        // Discovery hint
+        let discoveryShown = false;
+        function showDiscoveryHint() {
+            if (!discoveryShown) {
+                discoveryShown = true;
+                document.getElementById('discovery-hint').classList.add('visible');
+            }
+        }
+
+        function dismissDiscoveryHint() {
+            document.getElementById('discovery-hint').classList.remove('visible');
+        }
+
+        // Show discovery hint after 5 seconds of inactivity
+        let inactivityTimer;
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(showDiscoveryHint, 5000);
+        }
+
+        // Listen for user activity
+        ['click', 'touchstart', 'scroll'].forEach(event => {
+            document.addEventListener(event, resetInactivityTimer, { passive: true });
+        });
+
+        // Start timer on load
+        resetInactivityTimer();
+
+        // Placeholder functions for navigation
+        function showStayDetails() {
+            console.log('Navigate to stay details');
+        }
+
+        function scrollToPayments() {
+            document.getElementById('payment-summary').scrollIntoView({ behavior: 'smooth' });
+            togglePayments();
+        }
+
+        function scrollToStays() {
+            document.querySelector('.stays-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showNextPayment() {
+            scrollToPayments();
+        }
+
+        // Close modals on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.doc-preview.visible').forEach(modal => {
+                    modal.classList.remove('visible');
+                });
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Close modal on backdrop click
+        document.querySelectorAll('.doc-preview').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('visible');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

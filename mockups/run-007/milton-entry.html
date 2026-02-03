@@ -1,0 +1,2942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Places - Split Lease</title>
+    <style>
+        /* =================================================
+           MILTON GLASER - RUN 007
+
+           DESIGN PHILOSOPHY: WARMTH AS FUNCTION
+
+           The Dylan poster made you FEEL something before
+           you understood it. "I Love NY" created emotional
+           truth through visual simplicity.
+
+           This interface must do the same: warmth that
+           serves comprehension, humanity that builds trust,
+           small surprises that make people feel cared-for.
+
+           THE KEY INSIGHT FROM RECURSIVE RESEARCH:
+           The modernist critique was right about the problems
+           but prescribed system solutions for a human problem.
+           The answer is not more rules - it's more soul.
+
+           THE ADVERSARIAL FINDING:
+           Cleverness kills clarity. But warmth IS clarity.
+           A warm interface is not decoration - it reduces
+           anxiety, builds trust, and helps users feel safe
+           enough to engage with important information.
+
+           THE PSYCHEDELIC ELEMENT:
+           Not Dylan rainbows. Subtle glows. Breathing motion.
+           Organic warmth in a digital context. The feeling
+           that someone human made this for someone human.
+
+           SIGNATURE MOMENT:
+           The "golden moment" - when everything is good,
+           a warm glow appears that feels earned, not cheap.
+           Like sunlight coming through a window.
+
+           UPDATED: February 3, 2026
+           Now using official Split Lease Design System tokens
+           ================================================= */
+
+        :root {
+            /* ========================================
+               OFFICIAL SPLIT LEASE DESIGN SYSTEM
+               Complete CSS Variables Reference v2.0
+               ======================================== */
+
+            /* ========================================
+               COLOR VARIABLES
+               ======================================== */
+
+            /* Primary Colors
+               Usage Guide:
+               - primary-purple (#31135D): Brand color, headings, important UI
+               - primary-purple-hover (#251047): Hover state for primary
+               - secondary-purple (#6D31C2): Interactive buttons, links, CTAs
+               - accent-purple (#8C68EE): Hover state for secondary, highlights
+               - chat-purple (#4B47CE): Day badges, chat elements
+            */
+            --primary-purple: #31135D;
+            --primary-purple-hover: #251047;
+            --primary-purple-dark: #1f0a3d;
+            --secondary-purple: rgb(109, 49, 194);
+            --accent-purple: rgb(140, 104, 238);
+            --selected-purple: rgb(79, 48, 151);
+            --text-purple: rgb(82, 31, 147);
+            --chat-purple: rgb(75, 71, 206);
+
+            /* Secondary Colors */
+            --accent-blue: #4A90E2;
+            --accent-blue-hover: #357ABD;
+
+            /* Status Colors */
+            --success-green: #22C55E;
+            --success-teal: #10B981;
+
+            /* Text Colors */
+            --text-dark: #1a1a1a;
+            --text-gray: #6b7280;
+            --text-light-gray: #9ca3af;
+            --text-medium-gray: #666666;
+            --text-description: #374151;
+
+            /* Background Colors */
+            --bg-white: #ffffff;
+            --bg-light: #f9fafb;
+            --bg-light-gray: #f3f4f6;
+            --bg-lighter-gray: #f5f5f5;
+            --bg-off-white: rgb(252, 250, 255);
+
+            /* Border Colors */
+            --border-color: #e5e7eb;
+            --border-light: #f3f4f6;
+            --border-gray: rgba(107, 107, 107, 0.7);
+            --border-gray-light: #e0e0e0;
+            --border-gray-lighter: #ddd;
+
+            /* Neutral Colors */
+            --white: rgb(255, 255, 255);
+            --black: rgb(0, 0, 0);
+            --off-white: rgb(252, 250, 255);
+
+            /* Info/Link Colors */
+            --info-blue: #2196F3;
+            --info-indigo: #6366F1;
+            --info-indigo-hover: #3b82f6;
+            --bg-info: #f0f7ff;
+
+            /* Subtle/Overlay Colors */
+            --overlay-dark: rgba(0, 0, 0, 0.7);
+            --overlay-light: rgba(255, 255, 255, 0.9);
+            --overlay-light-blur: rgba(255, 255, 255, 0.2);
+
+            /* Gradient Colors */
+            --gradient-purple-primary: linear-gradient(135deg, #31135D 0%, #5a2d8f 100%);
+            --gradient-purple-button: linear-gradient(135deg, #6D31C2 0%, #7C3AED 100%);
+            --gradient-purple-hover: linear-gradient(135deg, #5B2AA5 0%, #6D28D9 100%);
+            --gradient-purple-dark: linear-gradient(135deg, rgba(47, 20, 91, 0.85), rgba(109, 49, 194, 0.75));
+            --gradient-purple-dark-hover: linear-gradient(135deg, rgba(47, 20, 91, 0.9), rgba(109, 49, 194, 0.8));
+
+            /* ========================================
+               FONT VARIABLES
+               ======================================== */
+
+            /* Font Families */
+            --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-dm: 'DM Sans', sans-serif;
+            --font-primary: 'Helvetica', Arial, sans-serif;
+            --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+            /* Font Sizes */
+            --text-xs: 11px;
+            --text-sm: 12px;
+            --text-sm-md: 13px;
+            --text-base: 14px;
+            --text-md: 16px;
+            --text-lg: 18px;
+            --text-xl: 20px;
+            --text-2xl: 28px;
+            --text-3xl: 32px;
+            --text-4xl: 36px;
+
+            /* Font Weights */
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+
+            /* Line Heights */
+            --line-height-tight: 1.2;
+            --line-height-normal: 1.5;
+            --line-height-relaxed: 1.6;
+            --line-height-loose: 1.8;
+
+            /* Letter Spacing */
+            --letter-spacing-normal: normal;
+            --letter-spacing-small: 0.5px;
+            --letter-spacing-medium: 0.05em;
+
+            /* ========================================
+               SPACING VARIABLES
+               ======================================== */
+
+            /* Padding & Margin */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-lg: 16px;
+            --spacing-xl: 20px;
+            --spacing-2xl: 24px;
+            --spacing-3xl: 28px;
+            --spacing-4xl: 32px;
+            --spacing-5xl: 2rem;
+            --spacing-6xl: 2.5rem;
+            --spacing-7xl: 3rem;
+
+            /* Component Spacing */
+            --gap-sm: 0.5rem;
+            --gap-md: 0.75rem;
+            --gap-lg: 1rem;
+            --gap-xl: 1.5rem;
+            --gap-2xl: 2rem;
+            --gap-3xl: 2.5rem;
+
+            /* Padding */
+            --padding-sm: 0.5rem;
+            --padding-md: 0.75rem;
+            --padding-lg: 1rem;
+            --padding-xl: 1.5rem;
+            --padding-2xl: 2rem;
+
+            /* ========================================
+               BORDER RADIUS VARIABLES
+               ======================================== */
+
+            --rounded-sm: 4px;
+            --rounded-md: 6px;
+            --rounded-lg: 8px;
+            --rounded-xl: 12px;
+            --rounded-2xl: 16px;
+            --rounded-full: 50%;
+            --rounded-pill: 20px;
+
+            /* ========================================
+               BREAKPOINT VARIABLES
+               ======================================== */
+
+            --breakpoint-sm: 600px;
+            --breakpoint-md: 768px;
+            --breakpoint-lg: 1024px;
+            --breakpoint-xl: 1080px;
+            --breakpoint-2xl: 1200px;
+            --breakpoint-3xl: 1280px;
+            --breakpoint-max: 1440px;
+
+            /* ========================================
+               SHADOW VARIABLES
+               ======================================== */
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 4px 16px rgba(49, 19, 93, 0.35);
+            --shadow-2xl: 0 6px 24px rgba(49, 19, 93, 0.5);
+            --shadow-purple-sm: 0 2px 4px rgba(49, 19, 93, 0.2);
+            --shadow-purple-md: 0 4px 8px rgba(49, 19, 93, 0.15);
+            --shadow-purple-lg: 0 6px 20px rgba(109, 49, 194, 0.35);
+            --shadow-dark-sm: 0 2px 6px rgba(0, 0, 0, 0.2);
+            --shadow-dark-md: 0 4px 8px rgba(0, 0, 0, 0.25);
+
+            /* ========================================
+               TRANSITION & ANIMATION VARIABLES
+               ======================================== */
+
+            --transition-fast: 0.1s;
+            --transition-base: 0.2s;
+            --transition-slow: 0.3s;
+            --transition-slower: 0.4s;
+
+            --easing-ease: ease;
+            --easing-ease-in: ease-in;
+            --easing-ease-out: ease-out;
+            --easing-ease-in-out: ease-in-out;
+            --easing-linear: linear;
+
+            --animation-duration: 1.5s;
+
+            /* ========================================
+               SIZING VARIABLES
+               ======================================== */
+
+            /* Icon Sizes */
+            --icon-xs: 16px;
+            --icon-sm: 20px;
+            --icon-md: 24px;
+            --icon-lg: 28px;
+            --icon-xl: 32px;
+            --icon-2xl: 36px;
+            --icon-3xl: 60px;
+
+            /* Avatar Sizes */
+            --avatar-sm: 36px;
+            --avatar-md: 48px;
+            --avatar-lg: 80px;
+
+            /* Container Sizes */
+            --container-sm: 640px;
+            --container-md: 900px;
+            --container-lg: 1280px;
+            --container-max: 1440px;
+            --container-width: 95vw;
+
+            /* Form Input Sizes */
+            --input-height: 42px;
+            --input-height-lg: 48px;
+            --input-height-sm: 36px;
+
+            /* ========================================
+               Z-INDEX VARIABLES
+               ======================================== */
+
+            --z-dropdown: 100;
+            --z-sticky: 500;
+            --z-floating: 999;
+            --z-modal: 10000;
+
+            /* ========================================
+               OPACITY VARIABLES
+               ======================================== */
+
+            --opacity-disabled: 0.5;
+            --opacity-hover: 0.8;
+            --opacity-focus: 0.9;
+
+            /* ========================================
+               BORDER VARIABLES
+               ======================================== */
+
+            --border-width-thin: 1px;
+            --border-width-md: 1.5px;
+            --border-width-thick: 2px;
+
+            /* ========================================
+               MAX-WIDTH VARIABLES
+               ======================================== */
+
+            --max-width-sidebar: 380px;
+            --max-width-modal: 400px;
+            --max-width-map: 100%;
+
+            /* ========================================
+               FAVORITES PAGE REDESIGN TOKENS
+               ======================================== */
+
+            /* Primary Colors */
+            --favorites-purple: #6B4EE6;
+            --favorites-purple-light: #F0EBFF;
+            --favorites-purple-dark: #5A3ED5;
+            --favorites-purple-gradient: linear-gradient(135deg, #6B4EE6 0%, #8B6CF5 100%);
+
+            /* Text Colors */
+            --favorites-text-dark: #1a1a2e;
+            --favorites-text-medium: #64748B;
+            --favorites-text-light: #94A3B8;
+
+            /* Background & Border */
+            --favorites-bg: #FAFBFC;
+            --favorites-border: #E8ECF0;
+            --favorites-card-bg: #ffffff;
+
+            /* Status Colors */
+            --favorites-success: #10B981;
+            --favorites-heart: #FF6B5B;
+            --favorites-heart-hover: #e55a4a;
+
+            /* ========================================
+               POPUP REPLICATION PROTOCOL TOKENS
+               Monochromatic purple design system
+               STRICT: NO GREEN, NO YELLOW
+               ======================================== */
+
+            /* Protocol Colors */
+            --protocol-primary: #31135D;
+            --protocol-action: #5B5FCF;
+            --protocol-action-hover: #4A4EBF;
+            --protocol-action-disabled: #B8BAE0;
+            --protocol-secondary: #6D31C2;
+            --protocol-surface: #F7F2FA;
+            --protocol-danger: #DC3545;
+            --protocol-danger-hover: rgba(220, 53, 69, 0.1);
+            --protocol-white: #FFFFFF;
+            --protocol-overlay: rgba(0, 0, 0, 0.5);
+            --protocol-border: #E5E7EB;
+            --protocol-border-light: #E7E0EC;
+            --protocol-text-muted: #6B7280;
+            --protocol-text-secondary: #49454F;
+
+            /* Protocol Spacing (STRICT: 8px, 16px, 24px only) */
+            --protocol-space-sm: 8px;
+            --protocol-space-md: 16px;
+            --protocol-space-lg: 24px;
+
+            /* Protocol Radii */
+            --protocol-radius-button: 100px;
+            --protocol-radius-card: 8px;
+            --protocol-radius-modal: 16px;
+            --protocol-radius-modal-mobile: 24px;
+
+            /* Protocol Transitions */
+            --protocol-transition: 0.2s ease;
+            --protocol-transition-slow: 0.3s ease-out;
+
+            /* ========================================
+               MILTON GLASER - WARM SEMANTIC ALIASES
+               Mapping warmth concepts to official tokens
+               ======================================== */
+
+            /* Hero typography - using clamp for responsive warmth */
+            --font-hero: clamp(56px, 14vw, 80px);
+            --font-hero-weight: 800;
+            --font-hero-tracking: -0.03em;
+
+            /* The golden moment - celebration */
+            --golden: linear-gradient(135deg, #FDE68A 0%, #FCD34D 50%, #FBBF24 100%);
+            --golden-soft: rgba(251, 191, 36, 0.1);
+
+            /* Warm glow effects */
+            --warmth-glow: rgba(109, 49, 194, 0.15);
+
+            /* Surface with warmth */
+            --surface-glow: linear-gradient(135deg, var(--bg-off-white) 0%, #F3E8FF 100%);
+
+            /* Layout */
+            --header-height: 64px;
+            --max-width: 680px;
+
+            /* Touch target - AAA compliant */
+            --touch-min: 48px;
+        }
+
+        /* =================================================
+           FONT LOADING
+           ================================================= */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        /* =================================================
+           RESET + BASE
+           ================================================= */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-inter);
+            font-size: var(--text-md);
+            line-height: var(--line-height-relaxed);
+            color: var(--text-dark);
+            background: var(--bg-light);
+            min-height: 100vh;
+        }
+
+        /* =================================================
+           ANIMATIONS: Breathing, Living, Organic
+           ================================================= */
+
+        /* The heartbeat: gentle, calm, alive */
+        @keyframes breathe {
+            0%, 100% {
+                opacity: 0.9;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.01);
+            }
+        }
+
+        /* The golden glow: warmth that pulses */
+        @keyframes golden-pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 var(--golden-soft);
+            }
+            50% {
+                box-shadow: 0 0 40px 10px var(--golden-soft);
+            }
+        }
+
+        /* Subtle float for signature elements */
+        @keyframes gentle-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        /* Press state: satisfying physical feedback */
+        @keyframes press {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.97); }
+            100% { transform: scale(1); }
+        }
+
+        /* =================================================
+           HEADER: Clean, Unobtrusive
+           ================================================= */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: var(--overlay-light);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            z-index: var(--z-dropdown);
+            display: flex;
+            align-items: center;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: var(--breakpoint-2xl);
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: var(--text-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        /*
+           SIGNATURE ELEMENT: Logo mark with warmth
+           Not a cold square - a living shape
+        */
+        .logo-mark {
+            width: var(--icon-xl);
+            height: var(--icon-xl);
+            background: var(--secondary-purple);
+            border-radius: var(--rounded-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: var(--text-base);
+            font-weight: var(--font-weight-bold);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-mark::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);
+            border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2xl);
+        }
+
+        .header-nav a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: var(--text-base);
+            font-weight: var(--font-weight-medium);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--rounded-lg);
+            min-height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            transition: all var(--transition-base) var(--easing-ease);
+        }
+
+        .header-nav a:hover {
+            color: var(--secondary-purple);
+            background: var(--bg-off-white);
+        }
+
+        .header-avatar {
+            width: var(--spacing-6xl);
+            height: var(--spacing-6xl);
+            border-radius: var(--rounded-full);
+            background: var(--gradient-purple-button);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--text-base);
+            cursor: pointer;
+            transition: transform var(--transition-base) var(--easing-ease);
+        }
+
+        .header-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .header-nav { display: none; }
+        }
+
+        /* =================================================
+           MAIN CONTENT
+           ================================================= */
+        .main {
+            padding-top: calc(var(--header-height) + var(--spacing-2xl));
+            padding-bottom: var(--spacing-6xl);
+            padding-left: var(--spacing-lg);
+            padding-right: var(--spacing-lg);
+        }
+
+        .content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        /* =================================================
+           PAGE HEADER: The Warm Welcome
+
+           COPY: "Your places" - possessive, warm
+           Not "Guest Leases Dashboard"
+           ================================================= */
+        .page-header {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .page-greeting {
+            font-size: var(--text-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-xs);
+            letter-spacing: -0.02em;
+        }
+
+        /*
+           MICROCOPY: Contextual warmth
+           This changes based on state:
+           - All good: "Everything's looking great"
+           - Action needed: "One small thing needs you"
+           - Perfect: "You're all set - just counting down"
+        */
+        .page-context {
+            font-size: var(--text-md);
+            color: var(--text-gray);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .page-context .status-dot {
+            width: var(--spacing-sm);
+            height: var(--spacing-sm);
+            border-radius: var(--rounded-full);
+            background: var(--success-teal);
+            animation: breathe 3s ease-in-out infinite;
+        }
+
+        /* =================================================
+           HERO SECTION: The Typographic Event That Lives
+
+           DESIGN PHILOSOPHY:
+           Paula demanded 72px. I give her 80px.
+           But more importantly: the date BREATHES.
+           It has a subtle glow, a gentle pulse.
+           It's not just information - it's anticipation.
+
+           FULL BLEED on mobile = confidence
+           Sharp top border = conviction
+           Warm glow = humanity
+           ================================================= */
+        .hero {
+            background: var(--bg-white);
+            margin-left: calc(-1 * var(--spacing-lg));
+            margin-right: calc(-1 * var(--spacing-lg));
+            padding: var(--spacing-4xl) var(--spacing-lg) var(--spacing-4xl);
+            margin-bottom: var(--spacing-lg);
+            border-top: var(--spacing-xs) solid var(--secondary-purple);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /*
+           THE GOLDEN MOMENT: When all is well
+           A warm glow that feels earned, not cheap.
+           Like sunlight through a window.
+        */
+        .hero.golden::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--surface-glow);
+            opacity: 0.5;
+            animation: golden-pulse 4s ease-in-out infinite;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (min-width: 768px) {
+            .hero {
+                margin-left: 0;
+                margin-right: 0;
+                border-radius: var(--rounded-2xl);
+                padding: var(--spacing-4xl);
+            }
+        }
+
+        .hero-label {
+            font-size: var(--text-sm-md);
+            font-weight: var(--font-weight-bold);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--secondary-purple);
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        /* Small decorative element - organic, not geometric */
+        .hero-label::before {
+            content: '';
+            width: var(--spacing-md);
+            height: 2px;
+            background: var(--secondary-purple);
+            border-radius: 1px;
+        }
+
+        /*
+           THE DATE: The Star of the Show
+
+           This is where Paula's violence meets Milton's soul.
+           It's huge (80px on desktop).
+           It has presence.
+           And it BREATHES - a subtle glow that pulses.
+        */
+        .hero-date {
+            font-size: var(--font-hero);
+            font-weight: var(--font-hero-weight);
+            letter-spacing: var(--font-hero-tracking);
+            line-height: 0.95;
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-sm);
+            animation: breathe 4s ease-in-out infinite;
+            text-shadow: 0 0 60px var(--warmth-glow);
+        }
+
+        .hero-place {
+            font-size: var(--text-md);
+            color: var(--text-gray);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        /* Hero action - tappable, Jony-approved */
+        .hero-action {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            color: var(--secondary-purple);
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--text-md);
+            text-decoration: none;
+            padding: var(--spacing-sm) 0;
+            min-height: var(--touch-min);
+            transition: all var(--transition-base) var(--easing-ease);
+        }
+
+        .hero-action:hover {
+            color: var(--accent-purple);
+            transform: translateX(var(--spacing-xs));
+        }
+
+        .hero-action svg {
+            width: var(--icon-sm);
+            height: var(--icon-sm);
+            transition: transform var(--transition-base) var(--easing-ease);
+        }
+
+        .hero-action:hover svg {
+            transform: translateX(var(--spacing-xs));
+        }
+
+        /*
+           Hero stats: Warm, conversational
+
+           MICROCOPY:
+           - "nights to go" not "nights remaining"
+           - "stays done" not "stays completed"
+           - "paid so far" not "total payments"
+        */
+        .hero-stats {
+            display: flex;
+            gap: var(--spacing-2xl);
+            margin-top: var(--spacing-2xl);
+            padding-top: var(--spacing-2xl);
+            border-top: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .hero-stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-stat-value {
+            font-size: var(--text-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--secondary-purple);
+        }
+
+        .hero-stat-label {
+            font-size: var(--text-base);
+            color: var(--text-gray);
+        }
+
+        @media (max-width: 480px) {
+            .hero-stats {
+                flex-wrap: wrap;
+                gap: var(--spacing-lg);
+            }
+            .hero-stat {
+                flex: 1 1 45%;
+            }
+        }
+
+        /* =================================================
+           JOURNEY TRACKER: Rhythm, Not Just Progress
+
+           The stages breathe with different energies:
+           - Completed: calm satisfaction (green glow)
+           - Current: anticipation (violet pulse)
+           - Future: quiet patience (muted)
+           ================================================= */
+        .journey {
+            margin-bottom: var(--spacing-6xl);
+            padding: var(--spacing-lg);
+            background: var(--bg-white);
+            border-radius: var(--rounded-2xl);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .journey-track {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            padding: var(--spacing-sm) 0;
+        }
+
+        .journey-track::before {
+            content: '';
+            position: absolute;
+            top: var(--spacing-2xl);
+            left: var(--spacing-4xl);
+            right: var(--spacing-4xl);
+            height: 3px;
+            background: var(--border-color);
+            border-radius: 2px;
+        }
+
+        .journey-fill {
+            position: absolute;
+            top: var(--spacing-2xl);
+            left: var(--spacing-4xl);
+            height: 3px;
+            background: linear-gradient(90deg, var(--success-teal) 0%, var(--secondary-purple) 100%);
+            border-radius: 2px;
+            transition: width 0.8s var(--easing-ease);
+        }
+
+        .journey-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            min-width: 56px;
+        }
+
+        .stage-dot {
+            width: var(--avatar-sm);
+            height: var(--avatar-sm);
+            border-radius: var(--rounded-full);
+            background: var(--bg-white);
+            border: 3px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-base);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-sm);
+            transition: all var(--transition-slow) var(--easing-ease);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stage-dot.done {
+            background: var(--success-teal);
+            border-color: var(--success-teal);
+            color: var(--white);
+            box-shadow: 0 0 0 var(--spacing-xs) rgba(16, 185, 129, 0.1);
+        }
+
+        .stage-dot.now {
+            border-color: var(--secondary-purple);
+            border-width: 3px;
+            color: var(--secondary-purple);
+            animation: breathe 2s ease-in-out infinite;
+            box-shadow: 0 0 0 var(--spacing-xs) var(--warmth-glow);
+        }
+
+        .stage-dot.later {
+            opacity: 0.4;
+        }
+
+        .stage-name {
+            font-size: var(--text-sm-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-gray);
+            text-align: center;
+        }
+
+        .stage-name.done { color: var(--success-teal); }
+        .stage-name.now { color: var(--secondary-purple); }
+
+        @media (max-width: 480px) {
+            .journey-stage { min-width: 44px; }
+            .stage-dot { width: var(--icon-xl); height: var(--icon-xl); font-size: var(--text-sm); }
+            .stage-name { font-size: var(--text-xs); }
+        }
+
+        /* =================================================
+           LEASE CARDS: Progressive Disclosure with Soul
+
+           DESIGN PHILOSOPHY:
+           The card is a container for a RELATIONSHIP.
+           It holds information about a place where someone
+           sleeps, cooks, lives. It deserves warmth.
+
+           The shadow is soft, like fabric.
+           The hover lifts gently, like breathing in.
+           The press compresses satisfyingly.
+           ================================================= */
+        .lease-cards {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        .lease-card {
+            background: var(--bg-white);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--rounded-2xl);
+            overflow: hidden;
+            transition: all var(--transition-slow) var(--easing-ease);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .lease-card:hover {
+            box-shadow: var(--shadow-purple-md);
+            transform: translateY(-2px);
+        }
+
+        .lease-card.open {
+            box-shadow: var(--shadow-purple-lg);
+            border-color: var(--accent-purple);
+        }
+
+        /* Card Toggle - Full touch target, press feedback */
+        .card-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            transition: all var(--transition-fast) var(--easing-ease);
+            min-height: 80px;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+
+        .card-toggle:active {
+            transform: scale(0.99);
+            background: var(--bg-off-white);
+        }
+
+        .card-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        /*
+           Property thumbnail: Warm gradient, organic feel
+           Not a flat image placeholder - a living shape
+        */
+        .card-thumb {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--rounded-lg);
+            background: var(--gradient-purple-button);
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-thumb::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);
+        }
+
+        .card-info h3 {
+            font-size: var(--text-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+
+        /* COPY: "Through July 31" not "Feb 1 - Jul 31" */
+        .card-info p {
+            font-size: var(--text-base);
+            color: var(--text-gray);
+        }
+
+        .card-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .card-chevron {
+            width: var(--touch-min);
+            height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-gray);
+            transition: transform var(--transition-slow) var(--easing-ease);
+        }
+
+        .lease-card.open .card-chevron {
+            transform: rotate(180deg);
+        }
+
+        @media (max-width: 480px) {
+            .card-toggle {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-md);
+            }
+            .card-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        /* =================================================
+           STATUS BADGES: Earned Emotions
+
+           MICROCOPY:
+           - "All set" with warm glow - you earned this
+           - "Heads up" - friendly tap on shoulder
+           - "Needs love" - something needs YOU, not blame
+           ================================================= */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-md) var(--spacing-md);
+            border-radius: var(--rounded-md);
+            font-size: var(--text-sm-md);
+            font-weight: var(--font-weight-bold);
+            white-space: nowrap;
+            transition: all var(--transition-base) var(--easing-ease);
+        }
+
+        .badge svg {
+            width: var(--text-base);
+            height: var(--text-base);
+        }
+
+        /* All good: Earned celebration */
+        .badge.good {
+            background: rgba(16, 185, 129, 0.1);
+            color: #047857;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.1);
+        }
+
+        .badge.good:hover {
+            box-shadow: 0 0 0 var(--spacing-xs) rgba(16, 185, 129, 0.1);
+        }
+
+        /* Heads up: Gentle alert */
+        .badge.heads-up {
+            background: #FEF3C7;
+            color: #B45309;
+        }
+
+        /* Needs love: Never blame */
+        .badge.attention {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        /* Info: Calm fact */
+        .badge.info {
+            background: var(--bg-off-white);
+            color: var(--secondary-purple);
+        }
+
+        /* Neutral: Quiet */
+        .badge.neutral {
+            background: var(--bg-light-gray);
+            color: var(--text-gray);
+        }
+
+        /* =================================================
+           CARD BODY: The Expanded Relationship
+           ================================================= */
+        .card-body {
+            display: none;
+            border-top: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .lease-card.open .card-body {
+            display: block;
+        }
+
+        .card-section {
+            padding: var(--spacing-lg);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .card-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: var(--text-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .section-icon {
+            width: 22px;
+            height: 22px;
+            color: var(--secondary-purple);
+        }
+
+        /* =================================================
+           HOST CARD: A Human, Not a Database Record
+
+           DESIGN PHILOSOPHY:
+           Sarah is not "Host Contact Information."
+           Sarah is the person who trusts you with her space.
+           The card should feel like meeting someone, not
+           reading their LinkedIn profile.
+
+           SIGNATURE ELEMENT: Organic avatar treatment
+           ================================================= */
+        .host-card {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-lg);
+            background: var(--bg-off-white);
+            padding: var(--spacing-lg);
+            border-radius: var(--rounded-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle organic decoration */
+        .host-card::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            background: var(--warmth-glow);
+            border-radius: var(--rounded-full);
+            filter: blur(40px);
+        }
+
+        .host-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--rounded-full);
+            background: linear-gradient(135deg, var(--secondary-purple) 0%, #F97316 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: var(--font-weight-bold);
+            font-size: var(--text-xl);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+            box-shadow: var(--shadow-purple-sm);
+        }
+
+        .host-info {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .host-name {
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            font-size: var(--text-md);
+            margin-bottom: 2px;
+        }
+
+        /* COPY: Warm, not clinical */
+        .host-role {
+            font-size: var(--text-base);
+            color: var(--text-gray);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .contact-links {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--text-base);
+            color: var(--text-gray);
+            text-decoration: none;
+            padding: var(--spacing-xs) 0;
+            min-height: var(--touch-min);
+            transition: color var(--transition-base) var(--easing-ease);
+        }
+
+        .contact-link:hover {
+            color: var(--secondary-purple);
+        }
+
+        .contact-link svg {
+            width: var(--text-lg);
+            height: var(--text-lg);
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 480px) {
+            .host-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        }
+
+        /* =================================================
+           BUTTONS: Confident, Warm Actions
+
+           MICROCOPY:
+           - Lead with verb: "View agreement" not "Agreement"
+           - Friendly urgency: "Pay now" not "Make Payment"
+           ================================================= */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md) var(--spacing-lg);
+            min-height: var(--touch-min);
+            border-radius: var(--rounded-lg);
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-semibold);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all var(--transition-fast) var(--easing-ease);
+            border: none;
+            white-space: nowrap;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn svg {
+            width: var(--text-lg);
+            height: var(--text-lg);
+        }
+
+        .btn.primary {
+            background: var(--secondary-purple);
+            color: var(--white);
+            box-shadow: var(--shadow-purple-sm);
+        }
+
+        .btn.primary:hover {
+            background: var(--accent-purple);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-purple-md);
+        }
+
+        .btn.secondary {
+            background: var(--bg-white);
+            color: var(--text-dark);
+            border: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .btn.secondary:hover {
+            background: var(--bg-off-white);
+            border-color: var(--accent-purple);
+        }
+
+        .btn.ghost {
+            background: transparent;
+            color: var(--text-gray);
+        }
+
+        .btn.ghost:hover {
+            background: var(--bg-off-white);
+            color: var(--secondary-purple);
+        }
+
+        .btn.urgent {
+            background: var(--protocol-danger);
+            color: var(--white);
+        }
+
+        .btn-sm {
+            padding: var(--spacing-sm) var(--spacing-md);
+            min-height: var(--spacing-6xl);
+            font-size: var(--text-base);
+        }
+
+        /* =================================================
+           DOCUMENTS SECTION
+           ================================================= */
+        .doc-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .doc-number {
+            font-size: var(--text-base);
+            color: var(--text-gray);
+            font-family: ui-monospace, monospace;
+        }
+
+        .doc-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+
+        @media (max-width: 480px) {
+            .doc-actions {
+                flex-direction: column;
+            }
+            .doc-actions .btn {
+                width: 100%;
+            }
+        }
+
+        /* =================================================
+           PAYMENT TABLE: Trust Through Clarity
+
+           DESIGN PHILOSOPHY:
+           Dieter was right about progressive disclosure.
+           Show the summary first. Details on demand.
+
+           MICROCOPY:
+           - "When" not "Scheduled Date"
+           - "Paid" with earned checkmark
+           - "Couldn't be processed" not "Failed"
+           ================================================= */
+        .payments-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-lg);
+            background: var(--bg-off-white);
+            border-radius: var(--rounded-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .payments-summary-text {
+            font-size: var(--text-md);
+            color: var(--text-dark);
+        }
+
+        .payments-summary-text strong {
+            color: var(--secondary-purple);
+            font-weight: var(--font-weight-bold);
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: var(--rounded-lg);
+            border: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .pay-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 500px;
+        }
+
+        .pay-table th {
+            text-align: left;
+            padding: var(--spacing-md) var(--spacing-lg);
+            font-size: var(--text-sm-md);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            background: var(--bg-off-white);
+            border-bottom: var(--border-width-thick) solid var(--border-color);
+        }
+
+        .pay-table th.right {
+            text-align: right;
+        }
+
+        .pay-table td {
+            padding: var(--spacing-md) var(--spacing-lg);
+            font-size: var(--text-md);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .pay-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .pay-table tr:hover {
+            background: var(--bg-off-white);
+        }
+
+        .amount {
+            font-weight: var(--font-weight-bold);
+            font-variant-numeric: tabular-nums;
+            text-align: right;
+        }
+
+        .receipt-btn {
+            width: var(--spacing-6xl);
+            height: var(--spacing-6xl);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--secondary-purple);
+            border-radius: var(--rounded-lg);
+            transition: all var(--transition-base) var(--easing-ease);
+        }
+
+        .receipt-btn:hover {
+            background: var(--bg-off-white);
+        }
+
+        /* =================================================
+           STAYS TABLE
+           ================================================= */
+        .stays-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .stays-table th {
+            text-align: left;
+            padding: var(--spacing-md) var(--spacing-lg);
+            font-size: var(--text-sm-md);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            border-bottom: var(--border-width-thick) solid var(--border-color);
+        }
+
+        .stays-table td {
+            padding: var(--spacing-md) var(--spacing-lg);
+            font-size: var(--text-md);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .stays-table tr:hover {
+            background: var(--bg-off-white);
+        }
+
+        .show-more {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            color: var(--secondary-purple);
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-semibold);
+            text-decoration: none;
+            padding: var(--spacing-md) 0;
+            min-height: var(--touch-min);
+            transition: all var(--transition-base) var(--easing-ease);
+        }
+
+        .show-more:hover {
+            color: var(--accent-purple);
+            transform: translateX(var(--spacing-xs));
+        }
+
+        /* =================================================
+           DATE CHANGE REQUESTS
+           ================================================= */
+        .change-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+
+        .change-hint {
+            font-size: var(--text-base);
+            color: var(--text-gray);
+        }
+
+        .change-card {
+            background: var(--bg-off-white);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--rounded-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .change-card.pending {
+            border-left: 3px solid #F59E0B;
+        }
+
+        .change-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr auto;
+            gap: var(--spacing-lg);
+            align-items: center;
+        }
+
+        .change-label {
+            font-size: var(--text-sm-md);
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: 2px;
+        }
+
+        .change-value {
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+        }
+
+        @media (max-width: 640px) {
+            .change-row {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+        }
+
+        /* =================================================
+           THE SURPRISE: Check-in Modal with Warmth
+
+           DESIGN PHILOSOPHY:
+           This is where the interface can DELIGHT.
+           The check-in moment should feel exciting,
+           not bureaucratic. You're going to your place!
+
+           MICROCOPY:
+           - "On my way" not "Notify Host of Arrival"
+           - "I'm here!" with exclamation = celebration
+           ================================================= */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(30, 27, 75, 0.6);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: var(--z-modal);
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-slow) var(--easing-ease);
+            padding: var(--spacing-lg);
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-white);
+            border-radius: var(--rounded-2xl);
+            max-width: 500px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            transform: scale(0.95) translateY(var(--spacing-xl));
+            transition: transform var(--transition-slow) var(--easing-ease);
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .modal-overlay.visible .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-lg);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .modal-title {
+            font-size: var(--text-lg);
+            font-weight: var(--font-weight-bold);
+        }
+
+        .modal-close {
+            width: var(--touch-min);
+            height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-gray);
+            border-radius: var(--rounded-lg);
+            font-size: var(--text-2xl);
+            transition: all var(--transition-base) var(--easing-ease);
+        }
+
+        .modal-close:hover {
+            background: var(--bg-off-white);
+            color: var(--secondary-purple);
+        }
+
+        .modal-body {
+            padding: var(--spacing-lg);
+        }
+
+        .modal-section {
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .modal-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-section-title {
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            color: var(--text-dark);
+        }
+
+        /* Day picker: Warm selection states */
+        .day-picker {
+            display: flex;
+            gap: var(--spacing-sm);
+            overflow-x: auto;
+            padding-bottom: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .day-option {
+            flex: 0 0 auto;
+            min-width: var(--touch-min);
+            min-height: var(--icon-3xl);
+            padding: var(--spacing-sm);
+            border: var(--border-width-thick) solid var(--border-color);
+            border-radius: var(--rounded-lg);
+            background: var(--bg-white);
+            cursor: pointer;
+            text-align: center;
+            transition: all var(--transition-base) var(--easing-ease);
+        }
+
+        .day-option:hover {
+            border-color: var(--accent-purple);
+        }
+
+        .day-option.selected {
+            border-color: var(--secondary-purple);
+            background: var(--bg-off-white);
+        }
+
+        .day-option .day {
+            font-size: var(--text-sm-md);
+            color: var(--text-gray);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .day-option .date {
+            font-size: var(--text-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+        }
+
+        /* Action choices: Big, friendly, exciting */
+        .action-choices {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .action-choice {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            background: var(--bg-off-white);
+            border: var(--border-width-thick) solid var(--border-color);
+            border-radius: var(--rounded-lg);
+            cursor: pointer;
+            transition: all var(--transition-base) var(--easing-ease);
+            text-align: left;
+            min-height: 72px;
+        }
+
+        .action-choice:hover {
+            border-color: var(--secondary-purple);
+            background: var(--bg-off-white);
+            transform: translateY(-2px);
+        }
+
+        .action-choice:active {
+            transform: scale(0.99);
+        }
+
+        .action-choice.primary {
+            background: var(--secondary-purple);
+            border-color: var(--secondary-purple);
+            color: var(--white);
+        }
+
+        .action-choice.primary:hover {
+            background: var(--accent-purple);
+            border-color: var(--accent-purple);
+        }
+
+        .action-icon {
+            width: var(--spacing-6xl);
+            height: var(--spacing-6xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-2xl);
+        }
+
+        .action-text {
+            flex: 1;
+        }
+
+        .action-text strong {
+            display: block;
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-bold);
+        }
+
+        .action-text span {
+            font-size: var(--text-base);
+            opacity: var(--opacity-hover);
+        }
+
+        /* Message area */
+        .message-box {
+            margin-top: var(--spacing-lg);
+        }
+
+        .message-box label {
+            display: block;
+            font-size: var(--text-base);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-gray);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .message-box textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: var(--spacing-lg);
+            border: var(--border-width-thick) solid var(--border-color);
+            border-radius: var(--rounded-lg);
+            font-family: var(--font-inter);
+            font-size: var(--text-md);
+            resize: vertical;
+            transition: border-color var(--transition-base) var(--easing-ease);
+        }
+
+        .message-box textarea:focus {
+            outline: none;
+            border-color: var(--secondary-purple);
+        }
+
+        .message-box .btn {
+            margin-top: var(--spacing-sm);
+            width: 100%;
+        }
+
+        /* =================================================
+           CELEBRATION MODAL: The Golden Moment
+
+           This is where WARMTH fully expresses itself.
+           You did it! The lease is signed! The stay is booked!
+
+           SIGNATURE ELEMENT: The earned celebration
+           Not confetti (cheap), but a warm glow that
+           feels like accomplishment.
+           ================================================= */
+        .celebration {
+            background: var(--bg-white);
+            border-radius: var(--rounded-2xl);
+            max-width: 420px;
+            width: 100%;
+            padding: var(--spacing-4xl);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .celebration-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background: var(--golden);
+            opacity: 0.3;
+        }
+
+        .celebration-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .celebration-icon {
+            width: var(--avatar-lg);
+            height: var(--avatar-lg);
+            border-radius: var(--rounded-full);
+            background: var(--bg-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-lg);
+            font-size: var(--spacing-6xl);
+            box-shadow: 0 8px 24px rgba(251, 191, 36, 0.3);
+            animation: gentle-float 3s ease-in-out infinite;
+        }
+
+        .celebration-title {
+            font-size: var(--text-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .celebration-message {
+            font-size: var(--text-md);
+            color: var(--text-gray);
+            margin-bottom: var(--spacing-2xl);
+            line-height: var(--line-height-relaxed);
+        }
+
+        .celebration-buttons {
+            display: flex;
+            gap: var(--spacing-sm);
+            justify-content: center;
+        }
+
+        /* =================================================
+           EMPTY STATE: Invitation, Not Absence
+
+           MICROCOPY:
+           - "Ready to find your next place?" - invitation
+           - Not "No leases found" - absence
+           ================================================= */
+        .empty-state {
+            background: var(--bg-white);
+            border: var(--border-width-thick) dashed var(--border-color);
+            border-radius: var(--rounded-2xl);
+            padding: var(--spacing-6xl);
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: var(--avatar-lg);
+            height: var(--avatar-lg);
+            border-radius: var(--rounded-full);
+            background: var(--bg-off-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-2xl);
+            font-size: var(--text-4xl);
+        }
+
+        .empty-title {
+            font-size: var(--text-xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .empty-desc {
+            font-size: var(--text-md);
+            color: var(--text-gray);
+            max-width: 320px;
+            margin: 0 auto var(--spacing-2xl);
+        }
+
+        /* =================================================
+           ERROR STATES: Reassurance, Not Blame
+
+           MICROCOPY:
+           - "That didn't go through" not "Transaction Failed"
+           - "No worries" - reassurance
+           - "Let's try again" - invitation to action
+           ================================================= */
+        .error-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            background: #FEE2E2;
+            border-radius: var(--rounded-lg);
+            border-left: var(--spacing-xs) solid var(--protocol-danger);
+        }
+
+        .error-icon {
+            width: var(--icon-md);
+            height: var(--icon-md);
+            color: var(--protocol-danger);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .error-content {
+            flex: 1;
+        }
+
+        .error-title {
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-xs);
+            font-size: var(--text-md);
+        }
+
+        .error-desc {
+            font-size: var(--text-base);
+            color: var(--text-gray);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .error-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        /* =================================================
+           FOOTER: Warm, Confident
+           ================================================= */
+        .footer {
+            background: var(--text-dark);
+            color: var(--white);
+            padding: var(--spacing-4xl) var(--spacing-lg);
+            margin-top: var(--spacing-6xl);
+        }
+
+        .footer-inner {
+            max-width: var(--breakpoint-2xl);
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-2xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .footer-section h4 {
+            font-size: var(--text-base);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-lg);
+            opacity: 0.6;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .footer-section a {
+            display: block;
+            color: var(--white);
+            text-decoration: none;
+            font-size: var(--text-md);
+            padding: var(--spacing-xs) 0;
+            opacity: 0.9;
+            transition: opacity var(--transition-base) var(--easing-ease);
+        }
+
+        .footer-section a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .footer-bottom {
+            padding-top: var(--spacing-2xl);
+            border-top: var(--border-width-thin) solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: var(--text-base);
+            opacity: 0.7;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+
+        .footer-links a {
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .footer-bottom {
+                flex-direction: column;
+                gap: var(--spacing-lg);
+                text-align: center;
+            }
+        }
+
+        /* =================================================
+           ACCESSIBILITY: AAA Compliance
+           ================================================= */
+
+        /* Focus states: Clear, warm */
+        :focus-visible {
+            outline: 3px solid var(--secondary-purple);
+            outline-offset: 2px;
+        }
+
+        /* Reduced motion preference */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            :root {
+                --border-color: #000;
+                --text-gray: #000;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- =================================================
+         HEADER
+         ================================================= -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <div class="logo-mark">SL</div>
+                Split Lease
+            </a>
+            <nav class="header-nav">
+                <a href="#">For Hosts</a>
+                <a href="#">For Guests</a>
+                <a href="#">Help</a>
+            </nav>
+            <div class="header-avatar" aria-label="User menu">JD</div>
+        </div>
+    </header>
+
+    <!-- =================================================
+         MAIN CONTENT
+         ================================================= -->
+    <main class="main">
+        <div class="content">
+
+            <!-- =================================================
+                 PAGE HEADER: The Warm Welcome
+
+                 MICROCOPY: "Your places" not "Guest Dashboard"
+                 Status dot pulses to show all is well.
+                 ================================================= -->
+            <div class="page-header">
+                <h1 class="page-greeting">Your places</h1>
+                <p class="page-context">
+                    <span class="status-dot" aria-hidden="true"></span>
+                    Everything's looking great
+                </p>
+            </div>
+
+            <!-- =================================================
+                 HERO: The Typographic Event That Lives
+
+                 DESIGN: 80px date that BREATHES.
+                 The golden class adds warm glow when all is well.
+
+                 MICROCOPY:
+                 - "Your next stay" - anticipation
+                 - "See stay details" with arrow - invitation
+                 - Stats use friendly language: "nights to go"
+                 ================================================= -->
+            <section class="hero golden" aria-label="Your next stay">
+                <div class="hero-content">
+                    <div class="hero-label">Your next stay</div>
+
+                    <!--
+                         THE DATE: This is the star.
+                         80px, breathing, with subtle glow.
+                         The user should FEEL the countdown.
+                    -->
+                    <div class="hero-date" aria-live="polite">Feb 15</div>
+
+                    <div class="hero-place">Chelsea 2BR at 245 W 23rd St, Unit 5A</div>
+
+                    <a href="#" class="hero-action">
+                        See stay details
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </a>
+
+                    <!--
+                         STATS: Warm, conversational
+                         "nights to go" not "nights remaining"
+                         "stays done" not "stays completed"
+                    -->
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <div class="hero-stat-value">12</div>
+                            <div class="hero-stat-label">nights to go</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-stat-value">3</div>
+                            <div class="hero-stat-label">stays done</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-stat-value">$4,200</div>
+                            <div class="hero-stat-label">paid so far</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================
+                 JOURNEY TRACKER: Progress with Personality
+
+                 Each stage has different energy:
+                 - Done: calm green glow
+                 - Now: violet breathing pulse
+                 - Later: patient, muted
+
+                 MICROCOPY: Past tense for done, present for now
+                 "Matched" "Signed" "Paid" "Staying" "Regular"
+                 ================================================= -->
+            <section class="journey" aria-label="Lease progress">
+                <div class="journey-track">
+                    <div class="journey-fill" style="width: 65%;" aria-hidden="true"></div>
+
+                    <div class="journey-stage">
+                        <div class="stage-dot done" aria-label="Completed">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="stage-name done">Matched</div>
+                    </div>
+
+                    <div class="journey-stage">
+                        <div class="stage-dot done" aria-label="Completed">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="stage-name done">Signed</div>
+                    </div>
+
+                    <div class="journey-stage">
+                        <div class="stage-dot done" aria-label="Completed">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="stage-name done">Paid</div>
+                    </div>
+
+                    <div class="journey-stage">
+                        <div class="stage-dot now" aria-current="step">4</div>
+                        <div class="stage-name now">Staying</div>
+                    </div>
+
+                    <div class="journey-stage">
+                        <div class="stage-dot later">5</div>
+                        <div class="stage-name">Regular</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================
+                 LEASE CARDS: Progressive Disclosure with Soul
+                 ================================================= -->
+            <div class="lease-cards">
+
+                <!-- =================================================
+                     ACTIVE LEASE - Expanded
+
+                     This is the main experience. When expanded,
+                     it reveals the full relationship: host, documents,
+                     payments, stays, date changes.
+                     ================================================= -->
+                <article class="lease-card open" id="lease-1">
+                    <button class="card-toggle"
+                            onclick="toggleCard('lease-1')"
+                            aria-expanded="true"
+                            aria-controls="lease-1-body">
+                        <div class="card-left">
+                            <div class="card-thumb" aria-hidden="true"></div>
+                            <div class="card-info">
+                                <h3>Chelsea 2BR</h3>
+                                <p>Through July 31</p>
+                            </div>
+                        </div>
+                        <div class="card-right">
+                            <!--
+                                 STATUS BADGE: "All set" with earned glow
+                                 Not "Active" (clinical) - "All set" (celebration)
+                            -->
+                            <span class="badge good">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                                All set
+                            </span>
+                            <div class="card-chevron" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </button>
+
+                    <div class="card-body" id="lease-1-body">
+                        <!-- =================================================
+                             HOST SECTION: A Human, Not a Database Record
+
+                             SIGNATURE ELEMENT: Organic warmth
+                             The card has a subtle glow that makes
+                             Sarah feel like a real person, not a contact.
+
+                             MICROCOPY: "Sarah's got you covered"
+                             ================================================= -->
+                        <div class="card-section">
+                            <h4 class="section-title">
+                                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
+                                Your host
+                            </h4>
+                            <div class="host-card">
+                                <div class="host-avatar" aria-hidden="true">SM</div>
+                                <div class="host-info">
+                                    <div class="host-name">Sarah Mitchell</div>
+                                    <div class="host-role">Usually responds within a few hours</div>
+                                    <div class="contact-links">
+                                        <a href="tel:+12125551234" class="contact-link">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                                            </svg>
+                                            (212) 555-1234
+                                        </a>
+                                        <a href="mailto:sarah@example.com" class="contact-link">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                                <polyline points="22,6 12,13 2,6"/>
+                                            </svg>
+                                            sarah@example.com
+                                        </a>
+                                        <a href="#" class="contact-link">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                                <circle cx="12" cy="10" r="3"/>
+                                            </svg>
+                                            245 W 23rd St, Unit 5A, New York
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DOCUMENTS SECTION -->
+                        <div class="card-section">
+                            <h4 class="section-title">
+                                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                                Your agreement
+                            </h4>
+                            <div class="doc-header">
+                                <span class="doc-number">SL-2026-00421</span>
+                                <span class="badge good">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                        <polyline points="22 4 12 14.01 9 11.01"/>
+                                    </svg>
+                                    Signed
+                                </span>
+                            </div>
+                            <div class="doc-actions">
+                                <button class="btn secondary">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                    </svg>
+                                    View agreement
+                                </button>
+                                <button class="btn secondary">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                        <line x1="16" y1="2" x2="16" y2="6"/>
+                                        <line x1="8" y1="2" x2="8" y2="6"/>
+                                    </svg>
+                                    Change dates
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- =================================================
+                             PAYMENTS SECTION: Trust Through Clarity
+
+                             MICROCOPY: Progress language
+                             "You're a third of the way there" - celebration
+                             Not "2 of 6 payments complete" - clinical
+                             ================================================= -->
+                        <div class="card-section">
+                            <h4 class="section-title">
+                                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                                    <line x1="1" y1="10" x2="23" y2="10"/>
+                                </svg>
+                                Payments
+                            </h4>
+
+                            <div class="payments-summary">
+                                <span class="payments-summary-text">
+                                    You're <strong>a third</strong> of the way there. Next due Apr 1.
+                                </span>
+                                <button class="btn secondary btn-sm">See all</button>
+                            </div>
+
+                            <div class="table-wrap">
+                                <table class="pay-table">
+                                    <thead>
+                                        <tr>
+                                            <th>When</th>
+                                            <th>Paid</th>
+                                            <th class="right">Amount</th>
+                                            <th>Status</th>
+                                            <th><span class="visually-hidden">Receipt</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Feb 1</td>
+                                            <td>Jan 30</td>
+                                            <td class="amount">$2,750</td>
+                                            <td><span class="badge good">Paid</span></td>
+                                            <td>
+                                                <button class="receipt-btn" aria-label="Download Feb 1 receipt">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                                        <polyline points="7 10 12 15 17 10"/>
+                                                        <line x1="12" y1="15" x2="12" y2="3"/>
+                                                    </svg>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Mar 1</td>
+                                            <td>Feb 28</td>
+                                            <td class="amount">$2,250</td>
+                                            <td><span class="badge good">Paid</span></td>
+                                            <td>
+                                                <button class="receipt-btn" aria-label="Download Mar 1 receipt">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                                        <polyline points="7 10 12 15 17 10"/>
+                                                        <line x1="12" y1="15" x2="12" y2="3"/>
+                                                    </svg>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Apr 1</td>
+                                            <td>-</td>
+                                            <td class="amount">$2,250</td>
+                                            <td><span class="badge heads-up">Due Apr 1</span></td>
+                                            <td>-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- =================================================
+                             STAYS SECTION
+
+                             MICROCOPY:
+                             - "Week 1" not "Stay 1"
+                             - "Done" not "Completed"
+                             - "Coming up" not "Upcoming"
+                             ================================================= -->
+                        <div class="card-section">
+                            <h4 class="section-title">
+                                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="16" y1="2" x2="16" y2="6"/>
+                                    <line x1="8" y1="2" x2="8" y2="6"/>
+                                    <line x1="3" y1="10" x2="21" y2="10"/>
+                                </svg>
+                                Your stays
+                            </h4>
+                            <table class="stays-table">
+                                <thead>
+                                    <tr>
+                                        <th>Week</th>
+                                        <th>Dates</th>
+                                        <th>Status</th>
+                                        <th><span class="visually-hidden">Actions</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Week 1</td>
+                                        <td>Feb 1 - 7</td>
+                                        <td><span class="badge good">Done</span></td>
+                                        <td><button class="btn ghost btn-sm">See review</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Week 2</td>
+                                        <td>Feb 8 - 14</td>
+                                        <td><span class="badge good">Done</span></td>
+                                        <td><button class="btn ghost btn-sm">See review</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Week 3</td>
+                                        <td>Feb 15 - 21</td>
+                                        <td><span class="badge info">Coming up</span></td>
+                                        <td><button class="btn primary btn-sm" onclick="openCheckin()">Check in</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Week 4</td>
+                                        <td>Feb 22 - 28</td>
+                                        <td><span class="badge neutral">Scheduled</span></td>
+                                        <td>-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <a href="#" class="show-more">
+                                Show all stays
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                                    <polyline points="9 18 15 12 9 6"/>
+                                </svg>
+                            </a>
+                        </div>
+
+                        <!-- DATE CHANGES SECTION -->
+                        <div class="card-section">
+                            <h4 class="section-title">
+                                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M17 1l4 4-4 4"/>
+                                    <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+                                    <path d="M7 23l-4-4 4-4"/>
+                                    <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+                                </svg>
+                                Date changes
+                            </h4>
+                            <div class="change-header">
+                                <span class="change-hint">Need to change your dates?</span>
+                                <button class="btn primary btn-sm">Request change</button>
+                            </div>
+
+                            <div class="change-card pending">
+                                <div class="change-row">
+                                    <div>
+                                        <div class="change-label">From</div>
+                                        <div class="change-value">You</div>
+                                    </div>
+                                    <div>
+                                        <div class="change-label">Request</div>
+                                        <div class="change-value">Move Week 5 to Week 6</div>
+                                    </div>
+                                    <div>
+                                        <span class="badge heads-up">Waiting for response</span>
+                                    </div>
+                                    <div>
+                                        <button class="btn ghost btn-sm">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="change-card">
+                                <div class="change-row">
+                                    <div>
+                                        <div class="change-label">From</div>
+                                        <div class="change-value">Sarah</div>
+                                    </div>
+                                    <div>
+                                        <div class="change-label">Request</div>
+                                        <div class="change-value">Moved Week 2 to Week 3</div>
+                                    </div>
+                                    <div>
+                                        <span class="badge good">Accepted</span>
+                                    </div>
+                                    <div style="color: var(--text-gray); font-size: var(--text-base);">Jan 28</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HELP SECTION -->
+                        <div class="card-section" style="text-align: center;">
+                            <button class="btn urgent">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                    <line x1="12" y1="9" x2="12" y2="13"/>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                                </svg>
+                                Report an issue
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- =================================================
+                     PAST LEASE - Collapsed
+                     ================================================= -->
+                <article class="lease-card" id="lease-2">
+                    <button class="card-toggle"
+                            onclick="toggleCard('lease-2')"
+                            aria-expanded="false"
+                            aria-controls="lease-2-body">
+                        <div class="card-left">
+                            <div class="card-thumb" style="background: linear-gradient(135deg, #F472B6 0%, #EC4899 100%);" aria-hidden="true"></div>
+                            <div class="card-info">
+                                <h3>Williamsburg Loft</h3>
+                                <p>Ended January 31</p>
+                            </div>
+                        </div>
+                        <div class="card-right">
+                            <span class="badge neutral">Completed</span>
+                            <div class="card-chevron" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </button>
+
+                    <div class="card-body" id="lease-2-body">
+                        <div class="card-section" style="text-align: center; padding: var(--spacing-4xl);">
+                            <p style="color: var(--text-gray); margin-bottom: var(--spacing-lg); font-size: var(--text-md);">
+                                This lease wrapped up on January 31. All your documents and payment records are saved.
+                            </p>
+                            <div class="doc-actions" style="justify-content: center;">
+                                <button class="btn secondary">View documents</button>
+                                <button class="btn secondary">Payment history</button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- =================================================
+         CHECK-IN MODAL: Where Delight Happens
+
+         DESIGN PHILOSOPHY:
+         This is the moment to surprise and delight.
+         The user is going to their place! Exciting!
+
+         MICROCOPY:
+         - "On my way" not "Notify Host of Arrival"
+         - "I'm here!" with exclamation - celebration
+         ================================================= -->
+    <div class="modal-overlay" id="checkin-modal" role="dialog" aria-modal="true" aria-labelledby="checkin-title">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="checkin-title">Check in for Week 3</h3>
+                <button class="modal-close" onclick="closeCheckin()" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <div class="modal-section-title">
+                        <span aria-hidden="true">&#128663;</span>
+                        When are you arriving?
+                    </div>
+
+                    <div class="day-picker" role="listbox" aria-label="Select arrival day">
+                        <div class="day-option" role="option" tabindex="0">
+                            <div class="day">Sat</div>
+                            <div class="date">15</div>
+                        </div>
+                        <div class="day-option selected" role="option" tabindex="0" aria-selected="true">
+                            <div class="day">Sun</div>
+                            <div class="date">16</div>
+                        </div>
+                        <div class="day-option" role="option" tabindex="0">
+                            <div class="day">Mon</div>
+                            <div class="date">17</div>
+                        </div>
+                        <div class="day-option" role="option" tabindex="0">
+                            <div class="day">Tue</div>
+                            <div class="date">18</div>
+                        </div>
+                        <div class="day-option" role="option" tabindex="0">
+                            <div class="day">Wed</div>
+                            <div class="date">19</div>
+                        </div>
+                        <div class="day-option" role="option" tabindex="0">
+                            <div class="day">Thu</div>
+                            <div class="date">20</div>
+                        </div>
+                        <div class="day-option" role="option" tabindex="0">
+                            <div class="day">Fri</div>
+                            <div class="date">21</div>
+                        </div>
+                    </div>
+
+                    <div class="action-choices">
+                        <button class="action-choice">
+                            <div class="action-icon" aria-hidden="true">&#128663;</div>
+                            <div class="action-text">
+                                <strong>On my way</strong>
+                                <span>Let Sarah know you're heading over</span>
+                            </div>
+                        </button>
+                        <button class="action-choice primary">
+                            <div class="action-icon" aria-hidden="true">&#127968;</div>
+                            <div class="action-text">
+                                <strong>I'm here!</strong>
+                                <span>Confirm you've arrived at the place</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="message-box">
+                        <label for="arrival-note">Add a note for Sarah (optional)</label>
+                        <textarea id="arrival-note" placeholder="E.g., Running a bit late, should be there by 4pm..."></textarea>
+                        <button class="btn secondary">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <line x1="22" y1="2" x2="11" y2="13"/>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                            </svg>
+                            Send message
+                        </button>
+                    </div>
+                </div>
+
+                <div class="modal-section">
+                    <div class="modal-section-title">
+                        <span aria-hidden="true">&#128682;</span>
+                        When you're leaving
+                    </div>
+
+                    <div class="action-choices">
+                        <button class="action-choice">
+                            <div class="action-icon" aria-hidden="true">&#128248;</div>
+                            <div class="action-text">
+                                <strong>Share checkout photos</strong>
+                                <span>Show the place is in good shape</span>
+                            </div>
+                        </button>
+                        <button class="action-choice">
+                            <div class="action-icon" aria-hidden="true">&#128230;</div>
+                            <div class="action-text">
+                                <strong>Leaving some things</strong>
+                                <span>Let Sarah know about stored items</span>
+                            </div>
+                        </button>
+                        <button class="action-choice">
+                            <div class="action-icon" aria-hidden="true">&#11088;</div>
+                            <div class="action-text">
+                                <strong>Leave a review</strong>
+                                <span>How was your stay with Sarah?</span>
+                            </div>
+                        </button>
+                        <button class="action-choice primary">
+                            <div class="action-icon" aria-hidden="true">&#128075;</div>
+                            <div class="action-text">
+                                <strong>I'm heading out</strong>
+                                <span>Confirm you've left the place</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================================================
+         CELEBRATION MODAL: The Golden Moment
+
+         SIGNATURE ELEMENT: Earned warmth
+         Not cheap confetti. A genuine glow of accomplishment.
+         ================================================= -->
+    <div class="modal-overlay" id="celebration-modal" role="dialog" aria-modal="true" aria-labelledby="celebration-title">
+        <div class="celebration">
+            <div class="celebration-bg" aria-hidden="true"></div>
+            <div class="celebration-content">
+                <div class="celebration-icon" aria-hidden="true">&#127881;</div>
+                <h3 class="celebration-title" id="celebration-title">You're all set!</h3>
+                <p class="celebration-message">
+                    Your agreement with Sarah is signed and ready. Your first stay begins February 15.
+                </p>
+                <div class="celebration-buttons">
+                    <button class="btn primary" onclick="closeCelebration()">See my lease</button>
+                    <button class="btn secondary" onclick="closeCelebration()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================================================
+         ERROR STATE EXAMPLE (Hidden)
+
+         MICROCOPY:
+         - "That didn't go through" - neutral, not blaming
+         - "No worries" - reassurance
+         - "Let's try again?" - invitation
+         ================================================= -->
+    <div style="display: none;" id="error-example">
+        <div class="error-notice">
+            <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <div class="error-content">
+                <div class="error-title">That payment didn't go through</div>
+                <div class="error-desc">No worries - your card wasn't charged. Let's try again?</div>
+                <div class="error-actions">
+                    <button class="btn primary btn-sm">Try again</button>
+                    <button class="btn ghost btn-sm">Contact support</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================================================
+         EMPTY STATE EXAMPLE (Hidden)
+
+         MICROCOPY:
+         - "Ready to find your next place?" - invitation
+         - Not "No leases found" - absence
+         ================================================= -->
+    <div style="display: none;" id="empty-example">
+        <div class="empty-state">
+            <div class="empty-icon" aria-hidden="true">&#127968;</div>
+            <h3 class="empty-title">Ready to find your next place?</h3>
+            <p class="empty-desc">
+                Flexible rentals that fit your schedule. We'll help you get set up.
+            </p>
+            <button class="btn primary">Browse places</button>
+        </div>
+    </div>
+
+    <!-- =================================================
+         FOOTER
+         ================================================= -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>For Hosts</h4>
+                    <a href="#">List your place</a>
+                    <a href="#">Host dashboard</a>
+                    <a href="#">Host resources</a>
+                </div>
+                <div class="footer-section">
+                    <h4>For Guests</h4>
+                    <a href="#">Find a rental</a>
+                    <a href="#">How it works</a>
+                    <a href="#">Guest resources</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <a href="#">About us</a>
+                    <a href="#">Blog</a>
+                    <a href="#">Careers</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <a href="#">Help center</a>
+                    <a href="#">Contact us</a>
+                    <a href="#">Safety</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div>&copy; 2026 Split Lease</div>
+                <div class="footer-links">
+                    <a href="#">Terms</a>
+                    <a href="#">Privacy</a>
+                    <a href="#">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- =================================================
+         JAVASCRIPT: Minimal, Accessible Interactions
+         ================================================= -->
+    <script>
+        function toggleCard(id) {
+            const card = document.getElementById(id);
+            const toggle = card.querySelector('.card-toggle');
+            const isOpen = card.classList.toggle('open');
+            toggle.setAttribute('aria-expanded', isOpen);
+        }
+
+        function openCheckin() {
+            const modal = document.getElementById('checkin-modal');
+            modal.classList.add('visible');
+            document.body.style.overflow = 'hidden';
+            // Focus first interactive element
+            modal.querySelector('.modal-close').focus();
+        }
+
+        function closeCheckin() {
+            const modal = document.getElementById('checkin-modal');
+            modal.classList.remove('visible');
+            document.body.style.overflow = '';
+        }
+
+        function openCelebration() {
+            const modal = document.getElementById('celebration-modal');
+            modal.classList.add('visible');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCelebration() {
+            const modal = document.getElementById('celebration-modal');
+            modal.classList.remove('visible');
+            document.body.style.overflow = '';
+        }
+
+        // Close modals on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('visible');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        // Close modals on Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.visible').forEach(modal => {
+                    modal.classList.remove('visible');
+                });
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Day picker selection
+        document.querySelectorAll('.day-option').forEach(option => {
+            option.addEventListener('click', function() {
+                this.parentElement.querySelectorAll('.day-option').forEach(o => {
+                    o.classList.remove('selected');
+                    o.setAttribute('aria-selected', 'false');
+                });
+                this.classList.add('selected');
+                this.setAttribute('aria-selected', 'true');
+            });
+
+            // Keyboard support
+            option.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        });
+    </script>
+
+    <!-- =================================================
+         VISUALLY HIDDEN UTILITY (for accessibility)
+         ================================================= -->
+    <style>
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</body>
+</html>

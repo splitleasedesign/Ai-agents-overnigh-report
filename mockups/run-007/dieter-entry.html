@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Leases - Split Lease</title>
+    <style>
+        /* =============================================================================
+           DIETER RAMS - RUN 007 ENTRY
+           EVOLVED MINIMALISM: Knowing When to Stop Removing
+
+           PHILOSOPHY SHIFT:
+           Naive minimalism asks: "What can I remove?"
+           Evolved minimalism asks: "Would removal export cognitive work to users?"
+
+           STYLE GUIDE INTEGRATION:
+           This version uses the official Split Lease Design System tokens
+           while maintaining minimalist principles. Every value references
+           a CSS variable from the production codebase.
+
+           WHAT I CHOSE TO KEEP (AND WHY):
+
+           1. HERO DATE - Answers "When is my next stay?" in 0.5 seconds
+              This is the #1 reason guests visit this page. It MUST dominate.
+
+           2. COLLAPSED PAYMENT STATUS - Answers "Am I in good standing?" without tap
+              Two questions answered in collapsed state = no forced expansion for basics.
+
+           3. PAYMENT TABLE WITH NEXT-PAYMENT EMPHASIS - Financial clarity is non-negotiable
+              But now the NEXT payment has visual weight so users don't calculate.
+
+           4. DIFFERENTIATED ACTION BUTTONS - Consequence gradients deserve representation
+              "Request Date Change" (consequential) vs "Message Host" (routine) differ.
+
+           5. HOST CONTACT VISIBLE ON EXPAND - Problems need immediate resolution paths
+              Hiding contact behind another tap fails users at their moment of need.
+
+           6. DOCUMENT LINKS INLINE - Legal access is requirement, not feature
+
+           WHAT I REMOVED (AND WHY):
+
+           - Flexibility score: Gamification, not task completion
+           - Progress tracker: Gamification disguised as information
+           - Gradient accent bars: Decoration saying "this was designed"
+           - Celebration animations: Removed, BUT replaced with subtle confirmation
+           - Redundant status indicators: State once, trust users to find it
+           - Hero meta stats: Distraction from the one answer that matters
+
+           THE THRESHOLD TEST:
+           "Does removal force users to work harder, remember more, or seek elsewhere?"
+           If yes, the removal crosses the line from restraint into harm.
+
+           ============================================================================= */
+
+        /* =============================================================================
+           SPLIT LEASE DESIGN SYSTEM - OFFICIAL PRODUCTION TOKENS
+           ============================================================================= */
+
+        :root {
+            /* ========================================
+               COLOR VARIABLES
+               ======================================== */
+
+            /* Primary Colors
+               Usage Guide:
+               - primary-purple (#31135D): Brand color, headings, important UI
+               - primary-purple-hover (#251047): Hover state for primary
+               - secondary-purple (#6D31C2): Interactive buttons, links, CTAs
+               - accent-purple (#8C68EE): Hover state for secondary, highlights
+               - chat-purple (#4B47CE): Day badges, chat elements
+            */
+            --primary-purple: #31135D;
+            --primary-purple-hover: #251047;
+            --primary-purple-dark: #1f0a3d;
+            --secondary-purple: rgb(109, 49, 194);
+            --accent-purple: rgb(140, 104, 238);
+            --selected-purple: rgb(79, 48, 151);
+            --text-purple: rgb(82, 31, 147);
+            --chat-purple: rgb(75, 71, 206);
+
+            /* Secondary Colors */
+            --accent-blue: #4A90E2;
+            --accent-blue-hover: #357ABD;
+
+            /* Status Colors */
+            --success-green: #22C55E;
+            --success-teal: #10B981;
+
+            /* Text Colors */
+            --text-dark: #1a1a1a;
+            --text-gray: #6b7280;
+            --text-light-gray: #9ca3af;
+            --text-medium-gray: #666666;
+            --text-description: #374151;
+
+            /* Background Colors */
+            --bg-white: #ffffff;
+            --bg-light: #f9fafb;
+            --bg-light-gray: #f3f4f6;
+            --bg-lighter-gray: #f5f5f5;
+            --bg-off-white: rgb(252, 250, 255);
+
+            /* Border Colors */
+            --border-color: #e5e7eb;
+            --border-light: #f3f4f6;
+            --border-gray: rgba(107, 107, 107, 0.7);
+            --border-gray-light: #e0e0e0;
+            --border-gray-lighter: #ddd;
+
+            /* Neutral Colors */
+            --white: rgb(255, 255, 255);
+            --black: rgb(0, 0, 0);
+            --off-white: rgb(252, 250, 255);
+
+            /* Info/Link Colors */
+            --info-blue: #2196F3;
+            --info-indigo: #6366F1;
+            --info-indigo-hover: #3b82f6;
+            --bg-info: #f0f7ff;
+
+            /* Subtle/Overlay Colors */
+            --overlay-dark: rgba(0, 0, 0, 0.7);
+            --overlay-light: rgba(255, 255, 255, 0.9);
+            --overlay-light-blur: rgba(255, 255, 255, 0.2);
+
+            /* Gradient Colors */
+            --gradient-purple-primary: linear-gradient(135deg, #31135D 0%, #5a2d8f 100%);
+            --gradient-purple-button: linear-gradient(135deg, #6D31C2 0%, #7C3AED 100%);
+            --gradient-purple-hover: linear-gradient(135deg, #5B2AA5 0%, #6D28D9 100%);
+            --gradient-purple-dark: linear-gradient(135deg, rgba(47, 20, 91, 0.85), rgba(109, 49, 194, 0.75));
+            --gradient-purple-dark-hover: linear-gradient(135deg, rgba(47, 20, 91, 0.9), rgba(109, 49, 194, 0.8));
+
+            /* ========================================
+               FONT VARIABLES
+               ======================================== */
+
+            /* Font Families */
+            --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-dm: 'DM Sans', sans-serif;
+            --font-primary: 'Helvetica', Arial, sans-serif;
+            --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+            /* Font Sizes */
+            --text-xs: 11px;
+            --text-sm: 12px;
+            --text-sm-md: 13px;
+            --text-base: 14px;
+            --text-md: 16px;
+            --text-lg: 18px;
+            --text-xl: 20px;
+            --text-2xl: 28px;
+            --text-3xl: 32px;
+            --text-4xl: 36px;
+
+            /* Font Weights */
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+
+            /* Line Heights */
+            --line-height-tight: 1.2;
+            --line-height-normal: 1.5;
+            --line-height-relaxed: 1.6;
+            --line-height-loose: 1.8;
+
+            /* Letter Spacing */
+            --letter-spacing-normal: normal;
+            --letter-spacing-small: 0.5px;
+            --letter-spacing-medium: 0.05em;
+
+            /* ========================================
+               SPACING VARIABLES
+               ======================================== */
+
+            /* Padding & Margin */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-lg: 16px;
+            --spacing-xl: 20px;
+            --spacing-2xl: 24px;
+            --spacing-3xl: 28px;
+            --spacing-4xl: 32px;
+            --spacing-5xl: 2rem;
+            --spacing-6xl: 2.5rem;
+            --spacing-7xl: 3rem;
+
+            /* Component Spacing */
+            --gap-sm: 0.5rem;
+            --gap-md: 0.75rem;
+            --gap-lg: 1rem;
+            --gap-xl: 1.5rem;
+            --gap-2xl: 2rem;
+            --gap-3xl: 2.5rem;
+
+            /* Padding */
+            --padding-sm: 0.5rem;
+            --padding-md: 0.75rem;
+            --padding-lg: 1rem;
+            --padding-xl: 1.5rem;
+            --padding-2xl: 2rem;
+
+            /* ========================================
+               BORDER RADIUS VARIABLES
+               ======================================== */
+
+            --rounded-sm: 4px;
+            --rounded-md: 6px;
+            --rounded-lg: 8px;
+            --rounded-xl: 12px;
+            --rounded-2xl: 16px;
+            --rounded-full: 50%;
+            --rounded-pill: 20px;
+
+            /* ========================================
+               BREAKPOINT VARIABLES
+               ======================================== */
+
+            --breakpoint-sm: 600px;
+            --breakpoint-md: 768px;
+            --breakpoint-lg: 1024px;
+            --breakpoint-xl: 1080px;
+            --breakpoint-2xl: 1200px;
+            --breakpoint-3xl: 1280px;
+            --breakpoint-max: 1440px;
+
+            /* ========================================
+               SHADOW VARIABLES
+               ======================================== */
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 4px 16px rgba(49, 19, 93, 0.35);
+            --shadow-2xl: 0 6px 24px rgba(49, 19, 93, 0.5);
+            --shadow-purple-sm: 0 2px 4px rgba(49, 19, 93, 0.2);
+            --shadow-purple-md: 0 4px 8px rgba(49, 19, 93, 0.15);
+            --shadow-purple-lg: 0 6px 20px rgba(109, 49, 194, 0.35);
+            --shadow-dark-sm: 0 2px 6px rgba(0, 0, 0, 0.2);
+            --shadow-dark-md: 0 4px 8px rgba(0, 0, 0, 0.25);
+
+            /* ========================================
+               TRANSITION & ANIMATION VARIABLES
+               ======================================== */
+
+            --transition-fast: 0.1s;
+            --transition-base: 0.2s;
+            --transition-slow: 0.3s;
+            --transition-slower: 0.4s;
+
+            --easing-ease: ease;
+            --easing-ease-in: ease-in;
+            --easing-ease-out: ease-out;
+            --easing-ease-in-out: ease-in-out;
+            --easing-linear: linear;
+
+            --animation-duration: 1.5s;
+
+            /* ========================================
+               SIZING VARIABLES
+               ======================================== */
+
+            /* Icon Sizes */
+            --icon-xs: 16px;
+            --icon-sm: 20px;
+            --icon-md: 24px;
+            --icon-lg: 28px;
+            --icon-xl: 32px;
+            --icon-2xl: 36px;
+            --icon-3xl: 60px;
+
+            /* Avatar Sizes */
+            --avatar-sm: 36px;
+            --avatar-md: 48px;
+            --avatar-lg: 80px;
+
+            /* Container Sizes */
+            --container-sm: 640px;
+            --container-md: 900px;
+            --container-lg: 1280px;
+            --container-max: 1440px;
+            --container-width: 95vw;
+
+            /* Form Input Sizes */
+            --input-height: 42px;
+            --input-height-lg: 48px;
+            --input-height-sm: 36px;
+
+            /* ========================================
+               Z-INDEX VARIABLES
+               ======================================== */
+
+            --z-dropdown: 100;
+            --z-sticky: 500;
+            --z-floating: 999;
+            --z-modal: 10000;
+
+            /* ========================================
+               OPACITY VARIABLES
+               ======================================== */
+
+            --opacity-disabled: 0.5;
+            --opacity-hover: 0.8;
+            --opacity-focus: 0.9;
+
+            /* ========================================
+               BORDER VARIABLES
+               ======================================== */
+
+            --border-width-thin: 1px;
+            --border-width-md: 1.5px;
+            --border-width-thick: 2px;
+
+            /* ========================================
+               MAX-WIDTH VARIABLES
+               ======================================== */
+
+            --max-width-sidebar: 380px;
+            --max-width-modal: 400px;
+            --max-width-map: 100%;
+
+            /* ========================================
+               FAVORITES PAGE REDESIGN TOKENS
+               ======================================== */
+
+            /* Primary Colors */
+            --favorites-purple: #6B4EE6;
+            --favorites-purple-light: #F0EBFF;
+            --favorites-purple-dark: #5A3ED5;
+            --favorites-purple-gradient: linear-gradient(135deg, #6B4EE6 0%, #8B6CF5 100%);
+
+            /* Text Colors */
+            --favorites-text-dark: #1a1a2e;
+            --favorites-text-medium: #64748B;
+            --favorites-text-light: #94A3B8;
+
+            /* Background & Border */
+            --favorites-bg: #FAFBFC;
+            --favorites-border: #E8ECF0;
+            --favorites-card-bg: #ffffff;
+
+            /* Status Colors */
+            --favorites-success: #10B981;
+            --favorites-heart: #FF6B5B;
+            --favorites-heart-hover: #e55a4a;
+
+            /* ========================================
+               POPUP REPLICATION PROTOCOL TOKENS
+               Monochromatic purple design system
+               STRICT: NO GREEN, NO YELLOW
+               ======================================== */
+
+            /* Protocol Colors */
+            --protocol-primary: #31135D;
+            --protocol-action: #5B5FCF;
+            --protocol-action-hover: #4A4EBF;
+            --protocol-action-disabled: #B8BAE0;
+            --protocol-secondary: #6D31C2;
+            --protocol-surface: #F7F2FA;
+            --protocol-danger: #DC3545;
+            --protocol-danger-hover: rgba(220, 53, 69, 0.1);
+            --protocol-white: #FFFFFF;
+            --protocol-overlay: rgba(0, 0, 0, 0.5);
+            --protocol-border: #E5E7EB;
+            --protocol-border-light: #E7E0EC;
+            --protocol-text-muted: #6B7280;
+            --protocol-text-secondary: #49454F;
+
+            /* Protocol Spacing (STRICT: 8px, 16px, 24px only) */
+            --protocol-space-sm: 8px;
+            --protocol-space-md: 16px;
+            --protocol-space-lg: 24px;
+
+            /* Protocol Radii */
+            --protocol-radius-button: 100px;
+            --protocol-radius-card: 8px;
+            --protocol-radius-modal: 16px;
+            --protocol-radius-modal-mobile: 24px;
+
+            /* Protocol Transitions */
+            --protocol-transition: 0.2s ease;
+            --protocol-transition-slow: 0.3s ease-out;
+
+            /* ========================================
+               DIETER RAMS CUSTOM TOKENS
+               Extended from official system for minimalist design
+               ======================================== */
+
+            /* Hero typography - responsive scale for impact */
+            --font-hero: clamp(var(--text-4xl), 12vw, 72px);
+
+            /* Semantic status colors mapped to official tokens */
+            --status-good: var(--success-green);
+            --status-good-bg: #F0FDF4;
+            --status-warning: #A16207;
+            --status-warning-bg: #FFFBEB;
+            --status-danger: #B91C1C;
+            --status-danger-bg: #FEF2F2;
+
+            /* Touch target minimum */
+            --touch-min: var(--input-height-lg);
+
+            /* Layout */
+            --header-height: 64px;
+        }
+
+        /* =============================================================================
+           RESET & BASE
+           ============================================================================= */
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: var(--font-inter);
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-normal);
+            line-height: var(--line-height-normal);
+            color: var(--text-dark);
+            background: var(--bg-light);
+            min-height: 100vh;
+        }
+
+        /* =============================================================================
+           HEADER
+           Minimal but present - users need navigation context
+           ============================================================================= */
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: var(--bg-white);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            z-index: var(--z-dropdown);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .logo {
+            font-size: var(--text-xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--primary-purple);
+            text-decoration: none;
+        }
+
+        /* KEPT: Back button for navigation context
+           Mobile users need clear escape routes */
+        .back-link {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            color: var(--text-description);
+            text-decoration: none;
+            font-size: var(--text-md);
+            min-height: var(--touch-min);
+            padding: 0 var(--spacing-sm);
+        }
+
+        .back-link:active {
+            opacity: var(--opacity-hover);
+        }
+
+        .back-link svg {
+            width: var(--icon-sm);
+            height: var(--icon-sm);
+        }
+
+        /* =============================================================================
+           MAIN CONTENT
+           ============================================================================= */
+
+        .main {
+            padding-top: calc(var(--header-height) + var(--spacing-7xl));
+            padding-bottom: var(--spacing-7xl);
+            padding-left: var(--spacing-lg);
+            padding-right: var(--spacing-lg);
+        }
+
+        .container {
+            max-width: var(--container-sm);
+            margin: 0 auto;
+        }
+
+        /* =============================================================================
+           PAGE TITLE
+           Simple identifier, not competing with hero
+           ============================================================================= */
+
+        .page-title {
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-medium);
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-small);
+            margin-bottom: var(--spacing-7xl);
+        }
+
+        /* =============================================================================
+           HERO SECTION
+           KEPT: This is the #1 answer users seek. It MUST dominate the viewport.
+           ============================================================================= */
+
+        .hero {
+            /* KEPT: Full-bleed on mobile for dominance */
+            margin-left: calc(-1 * var(--spacing-lg));
+            margin-right: calc(-1 * var(--spacing-lg));
+            background: var(--bg-white);
+            border-top: var(--border-width-thin) solid var(--border-color);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            padding: var(--spacing-7xl) var(--spacing-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: background var(--transition-fast) var(--easing-ease);
+        }
+
+        .hero:active {
+            background: var(--bg-light-gray);
+        }
+
+        .hero-label {
+            font-size: var(--text-sm-md);
+            font-weight: var(--font-weight-medium);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-gray);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        /* EVOLVED: Hero date is now a typographic EVENT
+           Uses responsive clamp for impact
+           Weight bold for emphasis
+           Tight letter-spacing for density and confidence */
+        .hero-date {
+            font-size: var(--font-hero);
+            font-weight: var(--font-weight-bold);
+            color: var(--primary-purple);
+            line-height: var(--line-height-tight);
+            letter-spacing: -0.03em;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .hero-property {
+            font-size: var(--text-md);
+            color: var(--text-description);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        /* KEPT: Subtle affordance that hero is tappable */
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--text-base);
+            color: var(--secondary-purple);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .hero-cta svg {
+            width: var(--icon-xs);
+            height: var(--icon-xs);
+        }
+
+        /* =============================================================================
+           SECTION LABELS
+           KEPT: Clear grouping aids scanning
+           ============================================================================= */
+
+        .section-label {
+            font-size: var(--text-sm-md);
+            font-weight: var(--font-weight-medium);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-gray);
+            margin-bottom: var(--spacing-lg);
+            margin-top: var(--spacing-7xl);
+        }
+
+        .section-label:first-of-type {
+            margin-top: var(--spacing-7xl);
+        }
+
+        /* =============================================================================
+           LEASE CARDS
+
+           COLLAPSED STATE answers exactly TWO questions:
+           1. What property? (name + address)
+           2. What's the status? (next stay date + payment indicator)
+           ============================================================================= */
+
+        .lease-cards {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .lease-card {
+            background: var(--bg-white);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--rounded-lg);
+        }
+
+        /* COLLAPSED HEADER - The Two Questions */
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-lg);
+            min-height: 72px;
+            cursor: pointer;
+            transition: background var(--transition-fast) var(--easing-ease);
+            border-radius: var(--rounded-lg);
+        }
+
+        .card-header:hover {
+            background: var(--bg-light-gray);
+        }
+
+        .card-header:active {
+            transform: scale(0.995);
+            background: var(--border-color);
+        }
+
+        .card-primary {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-property {
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-stay {
+            font-size: var(--text-base);
+            color: var(--text-description);
+        }
+
+        .card-indicators {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            flex-shrink: 0;
+        }
+
+        /* KEPT: Payment status in collapsed state */
+        .payment-status {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            font-size: var(--text-base);
+            color: var(--text-description);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: var(--rounded-full);
+            flex-shrink: 0;
+        }
+
+        .status-dot.good {
+            background: var(--status-good);
+        }
+
+        .status-dot.warning {
+            background: var(--status-warning);
+        }
+
+        .status-dot.danger {
+            background: var(--status-danger);
+        }
+
+        .status-text {
+            display: none;
+        }
+
+        @media (min-width: 400px) {
+            .status-text {
+                display: inline;
+            }
+        }
+
+        /* Expand affordance */
+        .expand-icon {
+            width: var(--touch-min);
+            height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-gray);
+            transition: transform var(--transition-base) var(--easing-ease);
+        }
+
+        .lease-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        /* =============================================================================
+           EXPANDED CARD BODY
+           ============================================================================= */
+
+        .card-body {
+            display: none;
+            border-top: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .lease-card.expanded .card-body {
+            display: block;
+        }
+
+        .card-section {
+            padding: var(--spacing-lg);
+        }
+
+        .card-section + .card-section {
+            border-top: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: var(--text-base);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        /* =============================================================================
+           HOST CONTACT
+           ============================================================================= */
+
+        .host-info {
+            display: flex;
+            gap: var(--spacing-lg);
+            align-items: flex-start;
+        }
+
+        .host-avatar {
+            width: var(--avatar-md);
+            height: var(--avatar-md);
+            border-radius: var(--rounded-full);
+            background: var(--bg-light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--font-weight-medium);
+            font-size: var(--text-md);
+            color: var(--text-description);
+            flex-shrink: 0;
+        }
+
+        .host-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .host-name {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .contact-links {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+
+        .contact-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--text-md);
+            color: var(--text-description);
+            text-decoration: none;
+            min-height: var(--touch-min);
+            padding: var(--spacing-sm) 0;
+        }
+
+        .contact-link:active {
+            color: var(--secondary-purple);
+        }
+
+        .contact-link svg {
+            width: var(--icon-lg);
+            height: var(--icon-lg);
+            flex-shrink: 0;
+        }
+
+        /* =============================================================================
+           DOCUMENTS
+           ============================================================================= */
+
+        .document-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .document-link {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--text-md);
+            color: var(--secondary-purple);
+            text-decoration: none;
+            min-height: var(--touch-min);
+            padding: var(--spacing-sm) 0;
+        }
+
+        .document-link:active {
+            text-decoration: underline;
+        }
+
+        .document-link svg {
+            width: var(--icon-lg);
+            height: var(--icon-lg);
+            flex-shrink: 0;
+        }
+
+        /* =============================================================================
+           PAYMENT TABLE
+           ============================================================================= */
+
+        .payment-summary {
+            font-size: var(--text-md);
+            color: var(--text-description);
+            margin-bottom: var(--spacing-lg);
+            line-height: var(--line-height-relaxed);
+        }
+
+        .payment-summary strong {
+            color: var(--text-dark);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .payment-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: var(--text-md);
+        }
+
+        .payment-table th {
+            text-align: left;
+            padding: var(--spacing-sm) 0;
+            font-weight: var(--font-weight-medium);
+            font-size: var(--text-base);
+            color: var(--text-gray);
+            border-bottom: var(--border-width-thin) solid var(--border-gray-light);
+        }
+
+        .payment-table th:last-child {
+            text-align: right;
+        }
+
+        .payment-table td {
+            padding: var(--spacing-lg) 0;
+            color: var(--text-description);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .payment-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .payment-table td:last-child {
+            text-align: right;
+        }
+
+        .payment-amount {
+            font-variant-numeric: tabular-nums;
+            font-weight: var(--font-weight-medium);
+            color: var(--text-dark);
+        }
+
+        /* EVOLVED: Next payment row has visual emphasis */
+        .payment-table tr.next-payment {
+            background: var(--status-warning-bg);
+        }
+
+        .payment-table tr.next-payment td {
+            font-weight: var(--font-weight-medium);
+            color: var(--text-dark);
+        }
+
+        .payment-table tr.next-payment .payment-amount {
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .status-paid {
+            color: var(--status-good);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .status-due {
+            color: var(--status-warning);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .status-overdue {
+            color: var(--status-danger);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        /* =============================================================================
+           UPCOMING STAYS
+           ============================================================================= */
+
+        .stays-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stay-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: var(--touch-min);
+            padding: var(--spacing-sm) 0;
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            gap: var(--spacing-lg);
+        }
+
+        .stay-item:last-child {
+            border-bottom: none;
+        }
+
+        /* EVOLVED: Next stay has visual emphasis */
+        .stay-item.next-stay {
+            background: var(--bg-info);
+            margin: 0 calc(-1 * var(--spacing-lg));
+            padding: var(--spacing-lg);
+            border-bottom: none;
+            border-radius: var(--rounded-md);
+        }
+
+        .stay-dates {
+            font-size: var(--text-md);
+            color: var(--text-description);
+        }
+
+        .stay-item.next-stay .stay-dates {
+            color: var(--text-dark);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .stay-status {
+            font-size: var(--text-base);
+            color: var(--text-gray);
+            flex-shrink: 0;
+        }
+
+        /* =============================================================================
+           DATE CHANGE REQUESTS
+           ============================================================================= */
+
+        .request-item {
+            padding: var(--spacing-lg);
+            background: var(--bg-light-gray);
+            border-radius: var(--rounded-md);
+        }
+
+        .request-summary {
+            font-size: var(--text-md);
+            color: var(--text-description);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .request-status {
+            font-size: var(--text-base);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .request-status.pending {
+            color: var(--status-warning);
+        }
+
+        .request-status.accepted {
+            color: var(--status-good);
+        }
+
+        /* =============================================================================
+           BUTTONS
+
+           EVOLVED: Differentiated by consequence level
+           ============================================================================= */
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md) var(--spacing-lg);
+            min-height: var(--touch-min);
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-medium);
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: opacity var(--transition-fast) var(--easing-ease),
+                        transform var(--transition-fast) var(--easing-ease);
+            border-radius: var(--rounded-md);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        /* PRIMARY: Consequential actions */
+        .btn-primary {
+            background: var(--secondary-purple);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-purple);
+        }
+
+        .btn-primary:active {
+            background: var(--selected-purple);
+        }
+
+        /* SECONDARY: Routine actions */
+        .btn-secondary {
+            background: var(--bg-light-gray);
+            color: var(--text-dark);
+            border: var(--border-width-thin) solid var(--border-gray-light);
+        }
+
+        .btn-secondary:active {
+            background: var(--border-color);
+        }
+
+        /* TERTIARY: Low-frequency actions */
+        .btn-tertiary {
+            background: transparent;
+            color: var(--text-description);
+            border: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .btn-tertiary:active {
+            background: var(--bg-light-gray);
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        @media (min-width: 400px) {
+            .btn-group {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+        }
+
+        /* =============================================================================
+           PAST LEASES
+           ============================================================================= */
+
+        .lease-card.past {
+            opacity: 0.85;
+        }
+
+        .lease-card.past .card-header {
+            background: var(--bg-light-gray);
+        }
+
+        .lease-card.past .card-property {
+            color: var(--text-description);
+        }
+
+        /* =============================================================================
+           FOOTER
+           ============================================================================= */
+
+        .footer {
+            margin-top: var(--spacing-7xl);
+            padding: var(--spacing-7xl) var(--spacing-lg);
+            border-top: var(--border-width-thin) solid var(--border-color);
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: var(--text-base);
+            color: var(--text-gray);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            font-size: var(--text-base);
+            color: var(--text-description);
+            text-decoration: none;
+            min-height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-sm);
+        }
+
+        .footer-links a:active {
+            color: var(--text-dark);
+        }
+
+        /* =============================================================================
+           CONFIRMATION TOAST
+           ============================================================================= */
+
+        .toast {
+            position: fixed;
+            bottom: var(--spacing-lg);
+            left: var(--spacing-lg);
+            right: var(--spacing-lg);
+            background: var(--primary-purple);
+            color: var(--white);
+            padding: var(--spacing-lg);
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-medium);
+            text-align: center;
+            border-radius: var(--rounded-lg);
+            transform: translateY(calc(100% + var(--spacing-lg)));
+            transition: transform var(--transition-slow) var(--easing-ease);
+            z-index: var(--z-floating);
+            box-shadow: var(--shadow-purple-lg);
+        }
+
+        .toast.visible {
+            transform: translateY(0);
+        }
+
+        /* =============================================================================
+           FOCUS STATES - Accessibility
+           ============================================================================= */
+
+        .btn:focus-visible,
+        .card-header:focus-visible,
+        .contact-link:focus-visible,
+        .document-link:focus-visible,
+        .hero:focus-visible {
+            outline: var(--border-width-thick) solid var(--secondary-purple);
+            outline-offset: 2px;
+        }
+
+        /* =============================================================================
+           REDUCED MOTION - Accessibility
+           ============================================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+            }
+        }
+
+        /* =============================================================================
+           PRINT STYLES
+           ============================================================================= */
+
+        @media print {
+            .header,
+            .footer,
+            .btn-group,
+            .expand-icon {
+                display: none;
+            }
+
+            .main {
+                padding-top: 0;
+            }
+
+            .lease-card.expanded .card-body {
+                display: block;
+            }
+
+            .card-header {
+                cursor: default;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ==========================================================================
+         HEADER
+         KEPT: Navigation context is essential. Users need to know where they are
+         and how to leave.
+         ========================================================================== -->
+    <header class="header">
+        <a href="#" class="back-link" aria-label="Go back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            <span>Back</span>
+        </a>
+        <a href="/" class="logo">Split Lease</a>
+    </header>
+
+    <!-- ==========================================================================
+         MAIN CONTENT
+         ========================================================================== -->
+    <main class="main">
+        <div class="container">
+
+            <h1 class="page-title">Your Leases</h1>
+
+            <!-- ==================================================================
+                 HERO SECTION
+
+                 KEPT: This answers the #1 question: "When is my next stay?"
+
+                 Evolution from Run 006:
+                 - Typographic EVENT: clamp(36px, 12vw, 72px) with weight bold
+                 - Full-bleed on mobile for dominance
+                 - Purple brand color for hero date
+                 - Tappable for native feel
+                 - Subtle CTA shows affordance without demanding attention
+                 ================================================================== -->
+            <section class="hero" tabindex="0" role="button" aria-label="View check-in details for February 15" onclick="showToast('Opening check-in details...')">
+                <div class="hero-label">Next Check-in</div>
+                <div class="hero-date">Feb 15</div>
+                <div class="hero-property">Chelsea 2BR, 245 W 23rd St</div>
+                <div class="hero-cta">
+                    View details
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                </div>
+            </section>
+
+            <!-- ==================================================================
+                 ACTIVE LEASES
+
+                 Section grouping through label + whitespace, not borders
+                 ================================================================== -->
+            <div class="section-label">Active</div>
+
+            <div class="lease-cards">
+                <!-- ============================================================
+                     LEASE CARD - Active, Expanded by Default
+
+                     COLLAPSED STATE answers TWO questions only:
+                     1. What property? (Chelsea 2BR)
+                     2. What's the status? (Feb 15-21 + green dot)
+
+                     EXPANDED STATE earns right to show detail through
+                     explicit user intent (tap to expand)
+                     ============================================================ -->
+                <article class="lease-card expanded" id="lease-1">
+                    <div class="card-header"
+                         tabindex="0"
+                         role="button"
+                         aria-expanded="true"
+                         aria-controls="lease-1-body"
+                         onclick="toggleCard('lease-1')"
+                         onkeydown="handleKeydown(event, 'lease-1')">
+                        <div class="card-primary">
+                            <div class="card-property">Chelsea 2BR, 245 W 23rd St</div>
+                            <div class="card-stay">Next: Feb 15 - Feb 21</div>
+                        </div>
+                        <div class="card-indicators">
+                            <!-- KEPT: Payment status visible in collapsed state
+                                 Answers "Am I in good standing?" without expansion -->
+                            <div class="payment-status">
+                                <span class="status-dot good" aria-label="Payment current"></span>
+                                <span class="status-text">Current</span>
+                            </div>
+                            <div class="expand-icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body" id="lease-1-body">
+
+                        <!-- ====================================================
+                             HOST CONTACT
+
+                             KEPT: Visible immediately upon expansion
+                             WHY: Problems need resolution paths. Hiding contact
+                             behind another tap fails users at crisis moments.
+                             ==================================================== -->
+                        <div class="card-section">
+                            <div class="section-title">Host</div>
+                            <div class="host-info">
+                                <div class="host-avatar" aria-hidden="true">SM</div>
+                                <div class="host-details">
+                                    <div class="host-name">Sarah Mitchell</div>
+                                    <div class="contact-links">
+                                        <a href="tel:+12125551234" class="contact-link">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                                            </svg>
+                                            (212) 555-1234
+                                        </a>
+                                        <a href="mailto:sarah.mitchell@email.com" class="contact-link">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                                <polyline points="22,6 12,13 2,6"/>
+                                            </svg>
+                                            sarah.mitchell@email.com
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ====================================================
+                             DOCUMENTS
+
+                             KEPT: Legal access is requirement, not feature
+                             ==================================================== -->
+                        <div class="card-section">
+                            <div class="section-title">Agreement #SL-2026-00421</div>
+                            <div class="document-list">
+                                <a href="#" class="document-link" onclick="event.stopPropagation()">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                    </svg>
+                                    Periodic Tenancy Agreement
+                                </a>
+                                <a href="#" class="document-link" onclick="event.stopPropagation()">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                    </svg>
+                                    Supplemental Terms
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- ====================================================
+                             PAYMENTS
+
+                             KEPT: Financial clarity is non-negotiable
+
+                             EVOLVED: Next payment has visual emphasis
+                             WHY: Previously all rows had equal weight, forcing
+                             users to calculate which is next. Design should
+                             absorb cognitive work, not export it.
+                             ==================================================== -->
+                        <div class="card-section">
+                            <div class="section-title">Payments</div>
+                            <div class="payment-summary">
+                                <strong>2 of 6 payments</strong> complete. Next due Apr 1.
+                            </div>
+                            <table class="payment-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Due</th>
+                                        <th scope="col">Amount</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Feb 1</td>
+                                        <td class="payment-amount">$2,750</td>
+                                        <td class="status-paid">Paid</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mar 1</td>
+                                        <td class="payment-amount">$2,250</td>
+                                        <td class="status-paid">Paid</td>
+                                    </tr>
+                                    <!-- EVOLVED: Next payment row has emphasis -->
+                                    <tr class="next-payment">
+                                        <td>Apr 1</td>
+                                        <td class="payment-amount">$2,250</td>
+                                        <td class="status-due">Due</td>
+                                    </tr>
+                                    <tr>
+                                        <td>May 1</td>
+                                        <td class="payment-amount">$2,250</td>
+                                        <td>Scheduled</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- ====================================================
+                             UPCOMING STAYS
+
+                             KEPT: Users need their schedule
+                             EVOLVED: Next stay has action, future stays inform
+                             ==================================================== -->
+                        <div class="card-section">
+                            <div class="section-title">Upcoming Stays</div>
+                            <div class="stays-list">
+                                <!-- Next stay emphasized, with action -->
+                                <div class="stay-item next-stay">
+                                    <span class="stay-dates">Feb 15 - Feb 21</span>
+                                    <button class="btn btn-primary" onclick="event.stopPropagation(); showToast('Check-in instructions sent to your email')">
+                                        Check In
+                                    </button>
+                                </div>
+                                <div class="stay-item">
+                                    <span class="stay-dates">Feb 22 - Feb 28</span>
+                                    <span class="stay-status">Confirmed</span>
+                                </div>
+                                <div class="stay-item">
+                                    <span class="stay-dates">Mar 8 - Mar 14</span>
+                                    <span class="stay-status">Confirmed</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ====================================================
+                             DATE CHANGE REQUESTS
+
+                             KEPT: Users need to track pending requests
+                             ==================================================== -->
+                        <div class="card-section">
+                            <div class="section-title">Pending Requests</div>
+                            <div class="request-item">
+                                <div class="request-summary">Move Week 5 (Mar 1-7) to Week 6 (Mar 8-14)</div>
+                                <div class="request-status pending">Awaiting host response</div>
+                            </div>
+                        </div>
+
+                        <!-- ====================================================
+                             ACTIONS
+
+                             EVOLVED: Buttons differentiated by consequence
+
+                             "Request Date Change" = consequential = PRIMARY
+                             "Message Host" = routine = SECONDARY
+                             "Report Issue" = escalation = TERTIARY
+
+                             Previous equal treatment created false equality.
+                             ==================================================== -->
+                        <div class="card-section">
+                            <div class="btn-group">
+                                <button class="btn btn-primary" onclick="event.stopPropagation(); showToast('Opening date change request...')">
+                                    Request Date Change
+                                </button>
+                                <button class="btn btn-secondary" onclick="event.stopPropagation(); showToast('Opening messages...')">
+                                    Message Host
+                                </button>
+                                <button class="btn btn-tertiary" onclick="event.stopPropagation(); showToast('Opening issue report...')">
+                                    Report Issue
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <!-- ==================================================================
+                 PAST LEASES
+
+                 KEPT: Access to historical records
+                 Visually receded - past is background
+                 Separated by whitespace (section gap), not decoration
+                 ================================================================== -->
+            <div class="section-label">Past</div>
+
+            <div class="lease-cards">
+                <article class="lease-card past" id="lease-2">
+                    <div class="card-header"
+                         tabindex="0"
+                         role="button"
+                         aria-expanded="false"
+                         aria-controls="lease-2-body"
+                         onclick="toggleCard('lease-2')"
+                         onkeydown="handleKeydown(event, 'lease-2')">
+                        <div class="card-primary">
+                            <div class="card-property">Williamsburg Loft, 89 Berry St</div>
+                            <div class="card-stay">Aug 2025 - Jan 2026</div>
+                        </div>
+                        <div class="card-indicators">
+                            <div class="payment-status">
+                                <span class="status-text" style="color: var(--text-gray);">Completed</span>
+                            </div>
+                            <div class="expand-icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body" id="lease-2-body">
+                        <div class="card-section">
+                            <div class="btn-group">
+                                <button class="btn btn-secondary" onclick="event.stopPropagation()">
+                                    View Documents
+                                </button>
+                                <button class="btn btn-secondary" onclick="event.stopPropagation()">
+                                    Payment History
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ==========================================================================
+         FOOTER
+
+         KEPT: Legal and help links are requirements
+         ========================================================================== -->
+    <footer class="footer">
+        <div class="footer-text">Split Lease 2026</div>
+        <div class="footer-links">
+            <a href="#">Terms of Service</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Help Center</a>
+        </div>
+    </footer>
+
+    <!-- ==========================================================================
+         CONFIRMATION TOAST
+
+         EVOLVED: Replaced celebration modal with subtle confirmation
+
+         The adversarial analysis revealed removing ALL feedback creates anxiety.
+         This toast confirms actions without gamification.
+         ========================================================================== -->
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+        // ==========================================================================
+        // CARD EXPANSION
+        // Simple toggle - no animation library needed
+        // ==========================================================================
+
+        function toggleCard(cardId) {
+            const card = document.getElementById(cardId);
+            const header = card.querySelector('.card-header');
+            const isExpanded = card.classList.toggle('expanded');
+            header.setAttribute('aria-expanded', isExpanded);
+        }
+
+        function handleKeydown(event, cardId) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                toggleCard(cardId);
+            }
+        }
+
+        // ==========================================================================
+        // TOAST NOTIFICATION
+        //
+        // EVOLVED: Subtle confirmation replaces removed celebration modal
+        // 2 second display, auto-dismiss, no gamification
+        // ==========================================================================
+
+        let toastTimeout;
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('visible');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

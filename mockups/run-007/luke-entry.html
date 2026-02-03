@@ -1,0 +1,1969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Leases - Split Lease | Luke Wroblewski - Run 007</title>
+
+    <!--
+    ============================================================================
+    LUKE WROBLEWSKI - RUN 007 ENTRY
+    ETHICAL CONVERSION DESIGN: Trust as the Ultimate Optimization
+    ============================================================================
+
+    DESIGN PHILOSOPHY:
+    This design embodies "Honest Conversion" - the principle that the best
+    conversion happens when users WANT to convert, not when they are pressured
+    or manipulated into converting.
+
+    Every design decision passes the "transparency test": if users knew why
+    this element was designed this way, would they feel helped or tricked?
+
+    ETHICAL CONVERSION PRINCIPLES APPLIED:
+
+    1. CTA HIERARCHY RESPECTS USER INTELLIGENCE
+       - Primary CTAs only for genuinely urgent actions
+       - No artificial urgency or pressure mechanisms
+       - Users are invited, not demanded
+
+    2. PROGRESS SHOWS GENUINE PROGRESS
+       - "Days until next stay" is useful information
+       - NOT arbitrary "completion percentage" to exploit completion bias
+       - Status reflects real status, not manufactured urgency
+
+    3. FRICTION PROPORTIONAL TO STAKES
+       - Low-stakes actions (view, message) are frictionless
+       - High-stakes actions (pay, cancel) preserve deliberation space
+
+    4. INFORMATION BUILDS CONFIDENCE
+       - Lead with status (Are things okay?)
+       - Details on demand (What do I need to know?)
+       - No information exhaustion - hierarchy within revealed content
+
+    ACCESSIBILITY: WCAG AAA Compliant
+       - 17px minimum font size (most text 17-18px)
+       - 48px minimum touch targets
+       - 7:1 contrast ratio on essential content
+       - Focus states visible and clear
+
+    DESIGN SYSTEM CREDITS:
+       - Spacing constraint (8/16/40px): Massimo Vignelli
+       - Typographic conviction: Paula Scher
+       - Tactile feedback: Jony Ive
+       - Reduction to essentials: Dieter Rams
+       - Grid discipline: Josef Muller-Brockmann
+       - Ethical conversion: Luke Wroblewski
+
+    UPDATED: February 3, 2026 - Migrated to Split Lease Official Style Guide v2.0
+    ============================================================================
+    -->
+
+    <style>
+        /* ============================================================================
+           SPLIT LEASE OFFICIAL DESIGN TOKENS v2.0
+           Complete :root block from production style guide
+           ============================================================================ */
+        :root {
+          /* ========================================
+             COLOR VARIABLES
+             ======================================== */
+
+          /* Primary Colors
+             Usage Guide:
+             - primary-purple (#31135D): Brand color, headings, important UI
+             - primary-purple-hover (#251047): Hover state for primary
+             - secondary-purple (#6D31C2): Interactive buttons, links, CTAs
+             - accent-purple (#8C68EE): Hover state for secondary, highlights
+             - chat-purple (#4B47CE): Day badges, chat elements
+          */
+          --primary-purple: #31135D;
+          --primary-purple-hover: #251047;
+          --primary-purple-dark: #1f0a3d;
+          --secondary-purple: rgb(109, 49, 194);
+          --accent-purple: rgb(140, 104, 238);
+          --selected-purple: rgb(79, 48, 151);
+          --text-purple: rgb(82, 31, 147);
+          --chat-purple: rgb(75, 71, 206);
+
+          /* Secondary Colors */
+          --accent-blue: #4A90E2;
+          --accent-blue-hover: #357ABD;
+
+          /* Status Colors */
+          --success-green: #22C55E;
+          --success-teal: #10B981;
+
+          /* Text Colors */
+          --text-dark: #1a1a1a;
+          --text-gray: #6b7280;
+          --text-light-gray: #9ca3af;
+          --text-medium-gray: #666666;
+          --text-description: #374151;
+
+          /* Background Colors */
+          --bg-white: #ffffff;
+          --bg-light: #f9fafb;
+          --bg-light-gray: #f3f4f6;
+          --bg-lighter-gray: #f5f5f5;
+          --bg-off-white: rgb(252, 250, 255);
+
+          /* Border Colors */
+          --border-color: #e5e7eb;
+          --border-light: #f3f4f6;
+          --border-gray: rgba(107, 107, 107, 0.7);
+          --border-gray-light: #e0e0e0;
+          --border-gray-lighter: #ddd;
+
+          /* Neutral Colors */
+          --white: rgb(255, 255, 255);
+          --black: rgb(0, 0, 0);
+          --off-white: rgb(252, 250, 255);
+
+          /* Info/Link Colors */
+          --info-blue: #2196F3;
+          --info-indigo: #6366F1;
+          --info-indigo-hover: #3b82f6;
+          --bg-info: #f0f7ff;
+
+          /* Subtle/Overlay Colors */
+          --overlay-dark: rgba(0, 0, 0, 0.7);
+          --overlay-light: rgba(255, 255, 255, 0.9);
+          --overlay-light-blur: rgba(255, 255, 255, 0.2);
+
+          /* Gradient Colors */
+          --gradient-purple-primary: linear-gradient(135deg, #31135D 0%, #5a2d8f 100%);
+          --gradient-purple-button: linear-gradient(135deg, #6D31C2 0%, #7C3AED 100%);
+          --gradient-purple-hover: linear-gradient(135deg, #5B2AA5 0%, #6D28D9 100%);
+          --gradient-purple-dark: linear-gradient(135deg, rgba(47, 20, 91, 0.85), rgba(109, 49, 194, 0.75));
+          --gradient-purple-dark-hover: linear-gradient(135deg, rgba(47, 20, 91, 0.9), rgba(109, 49, 194, 0.8));
+
+          /* ========================================
+             FONT VARIABLES
+             ======================================== */
+
+          /* Font Families */
+          --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          --font-dm: 'DM Sans', sans-serif;
+          --font-primary: 'Helvetica', Arial, sans-serif;
+          --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+          /* Font Sizes */
+          --text-xs: 11px;
+          --text-sm: 12px;
+          --text-sm-md: 13px;
+          --text-base: 14px;
+          --text-md: 16px;
+          --text-lg: 18px;
+          --text-xl: 20px;
+          --text-2xl: 28px;
+          --text-3xl: 32px;
+          --text-4xl: 36px;
+
+          /* Font Weights */
+          --font-weight-normal: 400;
+          --font-weight-medium: 500;
+          --font-weight-semibold: 600;
+          --font-weight-bold: 700;
+
+          /* Line Heights */
+          --line-height-tight: 1.2;
+          --line-height-normal: 1.5;
+          --line-height-relaxed: 1.6;
+          --line-height-loose: 1.8;
+
+          /* Letter Spacing */
+          --letter-spacing-normal: normal;
+          --letter-spacing-small: 0.5px;
+          --letter-spacing-medium: 0.05em;
+
+          /* ========================================
+             SPACING VARIABLES
+             ======================================== */
+
+          /* Padding & Margin */
+          --spacing-xs: 4px;
+          --spacing-sm: 8px;
+          --spacing-md: 12px;
+          --spacing-lg: 16px;
+          --spacing-xl: 20px;
+          --spacing-2xl: 24px;
+          --spacing-3xl: 28px;
+          --spacing-4xl: 32px;
+          --spacing-5xl: 2rem;
+          --spacing-6xl: 2.5rem;
+          --spacing-7xl: 3rem;
+
+          /* Component Spacing */
+          --gap-sm: 0.5rem;
+          --gap-md: 0.75rem;
+          --gap-lg: 1rem;
+          --gap-xl: 1.5rem;
+          --gap-2xl: 2rem;
+          --gap-3xl: 2.5rem;
+
+          /* Padding */
+          --padding-sm: 0.5rem;
+          --padding-md: 0.75rem;
+          --padding-lg: 1rem;
+          --padding-xl: 1.5rem;
+          --padding-2xl: 2rem;
+
+          /* ========================================
+             BORDER RADIUS VARIABLES
+             ======================================== */
+
+          --rounded-sm: 4px;
+          --rounded-md: 6px;
+          --rounded-lg: 8px;
+          --rounded-xl: 12px;
+          --rounded-2xl: 16px;
+          --rounded-full: 50%;
+          --rounded-pill: 20px;
+
+          /* ========================================
+             BREAKPOINT VARIABLES
+             ======================================== */
+
+          --breakpoint-sm: 600px;
+          --breakpoint-md: 768px;
+          --breakpoint-lg: 1024px;
+          --breakpoint-xl: 1080px;
+          --breakpoint-2xl: 1200px;
+          --breakpoint-3xl: 1280px;
+          --breakpoint-max: 1440px;
+
+          /* ========================================
+             SHADOW VARIABLES
+             ======================================== */
+
+          --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+          --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+          --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15);
+          --shadow-xl: 0 4px 16px rgba(49, 19, 93, 0.35);
+          --shadow-2xl: 0 6px 24px rgba(49, 19, 93, 0.5);
+          --shadow-purple-sm: 0 2px 4px rgba(49, 19, 93, 0.2);
+          --shadow-purple-md: 0 4px 8px rgba(49, 19, 93, 0.15);
+          --shadow-purple-lg: 0 6px 20px rgba(109, 49, 194, 0.35);
+          --shadow-dark-sm: 0 2px 6px rgba(0, 0, 0, 0.2);
+          --shadow-dark-md: 0 4px 8px rgba(0, 0, 0, 0.25);
+
+          /* ========================================
+             TRANSITION & ANIMATION VARIABLES
+             ======================================== */
+
+          --transition-fast: 0.1s;
+          --transition-base: 0.2s;
+          --transition-slow: 0.3s;
+          --transition-slower: 0.4s;
+
+          --easing-ease: ease;
+          --easing-ease-in: ease-in;
+          --easing-ease-out: ease-out;
+          --easing-ease-in-out: ease-in-out;
+          --easing-linear: linear;
+
+          --animation-duration: 1.5s;
+
+          /* ========================================
+             SIZING VARIABLES
+             ======================================== */
+
+          /* Icon Sizes */
+          --icon-xs: 16px;
+          --icon-sm: 20px;
+          --icon-md: 24px;
+          --icon-lg: 28px;
+          --icon-xl: 32px;
+          --icon-2xl: 36px;
+          --icon-3xl: 60px;
+
+          /* Avatar Sizes */
+          --avatar-sm: 36px;
+          --avatar-md: 48px;
+          --avatar-lg: 80px;
+
+          /* Container Sizes */
+          --container-sm: 640px;
+          --container-md: 900px;
+          --container-lg: 1280px;
+          --container-max: 1440px;
+          --container-width: 95vw;
+
+          /* Form Input Sizes */
+          --input-height: 42px;
+          --input-height-lg: 48px;
+          --input-height-sm: 36px;
+
+          /* ========================================
+             Z-INDEX VARIABLES
+             ======================================== */
+
+          --z-dropdown: 100;
+          --z-sticky: 500;
+          --z-floating: 999;
+          --z-modal: 10000;
+
+          /* ========================================
+             OPACITY VARIABLES
+             ======================================== */
+
+          --opacity-disabled: 0.5;
+          --opacity-hover: 0.8;
+          --opacity-focus: 0.9;
+
+          /* ========================================
+             BORDER VARIABLES
+             ======================================== */
+
+          --border-width-thin: 1px;
+          --border-width-md: 1.5px;
+          --border-width-thick: 2px;
+
+          /* ========================================
+             MAX-WIDTH VARIABLES
+             ======================================== */
+
+          --max-width-sidebar: 380px;
+          --max-width-modal: 400px;
+          --max-width-map: 100%;
+
+          /* ========================================
+             FAVORITES PAGE REDESIGN TOKENS
+             ======================================== */
+
+          /* Primary Colors */
+          --favorites-purple: #6B4EE6;
+          --favorites-purple-light: #F0EBFF;
+          --favorites-purple-dark: #5A3ED5;
+          --favorites-purple-gradient: linear-gradient(135deg, #6B4EE6 0%, #8B6CF5 100%);
+
+          /* Text Colors */
+          --favorites-text-dark: #1a1a2e;
+          --favorites-text-medium: #64748B;
+          --favorites-text-light: #94A3B8;
+
+          /* Background & Border */
+          --favorites-bg: #FAFBFC;
+          --favorites-border: #E8ECF0;
+          --favorites-card-bg: #ffffff;
+
+          /* Status Colors */
+          --favorites-success: #10B981;
+          --favorites-heart: #FF6B5B;
+          --favorites-heart-hover: #e55a4a;
+
+          /* ========================================
+             POPUP REPLICATION PROTOCOL TOKENS
+             Monochromatic purple design system
+             STRICT: NO GREEN, NO YELLOW
+             ======================================== */
+
+          /* Protocol Colors */
+          --protocol-primary: #31135D;
+          --protocol-action: #5B5FCF;
+          --protocol-action-hover: #4A4EBF;
+          --protocol-action-disabled: #B8BAE0;
+          --protocol-secondary: #6D31C2;
+          --protocol-surface: #F7F2FA;
+          --protocol-danger: #DC3545;
+          --protocol-danger-hover: rgba(220, 53, 69, 0.1);
+          --protocol-white: #FFFFFF;
+          --protocol-overlay: rgba(0, 0, 0, 0.5);
+          --protocol-border: #E5E7EB;
+          --protocol-border-light: #E7E0EC;
+          --protocol-text-muted: #6B7280;
+          --protocol-text-secondary: #49454F;
+
+          /* Protocol Spacing (STRICT: 8px, 16px, 24px only) */
+          --protocol-space-sm: 8px;
+          --protocol-space-md: 16px;
+          --protocol-space-lg: 24px;
+
+          /* Protocol Radii */
+          --protocol-radius-button: 100px;
+          --protocol-radius-card: 8px;
+          --protocol-radius-modal: 16px;
+          --protocol-radius-modal-mobile: 24px;
+
+          /* Protocol Transitions */
+          --protocol-transition: 0.2s ease;
+          --protocol-transition-slow: 0.3s ease-out;
+
+          /* ========================================
+             LUKE'S ETHICAL CONVERSION TOKENS
+             Extended tokens mapped to Split Lease system
+             ======================================== */
+
+          /* Touch targets - WCAG AAA compliance */
+          --touch-target: var(--input-height-lg);
+
+          /* Layout */
+          --header-height: 60px;
+          --max-width: 680px;
+
+          /* Status colors for ethical conversion (genuine status, not pressure) */
+          --color-warning: #D97706;
+          --color-warning-soft: #FEF3C7;
+          --color-danger: var(--protocol-danger);
+          --color-danger-soft: #FEE2E2;
+        }
+
+        /* ============================================================================
+           RESET & BASE
+           ============================================================================ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: var(--font-inter);
+            font-size: var(--text-md);
+            line-height: var(--line-height-normal);
+            color: var(--text-dark);
+            background: var(--bg-light-gray);
+            min-height: 100vh;
+        }
+
+        /* ============================================================================
+           HEADER
+           Minimal - not competing with content
+           ============================================================================ */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: var(--bg-white);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            z-index: var(--z-dropdown);
+            display: flex;
+            align-items: center;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: var(--text-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--primary-purple);
+            text-decoration: none;
+        }
+
+        .avatar {
+            width: var(--spacing-6xl);
+            height: var(--spacing-6xl);
+            border-radius: var(--rounded-full);
+            background: var(--gradient-purple-button);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--text-sm);
+        }
+
+        /* ============================================================================
+           MAIN LAYOUT
+           ============================================================================ */
+        .main {
+            padding-top: calc(var(--header-height) + var(--spacing-lg));
+            padding-bottom: var(--spacing-6xl);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        /* ============================================================================
+           PAGE HEADER
+           Minimal - lets hero dominate
+           ============================================================================ */
+        .page-header {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .page-title {
+            font-size: var(--text-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--primary-purple);
+        }
+
+        /* ============================================================================
+           HERO SECTION
+           THE TYPOGRAPHIC EVENT (Paula's conviction)
+
+           ETHICAL CONVERSION NOTE:
+           The hero shows "days until next stay" because this is genuinely useful
+           information. It does NOT show arbitrary "completion percentage" which
+           would exploit completion bias without providing real value.
+
+           Sharp edges (no border-radius) signal confidence.
+           ============================================================================ */
+        .hero {
+            /* Full-bleed, sharp edges - Paula's conviction */
+            background: var(--bg-white);
+            margin: 0 calc(var(--spacing-lg) * -1);
+            padding: var(--spacing-6xl) var(--spacing-lg);
+            margin-bottom: var(--spacing-6xl);
+            border-top: var(--border-width-thin) solid var(--border-color);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            cursor: pointer;
+            position: relative;
+        }
+
+        /* TACTILE FEEDBACK (Jony's principle)
+           Press state confirms input was received */
+        .hero:active {
+            transform: scale(0.995);
+            transition: transform var(--transition-fast) var(--easing-ease-out);
+        }
+
+        .hero-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .hero-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .hero-label {
+            font-size: var(--text-sm-md);
+            font-weight: var(--font-weight-semibold);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-small);
+            color: var(--text-gray);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        /* THE TYPOGRAPHIC EVENT
+           Bold date - the most important information on the page */
+        .hero-date {
+            font-size: var(--text-4xl);
+            font-weight: var(--font-weight-bold);
+            line-height: var(--line-height-tight);
+            color: var(--primary-purple);
+            letter-spacing: -2px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .hero-property {
+            font-size: var(--text-md);
+            color: var(--text-description);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        /*
+           ETHICAL CTA: Invitation, not demand
+           "View details" respects user agency - they choose to explore
+        */
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            color: var(--secondary-purple);
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--text-md);
+        }
+
+        .hero-cta svg {
+            width: var(--icon-sm);
+            height: var(--icon-sm);
+        }
+
+        /* COUNTDOWN BADGE
+           Shows "days until stay" - genuinely useful information
+           NOT a pressure mechanism - just helpful context */
+        .countdown-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 72px;
+            min-height: 72px;
+            background: var(--secondary-purple);
+            color: var(--white);
+            border-radius: var(--rounded-xl);
+            padding: var(--spacing-sm);
+            flex-shrink: 0;
+        }
+
+        .countdown-number {
+            font-size: var(--text-2xl);
+            font-weight: var(--font-weight-bold);
+            line-height: var(--line-height-tight);
+        }
+
+        .countdown-label {
+            font-size: var(--text-sm-md);
+            font-weight: var(--font-weight-medium);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-small);
+            opacity: var(--opacity-focus);
+        }
+
+        /* ============================================================================
+           STATUS SUMMARY
+
+           ETHICAL CONVERSION NOTE:
+           Leads with STATUS (Is everything okay?) not ACTION (Pay now!)
+           Users first learn their situation, then decide what to do.
+           This respects their intelligence and reduces anxiety.
+           ============================================================================ */
+        .status-summary {
+            background: var(--bg-white);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--rounded-xl);
+            overflow: hidden;
+            margin-bottom: var(--spacing-6xl);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .status-summary-main {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .status-icon {
+            width: var(--icon-md);
+            height: var(--icon-md);
+            border-radius: var(--rounded-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-icon.success {
+            background: var(--success-green);
+            color: var(--white);
+        }
+
+        .status-icon.warning {
+            background: var(--color-warning);
+            color: var(--white);
+        }
+
+        .status-icon svg {
+            width: var(--text-base);
+            height: var(--text-base);
+        }
+
+        .status-text {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+        }
+
+        .status-subtext {
+            font-size: var(--text-sm);
+            color: var(--text-gray);
+            margin-top: 2px;
+        }
+
+        /* PROGRESS BAR
+           Shows payment progress - factual information, not pressure */
+        .progress-bar-container {
+            padding: 0 var(--spacing-lg) var(--spacing-lg);
+        }
+
+        .progress-bar {
+            display: flex;
+            gap: var(--spacing-xs);
+            height: var(--spacing-sm);
+        }
+
+        .progress-segment {
+            flex: 1;
+            border-radius: var(--rounded-sm);
+            background: var(--border-color);
+        }
+
+        .progress-segment.complete {
+            background: var(--success-green);
+        }
+
+        .progress-segment.current {
+            background: var(--color-warning);
+        }
+
+        /* ============================================================================
+           BUTTONS
+
+           ETHICAL HIERARCHY:
+           - Primary (filled): Only for genuinely urgent/important actions
+           - Secondary (outline): Available but not pressured
+           - Ghost (minimal): For completeness, not prominence
+
+           All buttons have 48px min touch target (WCAG AAA)
+           ============================================================================ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            min-height: var(--touch-target);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: var(--rounded-md);
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-semibold);
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition-base) var(--easing-ease);
+            white-space: nowrap;
+        }
+
+        /* TACTILE FEEDBACK - Jony's press state */
+        .btn:active {
+            transform: scale(0.97);
+            transition: transform var(--transition-fast) var(--easing-ease-out);
+        }
+
+        .btn svg {
+            width: var(--icon-sm);
+            height: var(--icon-sm);
+        }
+
+        /* PRIMARY - Invitation, not demand */
+        .btn-primary {
+            background: var(--secondary-purple);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-purple);
+        }
+
+        .btn-primary:active {
+            background: var(--selected-purple);
+        }
+
+        /* SECONDARY - Available, not urgent */
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-dark);
+            border: var(--border-width-thin) solid var(--border-gray-light);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-light-gray);
+            border-color: var(--text-gray);
+        }
+
+        /* GHOST - For completeness */
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-description);
+            padding-left: var(--spacing-sm);
+            padding-right: var(--spacing-sm);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg-light-gray);
+            color: var(--text-dark);
+        }
+
+        /* Full-width on mobile */
+        @media (max-width: 480px) {
+            .btn-full-mobile {
+                width: 100%;
+            }
+        }
+
+        /* ============================================================================
+           SECTION HEADERS
+           ============================================================================ */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .section-title {
+            font-size: var(--text-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--primary-purple);
+        }
+
+        .section-count {
+            font-size: var(--text-sm);
+            color: var(--text-gray);
+            font-weight: var(--font-weight-normal);
+            margin-left: var(--spacing-sm);
+        }
+
+        /* ============================================================================
+           LEASE CARDS
+
+           Gap of 8px between active leases (tight grouping - Massimo)
+           Gap of 40px before past leases (section break - Massimo)
+           ============================================================================ */
+        .lease-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .lease-card {
+            background: var(--bg-white);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--rounded-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* CARD HEADER - Collapsed view */
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            min-height: 80px;
+        }
+
+        /* TACTILE FEEDBACK on press */
+        .card-header:active {
+            background: var(--bg-light-gray);
+            transition: background var(--transition-fast) var(--easing-ease-out);
+        }
+
+        .card-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            flex: 1;
+            min-width: 0;
+        }
+
+        .property-image {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--rounded-md);
+            background: linear-gradient(135deg, var(--border-color), var(--border-gray-light));
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .property-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .property-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .property-name {
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 2px;
+        }
+
+        .property-meta {
+            font-size: var(--text-sm);
+            color: var(--text-gray);
+        }
+
+        .card-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            flex-shrink: 0;
+        }
+
+        /* STATUS BADGES
+           Colors reflect GENUINE status - green means truly okay
+           No artificial urgency coloring */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-md) var(--spacing-md);
+            border-radius: var(--rounded-md);
+            font-size: var(--text-sm-md);
+            font-weight: var(--font-weight-semibold);
+            white-space: nowrap;
+        }
+
+        .badge svg {
+            width: var(--text-base);
+            height: var(--text-base);
+        }
+
+        .badge-success {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success-green);
+        }
+
+        .badge-warning {
+            background: var(--color-warning-soft);
+            color: var(--color-warning);
+        }
+
+        .badge-neutral {
+            background: var(--bg-light-gray);
+            color: var(--text-gray);
+        }
+
+        /* EXPAND ICON */
+        .expand-btn {
+            width: var(--touch-target);
+            height: var(--touch-target);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-gray);
+            transition: transform var(--transition-slow) var(--easing-ease);
+        }
+
+        .lease-card.expanded .expand-btn {
+            transform: rotate(180deg);
+        }
+
+        /* CARD BODY - Expanded content */
+        .card-body {
+            display: none;
+            border-top: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .lease-card.expanded .card-body {
+            display: block;
+        }
+
+        /* CARD SECTIONS */
+        .card-section {
+            padding: var(--spacing-lg);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .card-section:last-child {
+            border-bottom: none;
+        }
+
+        .card-section-title {
+            font-size: var(--text-sm);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .card-section-title svg {
+            width: var(--text-lg);
+            height: var(--text-lg);
+            color: var(--secondary-purple);
+        }
+
+        /* ============================================================================
+           HOST CONTACT
+           ============================================================================ */
+        .host-row {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            background: var(--bg-light-gray);
+            padding: var(--spacing-lg);
+            border-radius: var(--rounded-md);
+        }
+
+        .host-avatar {
+            width: var(--avatar-md);
+            height: var(--avatar-md);
+            border-radius: var(--rounded-full);
+            background: var(--gradient-purple-button);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--text-md);
+            flex-shrink: 0;
+        }
+
+        .host-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .host-name {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+        }
+
+        .host-label {
+            font-size: var(--text-sm);
+            color: var(--text-gray);
+        }
+
+        .host-buttons {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .icon-btn {
+            width: var(--touch-target);
+            height: var(--touch-target);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--rounded-md);
+            background: var(--bg-white);
+            border: var(--border-width-thin) solid var(--border-color);
+            color: var(--text-description);
+            cursor: pointer;
+            transition: all var(--transition-base) var(--easing-ease);
+        }
+
+        .icon-btn:hover {
+            border-color: var(--secondary-purple);
+            color: var(--secondary-purple);
+        }
+
+        .icon-btn:active {
+            transform: scale(0.95);
+            transition: transform var(--transition-fast) var(--easing-ease-out);
+        }
+
+        .icon-btn svg {
+            width: var(--icon-sm);
+            height: var(--icon-sm);
+        }
+
+        /* ============================================================================
+           PAYMENT SECTION
+
+           ETHICAL CONVERSION NOTE:
+           Leads with STATUS not ACTION. User first sees "On Track" (or not),
+           then can explore details if desired. No pressure to act immediately.
+           ============================================================================ */
+        .payment-status-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            background: var(--bg-light-gray);
+            border-radius: var(--rounded-md);
+            cursor: pointer;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .payment-status-row:active {
+            background: var(--border-color);
+            transition: background var(--transition-fast) var(--easing-ease-out);
+        }
+
+        .payment-status-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .payment-status-text {
+            font-size: var(--text-md);
+            color: var(--text-description);
+        }
+
+        .payment-status-text strong {
+            color: var(--text-dark);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .payment-details {
+            display: none;
+        }
+
+        .payment-details.visible {
+            display: block;
+        }
+
+        .payment-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: var(--text-sm);
+        }
+
+        .payment-table th {
+            text-align: left;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            font-size: var(--text-sm-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-small);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .payment-table th:last-child {
+            text-align: right;
+        }
+
+        .payment-table td {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .payment-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .payment-amount {
+            text-align: right;
+            font-weight: var(--font-weight-semibold);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ============================================================================
+           STAYS TIMELINE
+           Shows what users care about: when are my stays?
+           Upcoming stay highlighted, past stays muted
+           ============================================================================ */
+        .stays-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .stay-row {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-sm) 0;
+        }
+
+        .stay-dot {
+            width: var(--spacing-md);
+            height: var(--spacing-md);
+            border-radius: var(--rounded-full);
+            flex-shrink: 0;
+        }
+
+        .stay-dot.complete {
+            background: var(--success-green);
+        }
+
+        .stay-dot.upcoming {
+            background: var(--secondary-purple);
+            box-shadow: 0 0 0 var(--spacing-xs) rgba(109, 49, 194, 0.2);
+        }
+
+        .stay-dot.future {
+            background: var(--border-gray-light);
+        }
+
+        .stay-dates {
+            flex: 1;
+            font-size: var(--text-md);
+            color: var(--text-description);
+        }
+
+        .stay-dates.upcoming {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+        }
+
+        .stay-nights {
+            font-size: var(--text-sm);
+            color: var(--text-gray);
+        }
+
+        /* ============================================================================
+           AGREEMENT ROW
+           ============================================================================ */
+        .agreement-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            background: var(--bg-light-gray);
+            border-radius: var(--rounded-md);
+            flex-wrap: wrap;
+        }
+
+        .agreement-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .agreement-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--bg-white);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--rounded-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-purple);
+        }
+
+        .agreement-icon svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .agreement-text {
+            font-size: var(--text-md);
+        }
+
+        .agreement-id {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+        }
+
+        .agreement-date {
+            font-size: var(--text-sm);
+            color: var(--text-gray);
+        }
+
+        /* ============================================================================
+           CARD FOOTER ACTIONS
+
+           ETHICAL NOTE:
+           Primary action only when genuinely needed.
+           Secondary actions clearly available but not pushing.
+           ============================================================================ */
+        .card-footer {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+
+        /* ============================================================================
+           PAST LEASES SECTION
+           40px gap before (Massimo's section break)
+           Muted appearance - historical, not urgent
+           ============================================================================ */
+        .past-section {
+            margin-top: var(--spacing-6xl);
+        }
+
+        .past-card {
+            opacity: 0.75;
+        }
+
+        .past-card:hover {
+            opacity: 1;
+        }
+
+        /* ============================================================================
+           RESPONSIVE ADJUSTMENTS
+           ============================================================================ */
+        @media (max-width: 480px) {
+            .hero-date {
+                font-size: var(--text-3xl);
+                letter-spacing: -1px;
+            }
+
+            .countdown-badge {
+                min-width: 64px;
+                min-height: 64px;
+            }
+
+            .countdown-number {
+                font-size: var(--text-2xl);
+            }
+
+            .property-image {
+                width: var(--avatar-md);
+                height: var(--avatar-md);
+            }
+
+            .card-actions .badge {
+                display: none;
+            }
+
+            .card-header {
+                padding: var(--spacing-lg) var(--spacing-sm);
+            }
+
+            .card-section {
+                padding: var(--spacing-lg) var(--spacing-sm);
+            }
+
+            .host-row {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .host-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .agreement-row {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .status-summary-main {
+                flex-direction: column;
+                align-items: stretch;
+                gap: var(--spacing-lg);
+            }
+        }
+
+        /* ============================================================================
+           FOCUS STATES (Accessibility)
+           Visible focus outlines for keyboard navigation
+           ============================================================================ */
+        .btn:focus-visible,
+        .icon-btn:focus-visible,
+        .card-header:focus-visible,
+        .hero:focus-visible {
+            outline: 3px solid var(--secondary-purple);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="#" class="logo">Split Lease</a>
+            <div class="avatar">MK</div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Your Leases</h1>
+            </div>
+        </div>
+
+        <!--
+        HERO SECTION
+
+        ETHICAL CONVERSION REASONING:
+        The hero shows the user's next stay date prominently because this is
+        genuinely the most important information for a guest managing leases.
+
+        The countdown shows "5 days" because this is useful planning information,
+        NOT because countdown formats create urgency pressure. The user asked
+        "when is my next stay?" and this answers that question clearly.
+
+        The CTA "View stay details" is an invitation to explore, not a demand
+        to take action. Users choose to engage; they are not pushed.
+        -->
+        <div class="hero" onclick="navigateToStayDetails()" tabindex="0" role="button" aria-label="View stay details for February 15th">
+            <div class="hero-inner">
+                <div class="hero-top">
+                    <div class="hero-content">
+                        <div class="hero-label">Your next stay</div>
+                        <div class="hero-date">Feb 15</div>
+                        <div class="hero-property">Sunny Tribeca Studio - 2 nights</div>
+                    </div>
+                    <div class="countdown-badge" aria-label="5 days until your stay">
+                        <span class="countdown-number">5</span>
+                        <span class="countdown-label">days</span>
+                    </div>
+                </div>
+                <div class="hero-cta">
+                    View stay details
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <!--
+            STATUS SUMMARY
+
+            ETHICAL CONVERSION REASONING:
+            This section leads with STATUS ("On Track") not ACTION ("Pay Now!").
+            The user first learns that everything is okay, which reduces anxiety.
+
+            The payment information is factual ("$425 due Feb 1") not urgent
+            ("Only 3 days left to pay!"). We present facts; users decide actions.
+
+            The progress bar shows actual progress, not artificial progress
+            designed to exploit completion bias.
+            -->
+            <div class="status-summary">
+                <div class="status-summary-main">
+                    <div class="status-indicator">
+                        <div class="status-icon success" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <path d="M20 6L9 17l-5-5"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="status-text">Payments On Track</div>
+                            <div class="status-subtext">Next: $425 due Feb 1</div>
+                        </div>
+                    </div>
+                    <!--
+                    PAY NOW BUTTON
+
+                    ETHICAL NOTE: This button appears because a payment is due soon.
+                    It is an option, not a pressure mechanism. The neutral styling
+                    (secondary button) indicates "available" not "urgent."
+                    -->
+                    <button class="btn btn-secondary btn-full-mobile">View Payment Details</button>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100" aria-label="2 of 3 payments complete">
+                        <div class="progress-segment complete"></div>
+                        <div class="progress-segment complete"></div>
+                        <div class="progress-segment current"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACTIVE LEASES -->
+            <section aria-labelledby="active-leases-title">
+                <div class="section-header">
+                    <h2 class="section-title" id="active-leases-title">Active Leases<span class="section-count">2</span></h2>
+                </div>
+
+                <div class="lease-list">
+                    <!-- LEASE CARD 1 - Expanded -->
+                    <article class="lease-card expanded" aria-labelledby="lease-1-title">
+                        <div class="card-header" onclick="toggleCard(this)" tabindex="0" role="button" aria-expanded="true" aria-controls="lease-1-body">
+                            <div class="card-info">
+                                <div class="property-image">
+                                    <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=112&h=112&fit=crop" alt="" loading="lazy">
+                                </div>
+                                <div class="property-details">
+                                    <div class="property-name" id="lease-1-title">Sunny Tribeca Studio</div>
+                                    <div class="property-meta">Jan 2025 - Mar 2025</div>
+                                </div>
+                            </div>
+                            <div class="card-actions">
+                                <span class="badge badge-success" aria-label="Status: Active">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="M20 6L9 17l-5-5"/>
+                                    </svg>
+                                    Active
+                                </span>
+                                <div class="expand-btn" aria-hidden="true">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M6 9l6 6 6-6"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body" id="lease-1-body">
+                            <!-- HOST CONTACT -->
+                            <div class="card-section">
+                                <div class="card-section-title">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                    Your Host
+                                </div>
+                                <div class="host-row">
+                                    <div class="host-avatar" aria-hidden="true">JD</div>
+                                    <div class="host-info">
+                                        <div class="host-name">John Doe</div>
+                                        <div class="host-label">Property Host</div>
+                                    </div>
+                                    <div class="host-buttons">
+                                        <button class="icon-btn" aria-label="Send message to John Doe">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                            </svg>
+                                        </button>
+                                        <button class="icon-btn" aria-label="Call John Doe">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--
+                            PAYMENTS SECTION
+
+                            ETHICAL CONVERSION REASONING:
+                            This section leads with a summary status row that answers
+                            the question "Is everything okay?" before showing details.
+
+                            Users tap to reveal the full table only if they want details.
+                            We do not overwhelm with information; we provide it on demand.
+                            -->
+                            <div class="card-section">
+                                <div class="card-section-title">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                                    </svg>
+                                    Payment Records
+                                </div>
+
+                                <div class="payment-status-row" onclick="togglePayments(this)" tabindex="0" role="button" aria-expanded="false">
+                                    <div class="payment-status-left">
+                                        <span class="badge badge-success">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <path d="M20 6L9 17l-5-5"/>
+                                            </svg>
+                                            On Track
+                                        </span>
+                                        <span class="payment-status-text">
+                                            <strong>$850</strong> paid of $1,275
+                                        </span>
+                                    </div>
+                                    <span class="payment-status-text" data-expand-text>Tap for details</span>
+                                </div>
+
+                                <div class="payment-details">
+                                    <table class="payment-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Status</th>
+                                                <th>Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Jan 1, 2025</td>
+                                                <td><span class="badge badge-success">Paid</span></td>
+                                                <td class="payment-amount">$425.00</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Jan 15, 2025</td>
+                                                <td><span class="badge badge-success">Paid</span></td>
+                                                <td class="payment-amount">$425.00</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Feb 1, 2025</td>
+                                                <td><span class="badge badge-warning">Due</span></td>
+                                                <td class="payment-amount">$425.00</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- STAYS TIMELINE -->
+                            <div class="card-section">
+                                <div class="card-section-title">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    Your Stays
+                                </div>
+
+                                <div class="stays-list">
+                                    <div class="stay-row">
+                                        <div class="stay-dot complete" aria-label="Completed"></div>
+                                        <div class="stay-dates">Jan 10 - Jan 12</div>
+                                        <div class="stay-nights">2 nights</div>
+                                    </div>
+                                    <div class="stay-row">
+                                        <div class="stay-dot complete" aria-label="Completed"></div>
+                                        <div class="stay-dates">Jan 24 - Jan 26</div>
+                                        <div class="stay-nights">2 nights</div>
+                                    </div>
+                                    <div class="stay-row">
+                                        <div class="stay-dot upcoming" aria-label="Upcoming"></div>
+                                        <div class="stay-dates upcoming">Feb 15 - Feb 17</div>
+                                        <div class="stay-nights">2 nights</div>
+                                    </div>
+                                    <div class="stay-row">
+                                        <div class="stay-dot future" aria-label="Future"></div>
+                                        <div class="stay-dates">Mar 1 - Mar 3</div>
+                                        <div class="stay-nights">2 nights</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- AGREEMENT -->
+                            <div class="card-section">
+                                <div class="card-section-title">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    </svg>
+                                    Agreement
+                                </div>
+                                <div class="agreement-row">
+                                    <div class="agreement-info">
+                                        <div class="agreement-icon" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                                <polyline points="14 2 14 8 20 8"></polyline>
+                                            </svg>
+                                        </div>
+                                        <div class="agreement-text">
+                                            <div class="agreement-id">SL-2025-001247</div>
+                                            <div class="agreement-date">Signed Jan 5, 2025</div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-secondary">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                            <polyline points="7 10 12 15 17 10"></polyline>
+                                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                                        </svg>
+                                        Download
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!--
+                            ACTIONS
+
+                            ETHICAL CONVERSION REASONING:
+                            "Message Host" is primary because communication builds trust.
+                            "Request Date Change" is secondary because it's less common.
+                            Both are clearly available without pressure.
+                            -->
+                            <div class="card-section">
+                                <div class="card-footer">
+                                    <button class="btn btn-primary btn-full-mobile">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                        </svg>
+                                        Message Host
+                                    </button>
+                                    <button class="btn btn-secondary btn-full-mobile">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        </svg>
+                                        Request Date Change
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- LEASE CARD 2 - Collapsed, with payment attention needed -->
+                    <article class="lease-card" aria-labelledby="lease-2-title">
+                        <div class="card-header" onclick="toggleCard(this)" tabindex="0" role="button" aria-expanded="false" aria-controls="lease-2-body">
+                            <div class="card-info">
+                                <div class="property-image">
+                                    <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=112&h=112&fit=crop" alt="" loading="lazy">
+                                </div>
+                                <div class="property-details">
+                                    <div class="property-name" id="lease-2-title">Brooklyn Heights Brownstone</div>
+                                    <div class="property-meta">Feb 2025 - Apr 2025</div>
+                                </div>
+                            </div>
+                            <div class="card-actions">
+                                <span class="badge badge-warning" aria-label="Status: Payment Due">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                    </svg>
+                                    Payment Due
+                                </span>
+                                <div class="expand-btn" aria-hidden="true">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M6 9l6 6 6-6"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body" id="lease-2-body">
+                            <!-- HOST CONTACT -->
+                            <div class="card-section">
+                                <div class="card-section-title">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                    Your Host
+                                </div>
+                                <div class="host-row">
+                                    <div class="host-avatar" aria-hidden="true">SM</div>
+                                    <div class="host-info">
+                                        <div class="host-name">Sarah Miller</div>
+                                        <div class="host-label">Property Host</div>
+                                    </div>
+                                    <div class="host-buttons">
+                                        <button class="icon-btn" aria-label="Send message to Sarah Miller">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                            </svg>
+                                        </button>
+                                        <button class="icon-btn" aria-label="Call Sarah Miller">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--
+                            PAYMENT ATTENTION NOTICE
+
+                            ETHICAL CONVERSION REASONING:
+                            This notice appears because a payment is genuinely due.
+                            The language is factual ("$550 due today") not alarming
+                            ("URGENT! Pay immediately!").
+
+                            The button is primary because this is a real action needed,
+                            but the surrounding context is calm, not pressuring.
+                            -->
+                            <div class="card-section" style="background: var(--color-warning-soft);">
+                                <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-lg); flex-wrap: wrap;">
+                                    <div>
+                                        <div style="font-weight: var(--font-weight-semibold); color: var(--color-warning); margin-bottom: var(--spacing-xs);">
+                                            Payment Due Today
+                                        </div>
+                                        <div style="font-size: var(--text-sm); color: #92400E;">
+                                            $550 for February installment
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary btn-full-mobile">Pay $550</button>
+                                </div>
+                            </div>
+
+                            <!-- STAYS TIMELINE -->
+                            <div class="card-section">
+                                <div class="card-section-title">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    Your Stays
+                                </div>
+
+                                <div class="stays-list">
+                                    <div class="stay-row">
+                                        <div class="stay-dot upcoming" aria-label="Upcoming"></div>
+                                        <div class="stay-dates upcoming">Feb 8 - Feb 10</div>
+                                        <div class="stay-nights">2 nights</div>
+                                    </div>
+                                    <div class="stay-row">
+                                        <div class="stay-dot future" aria-label="Future"></div>
+                                        <div class="stay-dates">Feb 22 - Feb 24</div>
+                                        <div class="stay-nights">2 nights</div>
+                                    </div>
+                                    <div class="stay-row">
+                                        <div class="stay-dot future" aria-label="Future"></div>
+                                        <div class="stay-dates">Mar 8 - Mar 10</div>
+                                        <div class="stay-nights">2 nights</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- AGREEMENT -->
+                            <div class="card-section">
+                                <div class="card-section-title">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                    </svg>
+                                    Agreement
+                                </div>
+                                <div class="agreement-row">
+                                    <div class="agreement-info">
+                                        <div class="agreement-icon" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                                <polyline points="14 2 14 8 20 8"></polyline>
+                                            </svg>
+                                        </div>
+                                        <div class="agreement-text">
+                                            <div class="agreement-id">SL-2025-001392</div>
+                                            <div class="agreement-date">Signed Jan 28, 2025</div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-secondary">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                            <polyline points="7 10 12 15 17 10"></polyline>
+                                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                                        </svg>
+                                        Download
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- ACTIONS -->
+                            <div class="card-section">
+                                <div class="card-footer">
+                                    <button class="btn btn-secondary btn-full-mobile">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                        </svg>
+                                        Message Host
+                                    </button>
+                                    <button class="btn btn-ghost btn-full-mobile">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        </svg>
+                                        Request Date Change
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- PAST LEASES - 40px section break (Massimo) -->
+            <section class="past-section" aria-labelledby="past-leases-title">
+                <div class="section-header">
+                    <h2 class="section-title" id="past-leases-title">Past Leases<span class="section-count">1</span></h2>
+                </div>
+
+                <div class="lease-list">
+                    <article class="lease-card past-card" aria-labelledby="lease-3-title">
+                        <div class="card-header" onclick="toggleCard(this)" tabindex="0" role="button" aria-expanded="false" aria-controls="lease-3-body">
+                            <div class="card-info">
+                                <div class="property-image">
+                                    <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=112&h=112&fit=crop" alt="" loading="lazy">
+                                </div>
+                                <div class="property-details">
+                                    <div class="property-name" id="lease-3-title">Upper West Side Studio</div>
+                                    <div class="property-meta">Oct 2024 - Dec 2024</div>
+                                </div>
+                            </div>
+                            <div class="card-actions">
+                                <span class="badge badge-neutral" aria-label="Status: Completed">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="M20 6L9 17l-5-5"/>
+                                    </svg>
+                                    Completed
+                                </span>
+                                <div class="expand-btn" aria-hidden="true">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M6 9l6 6 6-6"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body" id="lease-3-body">
+                            <div class="card-section">
+                                <div class="agreement-row">
+                                    <div class="agreement-info">
+                                        <div class="agreement-icon" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                                <polyline points="14 2 14 8 20 8"></polyline>
+                                            </svg>
+                                        </div>
+                                        <div class="agreement-text">
+                                            <div class="agreement-id">SL-2024-000891</div>
+                                            <div class="agreement-date">6 stays completed</div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-secondary">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                            <polyline points="7 10 12 15 17 10"></polyline>
+                                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                                        </svg>
+                                        Download Records
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // Toggle card expansion with accessibility support
+        function toggleCard(header) {
+            const card = header.closest('.lease-card');
+            const isExpanded = card.classList.toggle('expanded');
+            header.setAttribute('aria-expanded', isExpanded);
+        }
+
+        // Toggle payment details with accessibility support
+        function togglePayments(row) {
+            const details = row.nextElementSibling;
+            const isVisible = details.classList.toggle('visible');
+            row.setAttribute('aria-expanded', isVisible);
+            const text = row.querySelector('[data-expand-text]');
+            if (text) {
+                text.textContent = isVisible ? 'Tap to hide' : 'Tap for details';
+            }
+        }
+
+        // Navigate to stay details
+        function navigateToStayDetails() {
+            // In production, this would navigate to the stay details page
+            console.log('Navigate to stay details');
+        }
+
+        // Keyboard support for interactive elements
+        document.querySelectorAll('[role="button"]').forEach(el => {
+            el.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    el.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

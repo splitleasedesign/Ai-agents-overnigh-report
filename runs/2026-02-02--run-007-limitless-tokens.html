@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run 007 — Limitless Tokens Competition | AI Design Team</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #31135D;
+            --primary-light: #7B4FB5;
+            --primary-bg: #F7F2FA;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --green-50: #ECFDF5;
+            --green-600: #059669;
+            --pink-50: #FDF2F8;
+            --pink-600: #DB2777;
+            --amber-50: #FFFBEB;
+            --amber-600: #D97706;
+            --purple-50: #FAF5FF;
+            --purple-600: #9333EA;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: white;
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            border-bottom: 1px solid var(--gray-200);
+            padding: 40px 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--gray-900);
+        }
+
+        .header .meta {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .header .summary {
+            margin-top: 24px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--purple-50) 0%, var(--pink-50) 100%);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--gray-700);
+            border: 1px solid #E9D5FF;
+        }
+
+        .header .summary strong {
+            color: var(--gray-900);
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 32px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+
+        .stat strong {
+            font-size: 20px;
+            color: var(--primary);
+            display: block;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 13px;
+        }
+
+        .top-nav a {
+            color: var(--gray-600);
+            text-decoration: none;
+        }
+
+        .top-nav a:hover {
+            color: var(--primary);
+        }
+
+        .top-nav .separator {
+            color: var(--gray-300);
+        }
+
+        .top-nav .current {
+            color: var(--gray-900);
+            font-weight: 500;
+        }
+
+        /* Experiment Box */
+        .experiment-box {
+            background: linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 48px;
+            color: white;
+        }
+
+        .experiment-box h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .experiment-box .icon {
+            font-size: 24px;
+        }
+
+        .experiment-box p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .experiment-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .feature-card h4 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #E9D5FF;
+        }
+
+        .feature-card p {
+            font-size: 12px;
+            opacity: 0.8;
+            margin: 0;
+        }
+
+        /* Agent Section */
+        .agent-section {
+            margin-bottom: 60px;
+            padding-bottom: 60px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .agent-section:last-child {
+            border-bottom: none;
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .agent-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .agent-info h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .agent-info .domain {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .agent-info .manifesto {
+            font-size: 14px;
+            font-style: italic;
+            color: var(--purple-600);
+            margin-top: 8px;
+        }
+
+        /* Lysergic Badge */
+        .lysergic-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        .lysergic-badge.high {
+            background: linear-gradient(90deg, #EC4899, #8B5CF6);
+            color: white;
+        }
+
+        .lysergic-badge.medium {
+            background: var(--purple-50);
+            color: var(--purple-600);
+        }
+
+        .lysergic-badge.low {
+            background: var(--gray-100);
+            color: var(--gray-600);
+        }
+
+        .lysergic-badge.maximum {
+            background: linear-gradient(90deg, #F59E0B, #EC4899, #8B5CF6, #3B82F6);
+            color: white;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Mockup Card */
+        .mockup-card {
+            margin-bottom: 24px;
+        }
+
+        .mockup-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mockup-preview {
+            width: 100%;
+            height: 500px;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            background: var(--gray-50);
+            display: block;
+        }
+
+        .mockup-link {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .mockup-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--gray-900);
+        }
+
+        .section-subtitle {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-bottom: 32px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid var(--gray-200);
+            color: var(--gray-500);
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mockup-preview {
+                height: 350px;
+            }
+
+            .stats-row {
+                gap: 20px;
+            }
+
+            .experiment-features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <a href="../../index.html">Special Reports</a>
+        <span class="separator">/</span>
+        <a href="../index.html">AI Design Team</a>
+        <span class="separator">/</span>
+        <span class="current">Run 007</span>
+    </nav>
+
+    <!-- Header -->
+    <header class="header">
+        <h1>Run 007 — Limitless Tokens Competition</h1>
+        <p class="meta">February 2, 2026 (overnight execution) • Split Lease AI Design Team</p>
+
+        <div class="summary">
+            <strong>Experiment:</strong> Nine AI design agents given unlimited token budgets to research deeply, write adversarial manifestos against their own design orthodoxy, and explore experimental "lysergic" visual directions. Total output: 916KB across 9 HTML entries, 10 analysis documents, and a comprehensive style guide.
+        </div>
+
+        <div class="stats-row">
+            <div class="stat">
+                <strong>916KB</strong>
+                Total output
+            </div>
+            <div class="stat">
+                <strong>9</strong>
+                HTML mockups
+            </div>
+            <div class="stat">
+                <strong>10</strong>
+                Analysis docs
+            </div>
+            <div class="stat">
+                <strong>39KB</strong>
+                Style guide
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- Experiment Box -->
+        <div class="experiment-box">
+            <h3>
+                <span class="icon">🔬</span>
+                Adversarial Architecture + Lysergic Exploration
+            </h3>
+            <p>
+                Each agent was challenged to write a manifesto AGAINST their own design philosophy — questioning their deepest-held beliefs. Select agents were also tasked with exploring psychedelic/experimental visual directions.
+            </p>
+
+            <div class="experiment-features">
+                <div class="feature-card">
+                    <h4>Unlimited Tokens</h4>
+                    <p>No constraints on analysis depth or output size</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Self-Criticism</h4>
+                    <p>Manifestos against own design orthodoxy</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Deep Research</h4>
+                    <p>3+ documents, 500+ word analyses</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Lysergic Mandate</h4>
+                    <p>Experimental visual exploration for select agents</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Agent Entries</h2>
+        <p class="section-subtitle">Each agent delivered an adversarial manifesto and HTML mockup</p>
+
+        <!-- Josef Müller-Brockmann -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #374151;">JM</div>
+                <div class="agent-info">
+                    <h2>Josef Müller-Brockmann <span class="lysergic-badge high">HIGH</span></h2>
+                    <div class="domain">Swiss Grid Systems</div>
+                    <div class="manifesto">"ANTI-GRID: A Swiss Designer's Heresy"</div>
+                </div>
+            </div>
+            <div class="mockup-card">
+                <iframe class="mockup-preview" src="../mockups/run-007/josef-entry.html"></iframe>
+                <a href="../mockups/run-007/josef-entry.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+        </section>
+
+        <!-- Paula Scher -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #EC4899;">PS</div>
+                <div class="agent-info">
+                    <h2>Paula Scher <span class="lysergic-badge high">HIGH</span></h2>
+                    <div class="domain">Bold Typography</div>
+                    <div class="manifesto">"THE WHISPER THAT DEAFENS: Beyond Bold"</div>
+                </div>
+            </div>
+            <div class="mockup-card">
+                <iframe class="mockup-preview" src="../mockups/run-007/paula-entry.html"></iframe>
+                <a href="../mockups/run-007/paula-entry.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+        </section>
+
+        <!-- Massimo Vignelli -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #8B5CF6;">MV</div>
+                <div class="agent-info">
+                    <h2>Massimo Vignelli <span class="lysergic-badge low">LOW</span></h2>
+                    <div class="domain">Typographic Discipline</div>
+                    <div class="manifesto">"THE TYRANNY OF HELVETICA: A Self-Critique"</div>
+                </div>
+            </div>
+            <div class="mockup-card">
+                <iframe class="mockup-preview" src="../mockups/run-007/massimo-entry.html"></iframe>
+                <a href="../mockups/run-007/massimo-entry.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+        </section>
+
+        <!-- Don Norman -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #31135D;">DN</div>
+                <div class="agent-info">
+                    <h2>Don Norman <span class="lysergic-badge low">LOW</span></h2>
+                    <div class="domain">User-Centered Design</div>
+                    <div class="manifesto">"THE USABILITY TRAP: Why Easy Isn't Always Better"</div>
+                </div>
+            </div>
+            <div class="mockup-card">
+                <iframe class="mockup-preview" src="../mockups/run-007/don-entry.html"></iframe>
+                <a href="../mockups/run-007/don-entry.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+        </section>
+
+        <!-- Charles Eames -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #F97316;">CE</div>
+                <div class="agent-info">
+                    <h2>Charles Eames <span class="lysergic-badge medium">MEDIUM</span></h2>
+                    <div class="domain">Details Matter</div>
+                    <div class="manifesto">"THE DETAIL DELUSION: When Craftsmanship Becomes Ego"</div>
+                </div>
+            </div>
+            <div class="mockup-card">
+                <iframe class="mockup-preview" src="../mockups/run-007/charles-entry.html"></iframe>
+                <a href="../mockups/run-007/charles-entry.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+        </section>
+
+        <!-- Dieter Rams -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #059669;">DR</div>
+                <div class="agent-info">
+                    <h2>Dieter Rams <span class="lysergic-badge low">LOW</span></h2>
+                    <div class="domain">Less But Better</div>
+                    <div class="manifesto">"THE MINIMALISM MIRAGE: Confessions of a Reductionist"</div>
+                </div>
+            </div>
+            <div class="mockup-card">
+                <iframe class="mockup-preview" src="../mockups/run-007/dieter-entry.html"></iframe>
+                <a href="../mockups/run-007/dieter-entry.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+        </section>
+
+        <!-- Milton Glaser -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #EF4444;">MG</div>
+                <div class="agent-info">
+                    <h2>Milton Glaser <span class="lysergic-badge maximum">MAXIMUM</span></h2>
+                    <div class="domain">Conceptual Warmth</div>
+                    <div class="manifesto">"THE CONCEPT TRAP: When Cleverness Kills Clarity"</div>
+                </div>
+            </div>
+            <div class="mockup-card">
+                <iframe class="mockup-preview" src="../mockups/run-007/milton-entry.html"></iframe>
+                <a href="../mockups/run-007/milton-entry.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+        </section>
+
+        <!-- Jony Ive -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #6366F1;">JI</div>
+                <div class="agent-info">
+                    <h2>Jony Ive <span class="lysergic-badge medium">MEDIUM</span></h2>
+                    <div class="domain">Tactile Premium</div>
+                    <div class="manifesto">"THE MATERIAL LIE: Why Screens Aren't Objects"</div>
+                </div>
+            </div>
+            <div class="mockup-card">
+                <iframe class="mockup-preview" src="../mockups/run-007/jony-entry.html"></iframe>
+                <a href="../mockups/run-007/jony-entry.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+        </section>
+
+        <!-- Luke Wroblewski -->
+        <section class="agent-section">
+            <div class="agent-header">
+                <div class="agent-avatar" style="background: #0EA5E9;">LW</div>
+                <div class="agent-info">
+                    <h2>Luke Wroblewski <span class="lysergic-badge low">LOW</span></h2>
+                    <div class="domain">Conversion Focus</div>
+                    <div class="manifesto">"THE CONVERSION CONFESSION: When Optimization Becomes Manipulation"</div>
+                </div>
+            </div>
+            <div class="mockup-card">
+                <iframe class="mockup-preview" src="../mockups/run-007/luke-entry.html"></iframe>
+                <a href="../mockups/run-007/luke-entry.html" target="_blank" class="mockup-link">Open in new tab →</a>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><a href="../index.html" style="color: var(--primary); text-decoration: none;">← Back to AI Design Team</a></p>
+        <p style="margin-top: 8px;">Split Lease AI Design Team • Run 007 • February 2, 2026</p>
+    </footer>
+</body>
+</html>

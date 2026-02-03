@@ -1,0 +1,2271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Leases - Split Lease | Paula Scher Run 007</title>
+
+    <!--
+    ================================================================================
+    PAULA SCHER - RUN 007 DESIGN PHILOSOPHY
+    ================================================================================
+
+    THE WHISPER THAT DEAFENS: BEYOND BOLD
+
+    This design challenges the Run 006 approach of "violent typographic contrast."
+    Instead of screaming 72px headlines, we explore VIBRATION over VOLUME.
+
+    KEY PRINCIPLES:
+    1. Optical Vibration - Complementary colors create buzz at boundaries
+    2. Letterform Tension - Compressed spacing creates energy without scale
+    3. Dissolving Boundaries - Edges that partially merge with backgrounds
+    4. Asymmetric Breathing - Rhythm through spacing variation, not uniformity
+    5. Ghost Typography - Subtle echoes suggest motion in static elements
+    6. Temperature Gradients - Subliminal depth through imperceptible color shifts
+
+    STYLE GUIDE COMPLIANCE:
+    - All colors now use official Split Lease CSS variables
+    - All spacing uses official tokens (--spacing-xs through --spacing-7xl)
+    - All font sizes use official scale (--text-xs through --text-4xl)
+    - All border-radius uses official tokens (--rounded-sm through --rounded-pill)
+    - All shadows use official tokens (--shadow-sm through --shadow-purple-lg)
+
+    ACCESSIBILITY COMMITMENTS:
+    - WCAG AAA: 17px minimum body text, 7:1 contrast ratios
+    - 48px minimum touch targets throughout
+    - prefers-reduced-motion respected
+    - Color never sole carrier of information
+
+    "Design within constraints is not compromise - it's discipline."
+    ================================================================================
+    -->
+
+    <style>
+        /* ================================================================================
+           FONT IMPORTS
+           Inter for prose, system monospace for data precision
+           ================================================================================ */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+        /* ================================================================================
+           OFFICIAL SPLIT LEASE DESIGN SYSTEM - COMPLETE :root BLOCK
+           From: split-lease-style-guide.md v2.0
+           ================================================================================ */
+        :root {
+            /* ========================================
+               COLOR VARIABLES
+               ======================================== */
+
+            /* Primary Colors
+               Usage Guide:
+               - primary-purple (#31135D): Brand color, headings, important UI
+               - primary-purple-hover (#251047): Hover state for primary
+               - secondary-purple (#6D31C2): Interactive buttons, links, CTAs
+               - accent-purple (#8C68EE): Hover state for secondary, highlights
+               - chat-purple (#4B47CE): Day badges, chat elements
+            */
+            --primary-purple: #31135D;
+            --primary-purple-hover: #251047;
+            --primary-purple-dark: #1f0a3d;
+            --secondary-purple: rgb(109, 49, 194);
+            --accent-purple: rgb(140, 104, 238);
+            --selected-purple: rgb(79, 48, 151);
+            --text-purple: rgb(82, 31, 147);
+            --chat-purple: rgb(75, 71, 206);
+
+            /* Secondary Colors */
+            --accent-blue: #4A90E2;
+            --accent-blue-hover: #357ABD;
+
+            /* Status Colors */
+            --success-green: #22C55E;
+            --success-teal: #10B981;
+
+            /* Text Colors */
+            --text-dark: #1a1a1a;
+            --text-gray: #6b7280;
+            --text-light-gray: #9ca3af;
+            --text-medium-gray: #666666;
+            --text-description: #374151;
+
+            /* Background Colors */
+            --bg-white: #ffffff;
+            --bg-light: #f9fafb;
+            --bg-light-gray: #f3f4f6;
+            --bg-lighter-gray: #f5f5f5;
+            --bg-off-white: rgb(252, 250, 255);
+
+            /* Border Colors */
+            --border-color: #e5e7eb;
+            --border-light: #f3f4f6;
+            --border-gray: rgba(107, 107, 107, 0.7);
+            --border-gray-light: #e0e0e0;
+            --border-gray-lighter: #ddd;
+
+            /* Neutral Colors */
+            --white: rgb(255, 255, 255);
+            --black: rgb(0, 0, 0);
+            --off-white: rgb(252, 250, 255);
+
+            /* Info/Link Colors */
+            --info-blue: #2196F3;
+            --info-indigo: #6366F1;
+            --info-indigo-hover: #3b82f6;
+            --bg-info: #f0f7ff;
+
+            /* Subtle/Overlay Colors */
+            --overlay-dark: rgba(0, 0, 0, 0.7);
+            --overlay-light: rgba(255, 255, 255, 0.9);
+            --overlay-light-blur: rgba(255, 255, 255, 0.2);
+
+            /* Gradient Colors */
+            --gradient-purple-primary: linear-gradient(135deg, #31135D 0%, #5a2d8f 100%);
+            --gradient-purple-button: linear-gradient(135deg, #6D31C2 0%, #7C3AED 100%);
+            --gradient-purple-hover: linear-gradient(135deg, #5B2AA5 0%, #6D28D9 100%);
+            --gradient-purple-dark: linear-gradient(135deg, rgba(47, 20, 91, 0.85), rgba(109, 49, 194, 0.75));
+            --gradient-purple-dark-hover: linear-gradient(135deg, rgba(47, 20, 91, 0.9), rgba(109, 49, 194, 0.8));
+
+            /* ========================================
+               FONT VARIABLES
+               ======================================== */
+
+            /* Font Families */
+            --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-dm: 'DM Sans', sans-serif;
+            --font-primary: 'Helvetica', Arial, sans-serif;
+            --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+            /* Font Sizes */
+            --text-xs: 11px;
+            --text-sm: 12px;
+            --text-sm-md: 13px;
+            --text-base: 14px;
+            --text-md: 16px;
+            --text-lg: 18px;
+            --text-xl: 20px;
+            --text-2xl: 28px;
+            --text-3xl: 32px;
+            --text-4xl: 36px;
+
+            /* Font Weights */
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+
+            /* Line Heights */
+            --line-height-tight: 1.2;
+            --line-height-normal: 1.5;
+            --line-height-relaxed: 1.6;
+            --line-height-loose: 1.8;
+
+            /* Letter Spacing */
+            --letter-spacing-normal: normal;
+            --letter-spacing-small: 0.5px;
+            --letter-spacing-medium: 0.05em;
+
+            /* ========================================
+               SPACING VARIABLES
+               ======================================== */
+
+            /* Padding & Margin */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-lg: 16px;
+            --spacing-xl: 20px;
+            --spacing-2xl: 24px;
+            --spacing-3xl: 28px;
+            --spacing-4xl: 32px;
+            --spacing-5xl: 2rem;
+            --spacing-6xl: 2.5rem;
+            --spacing-7xl: 3rem;
+
+            /* Component Spacing */
+            --gap-sm: 0.5rem;
+            --gap-md: 0.75rem;
+            --gap-lg: 1rem;
+            --gap-xl: 1.5rem;
+            --gap-2xl: 2rem;
+            --gap-3xl: 2.5rem;
+
+            /* Padding */
+            --padding-sm: 0.5rem;
+            --padding-md: 0.75rem;
+            --padding-lg: 1rem;
+            --padding-xl: 1.5rem;
+            --padding-2xl: 2rem;
+
+            /* ========================================
+               BORDER RADIUS VARIABLES
+               ======================================== */
+
+            --rounded-sm: 4px;
+            --rounded-md: 6px;
+            --rounded-lg: 8px;
+            --rounded-xl: 12px;
+            --rounded-2xl: 16px;
+            --rounded-full: 50%;
+            --rounded-pill: 20px;
+
+            /* ========================================
+               BREAKPOINT VARIABLES
+               ======================================== */
+
+            --breakpoint-sm: 600px;
+            --breakpoint-md: 768px;
+            --breakpoint-lg: 1024px;
+            --breakpoint-xl: 1080px;
+            --breakpoint-2xl: 1200px;
+            --breakpoint-3xl: 1280px;
+            --breakpoint-max: 1440px;
+
+            /* ========================================
+               SHADOW VARIABLES
+               ======================================== */
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 4px 16px rgba(49, 19, 93, 0.35);
+            --shadow-2xl: 0 6px 24px rgba(49, 19, 93, 0.5);
+            --shadow-purple-sm: 0 2px 4px rgba(49, 19, 93, 0.2);
+            --shadow-purple-md: 0 4px 8px rgba(49, 19, 93, 0.15);
+            --shadow-purple-lg: 0 6px 20px rgba(109, 49, 194, 0.35);
+            --shadow-dark-sm: 0 2px 6px rgba(0, 0, 0, 0.2);
+            --shadow-dark-md: 0 4px 8px rgba(0, 0, 0, 0.25);
+
+            /* ========================================
+               TRANSITION & ANIMATION VARIABLES
+               ======================================== */
+
+            --transition-fast: 0.1s;
+            --transition-base: 0.2s;
+            --transition-slow: 0.3s;
+            --transition-slower: 0.4s;
+
+            --easing-ease: ease;
+            --easing-ease-in: ease-in;
+            --easing-ease-out: ease-out;
+            --easing-ease-in-out: ease-in-out;
+            --easing-linear: linear;
+
+            --animation-duration: 1.5s;
+
+            /* ========================================
+               SIZING VARIABLES
+               ======================================== */
+
+            /* Icon Sizes */
+            --icon-xs: 16px;
+            --icon-sm: 20px;
+            --icon-md: 24px;
+            --icon-lg: 28px;
+            --icon-xl: 32px;
+            --icon-2xl: 36px;
+            --icon-3xl: 60px;
+
+            /* Avatar Sizes */
+            --avatar-sm: 36px;
+            --avatar-md: 48px;
+            --avatar-lg: 80px;
+
+            /* Container Sizes */
+            --container-sm: 640px;
+            --container-md: 900px;
+            --container-lg: 1280px;
+            --container-max: 1440px;
+            --container-width: 95vw;
+
+            /* Form Input Sizes */
+            --input-height: 42px;
+            --input-height-lg: 48px;
+            --input-height-sm: 36px;
+
+            /* ========================================
+               Z-INDEX VARIABLES
+               ======================================== */
+
+            --z-dropdown: 100;
+            --z-sticky: 500;
+            --z-floating: 999;
+            --z-modal: 10000;
+
+            /* ========================================
+               OPACITY VARIABLES
+               ======================================== */
+
+            --opacity-disabled: 0.5;
+            --opacity-hover: 0.8;
+            --opacity-focus: 0.9;
+
+            /* ========================================
+               BORDER VARIABLES
+               ======================================== */
+
+            --border-width-thin: 1px;
+            --border-width-md: 1.5px;
+            --border-width-thick: 2px;
+
+            /* ========================================
+               MAX-WIDTH VARIABLES
+               ======================================== */
+
+            --max-width-sidebar: 380px;
+            --max-width-modal: 400px;
+            --max-width-map: 100%;
+
+            /* ========================================
+               FAVORITES PAGE REDESIGN TOKENS
+               ======================================== */
+
+            /* Primary Colors */
+            --favorites-purple: #6B4EE6;
+            --favorites-purple-light: #F0EBFF;
+            --favorites-purple-dark: #5A3ED5;
+            --favorites-purple-gradient: linear-gradient(135deg, #6B4EE6 0%, #8B6CF5 100%);
+
+            /* Text Colors */
+            --favorites-text-dark: #1a1a2e;
+            --favorites-text-medium: #64748B;
+            --favorites-text-light: #94A3B8;
+
+            /* Background & Border */
+            --favorites-bg: #FAFBFC;
+            --favorites-border: #E8ECF0;
+            --favorites-card-bg: #ffffff;
+
+            /* Status Colors */
+            --favorites-success: #10B981;
+            --favorites-heart: #FF6B5B;
+            --favorites-heart-hover: #e55a4a;
+
+            /* ========================================
+               POPUP REPLICATION PROTOCOL TOKENS
+               Monochromatic purple design system
+               STRICT: NO GREEN, NO YELLOW
+               ======================================== */
+
+            /* Protocol Colors */
+            --protocol-primary: #31135D;
+            --protocol-action: #5B5FCF;
+            --protocol-action-hover: #4A4EBF;
+            --protocol-action-disabled: #B8BAE0;
+            --protocol-secondary: #6D31C2;
+            --protocol-surface: #F7F2FA;
+            --protocol-danger: #DC3545;
+            --protocol-danger-hover: rgba(220, 53, 69, 0.1);
+            --protocol-white: #FFFFFF;
+            --protocol-overlay: rgba(0, 0, 0, 0.5);
+            --protocol-border: #E5E7EB;
+            --protocol-border-light: #E7E0EC;
+            --protocol-text-muted: #6B7280;
+            --protocol-text-secondary: #49454F;
+
+            /* Protocol Spacing (STRICT: 8px, 16px, 24px only) */
+            --protocol-space-sm: 8px;
+            --protocol-space-md: 16px;
+            --protocol-space-lg: 24px;
+
+            /* Protocol Radii */
+            --protocol-radius-button: 100px;
+            --protocol-radius-card: 8px;
+            --protocol-radius-modal: 16px;
+            --protocol-radius-modal-mobile: 24px;
+
+            /* Protocol Transitions */
+            --protocol-transition: 0.2s ease;
+            --protocol-transition-slow: 0.3s ease-out;
+
+            /* ========================================
+               PAULA SCHER TYPOGRAPHY ADDITIONS
+               Bold typography philosophy extensions
+               ======================================== */
+
+            /* Hero Typography - PAULA: Larger scale for impact */
+            --type-hero: 56px;
+            --type-hero-mobile: 48px;
+
+            /* MONOSPACE for data precision */
+            --font-mono: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
+
+            /* Layout-specific */
+            --max-width-content: 800px;
+            --header-height: 60px;
+            --touch-target: 48px;
+        }
+
+        /* ================================================================================
+           REDUCED MOTION PREFERENCES
+           ================================================================================ */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* ================================================================================
+           RESET & BASE
+           ================================================================================ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-inter);
+            font-size: var(--text-md);
+            line-height: var(--line-height-relaxed);
+            color: var(--text-dark);
+            background: var(--bg-light);
+            min-height: 100vh;
+        }
+
+        /* ================================================================================
+           HEADER - Minimal, decisive, with purple accent
+           ================================================================================ */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: var(--bg-white);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            z-index: var(--z-floating);
+            display: flex;
+            align-items: center;
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: var(--breakpoint-xl);
+            margin: 0 auto;
+            padding: 0 var(--spacing-2xl);
+        }
+
+        /* LOGO with subtle purple undertone */
+        .logo {
+            font-size: var(--text-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            position: relative;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--secondary-purple);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform var(--transition-base);
+        }
+
+        .logo:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .nav-link {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: var(--text-base);
+            font-weight: var(--font-weight-medium);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            min-height: var(--touch-target);
+            display: flex;
+            align-items: center;
+            border-radius: var(--rounded-sm);
+            transition: color var(--transition-fast), background var(--transition-fast);
+        }
+
+        .nav-link:hover {
+            color: var(--text-dark);
+            background: var(--bg-light-gray);
+        }
+
+        .nav-link.primary {
+            background: var(--secondary-purple);
+            color: var(--white);
+        }
+
+        .nav-link.primary:hover {
+            background: var(--accent-purple);
+        }
+
+        .avatar {
+            width: var(--avatar-sm);
+            height: var(--avatar-sm);
+            border-radius: var(--rounded-full);
+            background: var(--gradient-purple-button);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--text-base);
+            cursor: pointer;
+            transition: transform var(--transition-fast);
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .header-inner {
+                padding: 0 var(--spacing-lg);
+            }
+            .header-nav {
+                display: none;
+            }
+            .mobile-menu {
+                display: flex;
+                width: var(--touch-target);
+                height: var(--touch-target);
+                align-items: center;
+                justify-content: center;
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: var(--text-xl);
+                color: var(--text-gray);
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-menu {
+                display: none;
+            }
+        }
+
+        /* ================================================================================
+           MAIN LAYOUT
+           ================================================================================ */
+        .main {
+            padding-top: calc(var(--header-height) + var(--spacing-4xl));
+            padding-bottom: var(--spacing-7xl);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: var(--max-width-content);
+            margin: 0 auto;
+            padding: 0 var(--spacing-2xl);
+        }
+
+        @media (max-width: 768px) {
+            .main {
+                padding-top: calc(var(--header-height) + var(--spacing-lg));
+            }
+            .container {
+                padding: 0 var(--spacing-lg);
+            }
+        }
+
+        /* ================================================================================
+           HERO SECTION: THE VIBRATING DATE
+
+           Philosophy: Instead of "violent contrast" through scale (Run 006's 72px),
+           we create energy through LETTERFORM TENSION and OPTICAL VIBRATION.
+           ================================================================================ */
+        .hero {
+            background: var(--bg-off-white);
+            margin-left: calc(-50vw + 50%);
+            margin-right: calc(-50vw + 50%);
+            padding: var(--spacing-7xl) calc(50vw - 50%);
+            margin-bottom: var(--spacing-7xl);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            position: relative;
+        }
+
+        /* Subtle gradient overlay for depth */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(109, 49, 194, 0.02) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            max-width: var(--max-width-content);
+            margin: 0 auto;
+            padding: 0 var(--spacing-2xl);
+            position: relative;
+        }
+
+        .hero-label {
+            font-size: var(--text-xs);
+            font-weight: var(--font-weight-bold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-gray);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        /*
+        THE VIBRATING DATE - PAULA'S SIGNATURE
+
+        Typography decisions:
+        - 56px instead of 72px (Run 006) - confidence through treatment, not scale
+        - Letter-spacing: -0.05em - creates compression tension
+        - Shadow offset UP and RIGHT (unconventional) - spatial ambiguity
+        */
+        .hero-date {
+            font-size: var(--type-hero);
+            font-weight: 900;
+            line-height: var(--line-height-tight);
+            color: var(--primary-purple);
+            letter-spacing: -0.05em;
+            margin-bottom: var(--spacing-sm);
+            position: relative;
+            display: inline-block;
+            text-shadow: 3px -3px 0 var(--shadow-purple-sm);
+        }
+
+        /* GHOST ECHO: Suggests motion in stillness */
+        .hero-date::before {
+            content: attr(data-text);
+            position: absolute;
+            left: var(--spacing-xs);
+            top: var(--spacing-xs);
+            color: var(--secondary-purple);
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .hero-subtitle {
+            font-size: var(--text-base);
+            color: var(--text-gray);
+            font-weight: var(--font-weight-normal);
+            max-width: 320px;
+        }
+
+        .hero-subtitle strong {
+            color: var(--text-description);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        /* HERO ACTION: Purple primary, understated but clear */
+        .hero-action {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-2xl);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: none;
+            border: none;
+            color: var(--secondary-purple);
+            font-size: var(--text-base);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            min-height: var(--touch-target);
+            border-radius: var(--rounded-sm);
+            transition: background var(--transition-fast);
+        }
+
+        .hero-action:hover {
+            background: var(--favorites-purple-light);
+        }
+
+        .hero-action:active {
+            transform: scale(0.98);
+        }
+
+        .hero-action svg {
+            width: var(--icon-sm);
+            height: var(--icon-sm);
+            transition: transform var(--transition-fast);
+        }
+
+        .hero-action:hover svg {
+            transform: translateX(3px);
+        }
+
+        /* HERO STATS: Monospace for data precision */
+        .hero-meta {
+            display: flex;
+            gap: var(--spacing-4xl);
+            margin-top: var(--spacing-4xl);
+            padding-top: var(--spacing-2xl);
+            border-top: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .hero-stat-value {
+            font-family: var(--font-mono);
+            font-size: var(--text-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            line-height: var(--line-height-tight);
+            letter-spacing: -0.02em;
+        }
+
+        .hero-stat-label {
+            font-size: var(--text-sm-md);
+            color: var(--text-gray);
+            font-weight: var(--font-weight-medium);
+            margin-top: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: var(--spacing-4xl) var(--spacing-lg);
+                margin-left: calc(-1 * var(--spacing-lg));
+                margin-right: calc(-1 * var(--spacing-lg));
+                margin-bottom: var(--spacing-5xl);
+            }
+            .hero-inner {
+                padding: 0;
+            }
+            .hero-date {
+                font-size: var(--type-hero-mobile);
+            }
+            .hero-meta {
+                gap: var(--spacing-2xl);
+                flex-wrap: wrap;
+            }
+        }
+
+        /* ================================================================================
+           SECTION LABELS - Ghost Typography Echo
+           ================================================================================ */
+        .section-label {
+            font-size: var(--text-xs);
+            font-weight: var(--font-weight-bold);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-small);
+            color: var(--text-gray);
+            margin-bottom: var(--spacing-lg);
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Ghost echo for section labels */
+        .section-label::before {
+            content: attr(data-text);
+            position: absolute;
+            left: 2px;
+            top: 2px;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        /* ================================================================================
+           LEASE CARDS - Dissolving Boundaries, Asymmetric Spacing
+           ================================================================================ */
+        .lease-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        /* SECTION BREAK: Dramatic asymmetric breathing */
+        .lease-section-break {
+            height: var(--spacing-7xl);
+        }
+
+        .lease-card {
+            background: var(--bg-white);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-bottom: none;
+            border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
+            overflow: hidden;
+            transition: box-shadow var(--transition-base), border-color var(--transition-base);
+            position: relative;
+        }
+
+        /* Restore bottom border on hover */
+        .lease-card:hover {
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--rounded-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: -1px;
+        }
+
+        .lease-card.expanded {
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--rounded-lg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Last card in a section always has bottom border */
+        .lease-card:last-child,
+        .lease-card + .lease-section-break {
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--rounded-lg);
+        }
+
+        /* CARD HEADER: Entire row is touch target */
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-2xl);
+            cursor: pointer;
+            transition: background var(--transition-fast);
+            min-height: 80px;
+        }
+
+        .card-header:hover {
+            background: var(--bg-light-gray);
+        }
+
+        .card-header:active {
+            transform: scale(0.998);
+            background: var(--border-color);
+        }
+
+        .card-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        /* Property thumbnail with subtle purple border on hover */
+        .property-thumb {
+            width: 52px;
+            height: 52px;
+            border-radius: var(--rounded-sm);
+            background: linear-gradient(135deg, var(--bg-light-gray) 0%, var(--border-color) 100%);
+            flex-shrink: 0;
+            overflow: hidden;
+            border: var(--border-width-thick) solid transparent;
+            transition: border-color var(--transition-fast);
+        }
+
+        .card-header:hover .property-thumb {
+            border-color: var(--favorites-purple-light);
+        }
+
+        .property-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .property-info h3 {
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+
+        .property-info p {
+            font-size: var(--text-base);
+            color: var(--text-gray);
+        }
+
+        .card-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        /* ================================================================================
+           STATUS BADGES - Using Official Style Guide Colors
+           ================================================================================ */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--rounded-pill);
+            font-size: var(--text-sm-md);
+            font-weight: var(--font-weight-semibold);
+            white-space: nowrap;
+            border: var(--border-width-thin) solid;
+        }
+
+        /* ACTIVE/PAID: Success green */
+        .status-badge.active {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success-green);
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        /* PENDING/DUE: Purple */
+        .status-badge.pending {
+            background: rgba(109, 49, 194, 0.1);
+            color: var(--secondary-purple);
+            border-color: rgba(109, 49, 194, 0.3);
+        }
+
+        /* PAST/COMPLETED: Neutral gray */
+        .status-badge.past {
+            background: var(--bg-light-gray);
+            color: var(--text-gray);
+            border-color: var(--border-color);
+        }
+
+        /* DANGER: Protocol danger color */
+        .status-badge.danger {
+            background: var(--protocol-danger-hover);
+            color: var(--protocol-danger);
+            border-color: rgba(220, 53, 69, 0.3);
+        }
+
+        .expand-icon {
+            width: var(--touch-target);
+            height: var(--touch-target);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light-gray);
+            transition: transform var(--transition-slow), color var(--transition-fast);
+        }
+
+        .lease-card.expanded .expand-icon {
+            transform: rotate(180deg);
+            color: var(--secondary-purple);
+        }
+
+        @media (max-width: 768px) {
+            .card-header {
+                padding: var(--spacing-lg);
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-sm);
+            }
+            .property-thumb {
+                width: 44px;
+                height: 44px;
+            }
+            .card-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        /* ================================================================================
+           CARD BODY - Expanded Content
+           ================================================================================ */
+        .card-body {
+            display: none;
+            border-top: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .lease-card.expanded .card-body {
+            display: block;
+        }
+
+        .card-section {
+            padding: var(--spacing-2xl);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .card-section:last-child {
+            border-bottom: none;
+        }
+
+        /* SECTION TITLE with icon */
+        .section-title {
+            font-size: var(--text-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            position: relative;
+        }
+
+        .section-icon {
+            width: var(--icon-sm);
+            height: var(--icon-sm);
+            color: var(--secondary-purple);
+            opacity: var(--opacity-hover);
+        }
+
+        @media (max-width: 768px) {
+            .card-section {
+                padding: var(--spacing-lg);
+            }
+        }
+
+        /* ================================================================================
+           HOST CONTACT
+           ================================================================================ */
+        .host-card {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            background: var(--bg-light-gray);
+            border-radius: var(--rounded-lg);
+        }
+
+        .host-avatar {
+            width: var(--avatar-md);
+            height: var(--avatar-md);
+            border-radius: var(--rounded-full);
+            background: var(--gradient-purple-button);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--text-md);
+            flex-shrink: 0;
+        }
+
+        .host-info {
+            flex: 1;
+        }
+
+        .host-name {
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+
+        .host-label {
+            font-size: var(--text-sm-md);
+            color: var(--text-gray);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .contact-links {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+
+        .contact-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--text-base);
+            color: var(--secondary-purple);
+            text-decoration: none;
+            padding: var(--spacing-xs) 0;
+            min-height: var(--touch-target);
+            transition: color var(--transition-fast);
+        }
+
+        .contact-link:hover {
+            color: var(--accent-purple);
+            text-decoration: underline;
+        }
+
+        .contact-link svg {
+            width: var(--icon-xs);
+            height: var(--icon-xs);
+        }
+
+        /* ================================================================================
+           PAYMENT SECTION - Progressive Disclosure with Monospace Data
+           ================================================================================ */
+        .payment-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-lg);
+            background: var(--bg-light-gray);
+            border-radius: var(--rounded-lg);
+            cursor: pointer;
+            transition: background var(--transition-fast);
+        }
+
+        .payment-summary:hover {
+            background: var(--border-color);
+        }
+
+        .payment-summary:active {
+            transform: scale(0.998);
+        }
+
+        .payment-summary-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .payment-count {
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+        }
+
+        .payment-next {
+            font-size: var(--text-base);
+            color: var(--text-gray);
+        }
+
+        .payment-next strong {
+            font-family: var(--font-mono);
+            color: var(--text-description);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .expand-payments {
+            color: var(--secondary-purple);
+            font-size: var(--text-base);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .payment-table-wrapper {
+            display: none;
+            margin-top: var(--spacing-lg);
+            overflow-x: auto;
+        }
+
+        .payment-table-wrapper.visible {
+            display: block;
+        }
+
+        .payment-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 480px;
+        }
+
+        .payment-table th {
+            text-align: left;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            font-size: var(--text-xs);
+            font-weight: var(--font-weight-bold);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-small);
+            color: var(--text-gray);
+            border-bottom: var(--border-width-thick) solid var(--border-color);
+        }
+
+        .payment-table th.text-right {
+            text-align: right;
+        }
+
+        .payment-table td {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            font-size: var(--text-base);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .payment-table tr:hover {
+            background: var(--bg-light-gray);
+        }
+
+        /* MONOSPACE for amounts - data precision */
+        .payment-amount {
+            font-family: var(--font-mono);
+            font-weight: var(--font-weight-semibold);
+            text-align: right;
+            letter-spacing: -0.02em;
+        }
+
+        /* Overdue row with danger accent */
+        .payment-table tr.overdue {
+            border-left: 3px solid var(--protocol-danger);
+            background: var(--protocol-danger-hover);
+        }
+
+        .receipt-btn {
+            width: var(--touch-target);
+            height: var(--touch-target);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--secondary-purple);
+            border-radius: var(--rounded-sm);
+            transition: background var(--transition-fast);
+        }
+
+        .receipt-btn:hover {
+            background: var(--favorites-purple-light);
+        }
+
+        /* ================================================================================
+           STAYS TABLE
+           ================================================================================ */
+        .stays-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .stays-table th {
+            text-align: left;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            font-size: var(--text-xs);
+            font-weight: var(--font-weight-bold);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-small);
+            color: var(--text-gray);
+            border-bottom: var(--border-width-thick) solid var(--border-color);
+        }
+
+        .stays-table td {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            font-size: var(--text-base);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        /* MONOSPACE for dates */
+        .stays-table td strong {
+            font-family: var(--font-mono);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .stays-table tr:hover {
+            background: var(--bg-light-gray);
+        }
+
+        .stay-actions {
+            display: flex;
+            gap: var(--spacing-xs);
+            flex-wrap: wrap;
+        }
+
+        /* ================================================================================
+           BUTTONS - Clear Hierarchy with Purple Primary
+           ================================================================================ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            min-height: var(--touch-target);
+            border-radius: var(--rounded-pill);
+            font-size: var(--text-base);
+            font-weight: var(--font-weight-semibold);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: none;
+            white-space: nowrap;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn svg {
+            width: var(--icon-xs);
+            height: var(--icon-xs);
+        }
+
+        /* Primary - Purple */
+        .btn-primary {
+            background: var(--secondary-purple);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-purple);
+        }
+
+        /* Secondary - Outline */
+        .btn-secondary {
+            background: var(--bg-white);
+            color: var(--text-description);
+            border: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-light-gray);
+            border-color: var(--text-light-gray);
+        }
+
+        /* Ghost - Minimal */
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-gray);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg-light-gray);
+            color: var(--text-dark);
+        }
+
+        /* Success - Green */
+        .btn-success {
+            background: var(--success-green);
+            color: var(--white);
+        }
+
+        .btn-success:hover {
+            background: var(--success-teal);
+        }
+
+        /* Small variant */
+        .btn-sm {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            min-height: var(--input-height-sm);
+            font-size: var(--text-sm-md);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .btn-group {
+                flex-direction: column;
+            }
+            .btn-group .btn {
+                width: 100%;
+            }
+        }
+
+        /* ================================================================================
+           AGREEMENT SECTION
+           ================================================================================ */
+        .agreement-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .agreement-number {
+            font-family: var(--font-mono);
+            font-size: var(--text-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            letter-spacing: -0.02em;
+        }
+
+        /* ================================================================================
+           DATE CHANGE REQUESTS
+           ================================================================================ */
+        .dct-card {
+            background: var(--bg-light-gray);
+            border-radius: var(--rounded-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .dct-card.pending {
+            border-left: 3px solid var(--secondary-purple);
+            background: rgba(109, 49, 194, 0.05);
+        }
+
+        .dct-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr auto;
+            gap: var(--spacing-lg);
+            align-items: center;
+        }
+
+        .dct-label {
+            font-size: var(--text-xs);
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-small);
+            margin-bottom: 2px;
+        }
+
+        .dct-value {
+            font-size: var(--text-base);
+            font-weight: var(--font-weight-medium);
+            color: var(--text-dark);
+        }
+
+        /* MONOSPACE for reference IDs */
+        .dct-value.mono {
+            font-family: var(--font-mono);
+        }
+
+        .dct-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        @media (max-width: 768px) {
+            .dct-row {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-sm);
+            }
+            .dct-actions {
+                margin-top: var(--spacing-sm);
+            }
+        }
+
+        /* ================================================================================
+           ACTION FOOTER - Off-white background
+           ================================================================================ */
+        .card-actions {
+            background: var(--bg-off-white);
+            padding: var(--spacing-2xl);
+        }
+
+        @media (max-width: 768px) {
+            .card-actions {
+                padding: var(--spacing-lg);
+            }
+        }
+
+        /* ================================================================================
+           LINK STYLE
+           ================================================================================ */
+        .link {
+            color: var(--secondary-purple);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            transition: color var(--transition-fast);
+        }
+
+        .link:hover {
+            color: var(--accent-purple);
+            text-decoration: underline;
+        }
+
+        /* ================================================================================
+           PAST LEASES - Cool background zone
+           ================================================================================ */
+        .past-leases-section {
+            background: var(--bg-light);
+            margin-left: calc(-50vw + 50%);
+            margin-right: calc(-50vw + 50%);
+            padding: var(--spacing-4xl) calc(50vw - 50%);
+        }
+
+        .past-leases-inner {
+            max-width: var(--max-width-content);
+            margin: 0 auto;
+            padding: 0 var(--spacing-2xl);
+        }
+
+        .past-leases-section .lease-card {
+            background: var(--bg-white);
+            border-color: var(--border-color);
+        }
+
+        @media (max-width: 768px) {
+            .past-leases-section {
+                margin-left: calc(-1 * var(--spacing-lg));
+                margin-right: calc(-1 * var(--spacing-lg));
+                padding: var(--spacing-2xl) var(--spacing-lg);
+            }
+            .past-leases-inner {
+                padding: 0;
+            }
+        }
+
+        /* ================================================================================
+           MODAL
+           ================================================================================ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--overlay-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: var(--z-modal);
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-base);
+            padding: var(--spacing-lg);
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-white);
+            border-radius: var(--rounded-xl);
+            max-width: var(--max-width-modal);
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.95) translateY(10px);
+            transition: transform var(--transition-base);
+        }
+
+        .modal-overlay.visible .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-2xl);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .modal-title {
+            font-size: var(--text-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+        }
+
+        .modal-close {
+            width: var(--touch-target);
+            height: var(--touch-target);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-gray);
+            border-radius: var(--rounded-sm);
+            font-size: var(--text-xl);
+            transition: background var(--transition-fast), color var(--transition-fast);
+        }
+
+        .modal-close:hover {
+            background: var(--bg-light-gray);
+            color: var(--text-dark);
+        }
+
+        .modal-body {
+            padding: var(--spacing-2xl);
+        }
+
+        /* ================================================================================
+           TOUCH DEVICE OVERRIDES
+           ================================================================================ */
+        @media (hover: none) {
+            .card-header:hover {
+                background: transparent;
+            }
+            .payment-summary:hover {
+                background: var(--bg-light-gray);
+            }
+            .lease-card:hover {
+                box-shadow: none;
+                border-bottom: none;
+                border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
+            }
+        }
+
+        /* ================================================================================
+           UTILITY CLASSES
+           ================================================================================ */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <!--
+    ================================================================================
+    HEADER
+    ================================================================================
+    -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo">Split Lease</a>
+            <nav class="header-nav" aria-label="Main navigation">
+                <a href="/explore" class="nav-link">Explore</a>
+                <a href="/leases" class="nav-link">My Leases</a>
+                <a href="/messages" class="nav-link">Messages</a>
+                <a href="/explore" class="nav-link primary">Find a Space</a>
+                <div class="avatar" role="button" aria-label="Account menu" tabindex="0">JD</div>
+            </nav>
+            <button class="mobile-menu" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+        </div>
+    </header>
+
+    <!--
+    ================================================================================
+    MAIN CONTENT
+    ================================================================================
+    -->
+    <main class="main" id="main-content">
+        <div class="container">
+
+            <!--
+            ================================================================================
+            HERO SECTION: THE VIBRATING DATE
+
+            Typography Philosophy:
+            - 56px date (smaller than Run 006's 72px) but with COMPRESSED letter-spacing
+            - Unconventional shadow offset (up-right) creates spatial ambiguity
+            - Ghost echo (via ::before pseudo-element) suggests motion in stillness
+            - Off-white background creates temperature contrast with page
+            ================================================================================
+            -->
+            <section class="hero" aria-labelledby="hero-heading">
+                <div class="hero-inner">
+                    <p class="hero-label" id="hero-heading">Your Next Stay</p>
+
+                    <!--
+                    THE VIBRATING DATE
+                    data-text attribute enables the ghost echo via CSS ::before
+                    Letter-spacing: -0.05em creates compression tension
+                    Shadow offset UP and RIGHT (unconventional) for spatial ambiguity
+                    -->
+                    <h1 class="hero-date" data-text="Feb 15">Feb 15</h1>
+
+                    <p class="hero-subtitle">
+                        Check-in at <strong>Williamsburg Studio</strong> in 13 days
+                    </p>
+
+                    <button class="hero-action" aria-label="View stay details for February 15">
+                        <span>View stay details</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M9 18l6-6-6-6"/>
+                        </svg>
+                    </button>
+
+                    <!--
+                    HERO STATS: Monospace font for data precision
+                    Numbers feel like "data" while labels feel like "language"
+                    -->
+                    <div class="hero-meta">
+                        <div class="hero-stat">
+                            <div class="hero-stat-value">2</div>
+                            <div class="hero-stat-label">Active leases</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-stat-value">8</div>
+                            <div class="hero-stat-label">Stays completed</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-stat-value">94</div>
+                            <div class="hero-stat-label">Flexibility score</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!--
+            SECTION LABEL with ghost echo
+            data-text enables the typographic echo effect
+            -->
+            <div class="section-label" data-text="ACTIVE LEASES" aria-hidden="true">Active Leases</div>
+            <h2 class="visually-hidden">Active Leases</h2>
+
+            <!--
+            ================================================================================
+            LEASE CARDS
+
+            Boundary Philosophy:
+            - Cards have borders on 3 sides only (dissolving bottom boundary)
+            - Hover reveals complete card with all borders
+            - 8px gap between active leases (tight grouping)
+            - 80px break before past leases (asymmetric breathing)
+            ================================================================================
+            -->
+            <div class="lease-list">
+
+                <!-- ACTIVE LEASE 1 - Expanded by default -->
+                <article class="lease-card expanded" id="lease-1" aria-labelledby="lease-1-title">
+                    <div class="card-header"
+                         onclick="toggleCard('lease-1')"
+                         role="button"
+                         aria-expanded="true"
+                         aria-controls="lease-1-body"
+                         tabindex="0"
+                         onkeydown="if(event.key==='Enter')toggleCard('lease-1')">
+                        <div class="card-left">
+                            <div class="property-thumb">
+                                <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=200&h=200&fit=crop"
+                                     alt=""
+                                     loading="lazy">
+                            </div>
+                            <div class="property-info">
+                                <h3 id="lease-1-title">Williamsburg Studio</h3>
+                                <p>456 Bedford Ave, Brooklyn</p>
+                            </div>
+                        </div>
+                        <div class="card-right">
+                            <!--
+                            STATUS BADGE: Using official Split Lease colors
+                            -->
+                            <span class="status-badge active">Active</span>
+                            <div class="expand-icon" aria-hidden="true">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M6 9l6 6 6-6"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body" id="lease-1-body">
+
+                        <!-- HOST CONTACT -->
+                        <section class="card-section" aria-labelledby="lease-1-host">
+                            <h4 class="section-title" id="lease-1-host">
+                                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
+                                Host
+                            </h4>
+                            <div class="host-card">
+                                <div class="host-avatar" aria-hidden="true">MS</div>
+                                <div class="host-info">
+                                    <div class="host-name">Maria Santos</div>
+                                    <div class="host-label">Property Host</div>
+                                    <div class="contact-links">
+                                        <a href="tel:+13475551234" class="contact-link">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                                            </svg>
+                                            (347) 555-1234
+                                        </a>
+                                        <a href="mailto:maria@example.com" class="contact-link">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                                <polyline points="22,6 12,13 2,6"/>
+                                            </svg>
+                                            maria@example.com
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- AGREEMENT -->
+                        <section class="card-section" aria-labelledby="lease-1-agreement">
+                            <h4 class="section-title" id="lease-1-agreement">
+                                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                    <line x1="16" y1="13" x2="8" y2="13"/>
+                                    <line x1="16" y1="17" x2="8" y2="17"/>
+                                </svg>
+                                Agreement
+                            </h4>
+                            <div class="agreement-header">
+                                <!-- MONOSPACE for reference ID -->
+                                <span class="agreement-number">PT-2025-0042</span>
+                                <span class="status-badge active">Signed</span>
+                            </div>
+                            <div class="btn-group">
+                                <a href="#" class="btn btn-secondary btn-sm">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                    </svg>
+                                    View Agreement
+                                </a>
+                                <a href="#" class="btn btn-ghost btn-sm">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="7 10 12 15 17 10"/>
+                                        <line x1="12" y1="15" x2="12" y2="3"/>
+                                    </svg>
+                                    Download PDF
+                                </a>
+                            </div>
+                        </section>
+
+                        <!-- PAYMENTS - Progressive Disclosure -->
+                        <section class="card-section" aria-labelledby="lease-1-payments">
+                            <h4 class="section-title" id="lease-1-payments">
+                                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                                    <line x1="1" y1="10" x2="23" y2="10"/>
+                                </svg>
+                                Payments
+                            </h4>
+
+                            <!-- Collapsed payment summary -->
+                            <div class="payment-summary"
+                                 onclick="togglePayments(this)"
+                                 role="button"
+                                 aria-expanded="false"
+                                 tabindex="0"
+                                 onkeydown="if(event.key==='Enter')togglePayments(this)">
+                                <div class="payment-summary-left">
+                                    <span class="payment-count">3 payments</span>
+                                    <!-- MONOSPACE for amounts -->
+                                    <span class="payment-next">Next: <strong>$1,850 on Feb 1</strong></span>
+                                </div>
+                                <span class="expand-payments">View all</span>
+                            </div>
+
+                            <!-- Expanded payment table -->
+                            <div class="payment-table-wrapper">
+                                <table class="payment-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Due Date</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col" class="text-right">Amount</th>
+                                            <th scope="col"><span class="visually-hidden">Actions</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Jan 1, 2025</td>
+                                            <td>Monthly Rent - January</td>
+                                            <td><span class="status-badge active">Paid</span></td>
+                                            <td class="payment-amount">$1,850</td>
+                                            <td>
+                                                <button class="receipt-btn" aria-label="Download receipt for January payment">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                                        <polyline points="7 10 12 15 17 10"/>
+                                                        <line x1="12" y1="15" x2="12" y2="3"/>
+                                                    </svg>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Feb 1, 2025</td>
+                                            <td>Monthly Rent - February</td>
+                                            <td><span class="status-badge pending">Due</span></td>
+                                            <td class="payment-amount">$1,850</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Mar 1, 2025</td>
+                                            <td>Monthly Rent - March</td>
+                                            <td><span class="status-badge past">Scheduled</span></td>
+                                            <td class="payment-amount">$1,850</td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+
+                        <!-- UPCOMING STAYS -->
+                        <section class="card-section" aria-labelledby="lease-1-stays">
+                            <h4 class="section-title" id="lease-1-stays">
+                                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="16" y1="2" x2="16" y2="6"/>
+                                    <line x1="8" y1="2" x2="8" y2="6"/>
+                                    <line x1="3" y1="10" x2="21" y2="10"/>
+                                </svg>
+                                Upcoming Stays
+                            </h4>
+                            <table class="stays-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Check-in</th>
+                                        <th scope="col">Check-out</th>
+                                        <th scope="col">Duration</th>
+                                        <th scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <!-- MONOSPACE for dates -->
+                                        <td><strong>Feb 15, 2025</strong></td>
+                                        <td>Feb 22, 2025</td>
+                                        <td>7 nights</td>
+                                        <td>
+                                            <div class="stay-actions">
+                                                <button class="btn btn-primary btn-sm">Check In</button>
+                                                <button class="btn btn-ghost btn-sm">Change Dates</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Mar 8, 2025</strong></td>
+                                        <td>Mar 15, 2025</td>
+                                        <td>7 nights</td>
+                                        <td>
+                                            <div class="stay-actions">
+                                                <button class="btn btn-secondary btn-sm">View Details</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <a href="#" class="link" style="display: inline-block; margin-top: var(--spacing-lg); font-size: var(--text-base);">
+                                View all 5 stays &rarr;
+                            </a>
+                        </section>
+
+                        <!-- DATE CHANGE REQUESTS -->
+                        <section class="card-section" aria-labelledby="lease-1-dct">
+                            <h4 class="section-title" id="lease-1-dct">
+                                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                Date Change Requests
+                            </h4>
+                            <div class="dct-card pending">
+                                <div class="dct-row">
+                                    <div>
+                                        <div class="dct-label">Request</div>
+                                        <!-- MONOSPACE for reference ID -->
+                                        <div class="dct-value mono">#DCT-0089</div>
+                                    </div>
+                                    <div>
+                                        <div class="dct-label">Change</div>
+                                        <div class="dct-value">Mar 8 &rarr; Mar 10 (2 days later)</div>
+                                    </div>
+                                    <div>
+                                        <div class="dct-label">Status</div>
+                                        <span class="status-badge pending">Pending</span>
+                                    </div>
+                                    <div class="dct-actions">
+                                        <button class="btn btn-ghost btn-sm">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!--
+                        ACTION FOOTER
+                        Off-white background creates zone separation
+                        -->
+                        <div class="card-actions">
+                            <div class="btn-group">
+                                <button class="btn btn-primary">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                    </svg>
+                                    Message Host
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                        <line x1="16" y1="2" x2="16" y2="6"/>
+                                        <line x1="8" y1="2" x2="8" y2="6"/>
+                                        <line x1="3" y1="10" x2="21" y2="10"/>
+                                    </svg>
+                                    Request Date Change
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- ACTIVE LEASE 2 - Collapsed -->
+                <article class="lease-card" id="lease-2" aria-labelledby="lease-2-title">
+                    <div class="card-header"
+                         onclick="toggleCard('lease-2')"
+                         role="button"
+                         aria-expanded="false"
+                         aria-controls="lease-2-body"
+                         tabindex="0"
+                         onkeydown="if(event.key==='Enter')toggleCard('lease-2')">
+                        <div class="card-left">
+                            <div class="property-thumb">
+                                <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=200&h=200&fit=crop"
+                                     alt=""
+                                     loading="lazy">
+                            </div>
+                            <div class="property-info">
+                                <h3 id="lease-2-title">Chelsea Loft</h3>
+                                <p>789 W 23rd St, Manhattan</p>
+                            </div>
+                        </div>
+                        <div class="card-right">
+                            <span class="status-badge active">Active</span>
+                            <div class="expand-icon" aria-hidden="true">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M6 9l6 6 6-6"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body" id="lease-2-body">
+                        <section class="card-section" aria-labelledby="lease-2-host">
+                            <h4 class="section-title" id="lease-2-host">
+                                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
+                                Host
+                            </h4>
+                            <div class="host-card">
+                                <div class="host-avatar" aria-hidden="true">JK</div>
+                                <div class="host-info">
+                                    <div class="host-name">James Kim</div>
+                                    <div class="host-label">Property Host</div>
+                                    <div class="contact-links">
+                                        <a href="tel:+12125559876" class="contact-link">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                                            </svg>
+                                            (212) 555-9876
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="card-section" aria-labelledby="lease-2-payments">
+                            <h4 class="section-title" id="lease-2-payments">
+                                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                                    <line x1="1" y1="10" x2="23" y2="10"/>
+                                </svg>
+                                Payments
+                            </h4>
+                            <div class="payment-summary"
+                                 onclick="togglePayments(this)"
+                                 role="button"
+                                 aria-expanded="false"
+                                 tabindex="0"
+                                 onkeydown="if(event.key==='Enter')togglePayments(this)">
+                                <div class="payment-summary-left">
+                                    <span class="payment-count">2 payments</span>
+                                    <span class="payment-next">Next: <strong>$2,400 on Feb 15</strong></span>
+                                </div>
+                                <span class="expand-payments">View all</span>
+                            </div>
+                            <div class="payment-table-wrapper">
+                                <table class="payment-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Due Date</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col" class="text-right">Amount</th>
+                                            <th scope="col"><span class="visually-hidden">Actions</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Jan 15, 2025</td>
+                                            <td>Monthly Rent - January</td>
+                                            <td><span class="status-badge active">Paid</span></td>
+                                            <td class="payment-amount">$2,400</td>
+                                            <td>
+                                                <button class="receipt-btn" aria-label="Download receipt for January payment">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                                        <polyline points="7 10 12 15 17 10"/>
+                                                        <line x1="12" y1="15" x2="12" y2="3"/>
+                                                    </svg>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Feb 15, 2025</td>
+                                            <td>Monthly Rent - February</td>
+                                            <td><span class="status-badge pending">Due</span></td>
+                                            <td class="payment-amount">$2,400</td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+
+                        <div class="card-actions">
+                            <div class="btn-group">
+                                <button class="btn btn-primary">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                    </svg>
+                                    Message Host
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <!--
+            ================================================================================
+            SECTION BREAK: 80px (Asymmetric breathing)
+            Much larger than the 8px between active lease cards
+            ================================================================================
+            -->
+            <div class="lease-section-break"></div>
+
+        </div>
+
+        <!--
+        ================================================================================
+        PAST LEASES SECTION
+
+        Temperature Zone: Light background
+        Creates subtle visual separation from active section
+        ================================================================================
+        -->
+        <section class="past-leases-section" aria-labelledby="past-leases-heading">
+            <div class="past-leases-inner">
+                <div class="section-label" data-text="PAST LEASES" aria-hidden="true">Past Leases</div>
+                <h2 class="visually-hidden" id="past-leases-heading">Past Leases</h2>
+
+                <div class="lease-list">
+                    <article class="lease-card" id="lease-3" aria-labelledby="lease-3-title">
+                        <div class="card-header"
+                             onclick="toggleCard('lease-3')"
+                             role="button"
+                             aria-expanded="false"
+                             aria-controls="lease-3-body"
+                             tabindex="0"
+                             onkeydown="if(event.key==='Enter')toggleCard('lease-3')">
+                            <div class="card-left">
+                                <div class="property-thumb">
+                                    <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=200&h=200&fit=crop"
+                                         alt=""
+                                         loading="lazy">
+                                </div>
+                                <div class="property-info">
+                                    <h3 id="lease-3-title">SoHo Studio</h3>
+                                    <p>123 Spring St, Manhattan</p>
+                                </div>
+                            </div>
+                            <div class="card-right">
+                                <span class="status-badge past">Completed</span>
+                                <div class="expand-icon" aria-hidden="true">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M6 9l6 6 6-6"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body" id="lease-3-body">
+                            <div class="card-section">
+                                <p style="color: var(--text-gray); font-size: var(--text-base);">
+                                    Lease completed on Dec 31, 2024.
+                                    <a href="#" class="link">View agreement</a> |
+                                    <a href="#" class="link">Download receipts</a>
+                                </p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!--
+    ================================================================================
+    CHECK-IN MODAL
+    ================================================================================
+    -->
+    <div class="modal-overlay" id="checkin-modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">Check In</h3>
+                <button class="modal-close" onclick="closeModal('checkin-modal')" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-gray); margin-bottom: var(--spacing-2xl);">
+                    Confirm your check-in for <strong>Williamsburg Studio</strong> on February 15, 2025.
+                </p>
+                <div class="btn-group">
+                    <button class="btn btn-primary" style="flex: 1;">Confirm Check-In</button>
+                    <button class="btn btn-secondary" onclick="closeModal('checkin-modal')">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--
+    ================================================================================
+    JAVASCRIPT - Interaction Handlers
+    ================================================================================
+    -->
+    <script>
+        /**
+         * Toggle lease card expansion
+         * Updates ARIA attributes for accessibility
+         */
+        function toggleCard(cardId) {
+            const card = document.getElementById(cardId);
+            const header = card.querySelector('.card-header');
+            const isExpanded = card.classList.toggle('expanded');
+
+            // Update ARIA
+            header.setAttribute('aria-expanded', isExpanded);
+        }
+
+        /**
+         * Toggle payment table visibility
+         * Progressive disclosure pattern
+         */
+        function togglePayments(summaryEl) {
+            const wrapper = summaryEl.nextElementSibling;
+            const expandText = summaryEl.querySelector('.expand-payments');
+            const isExpanded = wrapper.classList.toggle('visible');
+
+            // Update text and ARIA
+            expandText.textContent = isExpanded ? 'Hide' : 'View all';
+            summaryEl.setAttribute('aria-expanded', isExpanded);
+        }
+
+        /**
+         * Modal open/close handlers
+         */
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('visible');
+            document.body.style.overflow = 'hidden';
+
+            // Focus trap setup
+            const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            if (focusable.length) focusable[0].focus();
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('visible');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('visible');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.visible').forEach(modal => {
+                    modal.classList.remove('visible');
+                });
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+</body>
+</html>

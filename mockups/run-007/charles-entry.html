@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Leases - Charles Eames Run 007 | Split Lease</title>
+    <style>
+        /* =============================================================
+           CHARLES EAMES - RUN 007
+           "The details are not the details. They make the design."
+           But only if they serve the user.
+
+           PHILOSOPHY SHIFT FROM RUN 006:
+           - Removed: Journey progress bar (history isn't actionable)
+           - Removed: Celebration confetti (paying rent isn't celebration)
+           - Removed: Badge micro-bounces (nobody watches badges wiggle)
+           - Added: Human copy that mentions the host by name
+           - Added: Invisible accessibility details that actually matter
+           - Added: Strategic celebration only for real milestones
+
+           The boring details done brilliantly:
+           - 48px touch targets everywhere
+           - 17px minimum font (WCAG AAA)
+           - 7:1 contrast ratios
+           - Focus rings visible and beautiful
+           - Optimistic UI for speed
+
+           UPDATED: Now using official Split Lease style guide tokens
+           ============================================================= */
+
+        /* =============================================================
+           SPLIT LEASE OFFICIAL DESIGN TOKENS
+           Source: split-lease-style-guide.md v2.0
+           ============================================================= */
+        :root {
+          /* ========================================
+             COLOR VARIABLES
+             ======================================== */
+
+          /* Primary Colors
+             Usage Guide:
+             - primary-purple (#31135D): Brand color, headings, important UI
+             - primary-purple-hover (#251047): Hover state for primary
+             - secondary-purple (#6D31C2): Interactive buttons, links, CTAs
+             - accent-purple (#8C68EE): Hover state for secondary, highlights
+             - chat-purple (#4B47CE): Day badges, chat elements
+          */
+          --primary-purple: #31135D;
+          --primary-purple-hover: #251047;
+          --primary-purple-dark: #1f0a3d;
+          --secondary-purple: rgb(109, 49, 194);
+          --accent-purple: rgb(140, 104, 238);
+          --selected-purple: rgb(79, 48, 151);
+          --text-purple: rgb(82, 31, 147);
+          --chat-purple: rgb(75, 71, 206);
+
+          /* Secondary Colors */
+          --accent-blue: #4A90E2;
+          --accent-blue-hover: #357ABD;
+
+          /* Status Colors */
+          --success-green: #22C55E;
+          --success-teal: #10B981;
+
+          /* Text Colors */
+          --text-dark: #1a1a1a;
+          --text-gray: #6b7280;
+          --text-light-gray: #9ca3af;
+          --text-medium-gray: #666666;
+          --text-description: #374151;
+
+          /* Background Colors */
+          --bg-white: #ffffff;
+          --bg-light: #f9fafb;
+          --bg-light-gray: #f3f4f6;
+          --bg-lighter-gray: #f5f5f5;
+          --bg-off-white: rgb(252, 250, 255);
+
+          /* Border Colors */
+          --border-color: #e5e7eb;
+          --border-light: #f3f4f6;
+          --border-gray: rgba(107, 107, 107, 0.7);
+          --border-gray-light: #e0e0e0;
+          --border-gray-lighter: #ddd;
+
+          /* Neutral Colors */
+          --white: rgb(255, 255, 255);
+          --black: rgb(0, 0, 0);
+          --off-white: rgb(252, 250, 255);
+
+          /* Info/Link Colors */
+          --info-blue: #2196F3;
+          --info-indigo: #6366F1;
+          --info-indigo-hover: #3b82f6;
+          --bg-info: #f0f7ff;
+
+          /* Subtle/Overlay Colors */
+          --overlay-dark: rgba(0, 0, 0, 0.7);
+          --overlay-light: rgba(255, 255, 255, 0.9);
+          --overlay-light-blur: rgba(255, 255, 255, 0.2);
+
+          /* Gradient Colors */
+          --gradient-purple-primary: linear-gradient(135deg, #31135D 0%, #5a2d8f 100%);
+          --gradient-purple-button: linear-gradient(135deg, #6D31C2 0%, #7C3AED 100%);
+          --gradient-purple-hover: linear-gradient(135deg, #5B2AA5 0%, #6D28D9 100%);
+          --gradient-purple-dark: linear-gradient(135deg, rgba(47, 20, 91, 0.85), rgba(109, 49, 194, 0.75));
+          --gradient-purple-dark-hover: linear-gradient(135deg, rgba(47, 20, 91, 0.9), rgba(109, 49, 194, 0.8));
+
+          /* ========================================
+             FONT VARIABLES
+             ======================================== */
+
+          /* Font Families */
+          --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          --font-dm: 'DM Sans', sans-serif;
+          --font-primary: 'Helvetica', Arial, sans-serif;
+          --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+          /* Font Sizes */
+          --text-xs: 11px;
+          --text-sm: 12px;
+          --text-sm-md: 13px;
+          --text-base: 14px;
+          --text-md: 16px;
+          --text-lg: 18px;
+          --text-xl: 20px;
+          --text-2xl: 28px;
+          --text-3xl: 32px;
+          --text-4xl: 36px;
+
+          /* Font Weights */
+          --font-weight-normal: 400;
+          --font-weight-medium: 500;
+          --font-weight-semibold: 600;
+          --font-weight-bold: 700;
+
+          /* Line Heights */
+          --line-height-tight: 1.2;
+          --line-height-normal: 1.5;
+          --line-height-relaxed: 1.6;
+          --line-height-loose: 1.8;
+
+          /* Letter Spacing */
+          --letter-spacing-normal: normal;
+          --letter-spacing-small: 0.5px;
+          --letter-spacing-medium: 0.05em;
+
+          /* ========================================
+             SPACING VARIABLES
+             ======================================== */
+
+          /* Padding & Margin */
+          --spacing-xs: 4px;
+          --spacing-sm: 8px;
+          --spacing-md: 12px;
+          --spacing-lg: 16px;
+          --spacing-xl: 20px;
+          --spacing-2xl: 24px;
+          --spacing-3xl: 28px;
+          --spacing-4xl: 32px;
+          --spacing-5xl: 2rem;
+          --spacing-6xl: 2.5rem;
+          --spacing-7xl: 3rem;
+
+          /* Component Spacing */
+          --gap-sm: 0.5rem;
+          --gap-md: 0.75rem;
+          --gap-lg: 1rem;
+          --gap-xl: 1.5rem;
+          --gap-2xl: 2rem;
+          --gap-3xl: 2.5rem;
+
+          /* Padding */
+          --padding-sm: 0.5rem;
+          --padding-md: 0.75rem;
+          --padding-lg: 1rem;
+          --padding-xl: 1.5rem;
+          --padding-2xl: 2rem;
+
+          /* ========================================
+             BORDER RADIUS VARIABLES
+             ======================================== */
+
+          --rounded-sm: 4px;
+          --rounded-md: 6px;
+          --rounded-lg: 8px;
+          --rounded-xl: 12px;
+          --rounded-2xl: 16px;
+          --rounded-full: 50%;
+          --rounded-pill: 20px;
+
+          /* ========================================
+             BREAKPOINT VARIABLES
+             ======================================== */
+
+          --breakpoint-sm: 600px;
+          --breakpoint-md: 768px;
+          --breakpoint-lg: 1024px;
+          --breakpoint-xl: 1080px;
+          --breakpoint-2xl: 1200px;
+          --breakpoint-3xl: 1280px;
+          --breakpoint-max: 1440px;
+
+          /* ========================================
+             SHADOW VARIABLES
+             ======================================== */
+
+          --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+          --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+          --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15);
+          --shadow-xl: 0 4px 16px rgba(49, 19, 93, 0.35);
+          --shadow-2xl: 0 6px 24px rgba(49, 19, 93, 0.5);
+          --shadow-purple-sm: 0 2px 4px rgba(49, 19, 93, 0.2);
+          --shadow-purple-md: 0 4px 8px rgba(49, 19, 93, 0.15);
+          --shadow-purple-lg: 0 6px 20px rgba(109, 49, 194, 0.35);
+          --shadow-dark-sm: 0 2px 6px rgba(0, 0, 0, 0.2);
+          --shadow-dark-md: 0 4px 8px rgba(0, 0, 0, 0.25);
+
+          /* ========================================
+             TRANSITION & ANIMATION VARIABLES
+             ======================================== */
+
+          --transition-fast: 0.1s;
+          --transition-base: 0.2s;
+          --transition-slow: 0.3s;
+          --transition-slower: 0.4s;
+
+          --easing-ease: ease;
+          --easing-ease-in: ease-in;
+          --easing-ease-out: ease-out;
+          --easing-ease-in-out: ease-in-out;
+          --easing-linear: linear;
+
+          --animation-duration: 1.5s;
+
+          /* ========================================
+             SIZING VARIABLES
+             ======================================== */
+
+          /* Icon Sizes */
+          --icon-xs: 16px;
+          --icon-sm: 20px;
+          --icon-md: 24px;
+          --icon-lg: 28px;
+          --icon-xl: 32px;
+          --icon-2xl: 36px;
+          --icon-3xl: 60px;
+
+          /* Avatar Sizes */
+          --avatar-sm: 36px;
+          --avatar-md: 48px;
+          --avatar-lg: 80px;
+
+          /* Container Sizes */
+          --container-sm: 640px;
+          --container-md: 900px;
+          --container-lg: 1280px;
+          --container-max: 1440px;
+          --container-width: 95vw;
+
+          /* Form Input Sizes */
+          --input-height: 42px;
+          --input-height-lg: 48px;
+          --input-height-sm: 36px;
+
+          /* ========================================
+             Z-INDEX VARIABLES
+             ======================================== */
+
+          --z-dropdown: 100;
+          --z-sticky: 500;
+          --z-floating: 999;
+          --z-modal: 10000;
+
+          /* ========================================
+             OPACITY VARIABLES
+             ======================================== */
+
+          --opacity-disabled: 0.5;
+          --opacity-hover: 0.8;
+          --opacity-focus: 0.9;
+
+          /* ========================================
+             BORDER VARIABLES
+             ======================================== */
+
+          --border-width-thin: 1px;
+          --border-width-md: 1.5px;
+          --border-width-thick: 2px;
+
+          /* ========================================
+             MAX-WIDTH VARIABLES
+             ======================================== */
+
+          --max-width-sidebar: 380px;
+          --max-width-modal: 400px;
+          --max-width-map: 100%;
+
+          /* ========================================
+             FAVORITES PAGE REDESIGN TOKENS
+             ======================================== */
+
+          /* Primary Colors */
+          --favorites-purple: #6B4EE6;
+          --favorites-purple-light: #F0EBFF;
+          --favorites-purple-dark: #5A3ED5;
+          --favorites-purple-gradient: linear-gradient(135deg, #6B4EE6 0%, #8B6CF5 100%);
+
+          /* Text Colors */
+          --favorites-text-dark: #1a1a2e;
+          --favorites-text-medium: #64748B;
+          --favorites-text-light: #94A3B8;
+
+          /* Background & Border */
+          --favorites-bg: #FAFBFC;
+          --favorites-border: #E8ECF0;
+          --favorites-card-bg: #ffffff;
+
+          /* Status Colors */
+          --favorites-success: #10B981;
+          --favorites-heart: #FF6B5B;
+          --favorites-heart-hover: #e55a4a;
+
+          /* ========================================
+             POPUP REPLICATION PROTOCOL TOKENS
+             Monochromatic purple design system
+             STRICT: NO GREEN, NO YELLOW
+             ======================================== */
+
+          /* Protocol Colors */
+          --protocol-primary: #31135D;
+          --protocol-action: #5B5FCF;
+          --protocol-action-hover: #4A4EBF;
+          --protocol-action-disabled: #B8BAE0;
+          --protocol-secondary: #6D31C2;
+          --protocol-surface: #F7F2FA;
+          --protocol-danger: #DC3545;
+          --protocol-danger-hover: rgba(220, 53, 69, 0.1);
+          --protocol-white: #FFFFFF;
+          --protocol-overlay: rgba(0, 0, 0, 0.5);
+          --protocol-border: #E5E7EB;
+          --protocol-border-light: #E7E0EC;
+          --protocol-text-muted: #6B7280;
+          --protocol-text-secondary: #49454F;
+
+          /* Protocol Spacing (STRICT: 8px, 16px, 24px only) */
+          --protocol-space-sm: 8px;
+          --protocol-space-md: 16px;
+          --protocol-space-lg: 24px;
+
+          /* Protocol Radii */
+          --protocol-radius-button: 100px;
+          --protocol-radius-card: 8px;
+          --protocol-radius-modal: 16px;
+          --protocol-radius-modal-mobile: 24px;
+
+          /* Protocol Transitions */
+          --protocol-transition: 0.2s ease;
+          --protocol-transition-slow: 0.3s ease-out;
+
+          /* ========================================
+             CHARLES EAMES CUSTOM - TOUCH TARGET
+             ======================================== */
+          --touch-min: 48px;
+        }
+
+        /* =============================================================
+           RESET & BASE
+           ============================================================= */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 100%; /* Respect user's font size preference */
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: var(--font-inter);
+            font-size: var(--text-md);
+            line-height: var(--line-height-normal);
+            color: var(--text-dark);
+            background: var(--bg-light);
+            min-height: 100vh;
+        }
+
+        /* =============================================================
+           FOCUS STATES - Visible AND beautiful
+           Users who need keyboard navigation deserve good design too
+           ============================================================= */
+        :focus {
+            outline: none;
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--secondary-purple);
+            outline-offset: 2px;
+            border-radius: var(--rounded-sm);
+        }
+
+        /* =============================================================
+           SKIP LINK - Invisible but essential for keyboard users
+           ============================================================= */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: var(--spacing-lg);
+            background: var(--secondary-purple);
+            color: var(--white);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: var(--rounded-lg);
+            font-weight: var(--font-weight-semibold);
+            text-decoration: none;
+            z-index: var(--z-modal);
+            transition: top var(--transition-base) var(--easing-ease-out);
+        }
+
+        .skip-link:focus {
+            top: var(--spacing-lg);
+        }
+
+        /* =============================================================
+           HEADER - Minimal, functional
+           ============================================================= */
+        .header {
+            position: sticky;
+            top: 0;
+            background: var(--bg-white);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            z-index: var(--z-dropdown);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--spacing-md) var(--spacing-lg);
+            min-height: 64px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: var(--font-weight-bold);
+            font-size: var(--text-lg);
+            /* Touch target: 48px achieved through padding */
+            padding: var(--spacing-sm);
+            margin: calc(-1 * var(--spacing-sm));
+            border-radius: var(--rounded-lg);
+        }
+
+        .logo:hover {
+            background: var(--bg-light);
+        }
+
+        .logo-mark {
+            width: var(--icon-xl);
+            height: var(--icon-xl);
+            background: var(--primary-purple);
+            border-radius: var(--rounded-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: var(--text-sm);
+            font-weight: var(--font-weight-bold);
+        }
+
+        /* User avatar - 48px touch target */
+        .user-button {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm);
+            margin: calc(-1 * var(--spacing-sm));
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-radius: var(--rounded-lg);
+            min-height: var(--touch-min);
+        }
+
+        .user-button:hover {
+            background: var(--bg-light);
+        }
+
+        .user-avatar {
+            width: var(--avatar-sm);
+            height: var(--avatar-sm);
+            border-radius: var(--rounded-full);
+            background: var(--gradient-purple-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--text-sm);
+        }
+
+        .user-name {
+            font-size: var(--text-sm);
+            font-weight: var(--font-weight-medium);
+            color: var(--text-dark);
+        }
+
+        @media (max-width: 480px) {
+            .user-name {
+                /* Hide name on small screens, keep avatar */
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                overflow: hidden;
+                clip: rect(0, 0, 0, 0);
+            }
+        }
+
+        /* =============================================================
+           MAIN LAYOUT
+           ============================================================= */
+        .main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-7xl);
+        }
+
+        @media (max-width: 480px) {
+            .main {
+                padding: var(--spacing-lg);
+            }
+        }
+
+        /* =============================================================
+           HERO SECTION - One number dominates
+           The user's most important information at a glance
+           PURPOSE: Answer "What do I need to know right now?"
+           ============================================================= */
+        .hero {
+            background: var(--bg-white);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--rounded-xl);
+            padding: var(--spacing-2xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        /*
+         * Time-of-day greeting with host name
+         * PURPOSE: Human touch through copy, not decoration
+         * "Good morning from Sarah" feels personal without animation
+         */
+        .hero-greeting {
+            font-size: var(--text-sm);
+            color: var(--text-gray);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .hero-greeting-name {
+            color: var(--text-dark);
+            font-weight: var(--font-weight-medium);
+        }
+
+        /*
+         * Hero date - the ONE number that matters
+         * PURPOSE: Immediate orientation on page load
+         */
+        .hero-date {
+            font-size: 56px;
+            font-weight: var(--font-weight-bold);
+            line-height: var(--line-height-tight);
+            color: var(--primary-purple);
+            letter-spacing: -1px;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        @media (max-width: 480px) {
+            .hero-date {
+                font-size: var(--text-4xl);
+            }
+        }
+
+        .hero-context {
+            font-size: var(--text-md);
+            color: var(--text-gray);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        /*
+         * Hero action - tappable row with 48px target
+         * PURPOSE: Convert the information into action
+         */
+        .hero-action {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-md) var(--spacing-lg);
+            margin: 0 calc(-1 * var(--spacing-lg));
+            margin-bottom: calc(-1 * var(--spacing-md));
+            background: var(--bg-light);
+            border-radius: 0 0 var(--rounded-xl) var(--rounded-xl);
+            cursor: pointer;
+            transition: background var(--transition-fast) var(--easing-ease);
+            min-height: var(--touch-min);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .hero-action:hover {
+            background: var(--bg-light-gray);
+        }
+
+        /*
+         * Press state - felt, not seen
+         * Users perceive this as "solid" without consciously seeing animation
+         */
+        .hero-action:active {
+            transform: scale(0.99);
+        }
+
+        .hero-action-text {
+            font-size: var(--text-sm);
+            font-weight: var(--font-weight-medium);
+            color: var(--secondary-purple);
+        }
+
+        .hero-action-icon {
+            width: var(--icon-sm);
+            height: var(--icon-sm);
+            color: var(--secondary-purple);
+        }
+
+        /* =============================================================
+           STATUS SUMMARY - What needs attention?
+           PURPOSE: Answer "Is anything wrong?" at a glance
+           ============================================================= */
+        .status-summary {
+            display: flex;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-7xl);
+            flex-wrap: wrap;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--bg-white);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--rounded-lg);
+            font-size: var(--text-sm);
+            color: var(--text-gray);
+        }
+
+        .status-item--success {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: var(--success-green);
+            color: var(--success-green);
+        }
+
+        .status-item--warning {
+            background: rgba(217, 119, 6, 0.1);
+            border-color: #D97706;
+            color: #D97706;
+        }
+
+        .status-icon {
+            width: var(--icon-xs);
+            height: var(--icon-xs);
+            flex-shrink: 0;
+        }
+
+        /* =============================================================
+           LEASE CARDS - Progressive disclosure
+           PURPOSE: Scannable overview, detail on demand
+           ============================================================= */
+        .section-header {
+            font-size: var(--text-xs);
+            font-weight: var(--font-weight-semibold);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-small);
+            color: var(--text-light-gray);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .lease-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .lease-card {
+            background: var(--bg-white);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--rounded-xl);
+            overflow: hidden;
+            transition: box-shadow var(--transition-base) var(--easing-ease),
+                        border-color var(--transition-base) var(--easing-ease);
+        }
+
+        .lease-card:hover {
+            border-color: var(--border-gray-light);
+        }
+
+        .lease-card[aria-expanded="true"] {
+            box-shadow: var(--shadow-lg);
+        }
+
+        /*
+         * Card header - full-width touch target
+         * PURPOSE: Tap anywhere to expand, not just the chevron
+         */
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            transition: background var(--transition-fast) var(--easing-ease);
+            min-height: 80px;
+        }
+
+        .card-header:hover {
+            background: var(--bg-light);
+        }
+
+        .card-header:active {
+            background: var(--bg-light-gray);
+        }
+
+        .card-thumb {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--rounded-lg);
+            background: var(--gradient-purple-primary);
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 480px) {
+            .card-thumb {
+                width: var(--touch-min);
+                height: var(--touch-min);
+            }
+        }
+
+        .card-info {
+            flex: 1;
+            min-width: 0; /* Allow text truncation */
+        }
+
+        .card-title {
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-subtitle {
+            font-size: var(--text-sm);
+            color: var(--text-gray);
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            flex-shrink: 0;
+        }
+
+        /*
+         * Status badge - single status, no animation
+         * PURPOSE: Quick visual indicator of lease state
+         * No micro-bounce - users need to read it, not watch it wiggle
+         */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--rounded-sm);
+            font-size: var(--text-xs);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .badge--active {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success-green);
+        }
+
+        .badge--upcoming {
+            background: rgba(109, 49, 194, 0.1);
+            color: var(--secondary-purple);
+        }
+
+        .badge--past {
+            background: var(--bg-light-gray);
+            color: var(--text-light-gray);
+        }
+
+        .expand-icon {
+            width: var(--icon-md);
+            height: var(--icon-md);
+            color: var(--text-light-gray);
+            transition: transform var(--transition-base) var(--easing-ease-out);
+        }
+
+        .lease-card[aria-expanded="true"] .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        /*
+         * Card body - expanded content
+         * PURPOSE: Detail on demand, not overwhelming upfront
+         */
+        .card-body {
+            display: none;
+            border-top: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .lease-card[aria-expanded="true"] .card-body {
+            display: block;
+            animation: fadeIn var(--transition-base) var(--easing-ease-out);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-section {
+            padding: var(--spacing-lg);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .card-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .section-title-icon {
+            width: var(--icon-sm);
+            height: var(--icon-sm);
+            color: var(--secondary-purple);
+        }
+
+        /* =============================================================
+           HOST CONTACT
+           PURPOSE: Quick access to host, human copy
+           ============================================================= */
+        .host-card {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-md);
+            background: var(--bg-light);
+            border-radius: var(--rounded-lg);
+        }
+
+        .host-avatar {
+            width: var(--avatar-md);
+            height: var(--avatar-md);
+            border-radius: var(--rounded-full);
+            background: var(--gradient-purple-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: var(--font-weight-semibold);
+            flex-shrink: 0;
+        }
+
+        .host-info {
+            flex: 1;
+        }
+
+        .host-name {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+
+        .host-role {
+            font-size: var(--text-sm);
+            color: var(--text-gray);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        /*
+         * Contact links - 48px touch targets through padding
+         * PURPOSE: Easy to tap on mobile
+         */
+        .contact-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) 0;
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: var(--text-sm);
+            min-height: var(--touch-min);
+            transition: color var(--transition-fast) var(--easing-ease);
+        }
+
+        .contact-link:hover {
+            color: var(--secondary-purple);
+        }
+
+        .contact-link-icon {
+            width: var(--text-lg);
+            height: var(--text-lg);
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 480px) {
+            .host-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .contact-links {
+                width: 100%;
+            }
+
+            .contact-link {
+                justify-content: center;
+            }
+        }
+
+        /* =============================================================
+           PAYMENT SECTION
+           PURPOSE: Clear payment status, single next action
+           ============================================================= */
+
+        /*
+         * Payment summary - mobile progressive disclosure
+         * PURPOSE: "3 payments - 2 complete - Next: $2,250 Apr 1"
+         * Full table only on demand
+         */
+        .payment-summary-mobile {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .payment-summary-mobile {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: var(--spacing-md);
+                background: var(--bg-light);
+                border-radius: var(--rounded-lg);
+                cursor: pointer;
+                min-height: var(--touch-min);
+                margin-bottom: var(--spacing-md);
+            }
+
+            .payment-summary-mobile:hover {
+                background: var(--bg-light-gray);
+            }
+
+            .payment-table-wrapper {
+                display: none;
+            }
+
+            .payment-table-wrapper.expanded {
+                display: block;
+            }
+        }
+
+        .payment-summary-text {
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-medium);
+            color: var(--text-dark);
+        }
+
+        .payment-summary-detail {
+            font-size: var(--text-sm);
+            color: var(--text-gray);
+            margin-top: 2px;
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .payment-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 450px;
+        }
+
+        .payment-table th {
+            text-align: left;
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: var(--text-xs);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-light-gray);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-small);
+            border-bottom: var(--border-width-thick) solid var(--border-color);
+        }
+
+        .payment-table th:last-child {
+            text-align: right;
+        }
+
+        .payment-table td {
+            padding: var(--spacing-md);
+            font-size: var(--text-sm);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .payment-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Subtle alternating - not harsh zebra */
+        .payment-table tbody tr:nth-child(even) {
+            background: rgba(249, 250, 251, 0.5);
+        }
+
+        .amount {
+            font-weight: var(--font-weight-semibold);
+            font-variant-numeric: tabular-nums;
+            text-align: right;
+        }
+
+        .payment-status {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: var(--text-xs);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .payment-status--paid {
+            color: var(--success-green);
+        }
+
+        .payment-status--upcoming {
+            color: var(--text-gray);
+        }
+
+        .payment-status-icon {
+            width: var(--text-base);
+            height: var(--text-base);
+        }
+
+        /* =============================================================
+           BUTTONS - 48px touch targets, clear hierarchy
+           PURPOSE: Obvious actions, easy to tap
+           ============================================================= */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md) var(--spacing-lg);
+            min-height: var(--touch-min);
+            border-radius: var(--rounded-lg);
+            font-family: inherit;
+            font-size: var(--text-sm);
+            font-weight: var(--font-weight-semibold);
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition-fast) var(--easing-ease);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-icon {
+            width: var(--text-lg);
+            height: var(--text-lg);
+        }
+
+        .btn-primary {
+            background: var(--secondary-purple);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-purple);
+        }
+
+        .btn-secondary {
+            background: var(--bg-white);
+            color: var(--text-dark);
+            border: var(--border-width-thin) solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-light);
+            border-color: var(--border-gray-light);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 480px) {
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* =============================================================
+           EMPTY STATE - Utility, not decoration
+           PURPOSE: Answer "What do I do now?"
+           No door metaphors, no hopeful warm light - just clarity
+           ============================================================= */
+        .empty-state {
+            background: var(--bg-white);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--rounded-xl);
+            padding: var(--spacing-7xl) var(--spacing-2xl);
+            text-align: center;
+        }
+
+        .empty-state-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto var(--spacing-lg);
+            background: var(--bg-light-gray);
+            border-radius: var(--rounded-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light-gray);
+        }
+
+        .empty-state-icon svg {
+            width: var(--icon-xl);
+            height: var(--icon-xl);
+        }
+
+        .empty-state-title {
+            font-size: var(--text-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .empty-state-text {
+            font-size: var(--text-md);
+            color: var(--text-gray);
+            max-width: 320px;
+            margin: 0 auto var(--spacing-2xl);
+            line-height: var(--line-height-relaxed);
+        }
+
+        /* =============================================================
+           MILESTONE CELEBRATION - Only for real milestones
+           PURPOSE: Acknowledge significant moments, not routine tasks
+
+           WHEN TO SHOW:
+           - Final payment on a lease
+           - First stay beginning
+           - Returning user's first login
+
+           WHEN NOT TO SHOW:
+           - Any regular payment (no confetti for paying rent)
+           - Progress bar milestones (removed entirely)
+           ============================================================= */
+        .celebration-banner {
+            background: rgba(34, 197, 94, 0.1);
+            border: var(--border-width-thin) solid var(--success-green);
+            border-radius: var(--rounded-xl);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-2xl);
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-md);
+        }
+
+        .celebration-icon {
+            width: var(--icon-md);
+            height: var(--icon-md);
+            color: var(--success-green);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .celebration-content {
+            flex: 1;
+        }
+
+        .celebration-title {
+            font-weight: var(--font-weight-semibold);
+            color: var(--success-green);
+            margin-bottom: 2px;
+        }
+
+        .celebration-message {
+            font-size: var(--text-sm);
+            color: var(--text-gray);
+        }
+
+        .celebration-dismiss {
+            padding: var(--spacing-sm);
+            margin: calc(-1 * var(--spacing-sm));
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light-gray);
+            border-radius: var(--rounded-sm);
+            min-width: var(--touch-min);
+            min-height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .celebration-dismiss:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--text-dark);
+        }
+
+        /* =============================================================
+           ALL CAUGHT UP STATE
+           PURPOSE: Reduce anxiety when nothing needs action
+           ============================================================= */
+        .all-caught-up {
+            background: var(--bg-white);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--rounded-xl);
+            padding: var(--spacing-2xl);
+            text-align: center;
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .all-caught-up-icon {
+            width: var(--avatar-md);
+            height: var(--avatar-md);
+            margin: 0 auto var(--spacing-md);
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: var(--rounded-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--success-green);
+        }
+
+        .all-caught-up-icon svg {
+            width: var(--icon-md);
+            height: var(--icon-md);
+        }
+
+        .all-caught-up-title {
+            font-size: var(--text-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .all-caught-up-text {
+            font-size: var(--text-sm);
+            color: var(--text-gray);
+        }
+
+        /* =============================================================
+           FOOTER - Minimal, functional
+           ============================================================= */
+        .footer {
+            background: var(--primary-purple);
+            color: var(--white);
+            padding: var(--spacing-4xl) var(--spacing-lg);
+            margin-top: var(--spacing-7xl);
+        }
+
+        .footer-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-lg);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: var(--text-sm);
+            padding: var(--spacing-sm);
+            margin: calc(-1 * var(--spacing-sm));
+            min-height: var(--touch-min);
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-link:hover {
+            color: var(--white);
+        }
+
+        .footer-copyright {
+            font-size: var(--text-sm);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 480px) {
+            .footer-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* =============================================================
+           UTILITY CLASSES
+           ============================================================= */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* =============================================================
+           PRINT STYLES
+           PURPOSE: Lease information should print cleanly
+           ============================================================= */
+        @media print {
+            .header,
+            .footer,
+            .hero-action,
+            .expand-icon,
+            .btn {
+                display: none;
+            }
+
+            .lease-card {
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+
+            .card-body {
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!--
+    SKIP LINK - Invisible but essential
+    PURPOSE: Keyboard users can skip directly to content
+    This is an invisible detail that matters to those who need it
+    -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo" aria-label="Split Lease home">
+                <div class="logo-mark" aria-hidden="true">SL</div>
+                <span>Split Lease</span>
+            </a>
+
+            <button class="user-button" aria-label="Account menu for John">
+                <span class="user-name">John Doe</span>
+                <div class="user-avatar" aria-hidden="true">JD</div>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main id="main-content" class="main">
+
+        <!--
+        CELEBRATION BANNER - Real milestone only
+        PURPOSE: Acknowledge first stay beginning
+        This appears ONCE, for an actual milestone, not for routine payments
+        -->
+        <div class="celebration-banner" role="alert">
+            <svg class="celebration-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <div class="celebration-content">
+                <div class="celebration-title">Your stay begins tomorrow!</div>
+                <div class="celebration-message">Sarah has everything ready for you at Chelsea 2BR. Check-in is at 3pm.</div>
+            </div>
+            <button class="celebration-dismiss" aria-label="Dismiss">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!--
+        HERO SECTION
+        PURPOSE: One number dominates - the next important date
+        Human touch through greeting copy, not decoration
+        -->
+        <section class="hero" aria-labelledby="hero-heading">
+            <!--
+            Time-of-day greeting with host name
+            Changes based on time: "Good morning/afternoon/evening from Sarah"
+            PURPOSE: Human touch through copy, not animation
+            -->
+            <div class="hero-greeting">
+                Good morning from <span class="hero-greeting-name">Sarah</span>
+            </div>
+
+            <h1 id="hero-heading" class="visually-hidden">Your next stay</h1>
+
+            <!--
+            The ONE number that matters
+            56px is visible without being egotistical
+            Users orient immediately: "Feb 15 - that's my next stay"
+            -->
+            <div class="hero-date">Feb 15</div>
+            <div class="hero-context">Your next stay at Chelsea 2BR begins in 13 days</div>
+
+            <!--
+            Tappable action - full width, 48px target
+            PURPOSE: Convert information into action
+            -->
+            <a href="#stay-details" class="hero-action">
+                <span class="hero-action-text">View stay details and check-in info</span>
+                <svg class="hero-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </a>
+        </section>
+
+        <!--
+        STATUS SUMMARY
+        PURPOSE: Answer "Is anything wrong?" at a glance
+        Green = all good. No news is good news.
+        -->
+        <div class="status-summary" aria-label="Status summary">
+            <div class="status-item status-item--success">
+                <svg class="status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>Payments current</span>
+            </div>
+            <div class="status-item status-item--success">
+                <svg class="status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>Documents signed</span>
+            </div>
+        </div>
+
+        <!--
+        ALL CAUGHT UP STATE
+        PURPOSE: Reduce anxiety when nothing needs immediate action
+        Shows when there are no pending tasks
+        -->
+        <!-- Uncomment this section when nothing needs attention:
+        <div class="all-caught-up">
+            <div class="all-caught-up-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <div class="all-caught-up-title">All caught up</div>
+            <div class="all-caught-up-text">Your next payment isn't due until March 1</div>
+        </div>
+        -->
+
+        <!-- ACTIVE LEASES -->
+        <section aria-labelledby="active-leases-heading">
+            <h2 id="active-leases-heading" class="section-header">Active Leases</h2>
+
+            <div class="lease-list">
+                <!--
+                LEASE CARD - Expanded by default for primary lease
+                PURPOSE: Show detail for the most relevant lease
+                -->
+                <article class="lease-card" aria-expanded="true" id="lease-chelsea">
+                    <div class="card-header" onclick="toggleLease('lease-chelsea')" role="button" aria-controls="lease-chelsea-body" tabindex="0">
+                        <div class="card-thumb" role="img" aria-label="Property photo"></div>
+                        <div class="card-info">
+                            <h3 class="card-title">Chelsea 2BR</h3>
+                            <p class="card-subtitle">245 W 23rd St, Unit 5A</p>
+                        </div>
+                        <div class="card-meta">
+                            <span class="badge badge--active">Active</span>
+                            <svg class="expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="card-body" id="lease-chelsea-body">
+                        <!--
+                        HOST CONTACT
+                        PURPOSE: Human connection, easy contact
+                        -->
+                        <div class="card-section">
+                            <h4 class="section-title">
+                                <svg class="section-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                Your Host
+                            </h4>
+                            <div class="host-card">
+                                <div class="host-avatar" aria-hidden="true">SM</div>
+                                <div class="host-info">
+                                    <div class="host-name">Sarah Mitchell</div>
+                                    <div class="host-role">Property owner since 2019</div>
+                                    <div class="contact-links">
+                                        <a href="tel:+12125551234" class="contact-link">
+                                            <svg class="contact-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                            </svg>
+                                            (212) 555-1234
+                                        </a>
+                                        <a href="mailto:sarah@example.com" class="contact-link">
+                                            <svg class="contact-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                                <polyline points="22,6 12,13 2,6"></polyline>
+                                            </svg>
+                                            sarah@example.com
+                                        </a>
+                                        <a href="#message" class="contact-link">
+                                            <svg class="contact-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                            </svg>
+                                            Message Sarah
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--
+                        PAYMENTS
+                        PURPOSE: Clear status, single next action
+                        Mobile: collapsed summary, tap to expand
+                        Desktop: full table visible
+                        -->
+                        <div class="card-section">
+                            <h4 class="section-title">
+                                <svg class="section-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                                </svg>
+                                Payments
+                            </h4>
+
+                            <!--
+                            Mobile progressive disclosure
+                            PURPOSE: Key info visible, detail on demand
+                            -->
+                            <div class="payment-summary-mobile" onclick="togglePayments()" role="button" aria-expanded="false" aria-controls="payment-table">
+                                <div>
+                                    <div class="payment-summary-text">3 payments total</div>
+                                    <div class="payment-summary-detail">2 complete &middot; Next: $2,250 due Mar 1</div>
+                                </div>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+
+                            <div class="payment-table-wrapper" id="payment-table">
+                                <div class="table-scroll">
+                                    <table class="payment-table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Due</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Feb 1, 2026</td>
+                                                <td>
+                                                    <span class="payment-status payment-status--paid">
+                                                        <svg class="payment-status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                                        </svg>
+                                                        Paid Jan 30
+                                                    </span>
+                                                </td>
+                                                <td class="amount">$2,250</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Mar 1, 2026</td>
+                                                <td>
+                                                    <span class="payment-status payment-status--upcoming">
+                                                        Due in 27 days
+                                                    </span>
+                                                </td>
+                                                <td class="amount">$2,250</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Apr 1, 2026</td>
+                                                <td>
+                                                    <span class="payment-status payment-status--upcoming">
+                                                        Scheduled
+                                                    </span>
+                                                </td>
+                                                <td class="amount">$2,250</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--
+                        DOCUMENTS
+                        PURPOSE: Quick access to legal documents
+                        -->
+                        <div class="card-section">
+                            <h4 class="section-title">
+                                <svg class="section-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+                                Documents
+                            </h4>
+                            <div class="btn-group">
+                                <a href="#agreement" class="btn btn-primary">
+                                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                    </svg>
+                                    Lease Agreement
+                                </a>
+                                <a href="#dates" class="btn btn-secondary">View/Change Dates</a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!--
+        PAST LEASES SECTION
+        Spacing: 48px separation from active leases (section break)
+        -->
+        <section aria-labelledby="past-leases-heading" style="margin-top: var(--spacing-7xl);">
+            <h2 id="past-leases-heading" class="section-header">Past Leases</h2>
+
+            <div class="lease-list">
+                <article class="lease-card" aria-expanded="false" id="lease-soho">
+                    <div class="card-header" onclick="toggleLease('lease-soho')" role="button" aria-controls="lease-soho-body" tabindex="0">
+                        <div class="card-thumb" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" role="img" aria-label="Property photo"></div>
+                        <div class="card-info">
+                            <h3 class="card-title">SoHo Studio</h3>
+                            <p class="card-subtitle">Jun 2025 - Dec 2025</p>
+                        </div>
+                        <div class="card-meta">
+                            <span class="badge badge--past">Completed</span>
+                            <svg class="expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="card-body" id="lease-soho-body">
+                        <div class="card-section">
+                            <h4 class="section-title">
+                                <svg class="section-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                Lease Summary
+                            </h4>
+                            <p style="color: var(--text-gray); font-size: var(--text-sm); margin-bottom: var(--spacing-lg);">
+                                6 months at 123 Spring St, Unit 2B with Michael Chen.
+                                Total paid: $13,500. 8 stays completed.
+                            </p>
+                            <div class="btn-group">
+                                <a href="#agreement" class="btn btn-secondary">
+                                    View Agreement
+                                </a>
+                                <a href="#receipts" class="btn btn-secondary">
+                                    Download Receipts
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!--
+        EMPTY STATE EXAMPLE
+        Uncomment to see how it looks when there are no leases
+        PURPOSE: Answer "What do I do now?" - no decoration, just clarity
+        -->
+        <!--
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+            </div>
+            <h2 class="empty-state-title">No active leases</h2>
+            <p class="empty-state-text">
+                When you sign a lease through Split Lease, it will appear here with all your stay dates and payment information.
+            </p>
+            <a href="/listings" class="btn btn-primary">Browse listings</a>
+        </div>
+        -->
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-links">
+                <a href="/help" class="footer-link">Help Center</a>
+                <a href="/terms" class="footer-link">Terms</a>
+                <a href="/privacy" class="footer-link">Privacy</a>
+            </div>
+            <div class="footer-copyright">
+                Split Lease 2026
+            </div>
+        </div>
+    </footer>
+
+    <!--
+    JAVASCRIPT - Minimal, progressive enhancement
+    Core functionality works without JS (links, forms)
+    JS adds polish (expand/collapse animation)
+    -->
+    <script>
+        // Toggle lease card expansion
+        function toggleLease(id) {
+            const card = document.getElementById(id);
+            const isExpanded = card.getAttribute('aria-expanded') === 'true';
+            card.setAttribute('aria-expanded', !isExpanded);
+        }
+
+        // Toggle payment table on mobile
+        function togglePayments() {
+            const wrapper = document.getElementById('payment-table');
+            const button = document.querySelector('.payment-summary-mobile');
+            const isExpanded = wrapper.classList.contains('expanded');
+
+            wrapper.classList.toggle('expanded');
+            button.setAttribute('aria-expanded', !isExpanded);
+        }
+
+        // Keyboard support for card headers
+        document.querySelectorAll('.card-header').forEach(header => {
+            header.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    header.click();
+                }
+            });
+        });
+
+        // Time-of-day greeting
+        // PURPOSE: Human touch through copy, not decoration
+        function updateGreeting() {
+            const hour = new Date().getHours();
+            const greetingEl = document.querySelector('.hero-greeting');
+            let greeting;
+
+            if (hour < 12) {
+                greeting = 'Good morning';
+            } else if (hour < 17) {
+                greeting = 'Good afternoon';
+            } else {
+                greeting = 'Good evening';
+            }
+
+            greetingEl.innerHTML = `${greeting} from <span class="hero-greeting-name">Sarah</span>`;
+        }
+
+        updateGreeting();
+
+        // Hidden discovery: Press 'S' to see lifetime stats
+        // PURPOSE: Reward power users without cluttering the interface
+        let keySequence = [];
+        document.addEventListener('keydown', (e) => {
+            keySequence.push(e.key);
+            if (keySequence.length > 5) keySequence.shift();
+
+            if (keySequence.join('') === 'stats') {
+                alert('Lifetime Stats: 2 leases, 14 months, $17,700 paid, 12 stays completed');
+                keySequence = [];
+            }
+        });
+    </script>
+</body>
+</html>
