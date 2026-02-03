@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Run 007 — Limitless Tokens Competition | AI Design Team</title>
+    <title>Run 007 — Guest Leases Page Variations | AI Design Team</title>
     <style>
         * {
             margin: 0;
@@ -24,12 +24,6 @@
             --gray-900: #111827;
             --green-50: #ECFDF5;
             --green-600: #059669;
-            --pink-50: #FDF2F8;
-            --pink-600: #DB2777;
-            --amber-50: #FFFBEB;
-            --amber-600: #D97706;
-            --purple-50: #FAF5FF;
-            --purple-600: #9333EA;
         }
 
         body {
@@ -39,7 +33,6 @@
             line-height: 1.6;
         }
 
-        /* Header */
         .header {
             border-bottom: 1px solid var(--gray-200);
             padding: 40px 24px;
@@ -62,11 +55,10 @@
         .header .summary {
             margin-top: 24px;
             padding: 20px;
-            background: linear-gradient(135deg, var(--purple-50) 0%, var(--pink-50) 100%);
+            background: var(--gray-50);
             border-radius: 8px;
             font-size: 14px;
             color: var(--gray-700);
-            border: 1px solid #E9D5FF;
         }
 
         .header .summary strong {
@@ -91,14 +83,12 @@
             display: block;
         }
 
-        /* Container */
         .container {
             max-width: 1000px;
             margin: 0 auto;
             padding: 40px 24px;
         }
 
-        /* Top Navigation */
         .top-nav {
             background: var(--gray-50);
             border-bottom: 1px solid var(--gray-200);
@@ -127,35 +117,28 @@
             font-weight: 500;
         }
 
-        /* Experiment Box */
-        .experiment-box {
-            background: linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%);
+        .overview-box {
+            background: var(--primary-bg);
+            border: 1px solid #DDD6FE;
             border-radius: 12px;
             padding: 32px;
             margin-bottom: 48px;
-            color: white;
         }
 
-        .experiment-box h3 {
+        .overview-box h3 {
             font-size: 18px;
             font-weight: 600;
+            color: var(--primary);
             margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
         }
 
-        .experiment-box .icon {
-            font-size: 24px;
-        }
-
-        .experiment-box p {
+        .overview-box p {
             font-size: 14px;
-            opacity: 0.9;
+            color: var(--gray-700);
             margin-bottom: 20px;
         }
 
-        .experiment-features {
+        .overview-features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px;
@@ -163,26 +146,25 @@
         }
 
         .feature-card {
-            background: rgba(255,255,255,0.1);
+            background: white;
             border-radius: 8px;
             padding: 16px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid var(--gray-200);
         }
 
         .feature-card h4 {
             font-size: 13px;
             font-weight: 600;
             margin-bottom: 4px;
-            color: #E9D5FF;
+            color: var(--primary);
         }
 
         .feature-card p {
             font-size: 12px;
-            opacity: 0.8;
+            color: var(--gray-600);
             margin: 0;
         }
 
-        /* Agent Section */
         .agent-section {
             margin-bottom: 60px;
             padding-bottom: 60px;
@@ -224,64 +206,14 @@
             color: var(--gray-500);
         }
 
-        .agent-info .manifesto {
+        .agent-info .focus {
             font-size: 14px;
-            font-style: italic;
-            color: var(--purple-600);
+            color: var(--gray-700);
             margin-top: 8px;
         }
 
-        /* Lysergic Badge */
-        .lysergic-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 500;
-            margin-left: 8px;
-        }
-
-        .lysergic-badge.high {
-            background: linear-gradient(90deg, #EC4899, #8B5CF6);
-            color: white;
-        }
-
-        .lysergic-badge.medium {
-            background: var(--purple-50);
-            color: var(--purple-600);
-        }
-
-        .lysergic-badge.low {
-            background: var(--gray-100);
-            color: var(--gray-600);
-        }
-
-        .lysergic-badge.maximum {
-            background: linear-gradient(90deg, #F59E0B, #EC4899, #8B5CF6, #3B82F6);
-            color: white;
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
-        }
-
-        /* Mockup Card */
         .mockup-card {
             margin-bottom: 24px;
-        }
-
-        .mockup-label {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--gray-700);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
         }
 
         .mockup-preview {
@@ -305,7 +237,6 @@
             text-decoration: underline;
         }
 
-        /* Section Title */
         .section-title {
             font-size: 22px;
             font-weight: 600;
@@ -319,7 +250,6 @@
             margin-bottom: 32px;
         }
 
-        /* Footer */
         .footer {
             text-align: center;
             padding: 40px;
@@ -328,7 +258,6 @@
             font-size: 13px;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .mockup-preview {
                 height: 350px;
@@ -338,14 +267,13 @@
                 gap: 20px;
             }
 
-            .experiment-features {
+            .overview-features {
                 grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Top Navigation -->
     <nav class="top-nav">
         <a href="../../index.html">Special Reports</a>
         <span class="separator">/</span>
@@ -354,23 +282,18 @@
         <span class="current">Run 007</span>
     </nav>
 
-    <!-- Header -->
     <header class="header">
-        <h1>Run 007 — Limitless Tokens Competition</h1>
-        <p class="meta">February 2, 2026 (overnight execution) • Split Lease AI Design Team</p>
+        <h1>Run 007 — Guest Leases Page Variations</h1>
+        <p class="meta">February 2, 2026 • Split Lease AI Design Team</p>
 
         <div class="summary">
-            <strong>Experiment:</strong> Nine AI design agents given unlimited token budgets to research deeply, write adversarial manifestos against their own design orthodoxy, and explore experimental "lysergic" visual directions. Total output: 916KB across 9 HTML entries, 10 analysis documents, and a comprehensive style guide.
+            <strong>Overview:</strong> Nine AI design agents each created their own interpretation of the Guest Leases page, applying their domain expertise. Each variation explores different approaches to layout, typography, interaction patterns, and visual hierarchy. Total output: 916KB across 9 HTML mockups and 10 analysis documents.
         </div>
 
         <div class="stats-row">
             <div class="stat">
-                <strong>916KB</strong>
-                Total output
-            </div>
-            <div class="stat">
                 <strong>9</strong>
-                HTML mockups
+                Page variations
             </div>
             <div class="stat">
                 <strong>10</strong>
@@ -380,52 +303,52 @@
                 <strong>39KB</strong>
                 Style guide
             </div>
+            <div class="stat">
+                <strong>916KB</strong>
+                Total output
+            </div>
         </div>
     </header>
 
     <div class="container">
 
-        <!-- Experiment Box -->
-        <div class="experiment-box">
-            <h3>
-                <span class="icon">🔬</span>
-                Adversarial Architecture + Lysergic Exploration
-            </h3>
+        <div class="overview-box">
+            <h3>Multi-Perspective Design Exploration</h3>
             <p>
-                Each agent was challenged to write a manifesto AGAINST their own design philosophy — questioning their deepest-held beliefs. Select agents were also tasked with exploring psychedelic/experimental visual directions.
+                Each agent approached the Guest Leases page through their unique design lens, resulting in 9 distinct variations. This parallel exploration surfaces different solutions to the same problem, enabling comparison of approaches before selecting the final direction.
             </p>
 
-            <div class="experiment-features">
+            <div class="overview-features">
                 <div class="feature-card">
-                    <h4>Unlimited Tokens</h4>
-                    <p>No constraints on analysis depth or output size</p>
+                    <h4>Deep Analysis</h4>
+                    <p>Each agent analyzed existing patterns and competitor approaches</p>
                 </div>
                 <div class="feature-card">
-                    <h4>Self-Criticism</h4>
-                    <p>Manifestos against own design orthodoxy</p>
+                    <h4>Domain Expertise</h4>
+                    <p>Variations reflect each agent's specialized focus area</p>
                 </div>
                 <div class="feature-card">
-                    <h4>Deep Research</h4>
-                    <p>3+ documents, 500+ word analyses</p>
+                    <h4>Full Mockups</h4>
+                    <p>Complete HTML implementations, not just wireframes</p>
                 </div>
                 <div class="feature-card">
-                    <h4>Lysergic Mandate</h4>
-                    <p>Experimental visual exploration for select agents</p>
+                    <h4>Style Guide</h4>
+                    <p>Comprehensive CSS variables reference included</p>
                 </div>
             </div>
         </div>
 
-        <h2 class="section-title">Agent Entries</h2>
-        <p class="section-subtitle">Each agent delivered an adversarial manifesto and HTML mockup</p>
+        <h2 class="section-title">Agent Variations</h2>
+        <p class="section-subtitle">Each agent created a complete Guest Leases page interpretation</p>
 
         <!-- Josef Müller-Brockmann -->
         <section class="agent-section">
             <div class="agent-header">
                 <div class="agent-avatar" style="background: #374151;">JM</div>
                 <div class="agent-info">
-                    <h2>Josef Müller-Brockmann <span class="lysergic-badge high">HIGH</span></h2>
-                    <div class="domain">Swiss Grid Systems</div>
-                    <div class="manifesto">"ANTI-GRID: A Swiss Designer's Heresy"</div>
+                    <h2>Josef Müller-Brockmann</h2>
+                    <div class="domain">Design System & Grid</div>
+                    <div class="focus">Focus: Systematic grid structure, consistent spacing tokens, modular components</div>
                 </div>
             </div>
             <div class="mockup-card">
@@ -439,9 +362,9 @@
             <div class="agent-header">
                 <div class="agent-avatar" style="background: #EC4899;">PS</div>
                 <div class="agent-info">
-                    <h2>Paula Scher <span class="lysergic-badge high">HIGH</span></h2>
-                    <div class="domain">Bold Typography</div>
-                    <div class="manifesto">"THE WHISPER THAT DEAFENS: Beyond Bold"</div>
+                    <h2>Paula Scher</h2>
+                    <div class="domain">Visual Hierarchy & Typography</div>
+                    <div class="focus">Focus: Bold typographic hierarchy, expressive layouts, visual impact</div>
                 </div>
             </div>
             <div class="mockup-card">
@@ -455,9 +378,9 @@
             <div class="agent-header">
                 <div class="agent-avatar" style="background: #8B5CF6;">MV</div>
                 <div class="agent-info">
-                    <h2>Massimo Vignelli <span class="lysergic-badge low">LOW</span></h2>
-                    <div class="domain">Typographic Discipline</div>
-                    <div class="manifesto">"THE TYRANNY OF HELVETICA: A Self-Critique"</div>
+                    <h2>Massimo Vignelli</h2>
+                    <div class="domain">Information Architecture</div>
+                    <div class="focus">Focus: Clear information hierarchy, disciplined typography, structured layouts</div>
                 </div>
             </div>
             <div class="mockup-card">
@@ -471,9 +394,9 @@
             <div class="agent-header">
                 <div class="agent-avatar" style="background: #31135D;">DN</div>
                 <div class="agent-info">
-                    <h2>Don Norman <span class="lysergic-badge low">LOW</span></h2>
-                    <div class="domain">User-Centered Design</div>
-                    <div class="manifesto">"THE USABILITY TRAP: Why Easy Isn't Always Better"</div>
+                    <h2>Don Norman</h2>
+                    <div class="domain">User Experience & Flows</div>
+                    <div class="focus">Focus: User mental models, error prevention, clear feedback patterns</div>
                 </div>
             </div>
             <div class="mockup-card">
@@ -487,9 +410,9 @@
             <div class="agent-header">
                 <div class="agent-avatar" style="background: #F97316;">CE</div>
                 <div class="agent-info">
-                    <h2>Charles Eames <span class="lysergic-badge medium">MEDIUM</span></h2>
-                    <div class="domain">Details Matter</div>
-                    <div class="manifesto">"THE DETAIL DELUSION: When Craftsmanship Becomes Ego"</div>
+                    <h2>Charles Eames</h2>
+                    <div class="domain">Onboarding & Empty States</div>
+                    <div class="focus">Focus: First-time user experience, progressive disclosure, helpful guidance</div>
                 </div>
             </div>
             <div class="mockup-card">
@@ -503,9 +426,9 @@
             <div class="agent-header">
                 <div class="agent-avatar" style="background: #059669;">DR</div>
                 <div class="agent-info">
-                    <h2>Dieter Rams <span class="lysergic-badge low">LOW</span></h2>
-                    <div class="domain">Less But Better</div>
-                    <div class="manifesto">"THE MINIMALISM MIRAGE: Confessions of a Reductionist"</div>
+                    <h2>Dieter Rams</h2>
+                    <div class="domain">Trust & Honesty</div>
+                    <div class="focus">Focus: Honest design, clear communication, no dark patterns</div>
                 </div>
             </div>
             <div class="mockup-card">
@@ -519,9 +442,9 @@
             <div class="agent-header">
                 <div class="agent-avatar" style="background: #EF4444;">MG</div>
                 <div class="agent-info">
-                    <h2>Milton Glaser <span class="lysergic-badge maximum">MAXIMUM</span></h2>
-                    <div class="domain">Conceptual Warmth</div>
-                    <div class="manifesto">"THE CONCEPT TRAP: When Cleverness Kills Clarity"</div>
+                    <h2>Milton Glaser</h2>
+                    <div class="domain">Copy & Voice</div>
+                    <div class="focus">Focus: Emotional copy, brand voice, user-friendly messaging</div>
                 </div>
             </div>
             <div class="mockup-card">
@@ -535,9 +458,9 @@
             <div class="agent-header">
                 <div class="agent-avatar" style="background: #6366F1;">JI</div>
                 <div class="agent-info">
-                    <h2>Jony Ive <span class="lysergic-badge medium">MEDIUM</span></h2>
-                    <div class="domain">Tactile Premium</div>
-                    <div class="manifesto">"THE MATERIAL LIE: Why Screens Aren't Objects"</div>
+                    <h2>Jony Ive</h2>
+                    <div class="domain">Mobile Experience</div>
+                    <div class="focus">Focus: Touch-friendly design, mobile-first layout, gesture interactions</div>
                 </div>
             </div>
             <div class="mockup-card">
@@ -551,9 +474,9 @@
             <div class="agent-header">
                 <div class="agent-avatar" style="background: #0EA5E9;">LW</div>
                 <div class="agent-info">
-                    <h2>Luke Wroblewski <span class="lysergic-badge low">LOW</span></h2>
-                    <div class="domain">Conversion Focus</div>
-                    <div class="manifesto">"THE CONVERSION CONFESSION: When Optimization Becomes Manipulation"</div>
+                    <h2>Luke Wroblewski</h2>
+                    <div class="domain">Conversion & Testing</div>
+                    <div class="focus">Focus: Conversion optimization, A/B test recommendations, data-driven design</div>
                 </div>
             </div>
             <div class="mockup-card">
@@ -564,7 +487,6 @@
 
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <p><a href="../index.html" style="color: var(--primary); text-decoration: none;">← Back to AI Design Team</a></p>
         <p style="margin-top: 8px;">Split Lease AI Design Team • Run 007 • February 2, 2026</p>
