@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split Lease - Host Overview (Redesigned with Social Proof)</title>
+
+    <!--
+    ============================================================================
+    CIALDINI SOCIAL PROOF REDESIGN
+    ============================================================================
+    This dashboard redesign implements Robert Cialdini's Social Proof principles
+    from "Influence: The Psychology of Persuasion" Chapter 4.
+
+    Key Principles Applied:
+    1. SIMILARITY - "We are more inclined to follow the lead of a similar other
+       than a dissimilar one." (p. 142)
+    2. UNCERTAINTY REDUCTION - "When uncertainty reigns, we are most likely to
+       look to and accept the actions of others as correct." (p. 129)
+    3. PROVINCIAL NORMS - "Normative appeals were most effective when describing
+       group behavior that occurred in the setting that most closely matched
+       individuals' immediate situational circumstances." (Hotel Towel Study)
+    4. ANTI-BYSTANDER EFFECT - Creating individual responsibility rather than
+       diffusion of action
+    ============================================================================
+    -->
+
+    <style>
+        /* ============================================================================
+           UNIFIED DESIGN TOKENS
+           From UI-Consistency-Audit-Final-Report.md
+           ============================================================================ */
+        :root {
+            --color-primary: #31135D;
+            --color-primary-dark: #1F0D3D;
+            --color-primary-light: #5B5FCF;
+            --color-success: #5B5FCF;
+            --color-warning: #D97706;
+            --color-danger: #DC2626;
+            --color-gray-50: #F9FAFB;
+            --color-gray-100: #F3F4F6;
+            --color-gray-200: #E5E7EB;
+            --color-gray-300: #D1D5DB;
+            --color-gray-500: #6B7280;
+            --color-gray-700: #374151;
+            --color-gray-800: #1F2937;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.16);
+        }
+
+        /* Legacy variable mappings for backward compatibility */
+        :root {
+            --primary-purple: var(--color-primary);
+            --primary-purple-light: var(--color-primary-light);
+            --accent-indigo: var(--color-success);
+            --accent-orange: var(--color-warning);
+            --accent-blue: #36C5F0;
+            --warning-red: var(--color-danger);
+            --text-dark: var(--color-gray-800);
+            --text-medium: var(--color-gray-500);
+            --text-light: #868686;
+            --bg-white: #FFFFFF;
+            --bg-light: var(--color-gray-100);
+            --bg-lighter: var(--color-gray-50);
+            --border-light: var(--color-gray-200);
+            --border-medium: var(--color-gray-300);
+            --shadow-soft: var(--shadow-sm);
+            --shadow-medium: var(--shadow-md);
+            --radius-small: var(--radius-sm);
+            --radius-medium: var(--radius-md);
+            --radius-large: var(--radius-lg);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        /* Header - Always purple background per design system */
+        .header {
+            background: var(--color-primary);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        /* Logo with wordmark - always show full logo */
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-primary);
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .nav-link.active {
+            background: rgba(255,255,255,0.15);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .notification-icon {
+            color: white;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: var(--color-danger);
+            color: white;
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Welcome Section with Social Proof */
+        /* Card styling: shadow-based elevation, no borders, 8px radius */
+        .welcome-section {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            border: none;
+        }
+
+        .welcome-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        /* Typography: H1 = 32px, weight 700, color #1F2937 */
+        .welcome-text h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-gray-800);
+            margin-bottom: 4px;
+        }
+
+        .welcome-text p {
+            color: var(--color-gray-500);
+            font-size: 14px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Button System - Unified Design */
+        .btn {
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Primary buttons: Brand Purple #4A1D6B */
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+        }
+
+        /* Secondary buttons: White bg + Purple border */
+        .btn-secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-gray-50);
+        }
+
+        /* Success/Confirm buttons: Indigo #5B5FCF */
+        .btn-success {
+            background: var(--color-success);
+            color: white;
+            border: none;
+        }
+
+        .btn-success:hover {
+            background: #4A4AB8;
+        }
+
+        /* Destructive buttons: Red outline #DC2626 */
+        .btn-danger {
+            background: white;
+            color: var(--color-danger);
+            border: 1px solid var(--color-danger);
+        }
+
+        .btn-danger:hover {
+            background: #FEF2F2;
+        }
+
+        /*
+        ============================================================================
+        SOCIAL PROOF ELEMENT: Platform Activity Banner
+        CIALDINI p.115: "Canned laughter causes an audience to laugh longer and
+        more often when humorous material is presented."
+        This element provides social proof via platform-wide activity indicators,
+        similar to how canned laughter signals "this is funny/engaging."
+        ============================================================================
+        */
+        .platform-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+            background: var(--color-gray-50);
+            border-radius: var(--radius-md);
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--color-gray-500);
+            margin-top: 4px;
+        }
+
+        .live-indicator {
+            width: 8px;
+            height: 8px;
+            background: var(--color-success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /*
+        ============================================================================
+        SOCIAL PROOF ELEMENT: "Hosts Like You" Comparison Card
+        CIALDINI p.142: "We are more inclined to follow the lead of a similar
+        other than a dissimilar one."
+        This element applies the SIMILARITY principle by comparing host performance
+        to demographically/situationally similar peers.
+        ============================================================================
+        */
+        /* Cards: shadow-based elevation, no borders, 8px radius */
+        .comparison-card {
+            background: linear-gradient(135deg, #F0E6F0 0%, #E8F4EA 100%);
+            border-radius: var(--radius-md);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            border: none;
+        }
+
+        .comparison-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .comparison-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .comparison-title {
+            flex: 1;
+        }
+
+        /* Typography: H3 = 18px, weight 600, color #1F2937 (NOT purple) */
+        .comparison-title h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+        }
+
+        .comparison-title p {
+            font-size: 12px;
+            color: var(--color-gray-500);
+        }
+
+        .peer-badge {
+            background: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--color-gray-500);
+        }
+
+        .comparison-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .metric-item {
+            background: white;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            border: none;
+        }
+
+        .metric-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-gray-800);
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: var(--color-gray-500);
+            margin-top: 4px;
+        }
+
+        .metric-comparison {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+
+        .metric-comparison.positive {
+            color: var(--color-success);
+        }
+
+        .metric-comparison.neutral {
+            color: var(--text-light);
+        }
+
+        /*
+        ============================================================================
+        SOCIAL PROOF ELEMENT: Success Story Carousel
+        CIALDINI p.118: "The most effective scenes depicted a variety of children
+        interacting with their dogs; the single-model version was less effective."
+        Multiple success stories from similar hosts reduce anxiety and demonstrate
+        achievable outcomes - Bandura's modeling research.
+        ============================================================================
+        */
+        /* Cards: shadow-based elevation, no borders, 8px radius */
+        .success-stories {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            border: none;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* Typography: H2 = 24px, weight 600, color #1F2937 */
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+        }
+
+        .see-all-link {
+            color: var(--color-primary);
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        /* Cards: shadow-based elevation, no borders, 8px radius */
+        .story-card {
+            background: var(--color-gray-50);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            box-shadow: var(--shadow-sm);
+            border: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .story-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .story-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .story-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .story-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+        }
+
+        .story-info p {
+            font-size: 12px;
+            color: var(--color-gray-500);
+        }
+
+        .story-badge {
+            background: var(--color-success);
+            color: white;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .story-quote {
+            font-size: 13px;
+            color: var(--color-gray-500);
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .story-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-success);
+        }
+
+        /*
+        ============================================================================
+        SOCIAL PROOF ELEMENT: Real-Time Activity Feed
+        CIALDINI p.117: "The need to conform is exploited by bartenders who
+        'salt' their tip jars."
+        Showing real-time platform activity creates momentum and normalizes
+        active participation on the platform.
+        ============================================================================
+        */
+        /* Cards: shadow-based elevation, no borders, 8px radius */
+        .activity-feed {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            border: none;
+        }
+
+        .activity-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .activity-header h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-gray-500);
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: var(--color-gray-50);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+        }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .activity-icon.proposal {
+            background: #E8F4FD;
+            color: var(--accent-blue);
+        }
+
+        .activity-icon.lease {
+            background: #E8F5E9;
+            color: var(--color-success);
+        }
+
+        .activity-icon.listing {
+            background: #FFF3E0;
+            color: var(--color-warning);
+        }
+
+        .activity-text {
+            flex: 1;
+            color: var(--color-gray-500);
+        }
+
+        .activity-text strong {
+            color: var(--color-gray-800);
+        }
+
+        .activity-time {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        /*
+        ============================================================================
+        SOCIAL PROOF ELEMENT: Listings with Contextual Benchmarks
+        CIALDINI Hotel Towel Study (JCR p.472-482): "Normative appeals were most
+        effective when describing group behavior that occurred in the setting that
+        most closely matched individuals' immediate situational circumstances."
+        Provincial norms (this room > this hotel > all hotels) increase relevance.
+        ============================================================================
+        */
+        /* Cards: shadow-based elevation, no borders, 8px radius */
+        .listings-section {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            border: none;
+        }
+
+        /* Listing cards: shadow-based elevation, no borders, 8px radius */
+        .listing-card {
+            box-shadow: var(--shadow-sm);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: box-shadow 0.2s;
+        }
+
+        .listing-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .listing-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .listing-header {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .listing-image {
+            width: 120px;
+            height: 90px;
+            background: linear-gradient(135deg, var(--color-gray-100) 0%, var(--color-gray-200) 100%);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 24px;
+        }
+
+        .listing-info {
+            flex: 1;
+        }
+
+        /* Typography: H3 = 18px, weight 600, color #1F2937 */
+        .listing-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: 4px;
+        }
+
+        .listing-location {
+            font-size: 13px;
+            color: var(--color-gray-500);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        /*
+        ============================================================================
+        SOCIAL PROOF ELEMENT: View Count with Peer Context
+        CIALDINI p.116: "We view a behavior as more correct in a given situation
+        to the degree that we see others performing it."
+        View counts show interest level and create urgency through demonstrated demand.
+        ============================================================================
+        */
+        .listing-stats {
+            display: flex;
+            gap: 16px;
+        }
+
+        .listing-stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--color-gray-500);
+        }
+
+        .listing-stat-icon {
+            font-size: 14px;
+        }
+
+        .listing-stat-value {
+            font-weight: 600;
+            color: var(--color-gray-800);
+        }
+
+        .listing-stat-comparison {
+            color: var(--color-success);
+            font-size: 11px;
+        }
+
+        /*
+        ============================================================================
+        SOCIAL PROOF ELEMENT: Proposal Cards with Urgency Timer
+        CIALDINI p.123: "No one had helped precisely because there were so many
+        observers." (Bystander Effect)
+        Urgency timers create individual responsibility and prevent diffusion of
+        action. Shows elapsed time and conversion statistics.
+        ============================================================================
+        */
+        .proposals-section {
+            background: var(--color-gray-50);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .proposals-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .proposals-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .proposals-count {
+            background: var(--color-primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .proposals-benchmark {
+            font-size: 12px;
+            color: var(--color-success);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .proposal-item {
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 3px solid transparent;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .proposal-item.urgent {
+            border-left-color: var(--color-danger);
+            background: #FFF5F5;
+        }
+
+        .proposal-item.new {
+            border-left-color: var(--color-success);
+        }
+
+        .proposal-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--accent-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .proposal-details {
+            flex: 1;
+        }
+
+        .proposal-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: 2px;
+        }
+
+        .proposal-dates {
+            font-size: 12px;
+            color: var(--color-gray-500);
+        }
+
+        .proposal-urgency {
+            text-align: right;
+        }
+
+        .urgency-timer {
+            font-size: 12px;
+            color: var(--color-danger);
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .urgency-hint {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .proposal-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        /* Success/confirm button: Indigo #5B5FCF */
+        .btn-accept {
+            background: var(--color-success);
+            color: white;
+            border: none;
+        }
+
+        .btn-accept:hover {
+            background: #4A4AB8;
+        }
+
+        /* Secondary button: White bg + Purple border */
+        .btn-view {
+            background: white;
+            color: var(--color-primary);
+            border: 1px solid var(--color-gray-300);
+        }
+
+        .btn-view:hover {
+            border-color: var(--color-primary);
+        }
+
+        /*
+        ============================================================================
+        SOCIAL PROOF ELEMENT: Response Time Benchmark
+        CIALDINI p.118-119: "This twenty-three minute movie, viewed just once,
+        was enough to reverse a potential pattern of lifelong maladaptive behavior."
+        (O'Connor Study)
+        Showing what successful peers do creates a behavioral model to follow.
+        ============================================================================
+        */
+        .response-benchmark {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #F0F4FF;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            color: var(--color-gray-500);
+        }
+
+        .response-benchmark strong {
+            color: var(--color-primary);
+        }
+
+        .listing-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--color-gray-200);
+        }
+
+        /*
+        ============================================================================
+        SOCIAL PROOF ELEMENT: New Host Cohort Badge
+        CIALDINI p.145-146 (Jonestown Analysis): Isolation increases vulnerability.
+        Creating belonging through cohort identification prevents isolation.
+        ============================================================================
+        */
+        /* Cards: shadow-based elevation, no borders, 8px radius */
+        .cohort-badge {
+            background: linear-gradient(135deg, #E8F5E9 0%, #E3F2FD 100%);
+            box-shadow: var(--shadow-sm);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .cohort-icon {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .cohort-info h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: 4px;
+        }
+
+        .cohort-info p {
+            font-size: 12px;
+            color: var(--color-gray-500);
+        }
+
+        .cohort-progress {
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .cohort-progress-label {
+            font-size: 11px;
+            color: var(--color-gray-500);
+            margin-bottom: 4px;
+        }
+
+        .progress-bar {
+            width: 120px;
+            height: 6px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-success);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        /*
+        ============================================================================
+        SOCIAL PROOF ELEMENT: Pricing Context Indicator
+        CIALDINI p.143 (Columbia Wallet Study): Similarity increases helping/trust.
+        Showing pricing context from similar listings reduces uncertainty.
+        ============================================================================
+        */
+        .pricing-context {
+            background: var(--color-gray-50);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .pricing-header {
+            font-size: 12px;
+            color: var(--color-gray-500);
+            margin-bottom: 8px;
+        }
+
+        .pricing-range {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pricing-bar {
+            flex: 1;
+            height: 8px;
+            background: linear-gradient(to right, #E8F5E9, #FFF9C4, #FFECB3);
+            border-radius: var(--radius-sm);
+            position: relative;
+        }
+
+        .pricing-marker {
+            position: absolute;
+            top: -4px;
+            width: 16px;
+            height: 16px;
+            background: var(--color-primary);
+            border: 2px solid white;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .pricing-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* Footer */
+        .footer {
+            background: white;
+            border-top: 1px solid var(--color-gray-200);
+            padding: 40px 24px;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+        }
+
+        /* Typography: H4 = 16px, weight 600, color #374151 */
+        .footer-column h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--color-gray-700);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 8px;
+        }
+
+        .footer-column a {
+            color: var(--color-gray-500);
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .footer-column a:hover {
+            color: var(--color-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .platform-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .comparison-metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .stories-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .listing-header {
+                flex-direction: column;
+            }
+
+            .listing-image {
+                width: 100%;
+                height: 150px;
+            }
+
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">SL</div>
+            Split Lease
+        </div>
+        <nav class="nav-links">
+            <a href="#" class="nav-link">Host with Us</a>
+            <a href="#" class="nav-link active">Host Overview</a>
+        </nav>
+        <div class="user-section">
+            <div class="notification-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <span class="notification-badge">3</span>
+            </div>
+            <div class="user-avatar">R</div>
+        </div>
+    </header>
+
+    <main class="main-container">
+
+        <!--
+        ============================================================================
+        CIALDINI p.145-146: Preventing isolation through cohort identification.
+        "This wouldn't have happened in California. But they lived in total
+        alienation from the rest of the world."
+        This badge creates belonging and peer group connection.
+        ============================================================================
+        -->
+        <div class="cohort-badge">
+            <div class="cohort-icon">🎉</div>
+            <div class="cohort-info">
+                <h3>You joined with 234 new hosts in February!</h3>
+                <p>Complete your setup to join our "Class of Feb 2026" community group</p>
+            </div>
+            <div class="cohort-progress">
+                <div class="cohort-progress-label">Profile completion</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 75%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <div class="welcome-header">
+                <div class="welcome-text">
+                    <h1>Welcome back, Rod</h1>
+                    <p>You have 5 proposals waiting for your review</p>
+                </div>
+                <div class="action-buttons">
+                    <a href="#" class="btn btn-primary">+ Create New Listing</a>
+                    <a href="#" class="btn btn-secondary">Import Listing</a>
+                </div>
+            </div>
+
+            <!--
+            ============================================================================
+            CIALDINI p.115-116: Platform activity statistics as social proof.
+            "Canned laughter causes an audience to laugh longer and more often."
+            These metrics demonstrate platform legitimacy and activity.
+            ============================================================================
+            -->
+            <div class="platform-stats">
+                <div class="stat-item">
+                    <div class="stat-number">
+                        <span class="live-indicator"></span>
+                        12,847
+                    </div>
+                    <div class="stat-label">Active Hosts</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">23,456</div>
+                    <div class="stat-label">Successful Leases</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">$4.2M</div>
+                    <div class="stat-label">Earned by Hosts (Feb)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">94%</div>
+                    <div class="stat-label">Host Satisfaction</div>
+                </div>
+            </div>
+        </section>
+
+        <!--
+        ============================================================================
+        CIALDINI p.142: "We are more inclined to follow the lead of a similar
+        other than a dissimilar one."
+        This comparison card segments social proof by location, property type,
+        and experience level to maximize relevance per the SIMILARITY principle.
+        ============================================================================
+        -->
+        <section class="comparison-card">
+            <div class="comparison-header">
+                <div class="comparison-icon">📊</div>
+                <div class="comparison-title">
+                    <h3>How You Compare to Hosts Like You</h3>
+                    <p>Based on 234 hosts with similar listings in Manhattan</p>
+                </div>
+                <span class="peer-badge">Private rooms | Manhattan | New hosts</span>
+            </div>
+            <div class="comparison-metrics">
+                <div class="metric-item">
+                    <div class="metric-value">5</div>
+                    <div class="metric-label">Your Proposals</div>
+                    <div class="metric-comparison positive">
+                        ↑ Above average (avg: 3.2)
+                    </div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-value">6h</div>
+                    <div class="metric-label">Your Avg Response</div>
+                    <div class="metric-comparison positive">
+                        ✓ Faster than 78% of peers
+                    </div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-value">Top 30%</div>
+                    <div class="metric-label">Your Ranking</div>
+                    <div class="metric-comparison neutral">
+                        Among similar hosts
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--
+        ============================================================================
+        CIALDINI p.117: "The need to conform is exploited by bartenders who
+        'salt' their tip jars."
+        Real-time activity feed creates platform momentum and normalizes
+        active participation. Shows what others are doing RIGHT NOW.
+        ============================================================================
+        -->
+        <section class="activity-feed">
+            <div class="activity-header">
+                <span class="live-indicator"></span>
+                <h3>Happening Now on Split Lease</h3>
+            </div>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon lease">✓</div>
+                    <div class="activity-text"><strong>Sarah M.</strong> in Brooklyn just signed a 6-month lease</div>
+                    <div class="activity-time">Just now</div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon proposal">→</div>
+                    <div class="activity-text"><strong>3 new proposals</strong> sent to Manhattan listings</div>
+                    <div class="activity-time">2 min ago</div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon listing">+</div>
+                    <div class="activity-text"><strong>New listing</strong> published in your neighborhood</div>
+                    <div class="activity-time">5 min ago</div>
+                </div>
+            </div>
+        </section>
+
+        <!--
+        ============================================================================
+        CIALDINI p.118: "The most effective scenes depicted a variety of children
+        interacting with their dogs; the single-model version was less effective."
+        Multiple success stories from SIMILAR hosts (same area, property type)
+        reduce anxiety and demonstrate achievable outcomes.
+        ============================================================================
+        -->
+        <section class="success-stories">
+            <div class="section-header">
+                <h2 class="section-title">Success Stories from Hosts Like You</h2>
+                <a href="#" class="see-all-link">See all stories →</a>
+            </div>
+            <div class="stories-grid">
+                <div class="story-card">
+                    <div class="story-header">
+                        <div class="story-avatar">M</div>
+                        <div class="story-info">
+                            <h4>Maria K.</h4>
+                            <p>Private Room · Manhattan</p>
+                        </div>
+                        <span class="story-badge">Top Host</span>
+                    </div>
+                    <p class="story-quote">"I was nervous about my first listing, but within a week I had 3 solid proposals. The key was responding quickly!"</p>
+                    <div class="story-stat">
+                        💰 $2,400 earned in first month
+                    </div>
+                </div>
+                <div class="story-card">
+                    <div class="story-header">
+                        <div class="story-avatar">J</div>
+                        <div class="story-info">
+                            <h4>James T.</h4>
+                            <p>Private Room · Upper East Side</p>
+                        </div>
+                    </div>
+                    <p class="story-quote">"Started with one room, now I manage 3 listings. Split Lease made it easy to scale."</p>
+                    <div class="story-stat">
+                        📈 3x growth in 6 months
+                    </div>
+                </div>
+                <div class="story-card">
+                    <div class="story-header">
+                        <div class="story-avatar">L</div>
+                        <div class="story-info">
+                            <h4>Lisa R.</h4>
+                            <p>Entire Apt · Chelsea</p>
+                        </div>
+                        <span class="story-badge">New Host</span>
+                    </div>
+                    <p class="story-quote">"Joined last month and already have a tenant lined up. The comparison tools helped me price competitively."</p>
+                    <div class="story-stat">
+                        ⚡ First lease in 2 weeks
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Listings Section -->
+        <section class="listings-section">
+            <div class="section-header">
+                <h2 class="section-title">Your Listings</h2>
+            </div>
+
+            <!-- Listing Card 1 -->
+            <div class="listing-card">
+                <div class="listing-header">
+                    <div class="listing-image">🏠</div>
+                    <div class="listing-info">
+                        <h3 class="listing-title">Stylish Private Room in Vibrant Neighborhood</h3>
+                        <div class="listing-location">
+                            📍 Manhattan, NY
+                        </div>
+
+                        <!--
+                        ============================================================================
+                        CIALDINI p.116: View counts demonstrate interest through social proof.
+                        "We view a behavior as more correct in a given situation to the degree
+                        that we see others performing it."
+                        ============================================================================
+                        -->
+                        <div class="listing-stats">
+                            <div class="listing-stat">
+                                <span class="listing-stat-icon">👁️</span>
+                                <span class="listing-stat-value">156</span> views this week
+                                <span class="listing-stat-comparison">+32% vs similar</span>
+                            </div>
+                            <div class="listing-stat">
+                                <span class="listing-stat-icon">❤️</span>
+                                <span class="listing-stat-value">12</span> saves
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--
+                ============================================================================
+                CIALDINI Hotel Towel Study: Provincial norms beat global norms.
+                "2 proposals (Above average)" is more compelling than just "2 proposals"
+                because it provides context within the relevant comparison group.
+                ============================================================================
+                -->
+                <div class="proposals-section">
+                    <div class="proposals-header">
+                        <div class="proposals-title">
+                            Active Proposals
+                            <span class="proposals-count">2</span>
+                        </div>
+                        <div class="proposals-benchmark">
+                            ↑ Above average for private rooms in your area
+                        </div>
+                    </div>
+
+                    <!--
+                    ============================================================================
+                    CIALDINI p.123: Anti-Bystander Effect Design
+                    "No one had helped precisely because there were so many observers."
+                    Urgency timers create INDIVIDUAL responsibility, preventing diffusion
+                    of action. The host cannot assume "it can wait."
+                    ============================================================================
+                    -->
+                    <div class="proposal-item urgent">
+                        <div class="proposal-avatar">A</div>
+                        <div class="proposal-details">
+                            <div class="proposal-name">Alex Chen</div>
+                            <div class="proposal-dates">Mar 1 - Aug 31, 2026 · $1,800/mo</div>
+                        </div>
+                        <div class="proposal-urgency">
+                            <div class="urgency-timer">⏰ Waiting 2 days</div>
+                            <div class="urgency-hint">Respond soon for best results</div>
+                        </div>
+                        <div class="proposal-actions">
+                            <button class="btn-small btn-view">View</button>
+                            <button class="btn-small btn-accept">Accept</button>
+                        </div>
+                    </div>
+
+                    <div class="proposal-item new">
+                        <div class="proposal-avatar">S</div>
+                        <div class="proposal-details">
+                            <div class="proposal-name">Sophie Williams</div>
+                            <div class="proposal-dates">Apr 15 - Oct 15, 2026 · $1,750/mo</div>
+                        </div>
+                        <div class="proposal-urgency">
+                            <div class="urgency-timer" style="color: var(--accent-indigo);">New today</div>
+                        </div>
+                        <div class="proposal-actions">
+                            <button class="btn-small btn-view">View</button>
+                            <button class="btn-small btn-accept">Accept</button>
+                        </div>
+                    </div>
+
+                    <!--
+                    ============================================================================
+                    CIALDINI p.118-119 (O'Connor Study): Behavioral modeling
+                    Showing what successful peers do creates a model to follow.
+                    ============================================================================
+                    -->
+                    <div class="response-benchmark">
+                        💡 <strong>Top hosts in Manhattan</strong> respond within 4 hours and see 3x higher conversion
+                    </div>
+                </div>
+
+                <!--
+                ============================================================================
+                CIALDINI p.143 (Columbia Wallet Study): Similarity increases trust.
+                Pricing context from SIMILAR listings reduces uncertainty.
+                ============================================================================
+                -->
+                <div class="pricing-context">
+                    <div class="pricing-header">Your pricing compared to similar private rooms in Manhattan</div>
+                    <div class="pricing-range">
+                        <span>$1,400</span>
+                        <div class="pricing-bar">
+                            <div class="pricing-marker" style="left: 55%;" title="Your price: $1,800"></div>
+                        </div>
+                        <span>$2,200</span>
+                    </div>
+                    <div class="pricing-labels">
+                        <span>Budget</span>
+                        <span>Your price: $1,800 (Mid-range)</span>
+                        <span>Premium</span>
+                    </div>
+                </div>
+
+                <div class="listing-actions">
+                    <a href="#" class="btn btn-primary">Manage Listing</a>
+                    <a href="#" class="btn btn-secondary">Preview</a>
+                    <a href="#" class="btn btn-secondary">Leases</a>
+                    <a href="#" class="btn btn-secondary">Create House Manual</a>
+                </div>
+            </div>
+
+            <!-- Listing Card 2 -->
+            <div class="listing-card">
+                <div class="listing-header">
+                    <div class="listing-image">🏢</div>
+                    <div class="listing-info">
+                        <h3 class="listing-title">1 Bedroom Entire Place in Manhattan</h3>
+                        <div class="listing-location">
+                            📍 Manhattan, NY
+                        </div>
+                        <div class="listing-stats">
+                            <div class="listing-stat">
+                                <span class="listing-stat-icon">👁️</span>
+                                <span class="listing-stat-value">89</span> views this week
+                            </div>
+                            <div class="listing-stat">
+                                <span class="listing-stat-icon">❤️</span>
+                                <span class="listing-stat-value">7</span> saves
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="proposals-section">
+                    <div class="proposals-header">
+                        <div class="proposals-title">
+                            Active Proposals
+                            <span class="proposals-count">1</span>
+                        </div>
+                        <div class="proposals-benchmark" style="color: var(--text-medium);">
+                            On par with similar entire places
+                        </div>
+                    </div>
+
+                    <div class="proposal-item new">
+                        <div class="proposal-avatar">M</div>
+                        <div class="proposal-details">
+                            <div class="proposal-name">Michael Brown</div>
+                            <div class="proposal-dates">May 1 - Nov 1, 2026 · $3,200/mo</div>
+                        </div>
+                        <div class="proposal-urgency">
+                            <div class="urgency-timer" style="color: var(--accent-blue);">4 hours ago</div>
+                        </div>
+                        <div class="proposal-actions">
+                            <button class="btn-small btn-view">View</button>
+                            <button class="btn-small btn-accept">Accept</button>
+                        </div>
+                    </div>
+
+                    <div class="response-benchmark">
+                        💡 <strong>82% of hosts</strong> accept offers at this price point for entire places
+                    </div>
+                </div>
+
+                <div class="listing-actions">
+                    <a href="#" class="btn btn-primary">Manage Listing</a>
+                    <a href="#" class="btn btn-secondary">Preview</a>
+                    <a href="#" class="btn btn-secondary">Leases</a>
+                    <a href="#" class="btn btn-secondary">Create House Manual</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About Periodic Tenancy</a></li>
+                    <li><a href="#">About the Team</a></li>
+                    <li><a href="#">Careers at Split Lease</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>For Hosts</h4>
+                <ul>
+                    <li><a href="#">List Property Now</a></li>
+                    <li><a href="#">How to List</a></li>
+                    <li><a href="#">Success Stories</a></li>
+                    <li><a href="#">Legal Section</a></li>
+                    <li><a href="#">Guarantees</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Refer a Friend</h4>
+                <p style="font-size: 13px; color: var(--text-medium); margin-bottom: 12px;">
+                    Give $50, Get $50<br>
+                    Share via WhatsApp, Email, SMS
+                </p>
+                <a href="#" class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">Invite Friends</a>
+            </div>
+            <div class="footer-column">
+                <h4>Import Your Listing</h4>
+                <p style="font-size: 13px; color: var(--text-medium); margin-bottom: 12px;">
+                    Already listed elsewhere?<br>
+                    We'll copy everything over in minutes.
+                </p>
+                <a href="#" class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">Import Now</a>
+            </div>
+        </div>
+    </footer>
+
+    <!--
+    ============================================================================
+    IMPLEMENTATION NOTES FOR DEVELOPERS
+    ============================================================================
+
+    DATA REQUIREMENTS:
+
+    1. Peer Comparison Data (Updated Weekly)
+       - Average proposals by listing type + location
+       - Average response time by segment
+       - Performance percentiles
+
+    2. Real-Time Activity Feed
+       - Event stream of lease signings, proposals, new listings
+       - Threshold: Only show if >5 events/hour, otherwise show "Recent wins"
+
+    3. Success Stories
+       - Curated testimonials from hosts matching viewer's profile
+       - Refresh monthly with new stories
+
+    4. Cohort Data
+       - Registration timestamp for cohort grouping
+       - Progress tracking for profile completion
+
+    SAFEGUARDS (Per Cialdini's Warnings):
+
+    1. NEVER show negative social proof
+       - Don't show "X% of proposals go unanswered"
+       - Don't show "You're below average" without actionable guidance
+
+    2. Minimum sample size: 20 peers
+       - If fewer, fall back to broader segment
+       - Always show sample size for transparency
+
+    3. Graceful degradation
+       - If personalization unavailable, show platform-wide positive stats
+       - Never show empty states without context
+
+    4. Authenticity
+       - All numbers must be real and verifiable
+       - No inflating, rounding up, or fake testimonials
+
+    ============================================================================
+    -->
+
+</body>
+</html>

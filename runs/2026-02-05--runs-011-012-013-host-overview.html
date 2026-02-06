@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Runs 011-013: Host Overview Redesigns | AI Design Team</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #31135D;
+            --primary-light: #7B4FB5;
+            --primary-bg: #F7F2FA;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --green-50: #ECFDF5;
+            --green-600: #059669;
+            --amber-50: #FFFBEB;
+            --amber-600: #D97706;
+            --red-50: #FEF2F2;
+            --red-600: #DC2626;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: white;
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 13px;
+        }
+
+        .top-nav a {
+            color: var(--gray-600);
+            text-decoration: none;
+        }
+
+        .top-nav a:hover {
+            color: var(--primary);
+        }
+
+        .top-nav .separator {
+            color: var(--gray-300);
+        }
+
+        .top-nav .current {
+            color: var(--gray-900);
+            font-weight: 500;
+        }
+
+        /* Header */
+        .header {
+            border-bottom: 1px solid var(--gray-200);
+            padding: 40px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--gray-900);
+        }
+
+        .header .meta {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .header .summary {
+            margin-top: 24px;
+            padding: 20px;
+            background: var(--gray-50);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--gray-700);
+        }
+
+        .header .summary strong {
+            color: var(--gray-900);
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 32px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+
+        .stat strong {
+            font-size: 20px;
+            color: var(--primary);
+            display: block;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Run Section */
+        .run-section {
+            margin-bottom: 60px;
+        }
+
+        .run-header {
+            background: var(--primary-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .run-header h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .run-header p {
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+
+        /* Agent Section */
+        .agent-section {
+            margin-bottom: 48px;
+            padding-bottom: 48px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .agent-section:last-child {
+            border-bottom: none;
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .agent-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .agent-info h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .agent-info .domain {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .agent-info .book {
+            font-size: 13px;
+            color: var(--primary);
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        /* Feedback Card */
+        .feedback-card {
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .feedback-card.highlight {
+            background: var(--green-50);
+            border-left-color: var(--green-600);
+        }
+
+        .feedback-card.neutral {
+            background: var(--amber-50);
+            border-left-color: var(--amber-600);
+        }
+
+        .feedback-card.needs-work {
+            background: var(--red-50);
+            border-left-color: var(--red-600);
+        }
+
+        .feedback-card h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feedback-card p {
+            font-size: 14px;
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+
+        .feedback-card .tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            background: white;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .feedback-card.highlight .tag {
+            color: var(--green-600);
+        }
+
+        .feedback-card.neutral .tag {
+            color: var(--amber-600);
+        }
+
+        .feedback-card.needs-work .tag {
+            color: var(--red-600);
+        }
+
+        /* Mockup Card */
+        .mockup-card {
+            margin-bottom: 32px;
+        }
+
+        .mockup-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mockup-label .tag {
+            font-size: 11px;
+            padding: 3px 8px;
+            background: var(--gray-100);
+            color: var(--gray-600);
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .mockup-label .tag.best {
+            background: var(--green-50);
+            color: var(--green-600);
+        }
+
+        .mockup-preview {
+            width: 100%;
+            height: 550px;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            background: var(--gray-50);
+            display: block;
+        }
+
+        .mockup-link {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .mockup-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Key Takeaways */
+        .takeaways {
+            background: var(--primary-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 40px 0;
+        }
+
+        .takeaways h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .takeaways ul {
+            list-style: none;
+        }
+
+        .takeaways li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+            font-size: 14px;
+            color: var(--gray-700);
+        }
+
+        .takeaways li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--green-600);
+            font-weight: bold;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid var(--gray-200);
+            color: var(--gray-500);
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mockup-preview {
+                height: 400px;
+            }
+
+            .stats-row {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <a href="../index.html">AI Design Team</a>
+        <span class="separator">/</span>
+        <span class="current">Runs 011-013: Host Overview</span>
+    </nav>
+
+    <!-- Header -->
+    <header class="header">
+        <h1>Host Overview Page Redesigns</h1>
+        <p class="meta">February 5, 2026 | Runs 011, 012, 013</p>
+
+        <div class="summary">
+            <strong>Overview:</strong> Three consecutive runs exploring Host Overview page improvements. Run 011 assigned each agent a different UX/psychology book chapter. Run 012 focused on microinteractions from Dan Saffer's book. Run 013 explored divergent/unconventional thinking approaches.
+        </div>
+
+        <div class="stats-row">
+            <div class="stat">
+                <strong>18</strong>
+                HTML mockups
+            </div>
+            <div class="stat">
+                <strong>10</strong>
+                Agents participated
+            </div>
+            <div class="stat">
+                <strong>3</strong>
+                Runs completed
+            </div>
+            <div class="stat">
+                <strong>12</strong>
+                Books referenced
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- Key Takeaways -->
+        <div class="takeaways">
+            <h3>Key Patterns That Emerged</h3>
+            <ul>
+                <li><strong>"Needs Your Attention" / Priority Actions Section</strong> — Repeated across Paula Scher, Josef M-B, Milton Glaser, and Luke Wroblewski. This pattern clearly resonates.</li>
+                <li><strong>Social Proof Elements</strong> — Dieter Rams' approach (Cialdini) was the standout. "Happening Right Now" and "Success Stories from Hosts Like You" are strong additions for new hosts.</li>
+                <li><strong>Profile Completion Progress</strong> — Don Norman's step-by-step banner is valuable but needs to be less intrusive.</li>
+                <li><strong>Microinteraction Highlights</strong> — Slide-down notification banners, loading button indicators, and expiring timers add polish.</li>
+                <li><strong>Divergent Ideas Worth Exploring</strong> — Press-and-hold for delete, immersive purple transitions, inactive state floating banners.</li>
+            </ul>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- RUN 011: BOOK-BASED REDESIGNS -->
+        <!-- ============================================================== -->
+        <section class="run-section">
+            <div class="run-header">
+                <h2>Run 011: Book-Based Redesigns</h2>
+                <p>Each agent was assigned a different UX/psychology book chapter and tasked with applying its principles to redesign the Host Overview page.</p>
+            </div>
+
+            <!-- DIETER RAMS - BEST -->
+            <article class="agent-section">
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: #059669;">DR</div>
+                    <div class="agent-info">
+                        <h3>Dieter Rams</h3>
+                        <div class="domain">Trust & Honest Design</div>
+                        <div class="book">Influence (Cialdini) — Ch.4: Social Proof</div>
+                    </div>
+                </div>
+
+                <div class="feedback-card highlight">
+                    <h4>Rod's Review <span class="tag">Best Discovery</span></h4>
+                    <p>This was the best discovery of the run. While other mockups were either too simple or too cluttered and focused on user guidance, this one focuses on social proof through comparison. The guest pictures on cards are implemented in a smart way. <strong>"Happening Right Now"</strong> and <strong>"Success Stories from Hosts Like You"</strong> are excellent additions, especially for new hosts.</p>
+                </div>
+
+                <div class="mockup-card">
+                    <div class="mockup-label">
+                        Host Overview with Social Proof
+                        <span class="tag best">Top Pick</span>
+                    </div>
+                    <iframe class="mockup-preview" src="2026-02-05-mockups/run-011/dieter-rams.html"></iframe>
+                    <a href="2026-02-05-mockups/run-011/dieter-rams.html" target="_blank" class="mockup-link">Open in new tab →</a>
+                </div>
+            </article>
+
+            <!-- PAULA SCHER -->
+            <article class="agent-section">
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: #EC4899;">PS</div>
+                    <div class="agent-info">
+                        <h3>Paula Scher</h3>
+                        <div class="domain">Host Acquisition & Marketing</div>
+                        <div class="book">Don't Make Me Think — Ch.3: Billboard Design 101</div>
+                    </div>
+                </div>
+
+                <div class="feedback-card highlight">
+                    <h4>Rod's Review <span class="tag">Strong Pattern</span></h4>
+                    <p>The <strong>"Needs Your Attention"</strong> section is excellent — it helps hosts immediately see the most important items, functioning like a notification system. This approach simplifies listing cards by removing excess buttons and turning them into clean, scannable cards. Requires further analysis, testing, and documentation for implementation.</p>
+                </div>
+
+                <div class="mockup-card">
+                    <div class="mockup-label">
+                        Host Overview with Priority Actions
+                    </div>
+                    <iframe class="mockup-preview" src="2026-02-05-mockups/run-011/paula-scher.html"></iframe>
+                    <a href="2026-02-05-mockups/run-011/paula-scher.html" target="_blank" class="mockup-link">Open in new tab →</a>
+                </div>
+            </article>
+
+            <!-- DON NORMAN -->
+            <article class="agent-section">
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: #31135D;">DN</div>
+                    <div class="agent-info">
+                        <h3>Don Norman</h3>
+                        <div class="domain">Psychology of Design</div>
+                        <div class="book">Design of Everyday Things — Ch.1: Psychopathology</div>
+                    </div>
+                </div>
+
+                <div class="feedback-card neutral">
+                    <h4>Rod's Review <span class="tag">Different Approach</span></h4>
+                    <p>Takes the opposite approach from Paula Scher. Cards are more complex with all four action buttons, progress indicators, state badges, and expiring-soon indicators. The bottom section adds even more information like last activity and new proposals. The <strong>complete host profile step-by-step banner</strong> is a good idea but could be simplified to be less intrusive — currently it's too massive.</p>
+                </div>
+
+                <div class="mockup-card">
+                    <div class="mockup-label">
+                        Host Overview with Progress Tracking
+                    </div>
+                    <iframe class="mockup-preview" src="2026-02-05-mockups/run-011/don-norman.html"></iframe>
+                    <a href="2026-02-05-mockups/run-011/don-norman.html" target="_blank" class="mockup-link">Open in new tab →</a>
+                </div>
+            </article>
+
+            <!-- MASSIMO VIGNELLI -->
+            <article class="agent-section">
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: #8B5CF6;">MV</div>
+                    <div class="agent-info">
+                        <h3>Massimo Vignelli</h3>
+                        <div class="domain">Visual Hierarchy</div>
+                        <div class="book">100 Things About People — How People See (#1-9)</div>
+                    </div>
+                </div>
+
+                <div class="feedback-card neutral">
+                    <h4>Rod's Review <span class="tag">Context-Dependent</span></h4>
+                    <p>Very similar to the current version, with the addition of a fixed subheader showing proposals that need response, active leases, and active listings. This approach may not be ideal for the host overview page specifically, but <strong>could work well for the leases page</strong>.</p>
+                </div>
+
+                <div class="mockup-card">
+                    <div class="mockup-label">
+                        Host Overview with Fixed Subheader
+                    </div>
+                    <iframe class="mockup-preview" src="2026-02-05-mockups/run-011/massimo-vignelli.html"></iframe>
+                    <a href="2026-02-05-mockups/run-011/massimo-vignelli.html" target="_blank" class="mockup-link">Open in new tab →</a>
+                </div>
+            </article>
+
+            <!-- SAUL BASS -->
+            <article class="agent-section">
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: #DC2626;">SB</div>
+                    <div class="agent-info">
+                        <h3>Saul Bass</h3>
+                        <div class="domain">First Impressions</div>
+                        <div class="book">Refactoring UI — Ch.1: Starting from Scratch</div>
+                    </div>
+                </div>
+
+                <div class="feedback-card needs-work">
+                    <h4>Rod's Review <span class="tag">Needs Development</span></h4>
+                    <p>This version is very simple — perhaps too simple. It appears to be a first attempt without much depth of thought applied to the problem.</p>
+                </div>
+
+                <div class="mockup-card">
+                    <div class="mockup-label">
+                        Minimal Host Overview
+                    </div>
+                    <iframe class="mockup-preview" src="2026-02-05-mockups/run-011/saul-bass.html"></iframe>
+                    <a href="2026-02-05-mockups/run-011/saul-bass.html" target="_blank" class="mockup-link">Open in new tab →</a>
+                </div>
+            </article>
+
+            <!-- JONY IVE -->
+            <article class="agent-section">
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: #6366F1;">JI</div>
+                    <div class="agent-info">
+                        <h3>Jony Ive</h3>
+                        <div class="domain">Mobile Experience</div>
+                        <div class="book">Hooked (Eyal) — Ch.2: Trigger</div>
+                    </div>
+                </div>
+
+                <div class="feedback-card needs-work">
+                    <h4>Rod's Review <span class="tag">Book Mismatch</span></h4>
+                    <p>This book may not be ideal for this type of page. The only potentially useful element is the <strong>recent activity</strong> feature, but we shouldn't design to hook users into constantly refreshing the page.</p>
+                </div>
+
+                <div class="mockup-card">
+                    <div class="mockup-label">
+                        Host Overview with Hooks
+                    </div>
+                    <iframe class="mockup-preview" src="2026-02-05-mockups/run-011/jony-ive.html"></iframe>
+                    <a href="2026-02-05-mockups/run-011/jony-ive.html" target="_blank" class="mockup-link">Open in new tab →</a>
+                </div>
+            </article>
+
+            <!-- JOSEF MULLER-BROCKMANN -->
+            <article class="agent-section">
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: #0891B2;">JM</div>
+                    <div class="agent-info">
+                        <h3>Josef Muller-Brockmann</h3>
+                        <div class="domain">Design Consistency</div>
+                        <div class="book">Lean UX — Part 1: Foundations</div>
+                    </div>
+                </div>
+
+                <div class="feedback-card">
+                    <h4>Rod's Review <span class="tag">Solid Foundation</span></h4>
+                    <p>This version is functional but doesn't introduce new concepts. The notable element that repeats from Paula Scher is the <strong>Priority Actions being shown first</strong> — this pattern clearly has merit.</p>
+                </div>
+
+                <div class="mockup-card">
+                    <div class="mockup-label">
+                        Host Overview with Lean UX Principles
+                    </div>
+                    <iframe class="mockup-preview" src="2026-02-05-mockups/run-011/josef-muller-brockmann.html"></iframe>
+                    <a href="2026-02-05-mockups/run-011/josef-muller-brockmann.html" target="_blank" class="mockup-link">Open in new tab →</a>
+                </div>
+            </article>
+
+            <!-- CHARLES EAMES -->
+            <article class="agent-section">
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: #F97316;">CE</div>
+                    <div class="agent-info">
+                        <h3>Charles Eames</h3>
+                        <div class="domain">Design Systems</div>
+                        <div class="book">Thinking, Fast and Slow — Part 1: Two Systems</div>
+                    </div>
+                </div>
+
+                <div class="feedback-card">
+                    <h4>Rod's Review <span class="tag">Similar Patterns</span></h4>
+                    <p>Nothing significantly different from what has been seen in other mockups. Follows similar patterns without notable new contributions.</p>
+                </div>
+
+                <div class="mockup-card">
+                    <div class="mockup-label">
+                        Host Overview with System 1/2 Thinking
+                    </div>
+                    <iframe class="mockup-preview" src="2026-02-05-mockups/run-011/charles-eames.html"></iframe>
+                    <a href="2026-02-05-mockups/run-011/charles-eames.html" target="_blank" class="mockup-link">Open in new tab →</a>
+                </div>
+            </article>
+
+            <!-- MILTON GLASER -->
+            <article class="agent-section">
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: #EF4444;">MG</div>
+                    <div class="agent-info">
+                        <h3>Milton Glaser</h3>
+                        <div class="domain">Brand Voice & Copy</div>
+                        <div class="book">Articulating Design Decisions — Ch.2: Communication</div>
+                    </div>
+                </div>
+
+                <div class="feedback-card">
+                    <h4>Rod's Review <span class="tag">Good Concept</span></h4>
+                    <p>The <strong>banner as central communication</strong> that changes based on each step of the host journey is a good idea. The "Needs Your Attention" section pattern repeats here as well, reinforcing its value. Priority actions shown first continues as a strong pattern.</p>
+                </div>
+
+                <div class="mockup-card">
+                    <div class="mockup-label">
+                        Host Overview with Communication Focus
+                    </div>
+                    <iframe class="mockup-preview" src="2026-02-05-mockups/run-011/milton-glaser.html"></iframe>
+                    <a href="2026-02-05-mockups/run-011/milton-glaser.html" target="_blank" class="mockup-link">Open in new tab →</a>
+                </div>
+            </article>
+
+            <!-- LUKE WROBLEWSKI -->
+            <article class="agent-section">
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: #7C3AED;">LW</div>
+                    <div class="agent-info">
+                        <h3>Luke Wroblewski</h3>
+                        <div class="domain">Conversion & Forms</div>
+                        <div class="book">Nudge (Thaler/Sunstein) — Part 1: Humans and Econs</div>
+                    </div>
+                </div>
+
+                <div class="feedback-card">
+                    <h4>Rod's Review <span class="tag">Pattern Reinforcement</span></h4>
+                    <p>Contains social proof indicators and profile completion elements. The <strong>"Action Required — Don't Lose These Opportunities"</strong> section follows the same pattern seen throughout the run, further validating the priority actions approach.</p>
+                </div>
+
+                <div class="mockup-card">
+                    <div class="mockup-label">
+                        Host Overview with Nudge Principles
+                    </div>
+                    <iframe class="mockup-preview" src="2026-02-05-mockups/run-011/luke-wroblewski.html"></iframe>
+                    <a href="2026-02-05-mockups/run-011/luke-wroblewski.html" target="_blank" class="mockup-link">Open in new tab →</a>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- RUN 012: MICROINTERACTIONS -->
+        <!-- ============================================================== -->
+        <section class="run-section">
+            <div class="run-header">
+                <h2>Run 012: Microinteractions</h2>
+                <p>Based on Dan Saffer's "Microinteractions: Designing with Details" — each agent focused on a specific chapter to add polish and responsiveness to the Host Overview page.</p>
+            </div>
+
+            <!-- DIETER RAMS - CH.5 -->
+            <article class="agent-section">
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: #059669;">DR</div>
+                    <div class="agent-info">
+                        <h3>Dieter Rams</h3>
+                        <div class="domain">Loops & Modes</div>
+                        <div class="book">Microinteractions — Ch.5: Loops & Modes</div>
+                    </div>
+                </div>
+
+                <div class="feedback-card highlight">
+                    <h4>Rod's Review <span class="tag">Useful Pattern</span></h4>
+                    <p><strong>Slide-down banner</strong> to show proposal details or guest message — an elegant way to surface important information without cluttering the interface.</p>
+                </div>
+
+                <div class="mockup-card">
+                    <div class="mockup-label">
+                        Microinteractions: Loops & Modes
+                    </div>
+                    <iframe class="mockup-preview" src="2026-02-05-mockups/run-012/dieter-rams.html"></iframe>
+                    <a href="2026-02-05-mockups/run-012/dieter-rams.html" target="_blank" class="mockup-link">Open in new tab →</a>
+                </div>
+            </article>
+
+            <!-- DON NORMAN - CH.2 -->
+            <article class="agent-section">
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: #31135D;">DN</div>
+                    <div class="agent-info">
+                        <h3>Don Norman</h3>
+                        <div class="domain">Triggers</div>
+                        <div class="book">Microinteractions — Ch.2: Triggers</div>
+                    </div>
+                </div>
+
+                <div class="feedback-card highlight">
+                    <h4>Rod's Review <span class="tag">Liked</span></h4>
+                    <p><strong>Top slide-down banner</strong> that notifies about proposals — a clear, non-intrusive way to alert hosts to new activity.</p>
+                </div>
+
+                <div class="mockup-card">
+                    <div class="mockup-label">
+                        Microinteractions: Triggers
+                    </div>
+                    <iframe class="mockup-preview" src="2026-02-05-mockups/run-012/don-norman.html"></iframe>
+                    <a href="2026-02-05-mockups/run-012/don-norman.html" target="_blank" class="mockup-link">Open in new tab →</a>
+                </div>
+            </article>
+
+            <!-- MASSIMO VIGNELLI - CH.4 -->
+            <article class="agent-section">
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: #8B5CF6;">MV</div>
+                    <div class="agent-info">
+                        <h3>Massimo Vignelli</h3>
+                        <div class="domain">Feedback</div>
+                        <div class="book">Microinteractions — Ch.4: Feedback</div>
+                    </div>
+                </div>
+
+                <div class="feedback-card highlight">
+                    <h4>Rod's Review <span class="tag">Great Detail</span></h4>
+                    <p><strong>Loading button indicators</strong> — a really good microinteraction that provides clear feedback during async operations.</p>
+                </div>
+
+                <div class="mockup-card">
+                    <div class="mockup-label">
+                        Microinteractions: Feedback
+                    </div>
+                    <iframe class="mockup-preview" src="2026-02-05-mockups/run-012/massimo-vignelli.html"></iframe>
+                    <a href="2026-02-05-mockups/run-012/massimo-vignelli.html" target="_blank" class="mockup-link">Open in new tab →</a>
+                </div>
+            </article>
+
+            <!-- JONY IVE - CH.6 -->
+            <article class="agent-section">
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: #6366F1;">JI</div>
+                    <div class="agent-info">
+                        <h3>Jony Ive</h3>
+                        <div class="domain">Putting It Together</div>
+                        <div class="book">Microinteractions — Ch.6: Putting It Together</div>
+                    </div>
+                </div>
+
+                <div class="feedback-card">
+                    <h4>Rod's Review <span class="tag">One Standout</span></h4>
+                    <p>The <strong>button with expiring timer</strong> is a nice touch that creates urgency without being aggressive.</p>
+                </div>
+
+                <div class="mockup-card">
+                    <div class="mockup-label">
+                        Microinteractions: Orchestration
+                    </div>
+                    <iframe class="mockup-preview" src="2026-02-05-mockups/run-012/jony-ive.html"></iframe>
+                    <a href="2026-02-05-mockups/run-012/jony-ive.html" target="_blank" class="mockup-link">Open in new tab →</a>
+                </div>
+            </article>
+
+            <!-- PAULA SCHER - CH.1 -->
+            <article class="agent-section">
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: #EC4899;">PS</div>
+                    <div class="agent-info">
+                        <h3>Paula Scher</h3>
+                        <div class="domain">Designing Microinteractions</div>
+                        <div class="book">Microinteractions — Ch.1: Designing Microinteractions</div>
+                    </div>
+                </div>
+
+                <div class="feedback-card">
+                    <h4>Rod's Review <span class="tag">Basic</span></h4>
+                    <p>Primarily features pulsating dots — functional but not particularly notable compared to other implementations.</p>
+                </div>
+
+                <div class="mockup-card">
+                    <div class="mockup-label">
+                        Microinteractions: Basics
+                    </div>
+                    <iframe class="mockup-preview" src="2026-02-05-mockups/run-012/paula-scher.html"></iframe>
+                    <a href="2026-02-05-mockups/run-012/paula-scher.html" target="_blank" class="mockup-link">Open in new tab →</a>
+                </div>
+            </article>
+
+            <!-- SAUL BASS - CH.3 -->
+            <article class="agent-section">
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: #DC2626;">SB</div>
+                    <div class="agent-info">
+                        <h3>Saul Bass</h3>
+                        <div class="domain">Rules</div>
+                        <div class="book">Microinteractions — Ch.3: Rules</div>
+                    </div>
+                </div>
+
+                <div class="mockup-card">
+                    <div class="mockup-label">
+                        Microinteractions: Rules
+                    </div>
+                    <iframe class="mockup-preview" src="2026-02-05-mockups/run-012/saul-bass.html"></iframe>
+                    <a href="2026-02-05-mockups/run-012/saul-bass.html" target="_blank" class="mockup-link">Open in new tab →</a>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- RUN 013: DIVERGENT THINKING -->
+        <!-- ============================================================== -->
+        <section class="run-section">
+            <div class="run-header">
+                <h2>Run 013: Divergent Thinking</h2>
+                <p>Two agents read all 6 chapters of the Microinteractions book with instructions to think unconventionally, challenge assumptions, and propose creative solutions.</p>
+            </div>
+
+            <!-- JOSEF MULLER-BROCKMANN -->
+            <article class="agent-section">
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: #0891B2;">JM</div>
+                    <div class="agent-info">
+                        <h3>Josef Muller-Brockmann</h3>
+                        <div class="domain">Divergent Approach</div>
+                        <div class="book">Microinteractions — All 6 Chapters (Divergent)</div>
+                    </div>
+                </div>
+
+                <div class="feedback-card highlight">
+                    <h4>Rod's Review <span class="tag">Multiple Wins</span></h4>
+                    <p>Several standout ideas from this divergent approach:</p>
+                    <ul style="margin-top: 12px; margin-left: 20px; font-size: 14px; color: var(--gray-600);">
+                        <li style="margin-bottom: 8px;"><strong>Press and hold button for delete</strong> — adds intentionality to destructive actions</li>
+                        <li style="margin-bottom: 8px;"><strong>Immersive transition</strong> that makes the entire screen purple — creates a distinctive brand moment</li>
+                        <li><strong>Bottom floating banner</strong> that appears when inactive — gentle re-engagement without being pushy</li>
+                    </ul>
+                </div>
+
+                <div class="mockup-card">
+                    <div class="mockup-label">
+                        Divergent Microinteractions
+                        <span class="tag best">Creative Ideas</span>
+                    </div>
+                    <iframe class="mockup-preview" src="2026-02-05-mockups/run-013/josef-muller-brockmann.html"></iframe>
+                    <a href="2026-02-05-mockups/run-013/josef-muller-brockmann.html" target="_blank" class="mockup-link">Open in new tab →</a>
+                </div>
+            </article>
+
+            <!-- CHARLES EAMES -->
+            <article class="agent-section">
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: #F97316;">CE</div>
+                    <div class="agent-info">
+                        <h3>Charles Eames</h3>
+                        <div class="domain">Divergent Approach</div>
+                        <div class="book">Microinteractions — All 6 Chapters (Divergent)</div>
+                    </div>
+                </div>
+
+                <div class="mockup-card">
+                    <div class="mockup-label">
+                        Divergent Microinteractions
+                    </div>
+                    <iframe class="mockup-preview" src="2026-02-05-mockups/run-013/charles-eames.html"></iframe>
+                    <a href="2026-02-05-mockups/run-013/charles-eames.html" target="_blank" class="mockup-link">Open in new tab →</a>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- Final Takeaways -->
+        <div class="takeaways" style="margin-top: 60px;">
+            <h3>Recommended for Implementation</h3>
+            <ul>
+                <li><strong>Priority Actions / Needs Attention Section</strong> — Implement at top of Host Overview (Run 011)</li>
+                <li><strong>Social Proof Elements</strong> — "Happening Right Now" feed and "Success Stories from Hosts Like You" (Run 011 - Dieter Rams)</li>
+                <li><strong>Slide-down Notification Banner</strong> — For new proposals and messages (Run 012)</li>
+                <li><strong>Loading Button Indicators</strong> — Add to all async actions (Run 012 - Massimo Vignelli)</li>
+                <li><strong>Press and Hold for Delete</strong> — Consider for destructive actions (Run 013 - Josef M-B)</li>
+                <li><strong>Contextual Journey Banner</strong> — Central communication that changes with host stage (Run 011 - Milton Glaser)</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><a href="../index.html" style="color: var(--primary); text-decoration: none;">Back to AI Design Team</a></p>
+        <p style="margin-top: 8px;">Split Lease | February 5, 2026</p>
+    </footer>
+</body>
+</html>

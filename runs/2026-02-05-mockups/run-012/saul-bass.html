@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Overview - Split Lease | Microinteractions Rules Enhancement</title>
+
+    <!--
+    ============================================================================
+    SPLIT LEASE HOST OVERVIEW - MICROINTERACTIONS RULES ENHANCEMENT
+    Agent: Saul Bass
+    Book: Microinteractions: Designing with Details by Dan Saffer
+    Chapter: 3 - Rules
+    Base: Run 011 HTML Mockup (Refactoring UI Feature-First Approach)
+    ============================================================================
+
+    CHAPTER 3 PRINCIPLES APPLIED:
+
+    1. Designing Rules (pp. 71-74)
+       - Natural flow design, users "gently guided"
+       - Complete interaction flows documented
+
+    2. Constraints (pp. 81-83)
+       - Character limits on inputs
+       - Input validation patterns
+       - Disabled states for unavailable actions
+
+    3. Don't Start from Zero (pp. 83-86)
+       - Recent searches dropdown
+       - Smart defaults for sort order
+       - Context-aware empty states
+
+    4. Bring Data Forward (p. 84)
+       - Dashboard summary stats banner
+       - Action-needed highlighting on cards
+
+    5. Absorb Complexity (pp. 86-88)
+       - System calculates aggregates
+       - Smart sorting by priority
+
+    6. Limited Options & Smart Defaults (pp. 88-91)
+       - Default sort: action-needed first
+       - Minimal filter options
+
+    7. Screens and States (pp. 80-81)
+       - Disabled, loading, error states
+       - Complete focus state coverage
+
+    8. Preventing Errors (pp. 93-95)
+       - Input validation
+       - Disabled states prevent invalid actions
+       - Character limit enforcement
+
+    9. Microcopy (pp. 95-97)
+       - Helpful search placeholder
+       - Helper text guidance
+       - Contextual button labels
+       - Friendly error messages
+
+    10. Algorithms (pp. 97-98)
+        - Smart sort algorithm (proposals first)
+        - Suggested actions based on state
+
+    ============================================================================
+    -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /*
+        ========================================================================
+        DESIGN TOKEN SYSTEM (From Run 011 - Alchemy Design System)
+        ========================================================================
+        */
+
+        :root {
+            /* === BRAND COLORS === */
+            --color-primary: #31135D;
+            --color-primary-dark: #1F0D3D;
+            --color-primary-light: #5B5FCF;
+            --color-primary-hover: #1F0D3D;
+
+            /* === SEMANTIC COLORS === */
+            --color-success: #5B5FCF;
+            --color-warning: #D97706;
+            --color-danger: #DC2626;
+            --color-info: #2563EB;
+
+            /* === NEUTRALS === */
+            --color-gray-50: #F9FAFB;
+            --color-gray-100: #F3F4F6;
+            --color-gray-200: #E5E7EB;
+            --color-gray-300: #D1D5DB;
+            --color-gray-400: #9CA3AF;
+            --color-gray-500: #6B7280;
+            --color-gray-600: #4B5563;
+            --color-gray-700: #374151;
+            --color-gray-800: #1F2937;
+            --color-gray-900: #111827;
+            --color-white: #FFFFFF;
+
+            /* === SPACING SCALE === */
+            --space-4: 4px;
+            --space-8: 8px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-24: 24px;
+            --space-32: 32px;
+            --space-48: 48px;
+            --space-64: 64px;
+
+            /* === TYPE SCALE === */
+            --text-xs: 12px;
+            --text-sm: 14px;
+            --text-base: 16px;
+            --text-lg: 18px;
+            --text-xl: 24px;
+            --text-2xl: 32px;
+
+            /* === LINE HEIGHTS === */
+            --leading-xs: 16px;
+            --leading-sm: 20px;
+            --leading-base: 24px;
+            --leading-lg: 28px;
+            --leading-xl: 32px;
+            --leading-2xl: 40px;
+
+            /* === FONT WEIGHTS === */
+            --font-regular: 400;
+            --font-medium: 500;
+            --font-semibold: 600;
+            --font-bold: 700;
+
+            /* === BORDER RADIUS === */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-full: 9999px;
+
+            /* === SHADOWS === */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.16);
+
+            /* === TRANSITIONS === */
+            --transition-fast: 150ms ease;
+            --transition-base: 200ms ease;
+        }
+
+        /*
+        ========================================================================
+        BASE STYLES
+        ========================================================================
+        */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: var(--text-sm);
+            line-height: var(--leading-sm);
+            font-weight: var(--font-regular);
+            color: var(--color-gray-900);
+            background-color: var(--color-gray-50);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /*
+        ========================================================================
+        HEADER COMPONENT
+        ========================================================================
+        */
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: 56px;
+            background-color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-24);
+        }
+
+        .header__logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+            text-decoration: none;
+            color: var(--color-white);
+        }
+
+        .header__logo-icon {
+            width: 32px;
+            height: 32px;
+            background-color: var(--color-white);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-primary);
+            font-weight: var(--font-semibold);
+            font-size: var(--text-sm);
+        }
+
+        .header__logo-text {
+            font-size: var(--text-base);
+            font-weight: var(--font-semibold);
+            color: var(--color-white);
+        }
+
+        .header__actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-16);
+        }
+
+        .header__user {
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+            padding: var(--space-8) var(--space-12);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background-color var(--transition-fast);
+        }
+
+        .header__user:hover {
+            background-color: var(--color-primary-dark);
+        }
+
+        .header__avatar {
+            width: 32px;
+            height: 32px;
+            background-color: var(--color-white);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-primary);
+            font-size: var(--text-xs);
+            font-weight: var(--font-medium);
+        }
+
+        .header__user-name {
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            color: var(--color-white);
+        }
+
+        .header__chevron {
+            color: rgba(255,255,255,0.7);
+            font-size: var(--text-xs);
+        }
+
+        /*
+        ========================================================================
+        BUTTON COMPONENTS
+        ========================================================================
+        */
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-8);
+            padding: var(--space-8) var(--space-16);
+            font-family: inherit;
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            line-height: var(--leading-sm);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-decoration: none;
+            border: none;
+        }
+
+        .btn--primary {
+            background-color: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .btn--primary:hover {
+            background-color: var(--color-primary-dark);
+        }
+
+        .btn--secondary {
+            background-color: var(--color-white);
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+        }
+
+        .btn--secondary:hover {
+            background-color: var(--color-gray-50);
+        }
+
+        /*
+        ========================================================================
+        BUTTON STATES - Screens and States (pp. 80-81)
+        ========================================================================
+        "Define distinct visual and behavioral states for every screen element."
+
+        States implemented:
+        - Default (above)
+        - Hover (above)
+        - Disabled (prevents errors - p. 93)
+        - Loading (system status)
+        - Focus (keyboard accessibility)
+        ========================================================================
+        */
+
+        /* Disabled State Rule - p.93 */
+        /* "Good design prioritizes preventing user errors." */
+        .btn--disabled,
+        .btn:disabled {
+            background-color: var(--color-gray-200);
+            color: var(--color-gray-400);
+            border-color: var(--color-gray-200);
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Loading State Rule - p.80 */
+        /* Screens and States: show system processing */
+        .btn--loading {
+            position: relative;
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .btn--loading::after {
+            content: "";
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--color-white);
+            border-top-color: transparent;
+            border-radius: var(--radius-full);
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Focus State Rule - p.80 */
+        /* Accessibility: keyboard navigation indication */
+        .btn:focus-visible {
+            outline: 2px solid var(--color-primary-light);
+            outline-offset: 2px;
+        }
+
+        .btn--sm {
+            padding: var(--space-4) var(--space-12);
+            font-size: var(--text-xs);
+        }
+
+        /*
+        ========================================================================
+        MAIN CONTENT LAYOUT
+        ========================================================================
+        */
+
+        .main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: var(--space-32) var(--space-24);
+        }
+
+        /*
+        ========================================================================
+        DASHBOARD SUMMARY BANNER - Bring Data Forward (p. 84)
+        ========================================================================
+        "What information is inside the microinteraction that you can pull
+        forward so that users can see it at a glance?"
+
+        This banner surfaces aggregate data immediately so hosts know their
+        overall status without scanning individual cards.
+        ========================================================================
+        */
+
+        .dashboard-summary {
+            /* Bring Data Forward Rule - p.84 */
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            border-radius: var(--radius-md);
+            padding: var(--space-16) var(--space-24);
+            margin-bottom: var(--space-24);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--color-white);
+        }
+
+        .dashboard-summary__content {
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+        }
+
+        .dashboard-summary__icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dashboard-summary__text {
+            /* Microcopy Rule - p.95 */
+            /* "Clear, concise microcopy supports understanding" */
+        }
+
+        .dashboard-summary__title {
+            font-size: var(--text-base);
+            font-weight: var(--font-semibold);
+            margin-bottom: var(--space-4);
+        }
+
+        .dashboard-summary__subtitle {
+            font-size: var(--text-sm);
+            opacity: 0.9;
+        }
+
+        .dashboard-summary__action {
+            background-color: var(--color-white);
+            color: var(--color-primary);
+            padding: var(--space-8) var(--space-16);
+            border-radius: var(--radius-md);
+            font-weight: var(--font-medium);
+            font-size: var(--text-sm);
+            text-decoration: none;
+            transition: all var(--transition-fast);
+        }
+
+        .dashboard-summary__action:hover {
+            background-color: var(--color-gray-100);
+            transform: translateY(-1px);
+        }
+
+        /*
+        ========================================================================
+        SECTION HEADER
+        ========================================================================
+        */
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-24);
+        }
+
+        .section-header__title {
+            font-size: var(--text-2xl);
+            font-weight: var(--font-bold);
+            line-height: var(--leading-2xl);
+            color: var(--color-gray-800);
+        }
+
+        .section-header__count {
+            font-weight: var(--font-regular);
+            color: var(--color-gray-500);
+        }
+
+        .section-header__actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+        }
+
+        /*
+        ========================================================================
+        SEARCH INPUT WITH RULES - Multiple Principles Applied
+        ========================================================================
+        Principles implemented:
+
+        1. Constraints (pp. 81-83): maxlength="100" character limit
+        2. Microcopy (pp. 95-97): Helpful placeholder text
+        3. Don't Start from Zero (pp. 83-86): Recent searches dropdown
+        4. Screens and States (pp. 80-81): Focus, error states
+        5. Preventing Errors (pp. 93-95): Validation styling
+        ========================================================================
+        */
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-input {
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+            padding: var(--space-8) var(--space-12);
+            background-color: var(--color-white);
+            border: 1px solid var(--color-gray-300);
+            border-radius: var(--radius-sm);
+            transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+            min-width: 280px;
+        }
+
+        .search-input:focus-within {
+            /* Focus State Rule - p.80 */
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(49, 19, 93, 0.15);
+        }
+
+        /* Error State Rule - p.93 */
+        /* "Good design prioritizes preventing user errors" */
+        .search-input--error {
+            border-color: var(--color-danger);
+        }
+
+        .search-input--error:focus-within {
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+        }
+
+        .search-input__icon {
+            color: var(--color-gray-400);
+            flex-shrink: 0;
+        }
+
+        .search-input__field {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-family: inherit;
+            font-size: var(--text-sm);
+            color: var(--color-gray-900);
+            background: transparent;
+        }
+
+        /* Microcopy Rule - p.95 */
+        /* Placeholder provides format guidance, not label repetition */
+        .search-input__field::placeholder {
+            color: var(--color-gray-500);
+        }
+
+        /*
+        ========================================================================
+        CHARACTER COUNTER - Constraints (pp. 81-83)
+        ========================================================================
+        "Constraints help enforce a microinteraction's rules without relying
+        on lengthy explanations."
+
+        Shows character count as user approaches limit (80+ of 100).
+        ========================================================================
+        */
+
+        .search-input__counter {
+            /* Constraint Rule - p.81 */
+            font-size: var(--text-xs);
+            color: var(--color-gray-400);
+            transition: color var(--transition-fast);
+            display: none;
+        }
+
+        .search-input__field:focus ~ .search-input__counter {
+            display: block;
+        }
+
+        .search-input__counter--warning {
+            color: var(--color-warning);
+        }
+
+        .search-input__counter--limit {
+            color: var(--color-danger);
+        }
+
+        /*
+        ========================================================================
+        HELPER TEXT - Microcopy (pp. 95-97)
+        ========================================================================
+        "Clear, concise microcopy supports understanding and should replace
+        instructional text wherever possible."
+        ========================================================================
+        */
+
+        .search-helper {
+            /* Microcopy Rule - p.95 */
+            font-size: var(--text-xs);
+            color: var(--color-gray-500);
+            margin-top: var(--space-4);
+            padding-left: var(--space-4);
+        }
+
+        .search-helper--error {
+            /* Error Microcopy Rule - p.95 */
+            /* "Error messages should maintain the application's voice" */
+            color: var(--color-danger);
+        }
+
+        /*
+        ========================================================================
+        RECENT SEARCHES DROPDOWN - Don't Start from Zero (pp. 83-86)
+        ========================================================================
+        "What do you know about the user, the context, or the platform that
+        can change the product for the better? You almost always know something."
+
+        Shows recent searches on focus to speed up repeated queries.
+        ========================================================================
+        */
+
+        .recent-searches {
+            /* Don't Start from Zero Rule - p.83 */
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: var(--space-4);
+            background-color: var(--color-white);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            z-index: 50;
+            display: none;
+        }
+
+        .search-wrapper:focus-within .recent-searches {
+            display: block;
+        }
+
+        .recent-searches__header {
+            padding: var(--space-8) var(--space-12);
+            font-size: var(--text-xs);
+            font-weight: var(--font-medium);
+            color: var(--color-gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--color-gray-100);
+        }
+
+        .recent-searches__list {
+            list-style: none;
+        }
+
+        .recent-searches__item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+            padding: var(--space-8) var(--space-12);
+            font-size: var(--text-sm);
+            color: var(--color-gray-700);
+            cursor: pointer;
+            transition: background-color var(--transition-fast);
+        }
+
+        .recent-searches__item:hover {
+            background-color: var(--color-gray-50);
+        }
+
+        .recent-searches__item-icon {
+            color: var(--color-gray-400);
+        }
+
+        /*
+        ========================================================================
+        LISTING CARD COMPONENT
+        ========================================================================
+        */
+
+        .listings {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-16);
+        }
+
+        .listing-card {
+            background-color: var(--color-white);
+            border-radius: var(--radius-md);
+            padding: var(--space-24);
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow var(--transition-base), transform var(--transition-base);
+            display: flex;
+            gap: var(--space-16);
+            align-items: flex-start;
+        }
+
+        .listing-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        /*
+        ========================================================================
+        LISTING CARD WITH ACTION HIGHLIGHT - Absorb Complexity (pp. 86-88)
+        ========================================================================
+        "Microinteractions should help place more responsibility on the app
+        and less responsibility on the user."
+
+        Cards with pending proposals get visual priority indicator to draw
+        attention without user having to scan all metrics.
+        ========================================================================
+        */
+
+        .listing-card--action-needed {
+            /* Absorb Complexity Rule - p.86 */
+            /* System highlights urgency so user doesn't have to discover it */
+            border-left: 3px solid var(--color-primary);
+        }
+
+        .listing-card__image {
+            width: 120px;
+            height: 80px;
+            background-color: var(--color-gray-100);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-gray-400);
+        }
+
+        .listing-card__placeholder-icon {
+            width: 32px;
+            height: 32px;
+            opacity: 0.5;
+        }
+
+        .listing-card__content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .listing-card__title {
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            line-height: var(--leading-lg);
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-4);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .listing-card__location {
+            font-size: var(--text-sm);
+            color: var(--color-gray-500);
+            margin-bottom: var(--space-8);
+        }
+
+        .listing-card__metrics {
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+            font-size: var(--text-sm);
+            color: var(--color-gray-500);
+        }
+
+        .listing-card__metric {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .listing-card__metric--highlight {
+            color: var(--color-primary);
+            font-weight: var(--font-medium);
+        }
+
+        .listing-card__metric--success {
+            color: var(--color-success);
+            font-weight: var(--font-medium);
+        }
+
+        .listing-card__metric-separator {
+            color: var(--color-gray-300);
+        }
+
+        .listing-card__actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+            flex-shrink: 0;
+        }
+
+        .listing-card__manage-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-8);
+            padding: var(--space-8) var(--space-16);
+            background-color: var(--color-white);
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-decoration: none;
+        }
+
+        .listing-card__manage-btn:hover {
+            background-color: var(--color-gray-50);
+            color: var(--color-primary-dark);
+            border-color: var(--color-primary-dark);
+        }
+
+        .listing-card__manage-icon {
+            transition: transform var(--transition-fast);
+        }
+
+        .listing-card__manage-btn:hover .listing-card__manage-icon {
+            transform: translateX(2px);
+        }
+
+        /*
+        ========================================================================
+        TOOLTIP SYSTEM - Microcopy (pp. 95-97)
+        ========================================================================
+        "Clear, concise microcopy supports understanding."
+
+        CSS-only tooltips provide contextual help without cluttering the main
+        interface. Uses data-tooltip attribute.
+        ========================================================================
+        */
+
+        [data-tooltip] {
+            /* Microcopy Rule - p.95 */
+            position: relative;
+        }
+
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: var(--space-4) var(--space-8);
+            background-color: var(--color-gray-800);
+            color: var(--color-white);
+            font-size: var(--text-xs);
+            font-weight: var(--font-regular);
+            white-space: nowrap;
+            border-radius: var(--radius-sm);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-fast), visibility var(--transition-fast);
+            z-index: 100;
+            margin-bottom: var(--space-4);
+        }
+
+        [data-tooltip]:hover::after,
+        [data-tooltip]:focus::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /*
+        ========================================================================
+        EMPTY STATE - Microcopy + Don't Start from Zero
+        ========================================================================
+        */
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-64) var(--space-24);
+            background-color: var(--color-gray-50);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .empty-state__icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto var(--space-16);
+            color: var(--color-gray-400);
+        }
+
+        .empty-state__title {
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-8);
+        }
+
+        /* Microcopy Rule - p.95 */
+        /* Specific, helpful description */
+        .empty-state__description {
+            font-size: var(--text-sm);
+            color: var(--color-gray-500);
+            margin-bottom: var(--space-24);
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /*
+        ========================================================================
+        BADGE COMPONENT
+        ========================================================================
+        */
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 var(--space-8);
+            font-size: var(--text-xs);
+            font-weight: var(--font-medium);
+            border-radius: var(--radius-full);
+            background-color: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .badge--success {
+            background-color: var(--color-success);
+        }
+
+        .badge--warning {
+            background-color: var(--color-warning);
+        }
+
+        /*
+        ========================================================================
+        FORM VALIDATION STATES - Preventing Errors (pp. 93-95)
+        ========================================================================
+        "Good design prioritizes preventing user errors."
+
+        Input validation provides immediate feedback to prevent submission
+        of invalid data.
+        ========================================================================
+        */
+
+        .form-field {
+            margin-bottom: var(--space-16);
+        }
+
+        .form-field__label {
+            /* Microcopy Rule - p.95 */
+            /* "Use good labels instead of instructions" */
+            display: block;
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            color: var(--color-gray-700);
+            margin-bottom: var(--space-4);
+        }
+
+        .form-field__label--required::after {
+            /* Constraint Rule - p.81 */
+            /* Visual indicator of required fields */
+            content: " *";
+            color: var(--color-danger);
+        }
+
+        .form-field__input {
+            width: 100%;
+            padding: var(--space-8) var(--space-12);
+            font-family: inherit;
+            font-size: var(--text-sm);
+            border: 1px solid var(--color-gray-300);
+            border-radius: var(--radius-sm);
+            transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .form-field__input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(49, 19, 93, 0.15);
+        }
+
+        /* Error State - Preventing Errors Rule - p.93 */
+        .form-field__input--error {
+            border-color: var(--color-danger);
+        }
+
+        .form-field__input--error:focus {
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+        }
+
+        /* Success State - Feedback for valid input */
+        .form-field__input--success {
+            border-color: var(--color-success);
+        }
+
+        .form-field__input--success:focus {
+            box-shadow: 0 0 0 3px rgba(91, 95, 207, 0.15);
+        }
+
+        .form-field__helper {
+            /* Microcopy Rule - p.95 */
+            font-size: var(--text-xs);
+            color: var(--color-gray-500);
+            margin-top: var(--space-4);
+        }
+
+        .form-field__helper--error {
+            /* Error Microcopy - friendly tone */
+            color: var(--color-danger);
+        }
+
+        /*
+        ========================================================================
+        SORT/FILTER CONTROLS - Limited Options (pp. 88-91)
+        ========================================================================
+        "Be ruthless about eliminating options, which in turn reduces the
+        number of rules you have to create."
+
+        Minimal filter options: only what's truly needed.
+        ========================================================================
+        */
+
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+            margin-bottom: var(--space-16);
+        }
+
+        .filter-bar__label {
+            font-size: var(--text-sm);
+            color: var(--color-gray-600);
+        }
+
+        /* Segmented Control - Limited Options Rule - p.88 */
+        .segmented-control {
+            display: inline-flex;
+            background-color: var(--color-gray-100);
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+        }
+
+        .segmented-control__option {
+            padding: var(--space-4) var(--space-12);
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            color: var(--color-gray-600);
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .segmented-control__option:hover {
+            color: var(--color-gray-800);
+        }
+
+        /* Smart Default Rule - p.88 */
+        /* "Action Needed" is pre-selected as the most useful default */
+        .segmented-control__option--active {
+            background-color: var(--color-white);
+            color: var(--color-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /*
+        ========================================================================
+        RESPONSIVE DESIGN
+        ========================================================================
+        */
+
+        @media (max-width: 640px) {
+            .header {
+                padding: 0 var(--space-16);
+            }
+
+            .header__logo-text,
+            .header__user-name {
+                display: none;
+            }
+
+            .main {
+                padding: var(--space-24) var(--space-16);
+            }
+
+            .dashboard-summary {
+                flex-direction: column;
+                text-align: center;
+                gap: var(--space-16);
+            }
+
+            .listing-card {
+                flex-direction: column;
+                padding: var(--space-16);
+            }
+
+            .listing-card__image {
+                width: 100%;
+                height: 160px;
+            }
+
+            .listing-card__title {
+                white-space: normal;
+            }
+
+            .listing-card__actions {
+                width: 100%;
+                margin-top: var(--space-12);
+            }
+
+            .listing-card__manage-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-16);
+            }
+
+            .search-input {
+                min-width: 100%;
+            }
+
+            .filter-bar {
+                flex-wrap: wrap;
+            }
+        }
+
+        /*
+        ========================================================================
+        UTILITY CLASSES
+        ========================================================================
+        */
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .icon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .icon--sm {
+            width: 14px;
+            height: 14px;
+        }
+
+        .icon--lg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .icon--xl {
+            width: 24px;
+            height: 24px;
+        }
+
+        a {
+            color: var(--color-primary-light);
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: var(--color-primary);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!--
+    ============================================================================
+    HEADER
+    ============================================================================
+    -->
+    <header class="header">
+        <a href="#" class="header__logo">
+            <div class="header__logo-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+            </div>
+            <span class="header__logo-text">Split Lease</span>
+        </a>
+
+        <div class="header__actions">
+            <!--
+            Microcopy Rule - p.95
+            Button label is action-specific: "Add Listing" not just "Add"
+            -->
+            <a href="#" class="btn btn--primary" data-tooltip="Create a new property listing">
+                <svg class="icon icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Add Listing</span>
+            </a>
+
+            <div class="header__user" role="button" tabindex="0" aria-label="User menu">
+                <div class="header__avatar">R</div>
+                <span class="header__user-name">Rod</span>
+                <svg class="header__chevron icon icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <!--
+        ========================================================================
+        DASHBOARD SUMMARY - Bring Data Forward (p. 84)
+        ========================================================================
+        "What information is inside the microinteraction that you can pull
+        forward so that users can see it at a glance?"
+
+        This surfaces aggregate action-needed data immediately.
+        ========================================================================
+        -->
+        <div class="dashboard-summary">
+            <div class="dashboard-summary__content">
+                <div class="dashboard-summary__icon">
+                    <svg class="icon icon--xl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </div>
+                <div class="dashboard-summary__text">
+                    <!-- Microcopy Rule - p.95: Specific, actionable language -->
+                    <div class="dashboard-summary__title">You have 4 proposals waiting for your response</div>
+                    <div class="dashboard-summary__subtitle">Responding quickly increases your acceptance rate</div>
+                </div>
+            </div>
+            <a href="#proposals" class="dashboard-summary__action">Review Proposals</a>
+        </div>
+
+        <!--
+        ========================================================================
+        LISTINGS SECTION
+        ========================================================================
+        -->
+        <section aria-labelledby="listings-heading">
+            <div class="section-header">
+                <h1 class="section-header__title" id="listings-heading">
+                    Your Listings <span class="section-header__count">(4)</span>
+                </h1>
+                <div class="section-header__actions">
+                    <!--
+                    ============================================================
+                    SEARCH INPUT WITH RULES
+                    ============================================================
+                    Multiple Chapter 3 principles applied here:
+
+                    1. Constraints (p.81): maxlength="100"
+                    2. Microcopy (p.95): Helpful placeholder
+                    3. Don't Start from Zero (p.83): Recent searches
+                    4. Screens and States (p.80): Focus states
+                    ============================================================
+                    -->
+                    <div class="search-wrapper">
+                        <div class="search-input">
+                            <svg class="search-input__icon icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <!--
+                            Constraints Rule - p.81
+                            maxlength prevents excessively long queries
+
+                            Microcopy Rule - p.95
+                            Placeholder shows examples, not label repetition
+                            -->
+                            <input
+                                type="text"
+                                class="search-input__field"
+                                placeholder="Search by address, neighborhood, or title..."
+                                aria-label="Search listings"
+                                maxlength="100"
+                                autocomplete="off"
+                            >
+                            <!-- Character Counter - Constraints Rule - p.81 -->
+                            <span class="search-input__counter" aria-live="polite">0/100</span>
+                        </div>
+
+                        <!--
+                        Don't Start from Zero Rule - p.83
+                        "What do you know about the user... that can change
+                        the product for the better?"
+
+                        Recent searches speed up repeated queries.
+                        -->
+                        <div class="recent-searches" role="listbox" aria-label="Recent searches">
+                            <div class="recent-searches__header">Recent Searches</div>
+                            <ul class="recent-searches__list">
+                                <li class="recent-searches__item" role="option">
+                                    <svg class="recent-searches__item-icon icon icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="1 4 1 10 7 10"></polyline>
+                                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                                    </svg>
+                                    Manhattan
+                                </li>
+                                <li class="recent-searches__item" role="option">
+                                    <svg class="recent-searches__item-icon icon icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="1 4 1 10 7 10"></polyline>
+                                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                                    </svg>
+                                    Upper West Side
+                                </li>
+                                <li class="recent-searches__item" role="option">
+                                    <svg class="recent-searches__item-icon icon icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="1 4 1 10 7 10"></polyline>
+                                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                                    </svg>
+                                    Stylish Private
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!--
+                        Microcopy Rule - p.95
+                        Helper text provides guidance without cluttering the input
+                        -->
+                        <div class="search-helper">
+                            Try searching by neighborhood like "Upper West Side" or listing title
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--
+            ================================================================
+            FILTER BAR - Limited Options Rule (pp. 88-91)
+            ================================================================
+            "Be ruthless about eliminating options, which in turn reduces
+            the number of rules you have to create."
+
+            Only two filter options: by status (action-needed first) or
+            alphabetical. More would create complexity without value.
+
+            Smart Default Rule - p.88
+            "Action Needed" is pre-selected as it surfaces urgent items.
+            ================================================================
+            -->
+            <div class="filter-bar">
+                <span class="filter-bar__label">Sort by:</span>
+                <div class="segmented-control" role="radiogroup" aria-label="Sort listings">
+                    <!-- Smart Default: Action Needed is selected by default -->
+                    <button class="segmented-control__option segmented-control__option--active" role="radio" aria-checked="true">
+                        Action Needed
+                    </button>
+                    <button class="segmented-control__option" role="radio" aria-checked="false">
+                        A-Z
+                    </button>
+                    <button class="segmented-control__option" role="radio" aria-checked="false">
+                        Newest
+                    </button>
+                </div>
+            </div>
+
+            <div class="listings">
+                <!--
+                ================================================================
+                LISTING CARD 1 - With Action Needed Indicator
+                ================================================================
+                Absorb Complexity Rule - p.86
+                "Microinteractions should help place more responsibility on
+                the app and less responsibility on the user."
+
+                Cards with pending proposals get visual priority indicator
+                (left border) so hosts immediately see what needs attention.
+                ================================================================
+                -->
+                <article class="listing-card listing-card--action-needed">
+                    <div class="listing-card__image">
+                        <svg class="listing-card__placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </div>
+                    <div class="listing-card__content">
+                        <h2 class="listing-card__title">Stylish Private Room in Vibrant Neighborhood</h2>
+                        <p class="listing-card__location">Location not specified</p>
+                        <div class="listing-card__metrics">
+                            <!--
+                            Bring Data Forward Rule - p.84
+                            Proposal count shown directly without requiring clicks
+                            -->
+                            <span class="listing-card__metric listing-card__metric--highlight" data-tooltip="2 guests are interested in this listing">
+                                <svg class="icon icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                                2 proposals
+                            </span>
+                            <span class="listing-card__metric-separator">&#8226;</span>
+                            <span class="listing-card__metric">
+                                <svg class="icon icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+                                0 leases
+                            </span>
+                        </div>
+                    </div>
+                    <div class="listing-card__actions">
+                        <!--
+                        Microcopy Rule - p.95
+                        "Manage" is the single entry point as per Run 011 design.
+                        Tooltip provides additional context without cluttering.
+                        -->
+                        <a href="#" class="listing-card__manage-btn" data-tooltip="View proposals, edit listing, or preview">
+                            Manage
+                            <svg class="listing-card__manage-icon icon icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!--
+                ================================================================
+                LISTING CARD 2 - Action Needed
+                ================================================================
+                -->
+                <article class="listing-card listing-card--action-needed">
+                    <div class="listing-card__image">
+                        <svg class="listing-card__placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </div>
+                    <div class="listing-card__content">
+                        <h2 class="listing-card__title">1 Bedroom Entire Place in Manhattan</h2>
+                        <p class="listing-card__location">Manhattan</p>
+                        <div class="listing-card__metrics">
+                            <span class="listing-card__metric listing-card__metric--highlight" data-tooltip="1 guest is interested in this listing">
+                                <svg class="icon icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                                1 proposal
+                            </span>
+                            <span class="listing-card__metric-separator">&#8226;</span>
+                            <span class="listing-card__metric">
+                                <svg class="icon icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+                                0 leases
+                            </span>
+                        </div>
+                    </div>
+                    <div class="listing-card__actions">
+                        <a href="#" class="listing-card__manage-btn" data-tooltip="View proposal, edit listing, or preview">
+                            Manage
+                            <svg class="listing-card__manage-icon icon icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!--
+                ================================================================
+                LISTING CARD 3 - Action Needed + Active Lease
+                ================================================================
+                -->
+                <article class="listing-card listing-card--action-needed">
+                    <div class="listing-card__image">
+                        <svg class="listing-card__placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </div>
+                    <div class="listing-card__content">
+                        <h2 class="listing-card__title">1 Bedroom Private Room in Manhattan</h2>
+                        <p class="listing-card__location">Manhattan</p>
+                        <div class="listing-card__metrics">
+                            <span class="listing-card__metric listing-card__metric--highlight" data-tooltip="1 guest is interested in this listing">
+                                <svg class="icon icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                                1 proposal
+                            </span>
+                            <span class="listing-card__metric-separator">&#8226;</span>
+                            <span class="listing-card__metric listing-card__metric--success" data-tooltip="This listing has an active lease agreement">
+                                <svg class="icon icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                                1 lease
+                            </span>
+                        </div>
+                    </div>
+                    <div class="listing-card__actions">
+                        <a href="#" class="listing-card__manage-btn" data-tooltip="View proposal, manage lease, or edit listing">
+                            Manage
+                            <svg class="listing-card__manage-icon icon icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!--
+                ================================================================
+                LISTING CARD 4 - No Action Needed (Active Lease Only)
+                ================================================================
+                This card does NOT have action-needed styling because there
+                are no pending proposals - only an active lease which is
+                already in a resolved state.
+                ================================================================
+                -->
+                <article class="listing-card">
+                    <div class="listing-card__image">
+                        <svg class="listing-card__placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </div>
+                    <div class="listing-card__content">
+                        <h2 class="listing-card__title">Cozy Studio near Central Park</h2>
+                        <p class="listing-card__location">Upper West Side, Manhattan</p>
+                        <div class="listing-card__metrics">
+                            <span class="listing-card__metric">
+                                <svg class="icon icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                                0 proposals
+                            </span>
+                            <span class="listing-card__metric-separator">&#8226;</span>
+                            <span class="listing-card__metric listing-card__metric--success" data-tooltip="This listing has an active lease agreement">
+                                <svg class="icon icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                                1 active lease
+                            </span>
+                        </div>
+                    </div>
+                    <div class="listing-card__actions">
+                        <a href="#" class="listing-card__manage-btn" data-tooltip="View lease details, edit listing, or preview">
+                            Manage
+                            <svg class="listing-card__manage-icon icon icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!--
+        ========================================================================
+        EXAMPLE: FORM FIELD WITH VALIDATION RULES
+        ========================================================================
+        This demonstrates the form field rule patterns that would be used
+        in listing creation/editing flows.
+
+        Principles applied:
+        - Constraints (p.81): maxlength, required
+        - Preventing Errors (p.93): Validation states
+        - Microcopy (p.95): Labels, helper text
+        ========================================================================
+        -->
+        <section style="margin-top: var(--space-48); padding: var(--space-24); background: var(--color-white); border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
+            <h2 style="font-size: var(--text-xl); font-weight: var(--font-semibold); margin-bottom: var(--space-24); color: var(--color-gray-800);">
+                Form Field Rules Demo
+            </h2>
+            <p style="font-size: var(--text-sm); color: var(--color-gray-600); margin-bottom: var(--space-24);">
+                These examples demonstrate the constraint and microcopy rules applied to form fields.
+            </p>
+
+            <!-- Valid Field State -->
+            <div class="form-field">
+                <!-- Microcopy Rule - p.95: "Use good labels instead of instructions" -->
+                <label class="form-field__label form-field__label--required">Listing Title</label>
+                <!-- Constraints Rule - p.81: maxlength enforces character limit -->
+                <input
+                    type="text"
+                    class="form-field__input form-field__input--success"
+                    value="Stylish Private Room in Vibrant Neighborhood"
+                    maxlength="80"
+                >
+                <!-- Microcopy Rule - p.95: Helper provides guidance -->
+                <div class="form-field__helper">
+                    60/80 characters. Titles with specific details get 40% more views.
+                </div>
+            </div>
+
+            <!-- Error Field State -->
+            <div class="form-field">
+                <label class="form-field__label form-field__label--required">Monthly Price</label>
+                <!-- Preventing Errors Rule - p.93: Error state prevents submission -->
+                <input
+                    type="text"
+                    class="form-field__input form-field__input--error"
+                    value="$50"
+                    aria-invalid="true"
+                    aria-describedby="price-error"
+                >
+                <!-- Error Microcopy Rule - p.95: Friendly tone with guidance -->
+                <div class="form-field__helper form-field__helper--error" id="price-error">
+                    This seems quite low. Similar listings in your area average $1,200-$1,800/month.
+                </div>
+            </div>
+
+            <!-- Disabled Button State Example -->
+            <div style="margin-top: var(--space-24); display: flex; gap: var(--space-12);">
+                <!--
+                Preventing Errors Rule - p.93
+                Disabled state prevents invalid form submission
+                -->
+                <button class="btn btn--primary btn--disabled" disabled aria-disabled="true">
+                    Save Listing
+                </button>
+                <span style="font-size: var(--text-xs); color: var(--color-gray-500); align-self: center;">
+                    Fix errors above to enable saving
+                </span>
+            </div>
+        </section>
+    </main>
+
+    <!--
+    ============================================================================
+    FOOTER
+    ============================================================================
+    -->
+    <footer style="
+        margin-top: var(--space-48);
+        padding: var(--space-24);
+        background-color: var(--color-gray-50);
+        text-align: center;
+        font-size: var(--text-xs);
+        color: var(--color-gray-500);
+    ">
+        <p>&copy; 2026 Split Lease. All rights reserved.</p>
+        <p style="margin-top: var(--space-8);">
+            <a href="#">Help</a>
+            &nbsp;&bull;&nbsp;
+            <a href="#">Privacy</a>
+            &nbsp;&bull;&nbsp;
+            <a href="#">Terms</a>
+        </p>
+    </footer>
+
+    <!--
+    ============================================================================
+    IMPLEMENTATION NOTES FOR DEVELOPERS
+    ============================================================================
+
+    This mockup demonstrates the following Chapter 3 Rules principles:
+
+    CONSTRAINTS (pp. 81-83)
+    - Search input: maxlength="100" prevents excessively long queries
+    - Form fields: maxlength on title, validation patterns on price
+    - Disabled states prevent invalid actions
+
+    DON'T START FROM ZERO (pp. 83-86)
+    - Recent searches dropdown appears on focus
+    - Sort preference would persist (implement via localStorage)
+    - Future: Pre-fill new listing from previous listing data
+
+    BRING DATA FORWARD (p. 84)
+    - Dashboard summary shows total pending proposals at top
+    - Proposal/lease counts visible directly on cards
+    - Action-needed indicator (purple left border) surfaces urgency
+
+    ABSORB COMPLEXITY (pp. 86-88)
+    - System calculates aggregate proposals (4 total)
+    - Smart sort defaults to action-needed first
+    - Future: System could calculate response rate, suggest optimal pricing
+
+    LIMITED OPTIONS & SMART DEFAULTS (pp. 88-91)
+    - Only 3 sort options (Action Needed, A-Z, Newest)
+    - "Action Needed" pre-selected as most useful default
+    - Consolidated "Manage" action (from Run 011)
+
+    SCREENS AND STATES (pp. 80-81)
+    - Buttons: default, hover, disabled, loading, focus states
+    - Inputs: default, focus, error, success states
+    - Cards: default, hover states
+
+    PREVENTING ERRORS (pp. 93-95)
+    - Input validation with visual feedback
+    - Disabled button prevents invalid submission
+    - Character counters show limits before hitting them
+
+    MICROCOPY (pp. 95-97)
+    - Search placeholder shows examples: "Search by address, neighborhood..."
+    - Helper text provides guidance: "Titles with specific details..."
+    - Error messages are friendly: "This seems quite low..."
+    - Tooltips provide context without cluttering
+
+    ALGORITHMS (pp. 97-98)
+    - Smart sort algorithm prioritizes action-needed items
+    - Future: Autocomplete suggestions, price recommendations
+
+    ============================================================================
+    JAVASCRIPT IMPLEMENTATION NOTES (for future development)
+    ============================================================================
+
+    1. Character Counter Logic:
+       - Update counter on input
+       - Show counter when >= 80 characters
+       - Add warning class at 90+, limit class at 100
+
+    2. Recent Searches:
+       - Store in localStorage
+       - Maximum 5 recent searches
+       - Clear on explicit user action
+
+    3. Sort Persistence:
+       - Store selected sort in localStorage
+       - Restore on page load
+       - Default to "Action Needed" if no stored preference
+
+    4. Form Validation:
+       - Real-time validation on blur/change
+       - Disable submit until all valid
+       - Show specific, actionable error messages
+
+    ============================================================================
+    -->
+</body>
+</html>

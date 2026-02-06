@@ -1,0 +1,2048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Overview - Split Lease (Divergent Microinteractions)</title>
+
+    <!--
+    ============================================================================
+    DIVERGENT MICROINTERACTIONS IMPLEMENTATION
+    ============================================================================
+    Agent: Josef Muller-Brockmann (Breaking the Grid)
+    Date: 2026-02-05
+    Run: 013
+    Framework: Dan Saffer's "Microinteractions" - Applied Divergently
+
+    IMPLEMENTED DIVERGENT CONCEPTS:
+
+    CHAPTER 1 - SIGNATURE MOMENTS:
+    - The Dramatic Pause: Milestone events freeze UI momentarily
+    - Anti-Celebration: Encouragement at task START, not just completion
+
+    CHAPTER 2 - TRIGGERS:
+    - Slow Trigger: Hold-to-confirm for destructive actions
+    - Circadian Triggers: Time-based UI emphasis
+    - Trust-Based Disclosure: UI simplifies as expertise grows
+
+    CHAPTER 3 - RULES:
+    - No-Default Critical Choices: Force conscious decisions
+    - Transparent Consequences: Show WHY, not just WHAT
+
+    CHAPTER 4 - FEEDBACK:
+    - Expertise Decay: Feedback fades with experience
+    - Emotional Responsiveness: Tone shifts with events
+    - Streak Crescendo: Accumulated success builds momentum
+
+    CHAPTER 5 - LOOPS AND MODES:
+    - Circadian Dashboard: Time-based layout emphasis
+    - Behavior-Inferred Modes: UI responds to hesitation patterns
+    - Gentle Complexity Fade: Unused features recede
+
+    CHAPTER 6 - ORCHESTRATION:
+    - Emotional State Machine: Recent events affect UI tone
+    - Three Entry Points: Choose your journey
+    - Emergent Reorganization: Engagement shapes prominence
+
+    SACRED UX COWS SLAUGHTERED:
+    1. "Every action needs immediate feedback" -> Expertise-adaptive feedback
+    2. "Users control modes" -> System-inferred modes
+    3. "Consistency above all" -> Contextual variation
+    4. "Reduce friction always" -> Intentional friction for decisions
+    5. "Celebrations should be subtle" -> Genuine acknowledgment
+    ============================================================================
+    -->
+
+    <style>
+        /*
+        ============================================================================
+        DESIGN TOKENS - Alchemy System with Emotional Extensions
+        ============================================================================
+        */
+        :root {
+            /* Core Alchemy Colors */
+            --color-primary: #31135D;
+            --color-primary-dark: #1F0D3D;
+            --color-primary-light: #5B5FCF;
+
+            /* Semantic Colors */
+            --color-success: #5B5FCF;
+            --color-warning: #D97706;
+            --color-danger: #DC2626;
+
+            /* Neutrals */
+            --color-white: #FFFFFF;
+            --color-gray-50: #F9FAFB;
+            --color-gray-100: #F3F4F6;
+            --color-gray-200: #E5E7EB;
+            --color-gray-300: #D1D5DB;
+            --color-gray-400: #9CA3AF;
+            --color-gray-500: #6B7280;
+            --color-gray-600: #4B5563;
+            --color-gray-700: #374151;
+            --color-gray-800: #1F2937;
+
+            /* Emotional State Colors - DIVERGENT */
+            --color-triumphant: #5B5FCF;
+            --color-challenged: #6366F1;
+            --color-empathy: #818CF8;
+
+            /* Spacing - 8pt Grid */
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --space-6: 24px;
+            --space-8: 32px;
+
+            /* Typography */
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-size-xs: 12px;
+            --font-size-sm: 14px;
+            --font-size-base: 16px;
+            --font-size-lg: 18px;
+            --font-size-xl: 24px;
+
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+
+            /* Shadows */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.16);
+
+            /* DIVERGENT: State Variables */
+            --expertise-level: 0;
+            --feedback-intensity: 1;
+            --emotional-warmth: 0;
+            --streak-count: 0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--color-gray-50);
+            color: var(--color-gray-800);
+            line-height: 1.5;
+            transition: background-color 0.5s ease;
+        }
+
+        /*
+        ============================================================================
+        DIVERGENT: EMOTIONAL STATE CLASSES
+        ============================================================================
+        Chapter 6 Implementation: Event-based emotional awareness
+        The UI subtly shifts based on recent significant events
+        */
+        body.emotional-triumphant {
+            --emotional-warmth: 1;
+        }
+
+        body.emotional-triumphant .main {
+            background: linear-gradient(180deg, rgba(91, 95, 207, 0.03) 0%, transparent 30%);
+        }
+
+        body.emotional-challenged {
+            --emotional-warmth: -1;
+        }
+
+        body.emotional-challenged .main {
+            background: linear-gradient(180deg, rgba(49, 19, 93, 0.02) 0%, transparent 30%);
+        }
+
+        /*
+        ============================================================================
+        DIVERGENT: CIRCADIAN MODE CLASSES
+        ============================================================================
+        Chapter 5 Implementation: Time-based layout emphasis
+        Dawn: Urgent focus | Day: Balanced | Dusk: Analytics focus
+        */
+        body.circadian-dawn .priority-queue {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(91, 95, 207, 0.1);
+        }
+
+        body.circadian-dawn .scorecard {
+            opacity: 0.85;
+            transform: scale(0.98);
+        }
+
+        body.circadian-dusk .scorecard {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(91, 95, 207, 0.1);
+        }
+
+        body.circadian-dusk .priority-queue {
+            opacity: 0.9;
+        }
+
+        body.circadian-night .main {
+            filter: brightness(0.95);
+        }
+
+        /*
+        ============================================================================
+        DIVERGENT: EXPERTISE-BASED FEEDBACK DECAY
+        ============================================================================
+        Chapter 4 Implementation: Feedback intensity decreases with expertise
+        */
+        body[data-expertise="novice"] .feedback-toast {
+            padding: var(--space-5);
+            font-size: var(--font-size-base);
+        }
+
+        body[data-expertise="intermediate"] .feedback-toast {
+            padding: var(--space-3);
+            font-size: var(--font-size-sm);
+            opacity: 0.9;
+        }
+
+        body[data-expertise="expert"] .feedback-toast {
+            padding: var(--space-2);
+            font-size: var(--font-size-xs);
+            opacity: 0.7;
+        }
+
+        /*
+        ============================================================================
+        HEADER - Standard with Circadian Badge
+        ============================================================================
+        */
+        .header {
+            background-color: var(--color-primary);
+            padding: var(--space-4) var(--space-6);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            color: var(--color-white);
+            font-weight: 600;
+            font-size: var(--font-size-lg);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--color-white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .circadian-badge {
+            font-size: var(--font-size-xs);
+            background: rgba(255,255,255,0.2);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+            margin-left: var(--space-2);
+            opacity: 0.8;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: var(--space-6);
+        }
+
+        .nav-item {
+            color: var(--color-white);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            opacity: 0.9;
+        }
+
+        .nav-item.active {
+            background: var(--color-white);
+            color: var(--color-primary);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--color-white);
+            cursor: pointer;
+            padding: var(--space-2);
+            border-radius: var(--radius-md);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--color-white);
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--color-gray-300);
+            border-radius: 50%;
+            border: 2px solid var(--color-white);
+        }
+
+        /* Expertise indicator in header */
+        .expertise-indicator {
+            font-size: var(--font-size-xs);
+            background: rgba(255,255,255,0.15);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+            margin-left: var(--space-2);
+        }
+
+        /*
+        ============================================================================
+        MAIN CONTENT
+        ============================================================================
+        */
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-8);
+            transition: background 0.5s ease;
+        }
+
+        /*
+        ============================================================================
+        DIVERGENT: THREE ENTRY POINTS
+        ============================================================================
+        Chapter 6 Implementation: Choose your journey
+        Users can enter the dashboard with different intents
+        */
+        .entry-points {
+            display: flex;
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+            padding: var(--space-4);
+            background: var(--color-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .entry-point {
+            flex: 1;
+            padding: var(--space-4);
+            border-radius: var(--radius-md);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .entry-point:hover {
+            background: var(--color-gray-50);
+            border-color: var(--color-primary-light);
+        }
+
+        .entry-point.active {
+            background: rgba(91, 95, 207, 0.1);
+            border-color: var(--color-primary);
+        }
+
+        .entry-point-icon {
+            font-size: 24px;
+            margin-bottom: var(--space-2);
+        }
+
+        .entry-point-label {
+            font-weight: 600;
+            color: var(--color-gray-800);
+            font-size: var(--font-size-sm);
+        }
+
+        .entry-point-desc {
+            font-size: var(--font-size-xs);
+            color: var(--color-gray-500);
+            margin-top: var(--space-1);
+        }
+
+        /*
+        ============================================================================
+        WELCOME SECTION with Anti-Celebration
+        ============================================================================
+        Chapter 1 Implementation: Encourage at task START
+        */
+        .welcome-section {
+            margin-bottom: var(--space-6);
+        }
+
+        .welcome-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .welcome-text h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-2);
+        }
+
+        .welcome-status {
+            font-size: var(--font-size-base);
+            color: var(--color-gray-600);
+        }
+
+        .welcome-status .highlight {
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+
+        /* Streak indicator - Chapter 4: Crescendo */
+        .streak-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+            color: var(--color-white);
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            margin-top: var(--space-2);
+            animation: streak-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes streak-glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(91, 95, 207, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(91, 95, 207, 0.5); }
+        }
+
+        .streak-indicator[data-streak="0"] {
+            display: none;
+        }
+
+        .welcome-actions {
+            display: flex;
+            gap: var(--space-3);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-3) var(--space-5);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--color-white);
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+        }
+
+        /*
+        ============================================================================
+        DIVERGENT: ANTI-CELEBRATION ENCOURAGEMENT
+        ============================================================================
+        When user STARTS a difficult task, show warm encouragement
+        */
+        .anti-celebration-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(49, 19, 93, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .anti-celebration-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .anti-celebration-content {
+            text-align: center;
+            color: var(--color-white);
+            max-width: 400px;
+            padding: var(--space-8);
+        }
+
+        .anti-celebration-content h2 {
+            font-size: 32px;
+            font-weight: 300;
+            margin-bottom: var(--space-4);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.5s ease 0.3s forwards;
+        }
+
+        .anti-celebration-content p {
+            font-size: var(--font-size-lg);
+            opacity: 0;
+            animation: fadeUp 0.5s ease 0.5s forwards;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /*
+        ============================================================================
+        DIVERGENT: THE DRAMATIC PAUSE
+        ============================================================================
+        Chapter 1 Implementation: Signature moment for milestones
+        UI freezes momentarily to acknowledge significance
+        */
+        .dramatic-pause-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(91, 95, 207, 0);
+            pointer-events: none;
+            z-index: 999;
+            transition: background 0.3s ease;
+        }
+
+        .dramatic-pause-overlay.active {
+            background: rgba(91, 95, 207, 0.08);
+            animation: dramatic-pulse 1.5s ease;
+        }
+
+        @keyframes dramatic-pulse {
+            0%, 100% { background: rgba(91, 95, 207, 0); }
+            50% { background: rgba(91, 95, 207, 0.12); }
+        }
+
+        /*
+        ============================================================================
+        SCORECARD with Streak Glow
+        ============================================================================
+        */
+        .scorecard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+            transition: all 0.5s ease;
+        }
+
+        .scorecard-item {
+            background: var(--color-white);
+            border-radius: var(--radius-md);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scorecard-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .scorecard-item.success {
+            border-left: 4px solid var(--color-success);
+        }
+
+        .scorecard-item.warning {
+            border-left: 4px solid var(--color-warning);
+        }
+
+        /* Streak glow effect - Chapter 4: Crescendo */
+        .scorecard-item.has-streak::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(91, 95, 207, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+            animation: streak-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes streak-pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .scorecard-label {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-500);
+            margin-bottom: var(--space-2);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .scorecard-value {
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-2);
+        }
+
+        .scorecard-comparison {
+            font-size: var(--font-size-xs);
+            color: var(--color-gray-500);
+        }
+
+        .scorecard-comparison .positive {
+            color: var(--color-success);
+        }
+
+        .scorecard-benchmark {
+            font-size: var(--font-size-xs);
+            color: var(--color-gray-400);
+            margin-top: var(--space-1);
+        }
+
+        /*
+        ============================================================================
+        PRIORITY QUEUE with Time-Sensitive Emphasis
+        ============================================================================
+        */
+        .priority-queue {
+            background: var(--color-white);
+            border-radius: var(--radius-md);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--space-6);
+            transition: all 0.5s ease;
+        }
+
+        .priority-queue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-4);
+        }
+
+        .priority-queue-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .priority-badge {
+            background: var(--color-danger);
+            color: var(--color-white);
+            font-size: var(--font-size-xs);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+        }
+
+        .priority-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-2);
+            transition: all 0.2s ease;
+        }
+
+        .priority-item:hover {
+            background: var(--color-gray-50);
+        }
+
+        .priority-item.urgent {
+            background: rgba(220, 38, 38, 0.08);
+            border-left: 3px solid var(--color-danger);
+        }
+
+        .priority-item.warning {
+            background: rgba(217, 119, 6, 0.08);
+            border-left: 3px solid var(--color-warning);
+        }
+
+        .priority-item.info {
+            background: rgba(91, 95, 207, 0.08);
+            border-left: 3px solid var(--color-primary-light);
+        }
+
+        .priority-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .priority-icon.urgent { background: var(--color-danger); color: white; }
+        .priority-icon.warning { background: var(--color-warning); color: white; }
+        .priority-icon.info { background: var(--color-primary-light); color: white; }
+
+        .priority-content {
+            flex: 1;
+        }
+
+        .priority-title {
+            font-weight: 500;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-1);
+        }
+
+        .priority-meta {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-500);
+        }
+
+        .priority-time.urgent {
+            color: var(--color-danger);
+            font-weight: 500;
+        }
+
+        /*
+        ============================================================================
+        DIVERGENT: SLOW TRIGGER BUTTONS
+        ============================================================================
+        Chapter 2 Implementation: Hold-to-confirm for destructive actions
+        Prevents accidental or rage-click mistakes
+        */
+        .slow-trigger-btn {
+            position: relative;
+            overflow: hidden;
+            background: var(--color-white);
+            border: 1px solid var(--color-danger);
+            color: var(--color-danger);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .slow-trigger-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--color-danger);
+            transition: width 0s linear;
+            z-index: 0;
+        }
+
+        .slow-trigger-btn.holding::before {
+            width: 100%;
+            transition: width 2s linear;
+        }
+
+        .slow-trigger-btn.holding {
+            color: var(--color-white);
+        }
+
+        .slow-trigger-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .slow-trigger-hint {
+            font-size: var(--font-size-xs);
+            color: var(--color-gray-400);
+            margin-top: var(--space-1);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .slow-trigger-btn:hover + .slow-trigger-hint,
+        .slow-trigger-btn.holding + .slow-trigger-hint {
+            opacity: 1;
+        }
+
+        /* Standard action button */
+        .btn-action {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-action:hover {
+            background: var(--color-primary-dark);
+        }
+
+        /*
+        ============================================================================
+        DIVERGENT: NO-DEFAULT COMMITMENT MODAL
+        ============================================================================
+        Chapter 3 Implementation: Force conscious choice for critical decisions
+        */
+        .commitment-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .commitment-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .commitment-content {
+            background: var(--color-white);
+            border-radius: var(--radius-lg);
+            padding: var(--space-8);
+            max-width: 480px;
+            width: 90%;
+        }
+
+        .commitment-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-4);
+        }
+
+        .commitment-desc {
+            color: var(--color-gray-600);
+            margin-bottom: var(--space-6);
+        }
+
+        .commitment-options {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+            margin-bottom: var(--space-6);
+        }
+
+        .commitment-option {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-4);
+            border: 2px solid var(--color-gray-200);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .commitment-option:hover {
+            border-color: var(--color-primary-light);
+            background: var(--color-gray-50);
+        }
+
+        .commitment-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(91, 95, 207, 0.05);
+        }
+
+        .commitment-option input {
+            display: none;
+        }
+
+        .commitment-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--color-gray-300);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .commitment-option.selected .commitment-radio {
+            border-color: var(--color-primary);
+        }
+
+        .commitment-option.selected .commitment-radio::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: var(--color-primary);
+            border-radius: 50%;
+        }
+
+        .commitment-text {
+            flex: 1;
+        }
+
+        .commitment-text strong {
+            display: block;
+            color: var(--color-gray-800);
+        }
+
+        .commitment-text span {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-500);
+        }
+
+        .commitment-submit {
+            width: 100%;
+            padding: var(--space-4);
+            background: var(--color-gray-200);
+            color: var(--color-gray-400);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-base);
+            font-weight: 500;
+            cursor: not-allowed;
+            transition: all 0.2s ease;
+        }
+
+        .commitment-submit.enabled {
+            background: var(--color-primary);
+            color: var(--color-white);
+            cursor: pointer;
+        }
+
+        .commitment-submit.enabled:hover {
+            background: var(--color-primary-dark);
+        }
+
+        /*
+        ============================================================================
+        DIVERGENT: TRANSPARENT CONSEQUENCES
+        ============================================================================
+        Chapter 3 Implementation: Show WHY, not just WHAT
+        */
+        .consequence-warning {
+            background: rgba(217, 119, 6, 0.1);
+            border: 1px solid var(--color-warning);
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+            margin-bottom: var(--space-4);
+            display: none;
+        }
+
+        .consequence-warning.visible {
+            display: block;
+        }
+
+        .consequence-warning h4 {
+            color: var(--color-warning);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+        }
+
+        .consequence-warning p {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-700);
+        }
+
+        .consequence-warning .stat {
+            font-weight: 600;
+            color: var(--color-warning);
+        }
+
+        /*
+        ============================================================================
+        LISTINGS SECTION
+        ============================================================================
+        */
+        .listings-section {
+            margin-bottom: var(--space-8);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-4);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+        }
+
+        .listing-card {
+            background: var(--color-white);
+            border-radius: var(--radius-md);
+            padding: var(--space-5);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--space-4);
+            transition: all 0.3s ease;
+        }
+
+        .listing-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .listing-main {
+            display: flex;
+            gap: var(--space-5);
+            margin-bottom: var(--space-4);
+        }
+
+        .listing-image {
+            width: 120px;
+            height: 90px;
+            background: var(--color-gray-200);
+            border-radius: var(--radius-md);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-gray-400);
+        }
+
+        .listing-info {
+            flex: 1;
+        }
+
+        .listing-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-1);
+        }
+
+        .listing-location {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-500);
+            margin-bottom: var(--space-3);
+        }
+
+        .listing-health {
+            display: flex;
+            gap: var(--space-4);
+            flex-wrap: wrap;
+        }
+
+        .health-indicator {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: var(--font-size-sm);
+        }
+
+        .health-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .health-dot.success { background: var(--color-success); }
+        .health-dot.warning { background: var(--color-warning); }
+        .health-dot.danger { background: var(--color-danger); }
+
+        .completion-meter {
+            margin-bottom: var(--space-4);
+        }
+
+        .completion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-2);
+        }
+
+        .completion-label {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-600);
+        }
+
+        .completion-value {
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+        }
+
+        .completion-value.success { color: var(--color-success); }
+        .completion-value.warning { color: var(--color-warning); }
+
+        .completion-bar {
+            height: 6px;
+            background: var(--color-gray-200);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .completion-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .completion-fill.success { background: var(--color-success); }
+        .completion-fill.warning { background: var(--color-warning); }
+
+        .listing-actions {
+            display: flex;
+            gap: var(--space-3);
+            flex-wrap: wrap;
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--color-gray-100);
+            align-items: center;
+        }
+
+        .proposal-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .proposal-badge.urgent {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--color-danger);
+        }
+
+        .proposal-badge.normal {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .listing-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            border: none;
+        }
+
+        .listing-action-btn.primary {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .listing-action-btn.secondary {
+            background: var(--color-white);
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+        }
+
+        /*
+        ============================================================================
+        DIVERGENT: FEEDBACK TOAST SYSTEM
+        ============================================================================
+        Chapter 4 Implementation: Expertise-adaptive feedback
+        */
+        .feedback-toast-container {
+            position: fixed;
+            bottom: var(--space-6);
+            right: var(--space-6);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+
+        .feedback-toast {
+            background: var(--color-gray-800);
+            color: var(--color-white);
+            padding: var(--space-4);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            transform: translateX(120%);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            max-width: 320px;
+        }
+
+        .feedback-toast.visible {
+            transform: translateX(0);
+        }
+
+        .feedback-toast.success {
+            border-left: 4px solid var(--color-success);
+        }
+
+        .feedback-toast.empathic {
+            background: var(--color-primary-dark);
+            border-left: 4px solid var(--color-empathy);
+        }
+
+        /*
+        ============================================================================
+        DIVERGENT: HESITATION DETECTOR OVERLAY
+        ============================================================================
+        Chapter 5 Implementation: Help appears when user hesitates
+        */
+        .hesitation-help {
+            position: fixed;
+            bottom: var(--space-8);
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--color-primary);
+            color: var(--color-white);
+            padding: var(--space-4) var(--space-6);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .hesitation-help.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+
+        .hesitation-help-dismiss {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-sm);
+            margin-top: var(--space-3);
+            cursor: pointer;
+        }
+
+        /*
+        ============================================================================
+        RESPONSIVE
+        ============================================================================
+        */
+        @media (max-width: 768px) {
+            .main {
+                padding: var(--space-4);
+            }
+
+            .scorecard {
+                grid-template-columns: 1fr;
+            }
+
+            .entry-points {
+                flex-direction: column;
+            }
+
+            .welcome-header {
+                flex-direction: column;
+                gap: var(--space-4);
+            }
+
+            .listing-main {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body data-expertise="novice" class="circadian-day">
+
+    <!-- DIVERGENT: Dramatic Pause Overlay (Chapter 1) -->
+    <div class="dramatic-pause-overlay" id="dramaticPause"></div>
+
+    <!-- DIVERGENT: Anti-Celebration Overlay (Chapter 1) -->
+    <div class="anti-celebration-overlay" id="antiCelebration">
+        <div class="anti-celebration-content">
+            <h2>Brave. Let's do this.</h2>
+            <p>Starting is the hardest part. We're here with you.</p>
+        </div>
+    </div>
+
+    <!-- DIVERGENT: No-Default Commitment Modal (Chapter 3) -->
+    <div class="commitment-modal" id="commitmentModal">
+        <div class="commitment-content">
+            <h2 class="commitment-title">What's your response time commitment?</h2>
+            <p class="commitment-desc">This choice shapes your dashboard priorities. There's no "right" answer - only what works for you.</p>
+
+            <div class="commitment-options">
+                <label class="commitment-option" onclick="selectCommitment(this)">
+                    <input type="radio" name="commitment" value="fast">
+                    <div class="commitment-radio"></div>
+                    <div class="commitment-text">
+                        <strong>Lightning Fast (< 2 hours)</strong>
+                        <span>Best for professional hosts. Highest booking rates.</span>
+                    </div>
+                </label>
+
+                <label class="commitment-option" onclick="selectCommitment(this)">
+                    <input type="radio" name="commitment" value="same-day">
+                    <div class="commitment-radio"></div>
+                    <div class="commitment-text">
+                        <strong>Same Day (< 12 hours)</strong>
+                        <span>Balanced approach. Good for part-time hosts.</span>
+                    </div>
+                </label>
+
+                <label class="commitment-option" onclick="selectCommitment(this)">
+                    <input type="radio" name="commitment" value="relaxed">
+                    <div class="commitment-radio"></div>
+                    <div class="commitment-text">
+                        <strong>Relaxed (< 24 hours)</strong>
+                        <span>Lower pressure. May affect booking conversion.</span>
+                    </div>
+                </label>
+            </div>
+
+            <button class="commitment-submit" id="commitmentSubmit" disabled onclick="submitCommitment()">
+                Make This My Commitment
+            </button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#31135D" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M8 12h8M12 8v8"/>
+                </svg>
+            </div>
+            Split Lease
+            <span class="circadian-badge" id="circadianBadge">Day Mode</span>
+        </div>
+
+        <nav class="header-nav">
+            <a href="#" class="nav-item">Host with Us</a>
+            <a href="#" class="nav-item active">Host Overview</a>
+        </nav>
+
+        <div class="header-actions">
+            <button class="icon-btn" aria-label="Messages">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                </svg>
+            </button>
+            <div class="user-menu">
+                <div class="avatar"></div>
+                <span>Rod</span>
+                <span class="expertise-indicator" id="expertiseIndicator">New Host</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <!--
+        ============================================================================
+        DIVERGENT: THREE ENTRY POINTS (Chapter 6)
+        ============================================================================
+        Users choose their journey based on current intent
+        -->
+        <section class="entry-points">
+            <div class="entry-point active" onclick="setEntryPoint('urgent')" data-entry="urgent">
+                <div class="entry-point-icon">&#9889;</div>
+                <div class="entry-point-label">Urgent First</div>
+                <div class="entry-point-desc">Time-sensitive items prioritized</div>
+            </div>
+            <div class="entry-point" onclick="setEntryPoint('analytics')" data-entry="analytics">
+                <div class="entry-point-icon">&#128200;</div>
+                <div class="entry-point-label">Analytics View</div>
+                <div class="entry-point-desc">Performance and trends focus</div>
+            </div>
+            <div class="entry-point" onclick="setEntryPoint('optimize')" data-entry="optimize">
+                <div class="entry-point-icon">&#10024;</div>
+                <div class="entry-point-label">Optimization</div>
+                <div class="entry-point-desc">Improve your listings</div>
+            </div>
+        </section>
+
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <div class="welcome-header">
+                <div class="welcome-text">
+                    <h1>Welcome back, Rod</h1>
+                    <p class="welcome-status">
+                        You have <span class="highlight">3 proposals</span> waiting
+                        and your response rate is <span class="highlight">92%</span> this week
+                    </p>
+                    <!-- DIVERGENT: Streak Indicator (Chapter 4) -->
+                    <div class="streak-indicator" id="streakIndicator" data-streak="5">
+                        &#128293; 5-day response streak! Keep it going!
+                    </div>
+                </div>
+                <div class="welcome-actions">
+                    <button class="btn btn-primary" onclick="triggerAntiCelebration()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        Create New Listing
+                    </button>
+                    <a href="#" class="btn btn-secondary">Import Listing</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Performance Scorecard -->
+        <section class="scorecard" id="scorecard">
+            <div class="scorecard-item success has-streak" onclick="showFeedback('Response rate is excellent!', 'success')">
+                <div class="scorecard-label">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12,6 12,12 16,14"/>
+                    </svg>
+                    Response Rate
+                </div>
+                <div class="scorecard-value">92%</div>
+                <div class="scorecard-comparison">
+                    <span class="positive">+5%</span> vs. last week
+                </div>
+                <div class="scorecard-benchmark">Top hosts: 95%</div>
+            </div>
+
+            <div class="scorecard-item warning">
+                <div class="scorecard-label">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14,2 14,8 20,8"/>
+                    </svg>
+                    Listing Completeness
+                </div>
+                <div class="scorecard-value">78%</div>
+                <div class="scorecard-comparison">
+                    <span class="positive">+8%</span> vs. last month
+                </div>
+                <div class="scorecard-benchmark">Complete = 40% more bookings</div>
+            </div>
+
+            <div class="scorecard-item success">
+                <div class="scorecard-label">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                    </svg>
+                    Guest Satisfaction
+                </div>
+                <div class="scorecard-value">4.8</div>
+                <div class="scorecard-comparison">
+                    from 12 reviews
+                </div>
+                <div class="scorecard-benchmark">Platform average: 4.5</div>
+            </div>
+        </section>
+
+        <!-- Priority Queue -->
+        <section class="priority-queue" id="priorityQueue">
+            <div class="priority-queue-header">
+                <h2 class="priority-queue-title">
+                    Priority Actions
+                    <span class="priority-badge">3</span>
+                </h2>
+                <a href="#" class="btn btn-secondary" style="font-size: 14px; padding: 8px 16px;">View All</a>
+            </div>
+
+            <!-- Urgent Item -->
+            <div class="priority-item urgent">
+                <div class="priority-icon urgent">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12,6 12,12 16,14"/>
+                    </svg>
+                </div>
+                <div class="priority-content">
+                    <div class="priority-title">Respond to proposal - Stylish Private Room</div>
+                    <div class="priority-meta">
+                        <span class="priority-time urgent">Expires in 4 hours</span>
+                        - Quick responses increase bookings by 40%
+                    </div>
+                </div>
+                <div class="priority-action">
+                    <button class="btn-action" onclick="respondToProposal()">Respond Now</button>
+                </div>
+            </div>
+
+            <!-- Warning Item with Slow Trigger -->
+            <div class="priority-item warning">
+                <div class="priority-icon warning">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14,2 14,8 20,8"/>
+                    </svg>
+                </div>
+                <div class="priority-content">
+                    <div class="priority-title">Complete listing - 1 Bedroom Entire Place</div>
+                    <div class="priority-meta">
+                        Missing: Photos, amenities - Incomplete listings get 50% fewer views
+                    </div>
+                </div>
+                <div class="priority-action">
+                    <button class="btn-action" onclick="triggerAntiCelebration()">Complete</button>
+                </div>
+            </div>
+
+            <!-- Info Item -->
+            <div class="priority-item info">
+                <div class="priority-icon info">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                </div>
+                <div class="priority-content">
+                    <div class="priority-title">Update calendar - Last updated 5 days ago</div>
+                    <div class="priority-meta">
+                        Accurate calendars prevent double-bookings
+                    </div>
+                </div>
+                <div class="priority-action">
+                    <button class="btn-action">Update</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Listings Section -->
+        <section class="listings-section">
+            <div class="section-header">
+                <h2 class="section-title">Your Listings</h2>
+            </div>
+
+            <!-- DIVERGENT: Transparent Consequences Warning (Chapter 3) -->
+            <div class="consequence-warning visible" id="consequenceWarning">
+                <h4>Transparent Impact Notice</h4>
+                <p>Your "Stylish Private Room" listing is missing location data. This means it <span class="stat">won't appear in 87%</span> of guest searches. Adding a location takes ~30 seconds and typically increases visibility by <span class="stat">340%</span>.</p>
+            </div>
+
+            <!-- Listing Card 1 -->
+            <article class="listing-card">
+                <div class="listing-main">
+                    <div class="listing-image">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                            <polyline points="21,15 16,10 5,21"/>
+                        </svg>
+                    </div>
+                    <div class="listing-info">
+                        <h3 class="listing-title">Stylish Private Room In Vibrant Neighborhood</h3>
+                        <p class="listing-location" style="color: var(--color-warning);">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            Location not specified - won't appear in search
+                        </p>
+                        <div class="listing-health">
+                            <div class="health-indicator">
+                                <span class="health-dot warning"></span>
+                                <span>Calendar: 3 days old</span>
+                            </div>
+                            <div class="health-indicator">
+                                <span class="health-dot success"></span>
+                                <span>Photos: Complete</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="completion-meter">
+                    <div class="completion-header">
+                        <span class="completion-label">Listing Completeness</span>
+                        <span class="completion-value warning">65%</span>
+                    </div>
+                    <div class="completion-bar">
+                        <div class="completion-fill warning" style="width: 65%"></div>
+                    </div>
+                </div>
+
+                <div class="listing-actions">
+                    <a href="#" class="proposal-badge urgent">
+                        Proposals <strong style="margin-left: 4px;">2</strong>
+                        <span style="font-size: 12px; opacity: 0.8;">- oldest 18h</span>
+                    </a>
+                    <button class="listing-action-btn primary" onclick="triggerAntiCelebration()">Manage Listing</button>
+                    <button class="listing-action-btn secondary">Preview</button>
+
+                    <!-- DIVERGENT: Slow Trigger for Destructive Action (Chapter 2) -->
+                    <div style="margin-left: auto; text-align: right;">
+                        <button class="slow-trigger-btn"
+                                onmousedown="startSlowTrigger(this)"
+                                onmouseup="cancelSlowTrigger(this)"
+                                onmouseleave="cancelSlowTrigger(this)">
+                            <span>Unpublish Listing</span>
+                        </button>
+                        <div class="slow-trigger-hint">Hold for 2 seconds to confirm</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Listing Card 2 -->
+            <article class="listing-card">
+                <div class="listing-main">
+                    <div class="listing-image">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                            <polyline points="21,15 16,10 5,21"/>
+                        </svg>
+                    </div>
+                    <div class="listing-info">
+                        <h3 class="listing-title">1 Bedroom Entire Place in Manhattan</h3>
+                        <p class="listing-location">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            Manhattan, New York
+                        </p>
+                        <div class="listing-health">
+                            <div class="health-indicator">
+                                <span class="health-dot success"></span>
+                                <span>Calendar: Updated today</span>
+                            </div>
+                            <div class="health-indicator">
+                                <span class="health-dot success"></span>
+                                <span>House manual: Complete</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="completion-meter">
+                    <div class="completion-header">
+                        <span class="completion-label">Listing Completeness</span>
+                        <span class="completion-value success">100%</span>
+                    </div>
+                    <div class="completion-bar">
+                        <div class="completion-fill success" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <div class="listing-actions">
+                    <a href="#" class="proposal-badge normal">
+                        Proposals <strong style="margin-left: 4px;">1</strong>
+                    </a>
+                    <button class="listing-action-btn primary">Manage Listing</button>
+                    <button class="listing-action-btn secondary">Preview</button>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <!-- DIVERGENT: Feedback Toast Container (Chapter 4) -->
+    <div class="feedback-toast-container" id="toastContainer"></div>
+
+    <!-- DIVERGENT: Hesitation Help (Chapter 5) -->
+    <div class="hesitation-help" id="hesitationHelp">
+        <p><strong>Need help deciding?</strong></p>
+        <p style="font-size: 14px; margin-top: 8px;">Most hosts respond to urgent proposals first. It takes about 2 minutes.</p>
+        <button class="hesitation-help-dismiss" onclick="dismissHesitationHelp()">Got it, thanks!</button>
+    </div>
+
+    <script>
+        /*
+        ============================================================================
+        DIVERGENT MICROINTERACTIONS - JAVASCRIPT IMPLEMENTATION
+        ============================================================================
+        */
+
+        // State management
+        const state = {
+            expertiseLevel: 0, // 0-100
+            actionCount: 0,
+            streakCount: 5,
+            lastActionTime: Date.now(),
+            emotionalState: 'neutral', // neutral, triumphant, challenged
+            circadianMode: 'day',
+            hesitationTimer: null,
+            commitmentMade: false
+        };
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            initCircadianMode();
+            initHesitationDetector();
+            checkForCommitment();
+            updateExpertiseIndicator();
+        });
+
+        /*
+        ============================================================================
+        CHAPTER 5: CIRCADIAN MODE SYSTEM
+        ============================================================================
+        Time-based layout emphasis. The dashboard breathes with the day.
+        */
+        function initCircadianMode() {
+            const hour = new Date().getHours();
+            let mode, label;
+
+            if (hour >= 5 && hour < 12) {
+                mode = 'circadian-dawn';
+                label = 'Morning Mode';
+            } else if (hour >= 12 && hour < 18) {
+                mode = 'circadian-day';
+                label = 'Day Mode';
+            } else if (hour >= 18 && hour < 24) {
+                mode = 'circadian-dusk';
+                label = 'Evening Mode';
+            } else {
+                mode = 'circadian-night';
+                label = 'Night Mode';
+            }
+
+            document.body.className = document.body.className.replace(/circadian-\w+/g, '');
+            document.body.classList.add(mode);
+            state.circadianMode = mode;
+
+            document.getElementById('circadianBadge').textContent = label;
+        }
+
+        /*
+        ============================================================================
+        CHAPTER 1: THE DRAMATIC PAUSE
+        ============================================================================
+        Milestone events freeze UI momentarily. Silence as celebration.
+        */
+        function triggerDramaticPause() {
+            const overlay = document.getElementById('dramaticPause');
+            overlay.classList.add('active');
+
+            // Freeze all interactions briefly
+            document.body.style.pointerEvents = 'none';
+
+            setTimeout(() => {
+                overlay.classList.remove('active');
+                document.body.style.pointerEvents = 'auto';
+            }, 1500);
+        }
+
+        /*
+        ============================================================================
+        CHAPTER 1: ANTI-CELEBRATION
+        ============================================================================
+        Encouragement at task START, not completion. Celebrates intention.
+        */
+        function triggerAntiCelebration() {
+            const overlay = document.getElementById('antiCelebration');
+            overlay.classList.add('active');
+
+            setTimeout(() => {
+                overlay.classList.remove('active');
+            }, 2500);
+        }
+
+        /*
+        ============================================================================
+        CHAPTER 2: SLOW TRIGGER
+        ============================================================================
+        Hold-to-confirm for destructive actions. Prevents accidents.
+        */
+        let slowTriggerTimeout = null;
+
+        function startSlowTrigger(btn) {
+            btn.classList.add('holding');
+
+            slowTriggerTimeout = setTimeout(() => {
+                // Action confirmed after 2 seconds
+                btn.classList.remove('holding');
+                showFeedback('Listing unpublished. You can republish anytime.', 'empathic');
+                state.actionCount++;
+                updateExpertise();
+            }, 2000);
+        }
+
+        function cancelSlowTrigger(btn) {
+            if (slowTriggerTimeout) {
+                clearTimeout(slowTriggerTimeout);
+                slowTriggerTimeout = null;
+            }
+            btn.classList.remove('holding');
+        }
+
+        /*
+        ============================================================================
+        CHAPTER 3: NO-DEFAULT COMMITMENT
+        ============================================================================
+        Force conscious choice. No preselection on critical decisions.
+        */
+        function checkForCommitment() {
+            // In real implementation, check localStorage/API
+            if (!state.commitmentMade && !localStorage.getItem('responseCommitment')) {
+                setTimeout(() => {
+                    document.getElementById('commitmentModal').classList.add('active');
+                }, 2000);
+            }
+        }
+
+        function selectCommitment(option) {
+            document.querySelectorAll('.commitment-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            option.classList.add('selected');
+
+            const submitBtn = document.getElementById('commitmentSubmit');
+            submitBtn.classList.add('enabled');
+            submitBtn.disabled = false;
+        }
+
+        function submitCommitment() {
+            const selected = document.querySelector('.commitment-option.selected input');
+            if (selected) {
+                localStorage.setItem('responseCommitment', selected.value);
+                state.commitmentMade = true;
+                document.getElementById('commitmentModal').classList.remove('active');
+                showFeedback('Commitment saved. Your dashboard is now personalized.', 'success');
+            }
+        }
+
+        /*
+        ============================================================================
+        CHAPTER 4: EXPERTISE-ADAPTIVE FEEDBACK
+        ============================================================================
+        Feedback fades as expertise grows. Trust the user.
+        */
+        function showFeedback(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `feedback-toast ${type}`;
+            toast.textContent = message;
+
+            container.appendChild(toast);
+
+            // Trigger animation
+            requestAnimationFrame(() => {
+                toast.classList.add('visible');
+            });
+
+            // Calculate duration based on expertise
+            const baseDuration = 3000;
+            const expertiseMultiplier = 1 - (state.expertiseLevel / 200); // Faster fade for experts
+            const duration = baseDuration * Math.max(0.3, expertiseMultiplier);
+
+            setTimeout(() => {
+                toast.classList.remove('visible');
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        function updateExpertise() {
+            state.actionCount++;
+            state.expertiseLevel = Math.min(100, Math.log10(state.actionCount + 1) * 30);
+
+            let level;
+            if (state.expertiseLevel < 20) level = 'novice';
+            else if (state.expertiseLevel < 60) level = 'intermediate';
+            else level = 'expert';
+
+            document.body.setAttribute('data-expertise', level);
+            updateExpertiseIndicator();
+        }
+
+        function updateExpertiseIndicator() {
+            const indicator = document.getElementById('expertiseIndicator');
+            const level = document.body.getAttribute('data-expertise');
+
+            const labels = {
+                'novice': 'New Host',
+                'intermediate': 'Experienced',
+                'expert': 'Pro Host'
+            };
+
+            indicator.textContent = labels[level] || 'New Host';
+        }
+
+        /*
+        ============================================================================
+        CHAPTER 5: HESITATION DETECTOR
+        ============================================================================
+        If user doesn't interact for extended period, offer help.
+        */
+        function initHesitationDetector() {
+            let lastInteraction = Date.now();
+
+            document.addEventListener('mousemove', () => {
+                lastInteraction = Date.now();
+                hideHesitationHelp();
+            });
+
+            document.addEventListener('click', () => {
+                lastInteraction = Date.now();
+                hideHesitationHelp();
+            });
+
+            // Check for hesitation every 5 seconds
+            setInterval(() => {
+                const timeSinceInteraction = Date.now() - lastInteraction;
+
+                // Show help after 15 seconds of inactivity
+                if (timeSinceInteraction > 15000 && state.expertiseLevel < 50) {
+                    showHesitationHelp();
+                }
+            }, 5000);
+        }
+
+        function showHesitationHelp() {
+            document.getElementById('hesitationHelp').classList.add('visible');
+        }
+
+        function hideHesitationHelp() {
+            document.getElementById('hesitationHelp').classList.remove('visible');
+        }
+
+        function dismissHesitationHelp() {
+            hideHesitationHelp();
+        }
+
+        /*
+        ============================================================================
+        CHAPTER 6: ENTRY POINTS
+        ============================================================================
+        Three doors to the same dashboard. Choose your journey.
+        */
+        function setEntryPoint(entry) {
+            document.querySelectorAll('.entry-point').forEach(ep => {
+                ep.classList.remove('active');
+            });
+            document.querySelector(`[data-entry="${entry}"]`).classList.add('active');
+
+            // Adjust UI emphasis based on entry point
+            const priorityQueue = document.getElementById('priorityQueue');
+            const scorecard = document.getElementById('scorecard');
+
+            switch(entry) {
+                case 'urgent':
+                    priorityQueue.style.transform = 'scale(1.02)';
+                    scorecard.style.opacity = '0.9';
+                    break;
+                case 'analytics':
+                    scorecard.style.transform = 'scale(1.02)';
+                    priorityQueue.style.opacity = '0.9';
+                    break;
+                case 'optimize':
+                    document.getElementById('consequenceWarning').classList.add('visible');
+                    break;
+            }
+
+            // Reset others
+            setTimeout(() => {
+                priorityQueue.style.transform = '';
+                scorecard.style.transform = '';
+                priorityQueue.style.opacity = '';
+                scorecard.style.opacity = '';
+            }, 2000);
+        }
+
+        /*
+        ============================================================================
+        CHAPTER 6: EMOTIONAL STATE
+        ============================================================================
+        Recent events affect UI tone.
+        */
+        function setEmotionalState(emotion) {
+            document.body.classList.remove('emotional-triumphant', 'emotional-challenged');
+
+            if (emotion !== 'neutral') {
+                document.body.classList.add(`emotional-${emotion}`);
+            }
+
+            state.emotionalState = emotion;
+
+            // Emotional state fades after 30 minutes
+            setTimeout(() => {
+                document.body.classList.remove(`emotional-${emotion}`);
+                state.emotionalState = 'neutral';
+            }, 30 * 60 * 1000);
+        }
+
+        /*
+        ============================================================================
+        PROPOSAL RESPONSE ACTION
+        ============================================================================
+        Demonstrates multiple divergent patterns working together.
+        */
+        function respondToProposal() {
+            // Track action
+            state.actionCount++;
+            updateExpertise();
+
+            // Increment streak
+            state.streakCount++;
+            document.getElementById('streakIndicator').setAttribute('data-streak', state.streakCount);
+            document.getElementById('streakIndicator').innerHTML =
+                `&#128293; ${state.streakCount}-day response streak! Keep it going!`;
+
+            // If first proposal, trigger dramatic pause (signature moment)
+            if (state.actionCount === 1) {
+                triggerDramaticPause();
+                setTimeout(() => {
+                    setEmotionalState('triumphant');
+                    showFeedback('First proposal responded! This is your moment.', 'success');
+                }, 1600);
+            } else {
+                showFeedback('Proposal response sent.', 'success');
+            }
+        }
+
+        /*
+        ============================================================================
+        ANALYTICS / EVENT TRACKING
+        ============================================================================
+        Track divergent interactions for analysis.
+        */
+        function trackEvent(eventName, properties) {
+            console.log('Divergent Interaction:', eventName, properties);
+            // In production: send to analytics
+        }
+    </script>
+</body>
+</html>

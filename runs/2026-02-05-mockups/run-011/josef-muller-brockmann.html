@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Overview - Split Lease (Lean UX Redesign)</title>
+
+    <!--
+    ============================================================================
+    LEAN UX REDESIGN: HOST OVERVIEW DASHBOARD
+    ============================================================================
+    Agent: Josef Muller-Brockmann
+    Date: 2026-02-05
+    Framework: Lean UX - Part 1: The Foundations
+
+    CORE PRINCIPLE APPLIED:
+    "Features and services are outputs. The business goals they are meant to
+    achieve are outcomes. Lean UX measures progress in terms of explicitly
+    defined business outcomes." (p.8)
+
+    This redesign transforms the dashboard from OUTPUT-FOCUSED (showing features)
+    to OUTCOME-FOCUSED (driving host behaviors).
+
+    TARGET OUTCOMES:
+    1. Hosts respond to proposals within 24 hours
+    2. Hosts complete their listing profiles to 100%
+    3. Hosts achieve high guest satisfaction scores
+    ============================================================================
+    -->
+
+    <style>
+        /*
+        ============================================================================
+        UNIFIED DESIGN TOKENS - Split Lease Design System
+        ============================================================================
+        Source: UI-Consistency-Audit-Final-Report.md
+        Updated: 2026-02-05
+
+        These tokens ensure consistency across the entire Split Lease platform.
+        All components should reference these variables instead of hardcoded values.
+        ============================================================================
+        */
+        :root {
+            /* Brand Colors */
+            --color-primary: #31135D;
+            --color-primary-dark: #1F0D3D;
+            --color-primary-light: #5B5FCF;
+
+            /* Semantic Colors */
+            --color-success: #5B5FCF;
+            --color-warning: #D97706;
+            --color-danger: #DC2626;
+
+            /* Neutrals */
+            --color-gray-50: #F9FAFB;
+            --color-gray-100: #F3F4F6;
+            --color-gray-200: #E5E7EB;
+            --color-gray-300: #D1D5DB;
+            --color-gray-500: #6B7280;
+            --color-gray-700: #374151;
+            --color-gray-800: #1F2937;
+
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+
+            /* Shadows (elevation system) */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.16);
+
+            /* Additional tokens for backwards compatibility */
+            --color-white: #FFFFFF;
+            --color-gray-400: #9CA3AF;
+            --color-gray-600: #4B5563;
+            --color-gray-900: #111827;
+
+            /* Semantic Colors - Light variants */
+            --color-success-light: #D1FAE5;
+            --color-warning-light: #FEF3C7;
+            --color-danger-light: #FEE2E2;
+            --color-info: #2563EB;
+            --color-info-light: #DBEAFE;
+
+            /* Spacing - 8pt Grid */
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --space-6: 24px;
+            --space-8: 32px;
+            --space-10: 40px;
+            --space-12: 48px;
+
+            /* Typography */
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-size-xs: 12px;
+            --font-size-sm: 14px;
+            --font-size-base: 16px;
+            --font-size-lg: 18px;
+            --font-size-xl: 24px;
+            --font-size-2xl: 32px;
+            --font-size-3xl: 30px;
+
+            /* Border Radius - Extended */
+            --radius-xl: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--color-gray-50);
+            color: var(--color-gray-800);
+            line-height: 1.5;
+        }
+
+        /* Header */
+        .header {
+            background-color: var(--color-primary);
+            padding: var(--space-4) var(--space-6);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            color: var(--color-white);
+            font-weight: 600;
+            font-size: var(--font-size-lg);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--color-white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: var(--space-6);
+        }
+
+        .nav-item {
+            color: var(--color-white);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+
+        .nav-item:hover {
+            opacity: 1;
+        }
+
+        .nav-item.active {
+            background: var(--color-white);
+            color: var(--color-primary);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--color-white);
+            cursor: pointer;
+            padding: var(--space-2);
+            border-radius: var(--radius-md);
+            transition: background 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--color-white);
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--color-gray-300);
+            border-radius: 50%;
+            border: 2px solid var(--color-white);
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-8);
+        }
+
+        /*
+        ============================================================================
+        COMPONENT: Welcome Section with Status Summary
+        ============================================================================
+        LEAN UX p.10: "Shared understanding is the currency of Lean UX. The more
+        a team collectively understands what it's doing and why, the less it has
+        to depend on secondhand reports and detailed documents."
+
+        OUTCOME: Hosts immediately understand their current status and what needs
+        attention. This drives faster orientation and action.
+
+        HYPOTHESIS: We believe including status in the welcome will reduce
+        time-to-first-action by 20%.
+        ============================================================================
+        */
+        .welcome-section {
+            margin-bottom: var(--space-8);
+        }
+
+        .welcome-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-6);
+        }
+
+        .welcome-text h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-2);
+        }
+
+        .welcome-status {
+            font-size: var(--font-size-base);
+            color: var(--color-gray-600);
+        }
+
+        .welcome-status .highlight {
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+
+        .welcome-actions {
+            display: flex;
+            gap: var(--space-3);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-3) var(--space-5);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--color-white);
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-gray-50);
+        }
+
+        /* Success/Confirm Button - per design system (indigo) */
+        .btn-success {
+            background: var(--color-success);
+            color: var(--color-white);
+            border: none;
+        }
+
+        .btn-success:hover {
+            background: #4A4AB8;
+        }
+
+        /* Destructive Button - per design system */
+        .btn-danger {
+            background: var(--color-white);
+            color: var(--color-danger);
+            border: 1px solid var(--color-danger);
+        }
+
+        .btn-danger:hover {
+            background: var(--color-danger-light);
+        }
+
+        /*
+        ============================================================================
+        COMPONENT: Performance Scorecard
+        ============================================================================
+        LEAN UX p.8: "Features and services are outputs. The business goals they
+        are meant to achieve are outcomes. Lean UX measures progress in terms of
+        explicitly defined business outcomes."
+
+        OUTCOME: Host awareness of performance metrics drives behavior improvement.
+        Hosts who see their metrics improve response rates, completion, and
+        satisfaction.
+
+        HYPOTHESIS: We believe showing performance metrics will result in 15%
+        better host behavior. We will know this is true when hosts with scorecard
+        visibility show improved metrics vs. control group.
+
+        A/B TEST: This component is wrapped in a feature flag for testing.
+        ============================================================================
+        */
+        .scorecard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-4);
+            margin-bottom: var(--space-8);
+        }
+
+        .scorecard-item {
+            background: var(--color-white);
+            border-radius: var(--radius-md);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-sm);
+            border: none;
+            transition: box-shadow 0.2s, transform 0.2s;
+            cursor: pointer;
+        }
+
+        .scorecard-item:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .scorecard-item.success {
+            border-left: 4px solid var(--color-success);
+        }
+
+        .scorecard-item.warning {
+            border-left: 4px solid var(--color-warning);
+        }
+
+        .scorecard-item.danger {
+            border-left: 4px solid var(--color-danger);
+        }
+
+        .scorecard-label {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-500);
+            margin-bottom: var(--space-2);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .scorecard-value {
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-2);
+        }
+
+        .scorecard-comparison {
+            font-size: var(--font-size-xs);
+            color: var(--color-gray-500);
+        }
+
+        .scorecard-comparison .positive {
+            color: var(--color-success);
+        }
+
+        .scorecard-comparison .negative {
+            color: var(--color-danger);
+        }
+
+        .scorecard-benchmark {
+            font-size: var(--font-size-xs);
+            color: var(--color-gray-400);
+            margin-top: var(--space-1);
+        }
+
+        /*
+        ============================================================================
+        COMPONENT: Priority Action Queue
+        ============================================================================
+        LEAN UX p.9: "Team resources are limited. The more waste the team can
+        eliminate, the faster they can move."
+
+        OUTCOME: Hosts complete critical actions promptly. By prioritizing
+        time-sensitive items, we reduce missed deadlines and improve outcomes.
+
+        HYPOTHESIS: We believe prioritized actions will increase critical action
+        completion by 30%. We will know this is true when urgent item completion
+        rate improves.
+        ============================================================================
+        */
+        .priority-queue {
+            background: var(--color-white);
+            border-radius: var(--radius-md);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-sm);
+            border: none;
+            margin-bottom: var(--space-8);
+        }
+
+        .priority-queue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-4);
+        }
+
+        .priority-queue-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .priority-badge {
+            background: var(--color-danger);
+            color: var(--color-white);
+            font-size: var(--font-size-xs);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+        }
+
+        .priority-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-2);
+            transition: background 0.2s;
+        }
+
+        .priority-item:hover {
+            background: var(--color-gray-50);
+        }
+
+        .priority-item.urgent {
+            background: var(--color-danger-light);
+            border-left: 3px solid var(--color-danger);
+        }
+
+        .priority-item.warning {
+            background: var(--color-warning-light);
+            border-left: 3px solid var(--color-warning);
+        }
+
+        .priority-item.info {
+            background: var(--color-info-light);
+            border-left: 3px solid var(--color-info);
+        }
+
+        .priority-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .priority-icon.urgent {
+            background: var(--color-danger);
+            color: var(--color-white);
+        }
+
+        .priority-icon.warning {
+            background: var(--color-warning);
+            color: var(--color-white);
+        }
+
+        .priority-icon.info {
+            background: var(--color-info);
+            color: var(--color-white);
+        }
+
+        .priority-content {
+            flex: 1;
+        }
+
+        .priority-title {
+            font-weight: 500;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-1);
+        }
+
+        .priority-meta {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-500);
+        }
+
+        .priority-time {
+            font-weight: 500;
+        }
+
+        .priority-time.urgent {
+            color: var(--color-danger);
+        }
+
+        .priority-action {
+            flex-shrink: 0;
+        }
+
+        .btn-action {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-action:hover {
+            background: var(--color-primary-dark);
+        }
+
+        /*
+        ============================================================================
+        COMPONENT: Contextual Guidance Banner
+        ============================================================================
+        LEAN UX p.10-11: "Externalizing gets ideas out of teammates' heads and on
+        to the wall, allowing everyone to see where the team stands. It creates a
+        passive, ambient flow of information across the team."
+
+        OUTCOME: Reduced confusion; increased feature discovery. Contextual tips
+        help hosts understand what to do and why it matters.
+
+        HYPOTHESIS: We believe contextual tips will improve feature discovery by
+        35% and reduce support tickets by 20%.
+        ============================================================================
+        */
+        .guidance-banner {
+            background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+            border-radius: var(--radius-md);
+            padding: var(--space-5);
+            margin-bottom: var(--space-8);
+            color: var(--color-white);
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .guidance-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .guidance-content {
+            flex: 1;
+        }
+
+        .guidance-title {
+            font-weight: 600;
+            margin-bottom: var(--space-1);
+        }
+
+        .guidance-text {
+            font-size: var(--font-size-sm);
+            opacity: 0.9;
+        }
+
+        .guidance-dismiss {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: var(--color-white);
+            padding: var(--space-2);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .guidance-dismiss:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /*
+        ============================================================================
+        COMPONENT: Listings Section
+        ============================================================================
+        LEAN UX p.9: "Creating only the design that is necessary to move the team
+        forward and avoiding a big 'inventory' of untested and unimplemented
+        design ideas."
+
+        OUTCOME: Listings maintained at high quality. Health indicators show hosts
+        what needs attention and why.
+
+        HYPOTHESIS: We believe health indicators will increase listing update
+        frequency by 40%.
+        ============================================================================
+        */
+        .listings-section {
+            margin-bottom: var(--space-8);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-4);
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+        }
+
+        .listing-card {
+            background: var(--color-white);
+            border-radius: var(--radius-md);
+            padding: var(--space-5);
+            box-shadow: var(--shadow-sm);
+            border: none;
+            margin-bottom: var(--space-4);
+            transition: box-shadow 0.2s;
+        }
+
+        .listing-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .listing-main {
+            display: flex;
+            gap: var(--space-5);
+            margin-bottom: var(--space-4);
+        }
+
+        .listing-image {
+            width: 120px;
+            height: 90px;
+            background: var(--color-gray-200);
+            border-radius: var(--radius-md);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-gray-400);
+        }
+
+        .listing-info {
+            flex: 1;
+        }
+
+        .listing-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-1);
+        }
+
+        .listing-location {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-500);
+            margin-bottom: var(--space-3);
+        }
+
+        .listing-location.warning {
+            color: var(--color-warning);
+        }
+
+        /* Listing Health Indicators */
+        .listing-health {
+            display: flex;
+            gap: var(--space-4);
+            flex-wrap: wrap;
+        }
+
+        .health-indicator {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: var(--font-size-sm);
+        }
+
+        .health-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .health-dot.success {
+            background: var(--color-success);
+        }
+
+        .health-dot.warning {
+            background: var(--color-warning);
+        }
+
+        .health-dot.danger {
+            background: var(--color-danger);
+        }
+
+        /* Completion Meter */
+        .completion-meter {
+            margin-bottom: var(--space-4);
+        }
+
+        .completion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-2);
+        }
+
+        .completion-label {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-600);
+        }
+
+        .completion-value {
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+        }
+
+        .completion-value.success {
+            color: var(--color-success);
+        }
+
+        .completion-value.warning {
+            color: var(--color-warning);
+        }
+
+        .completion-bar {
+            height: 6px;
+            background: var(--color-gray-200);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .completion-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .completion-fill.success {
+            background: var(--color-success);
+        }
+
+        .completion-fill.warning {
+            background: var(--color-warning);
+        }
+
+        /* Listing Actions */
+        .listing-actions {
+            display: flex;
+            gap: var(--space-3);
+            flex-wrap: wrap;
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--color-gray-100);
+        }
+
+        .listing-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            border: none;
+        }
+
+        .listing-action-btn.primary {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .listing-action-btn.primary:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .listing-action-btn.secondary {
+            background: var(--color-white);
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+        }
+
+        .listing-action-btn.secondary:hover {
+            background: var(--color-gray-50);
+        }
+
+        /* Proposal Badge with Urgency */
+        .proposal-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+        }
+
+        .proposal-badge.urgent {
+            background: var(--color-danger-light);
+            color: var(--color-danger);
+        }
+
+        .proposal-badge.normal {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .proposal-count {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+        }
+
+        .proposal-badge.urgent .proposal-count {
+            background: var(--color-danger);
+            color: var(--color-white);
+        }
+
+        /* Lease Badge */
+        .lease-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            background: var(--color-success-light);
+            color: var(--color-success);
+            border: 1px solid var(--color-success);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main {
+                padding: var(--space-4);
+            }
+
+            .scorecard {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-header {
+                flex-direction: column;
+                gap: var(--space-4);
+            }
+
+            .listing-main {
+                flex-direction: column;
+            }
+
+            .listing-image {
+                width: 100%;
+                height: 160px;
+            }
+        }
+
+        /* A/B Test Container Styles */
+        .ab-test-container {
+            position: relative;
+        }
+
+        .ab-test-container::before {
+            content: attr(data-test-id);
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #FF6B6B;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: none; /* Hidden in production */
+        }
+
+        /* Show test indicators in dev mode */
+        body.dev-mode .ab-test-container::before {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!--
+    ============================================================================
+    HEADER
+    ============================================================================
+    Unchanged from original - provides consistent navigation context.
+    -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#31135D" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M8 12h8M12 8v8"/>
+                </svg>
+            </div>
+            Split Lease
+        </div>
+
+        <nav class="header-nav">
+            <a href="#" class="nav-item">Host with Us</a>
+            <a href="#" class="nav-item active">Host Overview</a>
+        </nav>
+
+        <div class="header-actions">
+            <button class="icon-btn" aria-label="Messages">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                </svg>
+            </button>
+            <div class="user-menu">
+                <div class="avatar"></div>
+                <span>Rod</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <!--
+        ============================================================================
+        WELCOME SECTION WITH STATUS SUMMARY
+        ============================================================================
+        LEAN UX p.10: "Shared understanding is the currency of Lean UX."
+
+        This element drives outcome: Immediate host orientation and understanding
+        of current status.
+
+        CHANGE FROM ORIGINAL: Added status summary to welcome message.
+        Original was just "Welcome back, Rod" - pure greeting with no action context.
+        ============================================================================
+        -->
+        <section class="welcome-section">
+            <div class="welcome-header">
+                <div class="welcome-text">
+                    <h1>Welcome back, Rod</h1>
+                    <!-- LEAN UX p.10: Status summary creates shared understanding -->
+                    <p class="welcome-status">
+                        You have <span class="highlight">3 proposals</span> waiting
+                        and your response rate is <span class="highlight">92%</span> this week
+                    </p>
+                </div>
+                <div class="welcome-actions">
+                    <a href="#" class="btn btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        Create New Listing
+                    </a>
+                    <a href="#" class="btn btn-secondary">Import Listing</a>
+                </div>
+            </div>
+        </section>
+
+        <!--
+        ============================================================================
+        PERFORMANCE SCORECARD
+        ============================================================================
+        LEAN UX p.8: "Lean UX measures progress in terms of explicitly defined
+        business outcomes."
+
+        This element drives outcome: Host awareness of performance metrics.
+
+        TESTABLE: Yes - A/B test scorecard visibility; measure behavioral change.
+
+        HYPOTHESIS: We believe showing hosts their performance metrics will result
+        in improved host behavior. We will know this is true when hosts with
+        scorecard visibility show 15% better metrics than control group.
+        ============================================================================
+        -->
+        <section class="scorecard ab-test-container" data-test-id="scorecard-v1" data-feature-flag="performance_scorecard">
+            <!-- Response Rate Metric -->
+            <!-- LEAN UX p.10: "Ultimately, the success or failure of your product isn't the team's decision-it's the customers'." -->
+            <div class="scorecard-item success">
+                <div class="scorecard-label">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12,6 12,12 16,14"/>
+                    </svg>
+                    Response Rate
+                </div>
+                <div class="scorecard-value">92%</div>
+                <div class="scorecard-comparison">
+                    <span class="positive">+5%</span> vs. last week
+                </div>
+                <div class="scorecard-benchmark">Top hosts: 95%</div>
+            </div>
+
+            <!-- Listing Completeness Metric -->
+            <!-- LEAN UX p.10: "The more a team collectively understands what it's doing and why..." -->
+            <div class="scorecard-item warning">
+                <div class="scorecard-label">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14,2 14,8 20,8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                    Listing Completeness
+                </div>
+                <div class="scorecard-value">78%</div>
+                <div class="scorecard-comparison">
+                    <span class="positive">+8%</span> vs. last month
+                </div>
+                <div class="scorecard-benchmark">Complete listings get 40% more bookings</div>
+            </div>
+
+            <!-- Guest Satisfaction Metric -->
+            <!-- LEAN UX p.9: "The goal is to understand what the users are doing with your products and why they are doing it." -->
+            <div class="scorecard-item success">
+                <div class="scorecard-label">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                    </svg>
+                    Guest Satisfaction
+                </div>
+                <div class="scorecard-value">4.8</div>
+                <div class="scorecard-comparison">
+                    from 12 reviews
+                </div>
+                <div class="scorecard-benchmark">Platform average: 4.5</div>
+            </div>
+        </section>
+
+        <!--
+        ============================================================================
+        PRIORITY ACTION QUEUE
+        ============================================================================
+        LEAN UX p.9: "The more waste the team can eliminate, the faster they can move."
+
+        This element drives outcome: Critical action completion.
+
+        TESTABLE: Yes - Measure click-through rate; action completion rate.
+
+        HYPOTHESIS: We believe prioritized actions will increase completion rate.
+        We will know this is true when critical action completion increases by 30%.
+        ============================================================================
+        -->
+        <section class="priority-queue ab-test-container" data-test-id="priority-queue-v1" data-feature-flag="priority_queue">
+            <div class="priority-queue-header">
+                <h2 class="priority-queue-title">
+                    Priority Actions
+                    <span class="priority-badge">3</span>
+                </h2>
+                <a href="#" class="btn btn-secondary" style="font-size: 14px; padding: 8px 16px;">View All</a>
+            </div>
+
+            <!-- Urgent: Proposal expiring soon -->
+            <!-- LEAN UX p.11: "The answer to most difficult questions the team will face will not be answered in a conference room. Instead, they will be answered by customers in the field." -->
+            <div class="priority-item urgent">
+                <div class="priority-icon urgent">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12,6 12,12 16,14"/>
+                    </svg>
+                </div>
+                <div class="priority-content">
+                    <div class="priority-title">Respond to proposal - Stylish Private Room</div>
+                    <div class="priority-meta">
+                        <span class="priority-time urgent">Expires in 4 hours</span>
+                        - Quick responses increase bookings by 40%
+                    </div>
+                </div>
+                <div class="priority-action">
+                    <button class="btn-action">Respond Now</button>
+                </div>
+            </div>
+
+            <!-- Warning: Incomplete listing -->
+            <div class="priority-item warning">
+                <div class="priority-icon warning">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14,2 14,8 20,8"/>
+                    </svg>
+                </div>
+                <div class="priority-content">
+                    <div class="priority-title">Complete listing - 1 Bedroom Entire Place</div>
+                    <div class="priority-meta">
+                        Missing: Photos, amenities - Incomplete listings get 50% fewer views
+                    </div>
+                </div>
+                <div class="priority-action">
+                    <button class="btn-action">Complete</button>
+                </div>
+            </div>
+
+            <!-- Info: Calendar update -->
+            <div class="priority-item info">
+                <div class="priority-icon info">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                </div>
+                <div class="priority-content">
+                    <div class="priority-title">Update calendar - Last updated 5 days ago</div>
+                    <div class="priority-meta">
+                        Accurate calendars prevent double-bookings and improve guest trust
+                    </div>
+                </div>
+                <div class="priority-action">
+                    <button class="btn-action">Update</button>
+                </div>
+            </div>
+        </section>
+
+        <!--
+        ============================================================================
+        CONTEXTUAL GUIDANCE BANNER
+        ============================================================================
+        LEAN UX p.10-11: "It inspires new ideas that build off the ones that have
+        already been shared."
+
+        This element drives outcome: Feature discovery and best practice adoption.
+
+        TESTABLE: Yes - Measure feature adoption; support ticket volume.
+
+        HYPOTHESIS: We believe contextual tips will improve feature discovery by
+        35% and reduce support tickets by 20%.
+        ============================================================================
+        -->
+        <div class="guidance-banner ab-test-container" data-test-id="guidance-v1" data-feature-flag="contextual_guidance">
+            <div class="guidance-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="16" x2="12" y2="12"/>
+                    <line x1="12" y1="8" x2="12.01" y2="8"/>
+                </svg>
+            </div>
+            <div class="guidance-content">
+                <div class="guidance-title">Tip: Hosts with house manuals have 40% fewer guest questions</div>
+                <div class="guidance-text">
+                    Create a house manual for your listings to help guests find important information like WiFi passwords, check-in instructions, and local recommendations.
+                </div>
+            </div>
+            <button class="guidance-dismiss" aria-label="Dismiss">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+
+        <!--
+        ============================================================================
+        LISTINGS SECTION WITH HEALTH INDICATORS
+        ============================================================================
+        LEAN UX p.9: "Creating only the design that is necessary to move the team
+        forward."
+
+        This element drives outcome: Listing quality maintenance.
+
+        TESTABLE: Yes - Measure listing updates frequency; quality scores.
+
+        HYPOTHESIS: We believe health indicators will increase listing update
+        frequency by 40%.
+
+        CHANGE FROM ORIGINAL: Added completion meters, urgency badges, and health
+        indicators. Original only showed static listing info with action buttons.
+        ============================================================================
+        -->
+        <section class="listings-section">
+            <div class="section-header">
+                <h2 class="section-title">Your Listings</h2>
+            </div>
+
+            <!-- Listing Card 1 - With urgent proposals -->
+            <article class="listing-card ab-test-container" data-test-id="listing-card-v1">
+                <div class="listing-main">
+                    <div class="listing-image">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                            <polyline points="21,15 16,10 5,21"/>
+                        </svg>
+                    </div>
+                    <div class="listing-info">
+                        <h3 class="listing-title">Stylish Private Room In Vibrant Neighborhood</h3>
+                        <p class="listing-location warning">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            Location not specified - won't appear in search
+                        </p>
+
+                        <!-- Health Indicators -->
+                        <!-- LEAN UX p.8: "A problem-focused team is one that has been assigned a business problem to solve." -->
+                        <div class="listing-health">
+                            <div class="health-indicator">
+                                <span class="health-dot warning"></span>
+                                <span>Calendar: 3 days old</span>
+                            </div>
+                            <div class="health-indicator">
+                                <span class="health-dot success"></span>
+                                <span>Photos: Complete</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completion Meter -->
+                <!-- LEAN UX p.10: "Shared understanding is the currency of Lean UX." -->
+                <div class="completion-meter">
+                    <div class="completion-header">
+                        <span class="completion-label">Listing Completeness</span>
+                        <span class="completion-value warning">65%</span>
+                    </div>
+                    <div class="completion-bar">
+                        <div class="completion-fill warning" style="width: 65%"></div>
+                    </div>
+                </div>
+
+                <div class="listing-actions">
+                    <!-- Urgent Proposal Badge -->
+                    <!-- LEAN UX p.11: "The answer...will be answered by customers in the field." -->
+                    <a href="#" class="proposal-badge urgent">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14,2 14,8 20,8"/>
+                        </svg>
+                        Proposals
+                        <span class="proposal-count">2</span>
+                        <span style="font-weight: 400; font-size: 12px;">- oldest 18h</span>
+                    </a>
+
+                    <a href="#" class="lease-badge">
+                        Leases
+                        <span style="font-weight: 600;">0</span>
+                    </a>
+
+                    <button class="listing-action-btn primary">Manage Listing</button>
+                    <button class="listing-action-btn secondary">Preview</button>
+                </div>
+            </article>
+
+            <!-- Listing Card 2 - Complete listing with active lease -->
+            <article class="listing-card">
+                <div class="listing-main">
+                    <div class="listing-image">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                            <polyline points="21,15 16,10 5,21"/>
+                        </svg>
+                    </div>
+                    <div class="listing-info">
+                        <h3 class="listing-title">1 Bedroom Entire Place in Manhattan</h3>
+                        <p class="listing-location">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            Manhattan, New York
+                        </p>
+
+                        <div class="listing-health">
+                            <div class="health-indicator">
+                                <span class="health-dot success"></span>
+                                <span>Calendar: Updated today</span>
+                            </div>
+                            <div class="health-indicator">
+                                <span class="health-dot success"></span>
+                                <span>House manual: Complete</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completion Meter - 100% -->
+                <div class="completion-meter">
+                    <div class="completion-header">
+                        <span class="completion-label">Listing Completeness</span>
+                        <span class="completion-value success">100%</span>
+                    </div>
+                    <div class="completion-bar">
+                        <div class="completion-fill success" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <div class="listing-actions">
+                    <a href="#" class="proposal-badge normal">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14,2 14,8 20,8"/>
+                        </svg>
+                        Proposals
+                        <span class="proposal-count">1</span>
+                    </a>
+
+                    <a href="#" class="lease-badge">
+                        Leases
+                        <span style="font-weight: 600;">1</span>
+                    </a>
+
+                    <button class="listing-action-btn primary">Manage Listing</button>
+                    <button class="listing-action-btn secondary">Preview</button>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <!--
+    ============================================================================
+    FOOTER - MINIMAL
+    ============================================================================
+    LEAN UX p.8-9: "One of the core tenets in Lean manufacturing is the removal
+    of anything that doesn't lead to the ultimate goal."
+
+    CHANGE FROM ORIGINAL: Removed duplicate import widget, company links,
+    app promos, and referral widget that don't drive host outcomes.
+
+    The dashboard is a workspace, not a marketing page.
+    ============================================================================
+    -->
+
+    <script>
+        // Feature flag simulation for A/B testing
+        // LEAN UX p.11: "Permission to fail breeds a culture of experimentation."
+        const featureFlags = {
+            performance_scorecard: true,
+            priority_queue: true,
+            contextual_guidance: true,
+            completion_meters: true,
+            urgency_badges: true
+        };
+
+        // Analytics tracking for Lean UX metrics
+        // LEAN UX p.8: "By managing to outcomes (and the progress made toward them),
+        // we gain insight into the efficacy of the features we are building."
+        function trackEvent(eventName, properties) {
+            console.log('Track:', eventName, properties);
+            // In production: send to analytics service
+        }
+
+        // Track component impressions
+        document.querySelectorAll('.ab-test-container').forEach(container => {
+            const testId = container.dataset.testId;
+            trackEvent('component_impression', { test_id: testId });
+        });
+
+        // Track button clicks
+        document.querySelectorAll('.btn-action, .listing-action-btn, .proposal-badge').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                trackEvent('action_click', {
+                    element: e.target.textContent.trim(),
+                    component: e.target.closest('.ab-test-container')?.dataset.testId
+                });
+            });
+        });
+
+        // Guidance banner dismiss
+        document.querySelector('.guidance-dismiss')?.addEventListener('click', () => {
+            document.querySelector('.guidance-banner').style.display = 'none';
+            trackEvent('guidance_dismissed', { tip_id: 'house_manual_tip' });
+        });
+    </script>
+</body>
+</html>

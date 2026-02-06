@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split Lease - Host Overview (Cognitive Science Redesign)</title>
+
+    <!--
+    ============================================================================
+    HOST OVERVIEW DASHBOARD REDESIGN
+    Based on Daniel Kahneman's "Thinking, Fast and Slow" - Part 1: Two Systems
+
+    Agent: Charles Eames
+    Date: 2026-02-05
+    Run: 011 (Deep Analysis)
+
+    CORE PRINCIPLE: "System 1 operates automatically and quickly, with little
+    or no effort and no sense of voluntary control." - Kahneman
+
+    This redesign optimizes for System 1 processing while strategically engaging
+    System 2 only for high-stakes decisions (proposals, leases).
+    ============================================================================
+    -->
+
+    <style>
+        /*
+        KAHNEMAN PRINCIPLE 6: "Cognitive ease creates trust and positive feeling"
+        KAHNEMAN PRINCIPLE 8: "Clear display reduces strain"
+
+        Using system fonts for maximum familiarity and fast rendering.
+        High contrast ratios for effortless reading.
+        */
+
+        /* ==========================================================================
+           UNIFIED DESIGN TOKENS
+           Based on UI Consistency Audit Final Report (2026-02-05)
+           ========================================================================== */
+        :root {
+            /* Brand Colors - Primary */
+            --color-primary: #31135D;
+            --color-primary-dark: #1F0D3D;
+            --color-primary-light: #5B5FCF;
+
+            /* Semantic Colors */
+            --color-success: #5B5FCF;
+            --color-warning: #D97706;
+            --color-danger: #DC2626;
+
+            /* Neutral Colors */
+            --color-gray-50: #F9FAFB;
+            --color-gray-100: #F3F4F6;
+            --color-gray-200: #E5E7EB;
+            --color-gray-300: #D1D5DB;
+            --color-gray-500: #6B7280;
+            --color-gray-700: #374151;
+            --color-gray-800: #1F2937;
+
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+
+            /* Shadows (Elevation System) */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.16);
+
+            /* Legacy variable mappings for backward compatibility */
+            --primary-purple: var(--color-primary);
+            --primary-purple-light: var(--color-primary-light);
+            --primary-purple-dark: var(--color-primary-dark);
+
+            /* Status Colors - mapped to semantic colors */
+            --success-indigo: var(--color-success);
+            --success-indigo-light: #E0E1F9;
+            --warning-amber: var(--color-warning);
+            --warning-amber-light: #FEF3C7;
+            --error-red: var(--color-danger);
+            --error-red-light: #FEE2E2;
+
+            /* Neutral Colors - legacy mappings */
+            --white: #FFFFFF;
+            --gray-50: var(--color-gray-50);
+            --gray-100: var(--color-gray-100);
+            --gray-200: var(--color-gray-200);
+            --gray-300: var(--color-gray-300);
+            --gray-400: #9CA3AF;
+            --gray-500: var(--color-gray-500);
+            --gray-600: #4B5563;
+            --gray-700: var(--color-gray-700);
+            --gray-800: var(--color-gray-800);
+            --gray-900: #111827;
+
+            /* Typography - KAHNEMAN: "Clear display reduces strain" */
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            --font-size-xs: 12px;
+            --font-size-sm: 14px;
+            --font-size-base: 16px;
+            --font-size-lg: 18px;
+            --font-size-xl: 24px;
+            --font-size-2xl: 32px;
+            --font-size-3xl: 30px;
+
+            /* Spacing - Generous whitespace reduces cognitive load */
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --space-6: 24px;
+            --space-8: 32px;
+            --space-10: 40px;
+            --space-12: 48px;
+
+            /* Legacy radius/shadow mappings */
+            --radius-xl: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: 1.6;
+            color: var(--gray-800);
+            background-color: var(--gray-50);
+            /*
+            KAHNEMAN PRINCIPLE 9: "Good mood enables System 1 reliance"
+            Light, clean background creates positive emotional state
+            */
+        }
+
+        /* ============================================================
+           HEADER - Minimal, Familiar Pattern
+           KAHNEMAN PRINCIPLE 7: "Familiarity through repetition increases belief"
+           Using standard header layout users recognize instantly
+           ============================================================ */
+
+        .header {
+            /* Design System: Header background = #31135D (purple), NOT white */
+            background: var(--color-primary);
+            padding: var(--space-4) var(--space-6);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            /*
+            KAHNEMAN: Sticky header maintains context without
+            requiring users to remember where they are (reduces working memory load)
+            */
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--white);
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-primary);
+            font-weight: 800;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--white);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .header-btn {
+            /*
+            KAHNEMAN PRINCIPLE 18: "Working memory holds 3-5 items"
+            Only 2-3 header actions visible, within cognitive budget
+            */
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: var(--white);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-lg);
+            transition: background 0.2s;
+            position: relative;
+        }
+
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .notification-badge {
+            /*
+            KAHNEMAN PRINCIPLE 11: "Surprises occur when experiences deviate from the model"
+            Badge only appears when action needed - creates appropriate surprise
+            */
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: var(--error-red);
+            color: var(--white);
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--white);
+            cursor: pointer;
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            transition: background 0.2s;
+        }
+
+        .user-menu:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--warning-amber);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+        }
+
+        /* ============================================================
+           MAIN CONTENT CONTAINER
+           KAHNEMAN PRINCIPLE 8: "Clear display reduces strain"
+           Maximum width for readability, centered layout
+           ============================================================ */
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-6);
+        }
+
+        /* ============================================================
+           WELCOME SECTION
+           KAHNEMAN PRINCIPLE 9: "Good mood enables System 1 reliance"
+           KAHNEMAN PRINCIPLE 14: "The Halo Effect extends from first impressions"
+           Warm greeting creates positive first impression
+           ============================================================ */
+
+        .welcome-section {
+            margin-bottom: var(--space-6);
+        }
+
+        .welcome-greeting {
+            /* Design System: H1 = 32px, weight 700, color #1F2937 */
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-1);
+        }
+
+        .welcome-subtext {
+            color: var(--gray-500);
+            font-size: var(--font-size-base);
+        }
+
+        /* ============================================================
+           STATUS SUMMARY - At-a-Glance Dashboard
+           KAHNEMAN PRINCIPLE 1: "System 1 operates automatically with no effort"
+           KAHNEMAN PRINCIPLE 19: "Visual processing is automatic System 1"
+
+           Numbers and icons processed instantly by System 1.
+           No reading required to understand status.
+           ============================================================ */
+
+        .status-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+
+        .status-card {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: var(--space-5);
+            box-shadow: var(--shadow-sm);
+            border: none;
+            /*
+            KAHNEMAN: Each card represents ONE piece of information.
+            "Working memory holds 3-5 items" - we show exactly 4 status cards
+            Design System: Shadow-based elevation, no borders
+            */
+        }
+
+        .status-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--space-3);
+        }
+
+        .status-card-icon.listings {
+            background: var(--color-primary);
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+            color: var(--white);
+        }
+
+        .status-card-icon.proposals {
+            /*
+            KAHNEMAN: Amber color for proposals - signals "attention needed"
+            System 1 processes color meaning instantly
+            */
+            background: var(--warning-amber-light);
+            color: var(--warning-amber);
+        }
+
+        .status-card-icon.active {
+            background: var(--success-indigo-light);
+            color: var(--success-indigo);
+        }
+
+        .status-card-icon.revenue {
+            background: var(--gray-100);
+            color: var(--gray-600);
+        }
+
+        .status-card-number {
+            /*
+            KAHNEMAN: Large numbers for instant System 1 recognition
+            "Answer to 2 + 2 = ?" is automatic - so is reading "4 listings"
+            */
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            color: var(--gray-900);
+            line-height: 1.2;
+        }
+
+        .status-card-label {
+            font-size: var(--font-size-sm);
+            color: var(--gray-500);
+            margin-top: var(--space-1);
+        }
+
+        /* ============================================================
+           ACTION REQUIRED BANNER
+           KAHNEMAN PRINCIPLE 11: "Surprises occur when experiences deviate"
+           KAHNEMAN PRINCIPLE 20: "High stakes warrant intentional System 2 friction"
+
+           This banner ONLY appears when action is truly needed.
+           Uses warm amber (not alarming red) to create appropriate urgency
+           without panic. Clicking leads to focused System 2 experience.
+           ============================================================ */
+
+        .action-banner {
+            background: linear-gradient(135deg, var(--warning-amber-light), #FEF9C3);
+            border: 1px solid var(--warning-amber);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            margin-bottom: var(--space-6);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--space-4);
+        }
+
+        .action-banner-content {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .action-banner-icon {
+            /*
+            KAHNEMAN: Pulsing animation creates "orienting response"
+            "Orienting to a loud sound is normally an involuntary operation of System 1"
+            Visual equivalent of sound - impossible to ignore
+            */
+            width: 48px;
+            height: 48px;
+            background: var(--warning-amber);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: var(--font-size-xl);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+
+        .action-banner-text h3 {
+            /* Design System: H3 = 18px, weight 600, color #1F2937 */
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-1);
+        }
+
+        .action-banner-text p {
+            font-size: var(--font-size-sm);
+            color: var(--gray-600);
+        }
+
+        .action-banner-btn {
+            /*
+            KAHNEMAN PRINCIPLE 4: "Law of Least Effort governs behavior"
+            Single, clear button - no decision paralysis
+            Design System: Primary buttons = #31135D (brand purple)
+            */
+            background: var(--color-primary);
+            color: var(--white);
+            border: none;
+            padding: var(--space-3) var(--space-6);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .action-banner-btn:hover {
+            background: var(--color-primary-dark);
+        }
+
+        /* ============================================================
+           LISTINGS SECTION
+           KAHNEMAN PRINCIPLE 18: "Working memory holds 3-5 items"
+
+           Each listing card shows MINIMAL information:
+           - Thumbnail (System 1 visual recognition)
+           - Status indicator (System 1 color processing)
+           - Title and location (minimal text)
+           - ONE primary action (no decision paralysis)
+           ============================================================ */
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-4);
+        }
+
+        .section-title {
+            /* Design System: H2 = 24px, weight 600, color #1F2937 */
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--color-gray-800);
+        }
+
+        .section-action {
+            /* Design System: Primary buttons = #31135D (brand purple) */
+            background: var(--color-primary);
+            color: var(--white);
+            border: none;
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            transition: background 0.2s;
+        }
+
+        .section-action:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .listings-grid {
+            display: grid;
+            gap: var(--space-4);
+        }
+
+        .listing-card {
+            /*
+            KAHNEMAN PRINCIPLE 6: "Cognitive ease creates trust"
+            Clean, spacious cards with clear visual hierarchy
+            Design System: Shadow-based elevation, no borders
+            */
+            background: var(--white);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: none;
+            display: grid;
+            grid-template-columns: 180px 1fr auto;
+            align-items: center;
+            transition: box-shadow 0.2s, transform 0.2s;
+            cursor: pointer;
+        }
+
+        .listing-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .listing-thumbnail {
+            /*
+            KAHNEMAN PRINCIPLE 19: "Visual processing is automatic System 1"
+            Large thumbnail for instant property recognition
+            */
+            width: 180px;
+            height: 120px;
+            background: var(--gray-200);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .listing-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .listing-status-badge {
+            /*
+            KAHNEMAN: Status badge uses color coding for System 1 processing
+            Green = good, Amber = attention, Red = urgent
+            No reading required to understand state
+            */
+            position: absolute;
+            top: var(--space-2);
+            left: var(--space-2);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .listing-status-badge.active {
+            background: var(--success-indigo);
+            color: var(--white);
+        }
+
+        .listing-status-badge.attention {
+            background: var(--warning-amber);
+            color: var(--white);
+        }
+
+        .listing-status-badge.incomplete {
+            background: var(--gray-400);
+            color: var(--white);
+        }
+
+        .listing-content {
+            padding: var(--space-4) var(--space-5);
+        }
+
+        .listing-title {
+            /* Design System: H3 = 18px, weight 600, color #1F2937 */
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-1);
+        }
+
+        .listing-location {
+            font-size: var(--font-size-sm);
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            margin-bottom: var(--space-3);
+        }
+
+        .listing-stats {
+            /*
+            KAHNEMAN: Quick stats show key metrics at a glance
+            System 1 processes numbers automatically
+            */
+            display: flex;
+            gap: var(--space-4);
+        }
+
+        .listing-stat {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            font-size: var(--font-size-sm);
+            color: var(--gray-600);
+        }
+
+        .listing-stat.highlight {
+            /*
+            KAHNEMAN PRINCIPLE 16: "Anchoring effects bias all subsequent judgments"
+            Proposal count is highlighted to anchor attention on this key metric
+            */
+            color: var(--warning-amber);
+            font-weight: 600;
+        }
+
+        .listing-actions {
+            padding: var(--space-4) var(--space-5);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+            align-items: flex-end;
+        }
+
+        .listing-primary-btn {
+            /*
+            KAHNEMAN PRINCIPLE 4: "Law of Least Effort governs behavior"
+            KAHNEMAN PRINCIPLE 17: "Defaults are sticky because System 2 won't override"
+
+            Single primary action per listing - the "default" choice
+            System 2 won't override, so make this the RIGHT action
+            Design System: Primary buttons = #31135D (brand purple)
+            */
+            background: var(--color-primary);
+            color: var(--white);
+            border: none;
+            padding: var(--space-2) var(--space-5);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            min-width: 140px;
+            text-align: center;
+        }
+
+        .listing-primary-btn:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .listing-primary-btn.attention {
+            /* Design System: Warning/attention state uses warning color */
+            background: var(--color-warning);
+        }
+
+        .listing-primary-btn.attention:hover {
+            background: #B45309;
+        }
+
+        .listing-secondary-btn {
+            /*
+            KAHNEMAN: Secondary action is visually muted
+            Progressive disclosure - details available but not prominent
+            Design System: Secondary buttons = white bg + #31135D border
+            */
+            background: var(--white);
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .listing-secondary-btn:hover {
+            background: var(--color-primary);
+            color: var(--white);
+        }
+
+        /* Progress bar for incomplete listings */
+        .listing-progress {
+            /*
+            KAHNEMAN PRINCIPLE 21: "Progress feedback creates motivation through ease"
+            Visual progress bar triggers automatic satisfaction response
+            */
+            margin-top: var(--space-3);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--gray-200);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: var(--font-size-xs);
+            color: var(--gray-500);
+            margin-top: var(--space-1);
+        }
+
+        /* ============================================================
+           SECONDARY SECTIONS (Collapsed by Default)
+           KAHNEMAN PRINCIPLE 3: "Attention is a limited, depletable resource"
+
+           Secondary content hidden to preserve attention budget.
+           Users who need it can expand; others aren't distracted.
+           ============================================================ */
+
+        .collapsible-section {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            border: none;
+            box-shadow: var(--shadow-sm);
+            margin-top: var(--space-6);
+            overflow: hidden;
+        }
+
+        .collapsible-header {
+            padding: var(--space-4) var(--space-5);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .collapsible-header:hover {
+            background: var(--gray-50);
+        }
+
+        .collapsible-title {
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            color: var(--gray-700);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .collapsible-icon {
+            color: var(--gray-400);
+            transition: transform 0.2s;
+        }
+
+        .collapsible-section.open .collapsible-icon {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-content {
+            display: none;
+            padding: 0 var(--space-5) var(--space-5);
+        }
+
+        .collapsible-section.open .collapsible-content {
+            display: block;
+        }
+
+        /* ============================================================
+           EMPTY STATE - Warm and Encouraging
+           KAHNEMAN PRINCIPLE 9: "Good mood enables System 1 reliance"
+           KAHNEMAN PRINCIPLE 10: "Positive associations prime positive behavior"
+
+           Empty states should feel like opportunities, not failures.
+           Warm copy and single CTA reduce cognitive load.
+           ============================================================ */
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-8) var(--space-4);
+        }
+
+        .empty-state-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--gray-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-4);
+            font-size: var(--font-size-2xl);
+            color: var(--gray-400);
+        }
+
+        .empty-state-title {
+            /* Design System: H3 = 18px, weight 600, color #1F2937 */
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-2);
+        }
+
+        .empty-state-text {
+            font-size: var(--font-size-sm);
+            color: var(--gray-500);
+            max-width: 300px;
+            margin: 0 auto var(--space-4);
+        }
+
+        .empty-state-btn {
+            /* Design System: Primary buttons = #31135D (brand purple) */
+            background: var(--color-primary);
+            color: var(--white);
+            border: none;
+            padding: var(--space-2) var(--space-5);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .empty-state-btn:hover {
+            background: var(--color-primary-dark);
+        }
+
+        /* ============================================================
+           PROPOSAL REVIEW MODAL (System 2 Engagement)
+           KAHNEMAN PRINCIPLE 20: "High stakes warrant intentional System 2 friction"
+           KAHNEMAN PRINCIPLE 22: "Jumping to conclusions is risky when stakes are high"
+
+           This modal intentionally engages System 2:
+           - Full-screen to eliminate distractions
+           - All relevant information visible (overcomes WYSIATI)
+           - Confirmation steps prevent hasty decisions
+           - Clear, deliberate actions
+           ============================================================ */
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-4);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            padding: var(--space-5) var(--space-6);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            /* Design System: H2 = 24px, weight 600, color #1F2937 */
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--color-gray-800);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: var(--font-size-2xl);
+            color: var(--gray-400);
+            cursor: pointer;
+            padding: var(--space-1);
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--gray-600);
+        }
+
+        .modal-body {
+            padding: var(--space-6);
+        }
+
+        .proposal-context {
+            /*
+            KAHNEMAN PRINCIPLE 12: "WYSIATI - What You See Is All There Is"
+            Show complete context to prevent jumping to conclusions
+            */
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+            margin-bottom: var(--space-5);
+        }
+
+        .proposal-context-title {
+            font-size: var(--font-size-sm);
+            color: var(--gray-500);
+            margin-bottom: var(--space-1);
+        }
+
+        .proposal-context-listing {
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .proposal-details {
+            /*
+            KAHNEMAN: Grid layout presents all information simultaneously
+            Prevents WYSIATI by showing complete picture
+            */
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-4);
+            margin-bottom: var(--space-5);
+        }
+
+        .proposal-detail {
+            padding: var(--space-3);
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+        }
+
+        .proposal-detail-label {
+            font-size: var(--font-size-xs);
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--space-1);
+        }
+
+        .proposal-detail-value {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .proposal-message {
+            margin-bottom: var(--space-5);
+        }
+
+        .proposal-message-label {
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: var(--space-2);
+        }
+
+        .proposal-message-text {
+            font-size: var(--font-size-base);
+            color: var(--gray-600);
+            line-height: 1.7;
+            padding: var(--space-4);
+            background: var(--color-gray-50);
+            border-radius: var(--radius-md);
+            border-left: 3px solid var(--color-primary);
+        }
+
+        .modal-actions {
+            /*
+            KAHNEMAN PRINCIPLE 20: "High stakes warrant intentional System 2 friction"
+            Three clear options, visually distinct
+            Accept is prominent but not automatic
+            */
+            display: flex;
+            gap: var(--space-3);
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn.decline {
+            /* Design System: Destructive buttons = #DC2626 (red outline) */
+            background: var(--white);
+            color: var(--color-danger);
+            border: 1px solid var(--color-danger);
+        }
+
+        .modal-btn.decline:hover {
+            background: var(--color-danger);
+            color: var(--white);
+        }
+
+        .modal-btn.negotiate {
+            /* Design System: Secondary buttons = white bg + #31135D border */
+            background: var(--white);
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+        }
+
+        .modal-btn.negotiate:hover {
+            background: var(--color-primary);
+            color: var(--white);
+        }
+
+        .modal-btn.accept {
+            /* Design System: Success/confirm buttons = #5B5FCF (indigo) */
+            background: var(--color-success);
+            color: var(--white);
+            border: 1px solid var(--color-success);
+        }
+
+        .modal-btn.accept:hover {
+            background: #4A4AB8;
+        }
+
+        /* ============================================================
+           RESPONSIVE DESIGN
+           KAHNEMAN: Maintain cognitive ease across all devices
+           ============================================================ */
+
+        @media (max-width: 768px) {
+            .header {
+                padding: var(--space-3) var(--space-4);
+            }
+
+            .header-left {
+                gap: var(--space-4);
+            }
+
+            .nav-link {
+                display: none;
+            }
+
+            .main-container {
+                padding: var(--space-4);
+            }
+
+            .status-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .listing-card {
+                grid-template-columns: 1fr;
+            }
+
+            .listing-thumbnail {
+                width: 100%;
+                height: 160px;
+            }
+
+            .listing-actions {
+                flex-direction: row;
+                justify-content: space-between;
+                padding-top: 0;
+            }
+
+            .action-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .action-banner-content {
+                flex-direction: column;
+            }
+
+            .proposal-details {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* ============================================================
+           UTILITY CLASSES
+           ============================================================ */
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <!--
+    KAHNEMAN PRINCIPLE 14: "The Halo Effect extends from first impressions"
+    Header creates immediate professional, trustworthy impression
+    -->
+    <header class="header">
+        <div class="header-left">
+            <a href="#" class="logo">
+                <span class="logo-icon">SL</span>
+                <span>Split Lease</span>
+            </a>
+            <nav>
+                <a href="#" class="nav-link active">Host Overview</a>
+                <a href="#" class="nav-link">My Listings</a>
+                <a href="#" class="nav-link">Calendar</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <!--
+            KAHNEMAN: Notification badge only when action needed
+            "Surprises occur when experiences deviate from the model"
+            -->
+            <button class="header-btn" aria-label="Messages">
+                <span>&#9993;</span>
+                <span class="notification-badge">2</span>
+            </button>
+            <button class="header-btn" aria-label="Notifications">
+                <span>&#128276;</span>
+            </button>
+            <div class="user-menu">
+                <span class="user-avatar">R</span>
+                <span>Rod</span>
+                <span>&#9662;</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!--
+        KAHNEMAN PRINCIPLE 9: "Good mood enables System 1 reliance"
+        Warm, personal greeting creates positive emotional state
+        -->
+        <section class="welcome-section">
+            <h1 class="welcome-greeting">Welcome back, Rod!</h1>
+            <p class="welcome-subtext">Here's how your listings are performing today.</p>
+        </section>
+
+        <!--
+        KAHNEMAN PRINCIPLE 1: "System 1 operates automatically with no effort"
+        KAHNEMAN PRINCIPLE 18: "Working memory holds 3-5 items"
+
+        Exactly 4 status cards - within cognitive capacity
+        Numbers and colors processed instantly by System 1
+        -->
+        <section class="status-summary">
+            <div class="status-card">
+                <div class="status-card-icon listings">&#127968;</div>
+                <div class="status-card-number">4</div>
+                <div class="status-card-label">Total Listings</div>
+            </div>
+            <div class="status-card">
+                <div class="status-card-icon proposals">&#128172;</div>
+                <div class="status-card-number">3</div>
+                <div class="status-card-label">New Proposals</div>
+            </div>
+            <div class="status-card">
+                <div class="status-card-icon active">&#9989;</div>
+                <div class="status-card-number">2</div>
+                <div class="status-card-label">Active Leases</div>
+            </div>
+            <div class="status-card">
+                <div class="status-card-icon revenue">&#128176;</div>
+                <div class="status-card-number">$2,400</div>
+                <div class="status-card-label">This Month</div>
+            </div>
+        </section>
+
+        <!--
+        KAHNEMAN PRINCIPLE 11: "Surprises occur when experiences deviate"
+        KAHNEMAN PRINCIPLE 20: "High stakes warrant intentional System 2 friction"
+
+        Action banner only appears when there ARE proposals to review
+        Clicking opens System 2-engaged modal for careful decision
+        -->
+        <section class="action-banner">
+            <div class="action-banner-content">
+                <div class="action-banner-icon">&#128172;</div>
+                <div class="action-banner-text">
+                    <h3>You have 3 new proposals waiting</h3>
+                    <p>Review them now to respond to potential tenants.</p>
+                </div>
+            </div>
+            <button class="action-banner-btn" onclick="openModal()">Review Proposals</button>
+        </section>
+
+        <!--
+        KAHNEMAN PRINCIPLE 4: "Law of Least Effort governs behavior"
+
+        Each listing shows ONE primary action based on current state:
+        - If proposals pending: "Review Proposals" (amber)
+        - If complete: "View Details" (purple)
+        - If incomplete: "Continue Setup" (purple)
+
+        No decision paralysis - the right action is obvious
+        -->
+        <section class="listings-section">
+            <div class="section-header">
+                <h2 class="section-title">Your Listings</h2>
+                <button class="section-action">
+                    <span>+</span>
+                    <span>Add Listing</span>
+                </button>
+            </div>
+
+            <div class="listings-grid">
+                <!-- Listing 1: Has proposals - attention state -->
+                <article class="listing-card">
+                    <div class="listing-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400');">
+                        <!--
+                        KAHNEMAN PRINCIPLE 19: "Visual processing is automatic System 1"
+                        Status badge color processed instantly
+                        -->
+                        <span class="listing-status-badge attention">2 Proposals</span>
+                    </div>
+                    <div class="listing-content">
+                        <h3 class="listing-title">Stylish Private Room in Vibrant Neighborhood</h3>
+                        <p class="listing-location">
+                            <span>&#128205;</span>
+                            Brooklyn, NY
+                        </p>
+                        <div class="listing-stats">
+                            <span class="listing-stat">
+                                <span>&#128065;</span>
+                                45 views
+                            </span>
+                            <span class="listing-stat highlight">
+                                <!--
+                                KAHNEMAN PRINCIPLE 16: "Anchoring effects bias judgment"
+                                Highlighted proposal count anchors attention appropriately
+                                -->
+                                <span>&#128172;</span>
+                                2 proposals
+                            </span>
+                        </div>
+                    </div>
+                    <div class="listing-actions">
+                        <!--
+                        KAHNEMAN PRINCIPLE 17: "Defaults are sticky"
+                        Primary button is the action they SHOULD take
+                        -->
+                        <button class="listing-primary-btn attention" onclick="openModal()">Review Proposals</button>
+                        <button class="listing-secondary-btn">View Details &#8594;</button>
+                    </div>
+                </article>
+
+                <!-- Listing 2: Active, complete -->
+                <article class="listing-card">
+                    <div class="listing-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400');">
+                        <span class="listing-status-badge active">Active</span>
+                    </div>
+                    <div class="listing-content">
+                        <h3 class="listing-title">1 Bedroom Entire Place in Manhattan</h3>
+                        <p class="listing-location">
+                            <span>&#128205;</span>
+                            Manhattan, NY
+                        </p>
+                        <div class="listing-stats">
+                            <span class="listing-stat">
+                                <span>&#128065;</span>
+                                128 views
+                            </span>
+                            <span class="listing-stat highlight">
+                                <span>&#128172;</span>
+                                1 proposal
+                            </span>
+                        </div>
+                    </div>
+                    <div class="listing-actions">
+                        <button class="listing-primary-btn attention" onclick="openModal()">Review Proposal</button>
+                        <button class="listing-secondary-btn">View Details &#8594;</button>
+                    </div>
+                </article>
+
+                <!-- Listing 3: Active, no proposals -->
+                <article class="listing-card">
+                    <div class="listing-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400');">
+                        <span class="listing-status-badge active">Active</span>
+                    </div>
+                    <div class="listing-content">
+                        <h3 class="listing-title">Cozy Studio Near Central Park</h3>
+                        <p class="listing-location">
+                            <span>&#128205;</span>
+                            Upper West Side, NY
+                        </p>
+                        <div class="listing-stats">
+                            <span class="listing-stat">
+                                <span>&#128065;</span>
+                                67 views
+                            </span>
+                            <span class="listing-stat">
+                                <span>&#128172;</span>
+                                No proposals yet
+                            </span>
+                        </div>
+                    </div>
+                    <div class="listing-actions">
+                        <button class="listing-primary-btn">View Details</button>
+                        <button class="listing-secondary-btn">Edit Listing &#8594;</button>
+                    </div>
+                </article>
+
+                <!-- Listing 4: Incomplete - shows progress -->
+                <article class="listing-card">
+                    <div class="listing-thumbnail" style="background: var(--gray-200);">
+                        <span class="listing-status-badge incomplete">Draft</span>
+                    </div>
+                    <div class="listing-content">
+                        <h3 class="listing-title">1 Bedroom Private Room in Manhattan</h3>
+                        <p class="listing-location">
+                            <span>&#128205;</span>
+                            Manhattan, NY
+                        </p>
+                        <!--
+                        KAHNEMAN PRINCIPLE 21: "Progress feedback creates motivation through ease"
+                        Progress bar shows completion visually
+                        -->
+                        <div class="listing-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 70%;"></div>
+                            </div>
+                            <p class="progress-text">70% complete - Add photos to publish</p>
+                        </div>
+                    </div>
+                    <div class="listing-actions">
+                        <button class="listing-primary-btn">Continue Setup</button>
+                        <button class="listing-secondary-btn">Preview &#8594;</button>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!--
+        KAHNEMAN PRINCIPLE 3: "Attention is a limited, depletable resource"
+
+        Secondary sections collapsed by default to preserve attention budget
+        Users who need them can expand; others aren't distracted
+        -->
+        <section class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection(this)">
+                <span class="collapsible-title">
+                    <span>&#128218;</span>
+                    House Manuals
+                </span>
+                <span class="collapsible-icon">&#9662;</span>
+            </div>
+            <div class="collapsible-content">
+                <!--
+                KAHNEMAN PRINCIPLE 9: "Good mood enables System 1 reliance"
+                Empty state is warm and encouraging, not failure-feeling
+                -->
+                <div class="empty-state">
+                    <div class="empty-state-icon">&#128218;</div>
+                    <h3 class="empty-state-title">Create Your First House Manual</h3>
+                    <p class="empty-state-text">Help guests feel at home with check-in instructions, house rules, and local tips.</p>
+                    <button class="empty-state-btn">Create Manual</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection(this)">
+                <span class="collapsible-title">
+                    <span>&#127873;</span>
+                    Refer a Friend - Earn $50
+                </span>
+                <span class="collapsible-icon">&#9662;</span>
+            </div>
+            <div class="collapsible-content">
+                <div class="empty-state">
+                    <div class="empty-state-icon">&#127873;</div>
+                    <h3 class="empty-state-title">Share Split Lease</h3>
+                    <p class="empty-state-text">Invite friends to host with Split Lease. You both get $50 when they list their first property.</p>
+                    <button class="empty-state-btn">Get Referral Link</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!--
+    ============================================================================
+    PROPOSAL REVIEW MODAL
+
+    KAHNEMAN PRINCIPLE 20: "High stakes warrant intentional System 2 friction"
+    KAHNEMAN PRINCIPLE 22: "Jumping to conclusions is risky when stakes are high"
+    KAHNEMAN PRINCIPLE 12: "WYSIATI - What You See Is All There Is"
+
+    This modal intentionally engages System 2 thinking:
+    1. Full-screen removes distractions (focus attention)
+    2. All relevant information visible (overcomes WYSIATI)
+    3. Three clear actions, none auto-selected (forces deliberation)
+    4. Confirmation would follow accept (not shown but recommended)
+    ============================================================================
+    -->
+    <div class="modal-overlay" id="proposalModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Review Proposal</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Context prevents WYSIATI -->
+                <div class="proposal-context">
+                    <p class="proposal-context-title">Proposal for</p>
+                    <p class="proposal-context-listing">Stylish Private Room in Vibrant Neighborhood</p>
+                </div>
+
+                <!--
+                All key details visible at once
+                KAHNEMAN: "System 1 is radically insensitive to both the quality
+                and the quantity of the information" - so we show EVERYTHING
+                -->
+                <div class="proposal-details">
+                    <div class="proposal-detail">
+                        <p class="proposal-detail-label">Proposed Rent</p>
+                        <p class="proposal-detail-value">$1,200/mo</p>
+                    </div>
+                    <div class="proposal-detail">
+                        <p class="proposal-detail-label">Move-in Date</p>
+                        <p class="proposal-detail-value">Mar 1, 2026</p>
+                    </div>
+                    <div class="proposal-detail">
+                        <p class="proposal-detail-label">Lease Duration</p>
+                        <p class="proposal-detail-value">6 months</p>
+                    </div>
+                    <div class="proposal-detail">
+                        <p class="proposal-detail-label">Employment</p>
+                        <p class="proposal-detail-value">Verified</p>
+                    </div>
+                </div>
+
+                <div class="proposal-message">
+                    <p class="proposal-message-label">Message from John D.</p>
+                    <p class="proposal-message-text">
+                        "Hi! I'm a remote software developer looking for a quiet space to work and live.
+                        I work from home most days and keep a tidy living space. I have excellent
+                        references from my previous landlords and a stable income. Looking forward to
+                        hearing from you!"
+                    </p>
+                </div>
+
+                <!--
+                KAHNEMAN: Three clear actions, visually distinct
+                Accept is prominent but requires deliberate click
+                No default selection - forces System 2 engagement
+                -->
+                <div class="modal-actions">
+                    <button class="modal-btn decline" onclick="closeModal()">Decline</button>
+                    <button class="modal-btn negotiate" onclick="closeModal()">Negotiate</button>
+                    <button class="modal-btn accept" onclick="closeModal()">Accept Proposal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple modal functionality
+        function openModal() {
+            document.getElementById('proposalModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('proposalModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on overlay click
+        document.getElementById('proposalModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Collapsible sections
+        function toggleSection(header) {
+            const section = header.parentElement;
+            section.classList.toggle('open');
+        }
+    </script>
+
+    <!--
+    ============================================================================
+    END OF HOST OVERVIEW REDESIGN
+
+    COGNITIVE LOAD SUMMARY:
+    - Before: 30+ decision points, cognitive overload
+    - After: 4 status cards + 1 action banner + 3-4 listing cards = ~9 primary elements
+
+    SYSTEM 1 ELEMENTS:
+    - Color-coded status badges (instant recognition)
+    - Large numbers in status cards (automatic processing)
+    - Single primary action per listing (no decision paralysis)
+    - Progress bars (visual completion feedback)
+
+    SYSTEM 2 ELEMENTS (Intentional):
+    - Proposal review modal (full information, deliberate action)
+    - Accept/Decline/Negotiate (no auto-selection)
+
+    COGNITIVE EASE FACTORS:
+    - Familiarity: Standard dashboard patterns
+    - Clarity: High contrast, generous spacing
+    - Priming: Warm colors, positive messaging
+    - Good Mood: Clean aesthetics, encouraging empty states
+
+    Every design decision is backed by cognitive science.
+    ============================================================================
+    -->
+</body>
+</html>

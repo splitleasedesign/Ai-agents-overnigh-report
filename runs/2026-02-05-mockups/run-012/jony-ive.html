@@ -1,0 +1,2379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Overview - Microinteractions Integration | Split Lease</title>
+
+    <!--
+    =====================================================================================
+                    HOST OVERVIEW - MICROINTERACTIONS INTEGRATION
+    =====================================================================================
+
+    Agent: Jony Ive (Mobile & Responsive Design)
+    Run: 012 - 2026-02-05
+    Book: Dan Saffer, "Microinteractions: Designing with Details"
+    Chapter: Chapter 6 - Putting It All Together
+    Base: Run 011 - Internal Trigger Connection Redesign
+
+    Key Integration Principles Applied:
+
+    1. UNIFIED TIMING SYSTEM (p.154)
+       "It's this overall flow that communicates how the microinteraction should feel."
+
+    2. TRIGGER HIERARCHY (p.157)
+       "Not all microinteractions are created equal. Some are important; some should be subtle."
+
+    3. FEEDBACK COORDINATION (p.157)
+       "Feedback needs to be coordinated to give the right emphasis and to keep tone consistent."
+
+    4. HANDOFF ATTENTION (p.157)
+       "Pay attention to the handoffs: what microinteraction triggers what microinteraction."
+
+    5. SIGNATURE MOMENTS (p.156)
+       "What is essential to determine is if the microinteraction should be a Signature Moment."
+
+    6. INTEGRATED WHOLE (p.157)
+       "You don't want your product to feel like a disjointed collection of tiny moments,
+        but rather like an integrated whole."
+
+    =====================================================================================
+    -->
+
+    <style>
+        /* ===========================================================================
+           UNIFIED DESIGN TOKEN SYSTEM
+           Integration - p.154: "The overall flow communicates how it should feel"
+           =========================================================================== */
+
+        :root {
+            /* -----------------------------------------------------------------------
+               ALCHEMY BRAND COLORS
+               Primary: #31135D (Deep Purple)
+               Accent: #5B5FCF (Soft Indigo)
+               ----------------------------------------------------------------------- */
+            --color-primary: #31135D;
+            --color-primary-dark: #1F0D3D;
+            --color-primary-light: #5B5FCF;
+            --color-accent: #5B5FCF;
+
+            /* Semantic Colors */
+            --color-success: #5B5FCF;      /* Uses accent indigo for success */
+            --color-warning: #D97706;
+            --color-danger: #DC2626;
+
+            /* Neutrals */
+            --color-white: #FFFFFF;
+            --color-gray-50: #F9FAFB;
+            --color-gray-100: #F3F4F6;
+            --color-gray-200: #E5E7EB;
+            --color-gray-300: #D1D5DB;
+            --color-gray-400: #9CA3AF;
+            --color-gray-500: #6B7280;
+            --color-gray-600: #4B5563;
+            --color-gray-700: #374151;
+            --color-gray-800: #1F2937;
+            --color-gray-900: #111827;
+
+            /* -----------------------------------------------------------------------
+               UNIFIED TIMING SYSTEM
+               Integration - p.154: Flow communication through consistent timing
+
+               instant:    Micro-feedback (hover highlights, focus rings)
+               fast:       Standard transitions (color changes, shadows)
+               standard:   Deliberate actions (drawer open, modal entry)
+               deliberate: Signature moments (success celebration)
+               ----------------------------------------------------------------------- */
+            --timing-instant: 100ms;
+            --timing-fast: 200ms;
+            --timing-standard: 300ms;
+            --timing-deliberate: 500ms;
+
+            /* Unified Easing - Integration - p.154 */
+            --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-enter: cubic-bezier(0, 0, 0.2, 1);
+            --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+            --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+            /* -----------------------------------------------------------------------
+               UNIFIED ANIMATION PARAMETERS
+               Integration - p.157: "Feedback needs to be coordinated"
+               ----------------------------------------------------------------------- */
+            --pulse-duration: 2s;
+            --pulse-scale-subtle: 1.02;
+            --pulse-scale-standard: 1.05;
+            --pulse-scale-urgent: 1.1;
+
+            /* -----------------------------------------------------------------------
+               TIME-DECAY URGENCY SYSTEM
+               From Run 011 + Integration refinements
+               ----------------------------------------------------------------------- */
+            --trigger-fresh: #7375D8;
+            --trigger-fresh-bg: #D1FAE5;
+            --trigger-waiting: #F59E0B;
+            --trigger-waiting-bg: #FEF3C7;
+            --trigger-urgent: #EF4444;
+            --trigger-urgent-bg: #FEE2E2;
+            --trigger-critical: var(--color-danger);
+
+            /* Reward/Success */
+            --reward-green-bg: #ECFDF5;
+            --reward-gold: #F59E0B;
+            --reward-gold-bg: #FFFBEB;
+            --reward-blue: #3B82F6;
+            --reward-blue-bg: #DBEAFE;
+
+            /* Border Radius Scale */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-full: 9999px;
+
+            /* Shadows - Integration - p.157: Hierarchy through elevation */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.16);
+            --shadow-trigger: 0 0 0 3px rgba(239, 68, 68, 0.3);
+            --shadow-focus: 0 0 0 3px rgba(91, 95, 207, 0.4);
+
+            /* Spacing */
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-2xl: 48px;
+
+            /* Touch Targets */
+            --touch-min: 44px;
+
+            /* Purple tints for subtle backgrounds */
+            --purple-50: #F3E8F3;
+        }
+
+        /* ===========================================================================
+           UNIFIED ANIMATION SYSTEM
+           Integration - p.157: Coordinated feedback for consistent emphasis
+           =========================================================================== */
+
+        /*
+         * UNIFIED PULSE ANIMATION
+         * Integration - p.157: "Feedback needs to be coordinated"
+         * Single animation with CSS variable parameters for different intensities
+         */
+        @keyframes unified-pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+                box-shadow: var(--pulse-shadow-start, none);
+            }
+            50% {
+                transform: scale(var(--pulse-scale, 1.05));
+                opacity: var(--pulse-opacity, 0.9);
+                box-shadow: var(--pulse-shadow-peak, none);
+            }
+        }
+
+        /* Pulse Intensity Tiers - Integration - p.157 */
+        .pulse-subtle {
+            --pulse-scale: 1.02;
+            --pulse-opacity: 0.95;
+            animation: unified-pulse var(--pulse-duration) var(--ease-standard) infinite;
+        }
+
+        .pulse-standard {
+            --pulse-scale: 1.05;
+            --pulse-opacity: 0.9;
+            animation: unified-pulse var(--pulse-duration) var(--ease-standard) infinite;
+        }
+
+        .pulse-urgent {
+            --pulse-scale: 1.1;
+            --pulse-opacity: 0.85;
+            --pulse-shadow-start: 0 0 0 0 rgba(239, 68, 68, 0.4);
+            --pulse-shadow-peak: 0 0 0 8px rgba(239, 68, 68, 0);
+            animation: unified-pulse var(--pulse-duration) var(--ease-standard) infinite;
+        }
+
+        /*
+         * TARGET HIGHLIGHT ANIMATION
+         * Integration - p.157: "Pay attention to the handoffs"
+         * Used when user navigates to a section via Action Center
+         */
+        @keyframes target-highlight {
+            0% {
+                box-shadow: var(--shadow-sm);
+                background-color: var(--color-white);
+            }
+            20% {
+                box-shadow: 0 0 0 4px rgba(91, 95, 207, 0.3), var(--shadow-lg);
+                background-color: rgba(91, 95, 207, 0.05);
+            }
+            100% {
+                box-shadow: var(--shadow-sm);
+                background-color: var(--color-white);
+            }
+        }
+
+        .highlight-target {
+            animation: target-highlight 1.5s var(--ease-standard);
+        }
+
+        /*
+         * SIGNATURE SUCCESS ANIMATION
+         * Integration - p.156: "Is the microinteraction should be a Signature Moment"
+         * Used for proposal acceptance - the key conversion moment
+         */
+        @keyframes signature-success {
+            0% {
+                transform: scale(1);
+                box-shadow: var(--shadow-sm);
+            }
+            25% {
+                transform: scale(1.02);
+                box-shadow: 0 0 0 4px rgba(91, 95, 207, 0.4), var(--shadow-md);
+            }
+            50% {
+                transform: scale(1);
+                box-shadow: 0 0 0 8px rgba(91, 95, 207, 0.2), var(--shadow-md);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: var(--shadow-sm);
+            }
+        }
+
+        .signature-moment {
+            animation: signature-success var(--timing-deliberate) var(--ease-bounce);
+        }
+
+        /* ===========================================================================
+           CSS RESET & BASE
+           =========================================================================== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            /* Integration - p.157: Smooth scroll for handoffs */
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--color-gray-50);
+            color: var(--color-gray-900);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===========================================================================
+           HEADER
+           Integration - p.156: "Owned triggers... consistently show up in daily life"
+           =========================================================================== */
+
+        .header {
+            background: var(--color-primary);
+            padding: var(--space-md) var(--space-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            color: var(--color-white);
+            font-weight: 600;
+            font-size: 18px;
+            text-decoration: none;
+            /* Integration - p.154: Consistent timing */
+            transition: opacity var(--timing-fast) var(--ease-standard);
+        }
+
+        .logo:hover {
+            opacity: 0.9;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--color-white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-primary);
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        /*
+         * NAVIGATION BUTTON
+         * Integration - p.152: "Objects that look the same should act the same"
+         */
+        .nav-btn {
+            min-width: var(--touch-min);
+            min-height: var(--touch-min);
+            background: transparent;
+            border: 2px solid var(--color-white);
+            border-radius: var(--radius-md);
+            color: var(--color-white);
+            padding: var(--space-sm) var(--space-md);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            /* Integration - p.154: Unified timing */
+            transition: all var(--timing-fast) var(--ease-standard);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .nav-btn:hover {
+            background: var(--color-white);
+            color: var(--color-primary);
+        }
+
+        .nav-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.4);
+        }
+
+        .nav-btn.active {
+            background: var(--color-white);
+            color: var(--color-primary);
+        }
+
+        /*
+         * NOTIFICATION BUTTON
+         * Integration - p.157: Tier 1 trigger (critical importance)
+         */
+        .notification-btn {
+            min-width: var(--touch-min);
+            min-height: var(--touch-min);
+            background: transparent;
+            border: none;
+            color: var(--color-white);
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+            /* Integration - p.154: Unified timing */
+            transition: background var(--timing-fast) var(--ease-standard);
+        }
+
+        .notification-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .notification-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.4);
+        }
+
+        /*
+         * NOTIFICATION BADGE
+         * Integration - p.157: Coordinated with other pulse animations
+         */
+        .notification-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: var(--trigger-urgent);
+            color: var(--color-white);
+            font-size: 11px;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            /* Integration - p.157: Uses unified pulse system */
+            --pulse-scale: 1.15;
+            animation: unified-pulse var(--pulse-duration) var(--ease-standard) infinite;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            color: var(--color-white);
+            cursor: pointer;
+            min-height: var(--touch-min);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-md);
+            /* Integration - p.154: Unified timing */
+            transition: background var(--timing-fast) var(--ease-standard);
+        }
+
+        .user-menu:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .user-menu:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.4);
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--color-gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--color-gray-700);
+            font-size: 14px;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* ===========================================================================
+           MAIN CONTAINER
+           =========================================================================== */
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-lg);
+        }
+
+        /* ===========================================================================
+           WELCOME SECTION
+           Integration - p.146: "Don't Start from Zero"
+           =========================================================================== */
+
+        .welcome-section {
+            margin-bottom: var(--space-lg);
+        }
+
+        .welcome-text {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-xs);
+        }
+
+        .welcome-subtext {
+            color: var(--color-gray-500);
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        /*
+         * ATTENTION INDICATOR
+         * Integration - p.157: Uses unified pulse system with subtle tier
+         */
+        .attention-indicator {
+            width: 8px;
+            height: 8px;
+            background: var(--trigger-urgent);
+            border-radius: 50%;
+            --pulse-scale: 1;
+            --pulse-shadow-start: 0 0 0 0 rgba(239,68,68,0.4);
+            --pulse-shadow-peak: 0 0 0 6px rgba(239,68,68,0);
+            animation: unified-pulse 1.5s var(--ease-standard) infinite;
+        }
+
+        /* ===========================================================================
+           ACTION CENTER
+           Integration - p.157: "Handoffs between microinteractions"
+
+           The Action Center serves as the hub that connects to other sections.
+           Clicking an action card triggers smooth scroll handoff.
+           =========================================================================== */
+
+        .action-center {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            color: var(--color-white);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .action-center-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-md);
+        }
+
+        .action-center-title {
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        /*
+         * LIVE INDICATOR
+         * Integration - p.157: Coordinated with other pulse animations
+         */
+        .live-indicator {
+            width: 10px;
+            height: 10px;
+            background: var(--trigger-urgent);
+            border-radius: 50%;
+            --pulse-scale: 1;
+            --pulse-shadow-start: 0 0 0 0 rgba(239,68,68,0.4);
+            --pulse-shadow-peak: 0 0 0 4px rgba(239,68,68,0);
+            animation: unified-pulse var(--pulse-duration) var(--ease-standard) infinite;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--space-md);
+        }
+
+        /*
+         * ACTION CARD
+         * Integration - p.157: "Pay attention to the handoffs"
+         *
+         * These cards link to sections below via anchor navigation.
+         * Clicking triggers smooth scroll + target highlight.
+         */
+        .action-card {
+            background: rgba(255,255,255,0.15);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            cursor: pointer;
+            /* Integration - p.154: Unified timing */
+            transition: all var(--timing-fast) var(--ease-standard);
+            min-height: var(--touch-min);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+            border: 2px solid transparent;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .action-card:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        .action-card:focus {
+            outline: none;
+            border-color: var(--color-white);
+        }
+
+        /*
+         * URGENT ACTION CARD
+         * Integration - p.157: Tier 1 trigger prominence
+         */
+        .action-card.urgent {
+            border-color: rgba(239, 68, 68, 0.5);
+            box-shadow: var(--shadow-trigger);
+        }
+
+        .action-card-number {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .action-card-label {
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0.95;
+        }
+
+        .action-card-meta {
+            font-size: 12px;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        /*
+         * URGENCY DOTS
+         * Integration - p.157: Consistent visual vocabulary
+         */
+        .urgency-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .urgency-dot.fresh {
+            background: var(--trigger-fresh);
+        }
+
+        .urgency-dot.waiting {
+            background: var(--trigger-waiting);
+        }
+
+        .urgency-dot.urgent {
+            background: var(--trigger-urgent);
+            /* Integration - p.157: Coordinated pulse */
+            --pulse-scale: 1;
+            --pulse-shadow-start: 0 0 0 0 rgba(239,68,68,0.4);
+            --pulse-shadow-peak: 0 0 0 4px rgba(239,68,68,0);
+            animation: unified-pulse 1s var(--ease-standard) infinite;
+        }
+
+        /* ===========================================================================
+           EARNINGS CARD
+           Integration - p.156: "Signature Moment" consideration
+
+           Earnings display is NOT a signature moment - it's ambient information.
+           Standard transitions, no special animations.
+           =========================================================================== */
+
+        .earnings-card {
+            background: var(--color-white);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--space-lg);
+            /* Integration - p.154: Standard timing for hover */
+            transition: box-shadow var(--timing-fast) var(--ease-standard);
+        }
+
+        .earnings-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .earnings-main {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .earnings-label {
+            font-size: 14px;
+            color: var(--color-gray-500);
+            font-weight: 500;
+        }
+
+        .earnings-amount {
+            font-size: 40px;
+            font-weight: 700;
+            color: var(--color-success);
+            display: flex;
+            align-items: baseline;
+            gap: var(--space-md);
+            line-height: 1;
+        }
+
+        .earnings-trend {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-success);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            background: var(--reward-green-bg);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-md);
+        }
+
+        .earnings-stats {
+            display: flex;
+            gap: var(--space-xl);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-gray-900);
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--color-gray-500);
+            font-weight: 500;
+        }
+
+        .stat-trend {
+            font-size: 11px;
+            color: var(--color-success);
+            font-weight: 600;
+        }
+
+        /* ===========================================================================
+           STATUS SUMMARY
+           Integration - p.147: "Preventing Human Error"
+           Clear status communication prevents anxiety-driven checking
+           =========================================================================== */
+
+        .status-summary {
+            background: var(--reward-green-bg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: var(--space-md) var(--space-lg);
+            margin-bottom: var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            /* Integration - p.154: Standard timing */
+            transition: all var(--timing-fast) var(--ease-standard);
+        }
+
+        .status-summary.warning {
+            background: var(--trigger-urgent-bg);
+        }
+
+        .status-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--color-success);
+            color: var(--color-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .status-summary.warning .status-icon {
+            background: var(--color-danger);
+        }
+
+        .status-text {
+            flex: 1;
+        }
+
+        .status-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+        }
+
+        .status-detail {
+            font-size: 13px;
+            color: var(--color-gray-600);
+        }
+
+        /* ===========================================================================
+           NOTIFICATION OPT-IN
+           Integration - p.156: "Owned triggers... tacit permission"
+           =========================================================================== */
+
+        .notification-optin {
+            background: linear-gradient(135deg, var(--reward-blue-bg) 0%, var(--color-white) 100%);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+            flex-wrap: wrap;
+        }
+
+        .notification-optin-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--reward-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-white);
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .notification-optin-content {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .notification-optin-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-xs);
+        }
+
+        .notification-optin-text {
+            font-size: 14px;
+            color: var(--color-gray-600);
+        }
+
+        .notification-optin-text strong {
+            color: var(--reward-blue);
+        }
+
+        /*
+         * PRIMARY BUTTON PATTERN
+         * Integration - p.152: "Objects that look the same should act the same"
+         */
+        .btn-primary {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-lg);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            min-height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            /* Integration - p.154: Unified timing */
+            transition: all var(--timing-fast) var(--ease-standard);
+            white-space: nowrap;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:focus {
+            outline: none;
+            box-shadow: var(--shadow-focus);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* ===========================================================================
+           ACTIVITY FEED
+           Integration - p.157: "Feedback loops... predictable ones don't create desire"
+           =========================================================================== */
+
+        .activity-feed {
+            background: var(--color-white);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-md);
+            padding-bottom: var(--space-sm);
+            border-bottom: 1px solid var(--color-gray-100);
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .section-link {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            min-height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            /* Integration - p.154: Unified timing */
+            transition: background var(--timing-fast) var(--ease-standard);
+        }
+
+        .section-link:hover {
+            background: var(--purple-50);
+        }
+
+        .section-link:focus {
+            outline: none;
+            box-shadow: var(--shadow-focus);
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+            padding: var(--space-md) 0;
+            border-bottom: 1px solid var(--color-gray-100);
+            /* Integration - p.154: Unified timing */
+            transition: background var(--timing-fast) var(--ease-standard);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .activity-item:hover {
+            background: var(--color-gray-50);
+            margin: 0 calc(var(--space-md) * -1);
+            padding-left: var(--space-md);
+            padding-right: var(--space-md);
+            border-radius: var(--radius-sm);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.proposal { background: var(--purple-50); color: var(--color-primary); }
+        .activity-icon.view { background: var(--reward-blue-bg); color: var(--reward-blue); }
+        .activity-icon.message { background: var(--reward-green-bg); color: var(--color-success); }
+        .activity-icon.booking { background: var(--reward-gold-bg); color: var(--reward-gold); }
+
+        .activity-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .activity-text {
+            font-size: 14px;
+            color: var(--color-gray-700);
+            line-height: 1.4;
+        }
+
+        .activity-text strong {
+            color: var(--color-gray-900);
+            font-weight: 600;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: var(--color-gray-400);
+            margin-top: var(--space-xs);
+        }
+
+        .activity-action {
+            flex-shrink: 0;
+        }
+
+        /*
+         * ACTIVITY BUTTON
+         * Integration - p.152: "Objects that look the same should act the same"
+         */
+        .activity-btn {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-md);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            min-height: var(--touch-min);
+            min-width: 72px;
+            /* Integration - p.154: Unified timing */
+            transition: all var(--timing-fast) var(--ease-standard);
+        }
+
+        .activity-btn:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .activity-btn:focus {
+            outline: none;
+            box-shadow: var(--shadow-focus);
+        }
+
+        .activity-btn.secondary {
+            background: var(--color-white);
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .activity-btn.secondary:hover {
+            background: var(--purple-50);
+        }
+
+        /* ===========================================================================
+           CO-HOST BANNER
+           Integration - p.156: Tier 3 trigger (ambient, not urgent)
+           =========================================================================== */
+
+        .cohost-banner {
+            background: var(--purple-50);
+            border-radius: var(--radius-md);
+            padding: var(--space-md) var(--space-lg);
+            margin-bottom: var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            border-left: 4px solid var(--color-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .cohost-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-white);
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .cohost-content {
+            flex: 1;
+        }
+
+        .cohost-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: 2px;
+        }
+
+        .cohost-text {
+            font-size: 13px;
+            color: var(--color-gray-600);
+        }
+
+        .cohost-btn {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-md);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            min-height: var(--touch-min);
+            white-space: nowrap;
+            /* Integration - p.154: Unified timing */
+            transition: all var(--timing-fast) var(--ease-standard);
+        }
+
+        .cohost-btn:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .cohost-btn:focus {
+            outline: none;
+            box-shadow: var(--shadow-focus);
+        }
+
+        /* ===========================================================================
+           LISTINGS SECTION
+           Integration - p.157: "Handoffs" - Target for Action Center navigation
+           =========================================================================== */
+
+        .listings-section {
+            background: var(--color-white);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            /* Integration - p.157: Scroll offset for sticky header */
+            scroll-margin-top: 80px;
+        }
+
+        .listing-actions-top {
+            display: flex;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            background: var(--color-white);
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-lg);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            min-height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            /* Integration - p.154: Unified timing */
+            transition: all var(--timing-fast) var(--ease-standard);
+        }
+
+        .btn-secondary:hover {
+            background: var(--purple-50);
+        }
+
+        .btn-secondary:focus {
+            outline: none;
+            box-shadow: var(--shadow-focus);
+        }
+
+        /*
+         * LISTING CARD
+         * Integration - p.157: Can receive highlight animation on navigation
+         */
+        .listing-card {
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: var(--space-md);
+            margin-bottom: var(--space-md);
+            background: var(--color-white);
+            /* Integration - p.154: Unified timing */
+            transition: all var(--timing-fast) var(--ease-standard);
+            /* Integration - p.157: Scroll offset */
+            scroll-margin-top: 80px;
+        }
+
+        .listing-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .listing-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        /*
+         * URGENT LISTING
+         * Integration - p.157: Tier 1 trigger prominence
+         */
+        .listing-card.has-urgent {
+            border-left: 4px solid var(--trigger-urgent);
+        }
+
+        .listing-header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+
+        .listing-image {
+            width: 100px;
+            height: 75px;
+            background: var(--color-gray-200);
+            border-radius: var(--radius-sm);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-gray-400);
+            overflow: hidden;
+        }
+
+        .listing-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .listing-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-xs);
+            line-height: 1.3;
+        }
+
+        .listing-location {
+            font-size: 14px;
+            color: var(--color-gray-500);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        /*
+         * TRIGGER BADGES
+         * Integration - p.147: "Preventing Human Error" through precise information
+         * Integration - p.157: Coordinated with Action Center urgency dots
+         */
+        .listing-triggers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+
+        .trigger-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 600;
+            min-height: var(--touch-min);
+            cursor: pointer;
+            /* Integration - p.154: Unified timing */
+            transition: all var(--timing-fast) var(--ease-standard);
+            border: none;
+        }
+
+        .trigger-badge:hover {
+            transform: translateY(-1px);
+        }
+
+        .trigger-badge:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+        }
+
+        .trigger-badge.fresh {
+            background: var(--trigger-fresh-bg);
+            color: #065F46;
+        }
+
+        .trigger-badge.waiting {
+            background: var(--trigger-waiting-bg);
+            color: #92400E;
+        }
+
+        .trigger-badge.urgent {
+            background: var(--trigger-urgent-bg);
+            color: #991B1B;
+        }
+
+        /*
+         * CRITICAL TRIGGER BADGE
+         * Integration - p.147: Precise countdown prevents error
+         * Integration - p.157: Coordinated pulse animation
+         */
+        .trigger-badge.critical {
+            background: var(--trigger-critical);
+            color: var(--color-white);
+            /* Integration - p.157: Uses unified pulse system */
+            --pulse-scale: 1.02;
+            --pulse-shadow-start: 0 0 0 0 rgba(220, 38, 38, 0.4);
+            --pulse-shadow-peak: 0 0 0 6px rgba(220, 38, 38, 0);
+            animation: unified-pulse var(--pulse-duration) var(--ease-standard) infinite;
+        }
+
+        .trigger-count {
+            background: rgba(0,0,0,0.1);
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .trigger-badge.urgent .trigger-count,
+        .trigger-badge.critical .trigger-count {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /*
+         * TRIGGER CONTEXT
+         * Integration - p.147: "8 hours away" prevents A.M./P.M. error
+         * Shows precise countdown instead of vague "expires soon"
+         */
+        .trigger-context {
+            font-size: 11px;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .trigger-context.countdown {
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+        }
+
+        .potential-revenue {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            color: var(--color-success);
+            font-size: 13px;
+            font-weight: 600;
+            padding: var(--space-xs) var(--space-sm);
+            background: var(--reward-green-bg);
+            border-radius: var(--radius-md);
+        }
+
+        .listing-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+        }
+
+        /*
+         * LISTING BUTTONS
+         * Integration - p.152: "Objects that look the same should act the same"
+         */
+        .listing-btn {
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            min-height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            /* Integration - p.154: Unified timing */
+            transition: all var(--timing-fast) var(--ease-standard);
+        }
+
+        .listing-btn.primary {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+        }
+
+        .listing-btn.primary:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .listing-btn.primary:focus {
+            outline: none;
+            box-shadow: var(--shadow-focus);
+        }
+
+        .listing-btn.secondary {
+            background: var(--color-white);
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .listing-btn.secondary:hover {
+            background: var(--purple-50);
+        }
+
+        .listing-btn.secondary:focus {
+            outline: none;
+            box-shadow: var(--shadow-focus);
+        }
+
+        /* ===========================================================================
+           REFERRAL CARD
+           Integration - p.156: Tier 2 trigger (standard prominence)
+           =========================================================================== */
+
+        .referral-card {
+            background: linear-gradient(135deg, var(--reward-gold) 0%, #FBBF24 100%);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            color: var(--color-gray-900);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--space-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .referral-content {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .referral-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-xs);
+        }
+
+        .referral-subtitle {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        .referral-btn {
+            background: var(--color-gray-900);
+            color: var(--color-white);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-xl);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            min-height: var(--touch-min);
+            /* Integration - p.154: Unified timing */
+            transition: all var(--timing-fast) var(--ease-standard);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .referral-btn:hover {
+            background: var(--color-gray-700);
+            transform: scale(1.02);
+        }
+
+        .referral-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.3);
+        }
+
+        /* ===========================================================================
+           RETURN TO TOP BUTTON
+           Integration - p.157: "Journey reversal affordance"
+           Appears after scrolling down, allows return to Action Center
+           =========================================================================== */
+
+        .return-to-top {
+            position: fixed;
+            bottom: var(--space-lg);
+            right: var(--space-lg);
+            width: 48px;
+            height: 48px;
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Integration - p.154: Deliberate timing for visibility change */
+            transition: all var(--timing-standard) var(--ease-standard);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+        }
+
+        .return-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .return-to-top:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .return-to-top:focus {
+            outline: none;
+            box-shadow: var(--shadow-focus), var(--shadow-lg);
+        }
+
+        /* ===========================================================================
+           FOOTER
+           =========================================================================== */
+
+        .footer {
+            background: var(--color-gray-100);
+            padding: var(--space-2xl) var(--space-lg);
+            margin-top: var(--space-2xl);
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--space-xl);
+        }
+
+        .footer-section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-gray-900);
+            margin-bottom: var(--space-md);
+        }
+
+        .footer-section a {
+            display: block;
+            color: var(--color-gray-600);
+            text-decoration: none;
+            font-size: 14px;
+            padding: var(--space-xs) 0;
+            min-height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            /* Integration - p.154: Unified timing */
+            transition: color var(--timing-fast) var(--ease-standard);
+        }
+
+        .footer-section a:hover {
+            color: var(--color-primary);
+        }
+
+        /* ===========================================================================
+           MOBILE RESPONSIVE
+           Integration - p.147: Touch targets and animation performance
+           =========================================================================== */
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: var(--space-md);
+            }
+
+            .header {
+                padding: var(--space-sm) var(--space-md);
+            }
+
+            .nav-btn span {
+                display: none;
+            }
+
+            .user-name {
+                display: none;
+            }
+
+            .welcome-text {
+                font-size: 24px;
+            }
+
+            .action-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .action-card-number {
+                font-size: 24px;
+            }
+
+            .action-card-label {
+                font-size: 12px;
+            }
+
+            .earnings-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .earnings-amount {
+                font-size: 32px;
+                justify-content: center;
+            }
+
+            .earnings-stats {
+                width: 100%;
+                justify-content: space-around;
+            }
+
+            .notification-optin {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .activity-item {
+                flex-wrap: wrap;
+            }
+
+            .activity-action {
+                width: 100%;
+                margin-top: var(--space-sm);
+            }
+
+            .activity-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .listing-header {
+                flex-direction: column;
+            }
+
+            .listing-image {
+                width: 100%;
+                height: 160px;
+            }
+
+            .listing-triggers {
+                justify-content: flex-start;
+            }
+
+            .listing-actions {
+                flex-direction: column;
+            }
+
+            .listing-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .referral-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .cohost-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            /* Reduce animations on mobile for performance */
+            @media (prefers-reduced-motion: reduce) {
+                *, *::before, *::after {
+                    animation-duration: 0.01ms !important;
+                    animation-iteration-count: 1 !important;
+                    transition-duration: 0.01ms !important;
+                }
+            }
+        }
+
+        @media (max-width: 375px) {
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .earnings-amount {
+                font-size: 28px;
+                flex-direction: column;
+                gap: var(--space-sm);
+            }
+
+            .earnings-stats {
+                flex-direction: column;
+                gap: var(--space-md);
+            }
+        }
+
+        /* ===========================================================================
+           INTEGRATION DOCUMENTATION OVERLAY
+           For development reference - remove in production
+           =========================================================================== */
+
+        .integration-note {
+            background: #FEF3C7;
+            border: 2px dashed #F59E0B;
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            margin: var(--space-md) 0;
+            font-size: 13px;
+            color: #92400E;
+        }
+
+        .integration-note strong {
+            display: block;
+            margin-bottom: var(--space-xs);
+            color: #78350F;
+        }
+
+        .integration-note code {
+            background: rgba(0,0,0,0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===========================================================================
+         HEADER
+         Integration - p.156: Owned triggers maintain visibility
+         =========================================================================== -->
+    <header class="header">
+        <a href="#" class="logo">
+            <div class="logo-icon">SL</div>
+            Split Lease
+        </a>
+
+        <nav class="header-nav">
+            <button class="nav-btn active">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                <span>Host Overview</span>
+            </button>
+
+            <!-- Integration - p.157: Notification badge uses unified pulse -->
+            <button class="notification-btn" aria-label="Messages - 3 unread">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                <span class="notification-badge">3</span>
+            </button>
+
+            <div class="user-menu" role="button" tabindex="0">
+                <div class="avatar">R</div>
+                <span class="user-name">Rod</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"/>
+                </svg>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-container">
+
+        <!-- WELCOME SECTION -->
+        <section class="welcome-section">
+            <h1 class="welcome-text">Welcome back, Rod</h1>
+            <p class="welcome-subtext">
+                <!-- Integration - p.157: Uses unified pulse animation -->
+                <span class="attention-indicator"></span>
+                You have items that need your attention
+            </p>
+        </section>
+
+        <!-- ===========================================================================
+             ACTION CENTER
+             Integration - p.157: "Pay attention to the handoffs"
+
+             Action cards link to sections below. Clicking initiates:
+             1. Smooth scroll to target section
+             2. Target highlight animation on arrival
+             =========================================================================== -->
+        <section class="action-center" aria-label="Action Center" id="action-center">
+            <div class="action-center-header">
+                <h2 class="action-center-title">
+                    <!-- Integration - p.157: Coordinated live indicator -->
+                    <span class="live-indicator"></span>
+                    Action Center
+                </h2>
+            </div>
+
+            <div class="action-grid">
+                <!--
+                     Integration - p.157: HANDOFF DEMONSTRATION
+                     This card links to listings section with smooth scroll.
+                     Urgent state uses Tier 1 prominence (coordinated pulse + shadow).
+                -->
+                <a href="#listings-section" class="action-card urgent" tabindex="0" aria-label="4 Proposals, 1 expiring in 2h 47m">
+                    <div class="action-card-number">4</div>
+                    <div class="action-card-label">Proposals Awaiting</div>
+                    <div class="action-card-meta">
+                        <!-- Integration - p.147: Precise countdown prevents error -->
+                        <span class="urgency-dot urgent"></span>
+                        <span>1 expires in 2h 47m</span>
+                    </div>
+                </a>
+
+                <a href="#activity-feed" class="action-card" tabindex="0" aria-label="3 Unread Messages">
+                    <div class="action-card-number">3</div>
+                    <div class="action-card-label">Unread Messages</div>
+                    <div class="action-card-meta">
+                        <span class="urgency-dot waiting"></span>
+                        Oldest: 2 days ago
+                    </div>
+                </a>
+
+                <a href="#activity-feed" class="action-card" tabindex="0" aria-label="1 Check-in Tomorrow">
+                    <div class="action-card-number">1</div>
+                    <div class="action-card-label">Check-in Tomorrow</div>
+                    <div class="action-card-meta">
+                        <span class="urgency-dot fresh"></span>
+                        Sarah M. at 3:00 PM
+                    </div>
+                </a>
+
+                <a href="#listings-section" class="action-card" tabindex="0" aria-label="1 Active Lease">
+                    <div class="action-card-number">1</div>
+                    <div class="action-card-label">Active Lease</div>
+                    <div class="action-card-meta">
+                        <span class="urgency-dot fresh"></span>
+                        All on track
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Integration Note -->
+        <div class="integration-note">
+            <strong>Integration - p.157: "Pay attention to the handoffs"</strong>
+            Action Center cards now link to sections below via anchor navigation with <code>scroll-behavior: smooth</code>.
+            In production, JavaScript would add <code>.highlight-target</code> class on scroll completion for target emphasis.
+        </div>
+
+        <!-- EARNINGS CARD -->
+        <section class="earnings-card" aria-label="This Month's Earnings">
+            <div class="earnings-main">
+                <div class="earnings-label">This Month's Earnings</div>
+                <div class="earnings-amount">
+                    $2,450
+                    <span class="earnings-trend">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                            <polyline points="17 6 23 6 23 12"/>
+                        </svg>
+                        +12% vs last month
+                    </span>
+                </div>
+            </div>
+
+            <div class="earnings-stats">
+                <div class="stat-item">
+                    <div class="stat-value">95%</div>
+                    <div class="stat-label">Response Rate</div>
+                    <div class="stat-trend">Top 10%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">4.9</div>
+                    <div class="stat-label">Rating</div>
+                    <div class="stat-trend">+0.1</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">142</div>
+                    <div class="stat-label">Profile Views</div>
+                    <div class="stat-trend">+23%</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STATUS SUMMARY -->
+        <section class="status-summary" aria-label="Listing Status">
+            <div class="status-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+            </div>
+            <div class="status-text">
+                <div class="status-title">All listings healthy</div>
+                <div class="status-detail">No issues requiring attention. Last checked 5 minutes ago.</div>
+            </div>
+        </section>
+
+        <!-- NOTIFICATION OPT-IN -->
+        <section class="notification-optin" aria-label="Enable Notifications">
+            <div class="notification-optin-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+            </div>
+            <div class="notification-optin-content">
+                <h3 class="notification-optin-title">Never miss a proposal</h3>
+                <p class="notification-optin-text">
+                    Get instant notifications when guests send proposals.
+                    <strong>Hosts who respond within 1 hour get 3x more bookings.</strong>
+                </p>
+            </div>
+            <button class="btn-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                </svg>
+                Enable Notifications
+            </button>
+        </section>
+
+        <!-- ===========================================================================
+             ACTIVITY FEED
+             Integration - p.157: Handoff target from Action Center
+             =========================================================================== -->
+        <section class="activity-feed" aria-label="Recent Activity" id="activity-feed">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                    </svg>
+                    Recent Activity
+                </h2>
+                <a href="#" class="section-link">View All</a>
+            </div>
+
+            <ul class="activity-list">
+                <li class="activity-item">
+                    <div class="activity-icon proposal">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                    </div>
+                    <div class="activity-content">
+                        <p class="activity-text"><strong>New proposal</strong> from Michael T. for Stylish Private Room - $600/month for 3 months</p>
+                        <p class="activity-time">2 minutes ago</p>
+                    </div>
+                    <div class="activity-action">
+                        <button class="activity-btn">View</button>
+                    </div>
+                </li>
+
+                <li class="activity-item">
+                    <div class="activity-icon view">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </div>
+                    <div class="activity-content">
+                        <p class="activity-text">Your listing <strong>1 Bedroom Entire Place</strong> got <strong>12 views</strong> today</p>
+                        <p class="activity-time">1 hour ago</p>
+                    </div>
+                </li>
+
+                <li class="activity-item">
+                    <div class="activity-icon message">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </div>
+                    <div class="activity-content">
+                        <p class="activity-text"><strong>Sarah M.</strong> sent a message about her upcoming check-in</p>
+                        <p class="activity-time">3 hours ago</p>
+                    </div>
+                    <div class="activity-action">
+                        <button class="activity-btn secondary">Reply</button>
+                    </div>
+                </li>
+
+                <li class="activity-item">
+                    <div class="activity-icon booking">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                    </div>
+                    <div class="activity-content">
+                        <p class="activity-text"><strong>Booking confirmed!</strong> James R. booked 1 Bedroom Private Room for $750/month</p>
+                        <p class="activity-time">Yesterday</p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- CO-HOST BANNER -->
+        <section class="cohost-banner" aria-label="Co-host Support">
+            <div class="cohost-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+            </div>
+            <div class="cohost-content">
+                <h3 class="cohost-title">Need help managing your listings?</h3>
+                <p class="cohost-text">Our Specialist Co-hosts can help with pricing, guest communication, and optimizing your earnings.</p>
+            </div>
+            <button class="cohost-btn">Learn More</button>
+        </section>
+
+        <!-- ===========================================================================
+             LISTINGS SECTION
+             Integration - p.157: Handoff target from Action Center
+             Integration - p.147: Precise countdown in critical badge
+             =========================================================================== -->
+        <section class="listings-section" aria-label="Your Listings" id="listings-section">
+            <div class="section-header">
+                <h2 class="section-title">Your Listings</h2>
+            </div>
+
+            <div class="listing-actions-top">
+                <button class="btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    Create New Listing
+                </button>
+                <button class="btn-secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    Import Listing
+                </button>
+            </div>
+
+            <!--
+                 LISTING 1: Has critical trigger
+                 Integration - p.147: Precise "2h 47m" countdown prevents error
+                 Integration - p.157: Critical badge uses coordinated pulse
+            -->
+            <article class="listing-card has-urgent" id="listing-stylish-room">
+                <div class="listing-header">
+                    <div class="listing-image">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                            <polyline points="21 15 16 10 5 21"/>
+                        </svg>
+                    </div>
+                    <div class="listing-info">
+                        <h3 class="listing-title">Stylish Private Room In Vibrant Neighborhood</h3>
+                        <p class="listing-location">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            Brooklyn, NY
+                        </p>
+                    </div>
+                </div>
+
+                <div class="listing-triggers">
+                    <!--
+                         Integration - p.147: "8 hours away prevents A.M./P.M. error"
+                         Changed "expires soon!" to precise "2h 47m" countdown
+                    -->
+                    <span class="trigger-badge critical" tabindex="0" role="button">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        </svg>
+                        Proposals
+                        <span class="trigger-count">2</span>
+                        <span class="trigger-context countdown">expires 2h 47m</span>
+                    </span>
+
+                    <span class="trigger-badge fresh" tabindex="0" role="button">
+                        Leases
+                        <span class="trigger-count">0</span>
+                    </span>
+
+                    <span class="potential-revenue">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                        $1,200 potential
+                    </span>
+                </div>
+
+                <div class="listing-actions">
+                    <!--
+                         Integration - p.152: "Emphasize the Next Action"
+                         Review Proposals is primary (most likely next action)
+                    -->
+                    <button class="listing-btn primary">Review Proposals</button>
+                    <button class="listing-btn secondary">Manage</button>
+                    <button class="listing-btn secondary">Preview</button>
+                    <button class="listing-btn secondary">House Manual</button>
+                </div>
+            </article>
+
+            <!-- LISTING 2: Waiting trigger -->
+            <article class="listing-card">
+                <div class="listing-header">
+                    <div class="listing-image">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                            <polyline points="21 15 16 10 5 21"/>
+                        </svg>
+                    </div>
+                    <div class="listing-info">
+                        <h3 class="listing-title">1 Bedroom Entire Place in Manhattan</h3>
+                        <p class="listing-location">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            Manhattan, NY
+                        </p>
+                    </div>
+                </div>
+
+                <div class="listing-triggers">
+                    <span class="trigger-badge waiting" tabindex="0" role="button">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        </svg>
+                        Proposals
+                        <span class="trigger-count">1</span>
+                        <span class="trigger-context">2 days waiting</span>
+                    </span>
+
+                    <span class="trigger-badge fresh" tabindex="0" role="button">
+                        Leases
+                        <span class="trigger-count">1</span>
+                        <span class="trigger-context">Active</span>
+                    </span>
+
+                    <span class="potential-revenue">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                        $800 potential
+                    </span>
+                </div>
+
+                <div class="listing-actions">
+                    <button class="listing-btn primary">Review Proposals</button>
+                    <button class="listing-btn secondary">Manage</button>
+                    <button class="listing-btn secondary">Preview</button>
+                    <button class="listing-btn secondary">House Manual</button>
+                </div>
+            </article>
+
+            <!-- LISTING 3: Fresh trigger -->
+            <article class="listing-card">
+                <div class="listing-header">
+                    <div class="listing-image">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                            <polyline points="21 15 16 10 5 21"/>
+                        </svg>
+                    </div>
+                    <div class="listing-info">
+                        <h3 class="listing-title">1 Bedroom Private Room in Manhattan</h3>
+                        <p class="listing-location">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            Manhattan, NY
+                        </p>
+                    </div>
+                </div>
+
+                <div class="listing-triggers">
+                    <span class="trigger-badge fresh" tabindex="0" role="button">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        </svg>
+                        Proposals
+                        <span class="trigger-count">1</span>
+                        <span class="trigger-context">New today!</span>
+                    </span>
+
+                    <span class="trigger-badge fresh" tabindex="0" role="button">
+                        Leases
+                        <span class="trigger-count">0</span>
+                    </span>
+
+                    <span class="potential-revenue">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                        $650 potential
+                    </span>
+                </div>
+
+                <div class="listing-actions">
+                    <button class="listing-btn primary">Review Proposals</button>
+                    <button class="listing-btn secondary">Manage</button>
+                    <button class="listing-btn secondary">Preview</button>
+                    <button class="listing-btn secondary">House Manual</button>
+                </div>
+            </article>
+        </section>
+
+        <!-- Integration Note -->
+        <div class="integration-note">
+            <strong>Integration - p.147: "Preventing Human Error"</strong>
+            Critical proposal badge now shows <code>expires 2h 47m</code> instead of vague "expires soon!" -
+            precise information prevents panic and enables informed decision-making.
+            <br><br>
+            <strong>Integration - p.156: "Signature Moment"</strong>
+            In production, clicking "Review Proposals" then accepting would trigger the
+            <code>signature-success</code> animation - the key conversion moment deserves celebration.
+        </div>
+
+        <!-- REFERRAL CARD -->
+        <section class="referral-card" aria-label="Referral Program">
+            <div class="referral-content">
+                <h3 class="referral-title">Give $50, Get $50</h3>
+                <p class="referral-subtitle">Know someone who should list on Split Lease? Share your link and you both earn $50 when they book their first guest.</p>
+            </div>
+            <button class="referral-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="18" cy="5" r="3"/>
+                    <circle cx="6" cy="12" r="3"/>
+                    <circle cx="18" cy="19" r="3"/>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                </svg>
+                Invite Friends
+            </button>
+        </section>
+
+    </main>
+
+    <!-- ===========================================================================
+         RETURN TO TOP BUTTON
+         Integration - p.157: "Journey reversal affordance"
+         =========================================================================== -->
+    <button class="return-to-top" aria-label="Return to Action Center" id="return-to-top">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="18 15 12 9 6 15"/>
+        </svg>
+    </button>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h4>Company</h4>
+                <a href="#">About Periodic Tenancy</a>
+                <a href="#">About the Team</a>
+                <a href="#">Careers at Split Lease</a>
+                <a href="#">Blog</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>For Hosts</h4>
+                <a href="#">List Property Now</a>
+                <a href="#">How to List</a>
+                <a href="#">Success Stories</a>
+                <a href="#">Legal Section</a>
+                <a href="#">Guarantees</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Host Community</a>
+                <a href="#">Free House Manual</a>
+                <a href="#">Pricing Calculator</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>Get the App</h4>
+                <a href="#">Download on iOS</a>
+                <a href="#">Download on Android</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===========================================================================
+         IMPLEMENTATION NOTES
+         =========================================================================== -->
+    <section style="max-width: 1200px; margin: 40px auto; padding: 24px; background: #F0FDF4; border-radius: 16px; border: 2px solid #86EFAC;">
+        <h2 style="font-size: 20px; margin-bottom: 20px; color: #166534;">Implementation Notes: Microinteractions Integration (Chapter 6)</h2>
+
+        <h3 style="font-size: 16px; margin: 20px 0 12px; color: #166534;">Key Saffer Principles Applied:</h3>
+        <ol style="font-size: 14px; color: #166534; padding-left: 24px; line-height: 2;">
+            <li><strong>Unified Timing System</strong> - p.154: "The overall flow communicates how it should feel" - <code>--timing-instant</code> to <code>--timing-deliberate</code></li>
+            <li><strong>Coordinated Pulse Animation</strong> - p.157: "Feedback needs to be coordinated" - Single <code>unified-pulse</code> keyframe with CSS variable parameters</li>
+            <li><strong>Trigger Hierarchy</strong> - p.157: "Not all microinteractions are created equal" - Three tiers of visual prominence</li>
+            <li><strong>Handoff Attention</strong> - p.157: "Pay attention to the handoffs" - Action Center links to sections with smooth scroll</li>
+            <li><strong>Error Prevention</strong> - p.147: "8 hours away prevents A.M./P.M. error" - Precise countdown "2h 47m" vs vague "soon"</li>
+            <li><strong>Signature Moments</strong> - p.156: "Should this be a Signature Moment?" - Proposal acceptance gets special animation</li>
+            <li><strong>Objects Act Like They Look</strong> - p.152: Consistent button patterns across all sections</li>
+            <li><strong>Emphasize Next Action</strong> - p.152: Primary buttons visually distinct from secondary</li>
+        </ol>
+
+        <h3 style="font-size: 16px; margin: 20px 0 12px; color: #166534;">CSS Integration Tokens:</h3>
+        <table style="width: 100%; font-size: 13px; color: #166534; border-collapse: collapse; font-family: 'SF Mono', Monaco, monospace;">
+            <tr style="background: rgba(0,0,0,0.05);">
+                <th style="text-align: left; padding: 8px;">Token</th>
+                <th style="text-align: left; padding: 8px;">Value</th>
+                <th style="text-align: left; padding: 8px;">Usage</th>
+            </tr>
+            <tr>
+                <td style="padding: 8px;">--timing-instant</td>
+                <td style="padding: 8px;">100ms</td>
+                <td style="padding: 8px;">Micro-feedback (hover highlights)</td>
+            </tr>
+            <tr style="background: rgba(0,0,0,0.03);">
+                <td style="padding: 8px;">--timing-fast</td>
+                <td style="padding: 8px;">200ms</td>
+                <td style="padding: 8px;">Standard transitions</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px;">--timing-standard</td>
+                <td style="padding: 8px;">300ms</td>
+                <td style="padding: 8px;">Deliberate actions (modals)</td>
+            </tr>
+            <tr style="background: rgba(0,0,0,0.03);">
+                <td style="padding: 8px;">--timing-deliberate</td>
+                <td style="padding: 8px;">500ms</td>
+                <td style="padding: 8px;">Signature moments</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px;">--pulse-duration</td>
+                <td style="padding: 8px;">2s</td>
+                <td style="padding: 8px;">Coordinated across all pulses</td>
+            </tr>
+        </table>
+
+        <h3 style="font-size: 16px; margin: 20px 0 12px; color: #166534;">Complete Flow Demonstrated:</h3>
+        <ol style="font-size: 14px; color: #166534; padding-left: 24px; line-height: 2;">
+            <li><strong>Trigger:</strong> Action Center "4 Proposals" card with urgent styling</li>
+            <li><strong>Rule:</strong> Click initiates smooth scroll to Listings section</li>
+            <li><strong>Feedback:</strong> Target listing has left border accent, critical badge pulses</li>
+            <li><strong>Loop:</strong> Return-to-top button appears for journey reversal</li>
+        </ol>
+
+        <h3 style="font-size: 16px; margin: 20px 0 12px; color: #166534;">Production JavaScript Requirements:</h3>
+        <ul style="font-size: 14px; color: #166534; padding-left: 24px; line-height: 2;">
+            <li>Add <code>.highlight-target</code> class on scroll completion for emphasis animation</li>
+            <li>Real-time countdown timer for expiring proposals</li>
+            <li>Show/hide return-to-top button based on scroll position</li>
+            <li>Trigger <code>.signature-moment</code> animation on proposal acceptance</li>
+        </ul>
+
+        <p style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #86EFAC; font-size: 13px; color: #166534;">
+            <strong>Agent:</strong> Jony Ive |
+            <strong>Run:</strong> 012 - 2026-02-05 |
+            <strong>Source:</strong> Dan Saffer, "Microinteractions: Designing with Details," Chapter 6: Putting It All Together
+        </p>
+    </section>
+
+    <!-- ===========================================================================
+         MINIMAL JAVASCRIPT FOR DEMONSTRATION
+         Integration - p.157: Handoff and return-to-top functionality
+         =========================================================================== -->
+    <script>
+        // Return-to-top button visibility
+        // Integration - p.157: "Journey reversal affordance"
+        const returnBtn = document.getElementById('return-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+                returnBtn.classList.add('visible');
+            } else {
+                returnBtn.classList.remove('visible');
+            }
+        });
+
+        returnBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Target highlight on navigation
+        // Integration - p.157: "Pay attention to the handoffs"
+        document.querySelectorAll('a[href^="#"]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const targetId = link.getAttribute('href').substring(1);
+                const target = document.getElementById(targetId);
+
+                if (target) {
+                    // Add highlight after scroll completes
+                    setTimeout(() => {
+                        target.classList.add('highlight-target');
+                        setTimeout(() => {
+                            target.classList.remove('highlight-target');
+                        }, 1500);
+                    }, 300); // Approximate scroll duration
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

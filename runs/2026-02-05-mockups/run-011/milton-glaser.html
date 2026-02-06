@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Dashboard - Split Lease | Communication-First Redesign</title>
+    <!--
+    ================================================================================
+    GREEVER COMMUNICATION FRAMEWORK IMPLEMENTATION
+    Deep Analysis - Run 011 - 2026-02-05
+    ================================================================================
+
+    Based on Tom Greever's "Articulating Design Decisions" Chapter 2:
+    "Great Designers Are Great Communicators"
+
+    CORE THESIS:
+    "The difference between a good designer and a great designer is in their ability
+    to not only solve problems with design, but to also articulate how their solution
+    solves it in a way that's compelling, fosters agreement, and gets the support
+    needed to move forward."
+
+    15 COMMUNICATION PRINCIPLES APPLIED:
+    1.  Design Is Communication
+    2.  The Most Articulate Person Wins
+    3.  Great Design Requires Three Things
+    4.  Reduce Cognitive Load
+    5.  Avoid Design Jargon
+    6.  Stakeholder Empathy
+    7.  Anticipate Questions
+    8.  Clear, Accessible Language
+    9.  Start With Why
+    10. The IDEAL Response Framework
+    11. Most People Are Predictable
+    12. Design the Meeting, Not Just the Design
+    13. Tailor Messages to Audience
+    14. Vocabulary Consistency
+    15. Prepare for Objections
+
+    THIS IMPLEMENTATION:
+    - User-natural vocabulary (not platform jargon)
+    - Question-answering design (anticipating host questions)
+    - Rationale-rich elements (explaining the "why")
+    - Progressive disclosure (prioritized information hierarchy)
+    - Stakeholder empathy (understanding host goals)
+    - State-aware messaging (New / Active / Earning hosts)
+    ================================================================================
+    -->
+    <style>
+        /* ================================================================
+           DESIGN TOKENS - Unified System
+           ================================================================ */
+        :root {
+            /* Brand Colors */
+            --color-primary: #31135D;
+            --color-primary-dark: #1F0D3D;
+            --color-primary-light: #5B5FCF;
+
+            /* Semantic Colors */
+            --color-success: #059669;
+            --color-warning: #D97706;
+            --color-danger: #DC2626;
+            --color-info: #2563EB;
+
+            /* Neutrals */
+            --color-gray-50: #F9FAFB;
+            --color-gray-100: #F3F4F6;
+            --color-gray-200: #E5E7EB;
+            --color-gray-300: #D1D5DB;
+            --color-gray-400: #9CA3AF;
+            --color-gray-500: #6B7280;
+            --color-gray-600: #4B5563;
+            --color-gray-700: #374151;
+            --color-gray-800: #1F2937;
+            --color-gray-900: #111827;
+
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+
+            /* Shadows */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.16);
+
+            /* White */
+            --white: #FFFFFF;
+        }
+
+        /* Reset */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--color-gray-50);
+            color: var(--color-gray-800);
+            line-height: 1.6;
+        }
+
+        /* ================================================================
+           HEADER
+           GREEVER p.X: "Empathy is the ultimate form of understanding"
+           Navigation establishes trust through familiar patterns
+           ================================================================ */
+        .header {
+            background: var(--color-primary);
+            padding: 0.875rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-primary);
+            font-weight: bold;
+            font-size: 0.75rem;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            transition: background 0.2s;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            background: var(--white);
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-icon {
+            color: var(--white);
+            font-size: 1.25rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--color-danger);
+            color: var(--white);
+            font-size: 0.625rem;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--white);
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--color-primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        /* ================================================================
+           STATE SWITCHER (Demo Only)
+           Shows different host states: New, Active, Earning
+           ================================================================ */
+        .state-switcher {
+            background: var(--color-gray-800);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .state-switcher-label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .state-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--white);
+            padding: 0.375rem 0.75rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .state-btn:hover,
+        .state-btn.active {
+            background: var(--white);
+            color: var(--color-gray-800);
+        }
+
+        /* State content visibility */
+        .state-content {
+            display: none;
+        }
+
+        .state-content.active {
+            display: block;
+        }
+
+        /* ================================================================
+           MAIN CONTAINER
+           ================================================================ */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* ================================================================
+           CONTEXTUAL HERO BANNER
+           GREEVER p.X: "Every design is a form of communication. Be intentional
+           about the message."
+
+           This element communicates what matters MOST to hosts right now.
+           State-aware messaging replaces generic "Welcome back" greeting.
+           ================================================================ */
+        .hero-banner {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            color: var(--white);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-greeting {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-bottom: 0.25rem;
+        }
+
+        /* GREEVER: "The most articulate person usually wins" - Lead with impact */
+        .hero-message {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        /* GREEVER: "Start with why" - Explain benefit */
+        .hero-detail {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 1.25rem;
+            max-width: 600px;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--white);
+            color: var(--color-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            box-shadow: var(--shadow-md);
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .hero-secondary {
+            color: var(--white);
+            text-decoration: underline;
+            margin-left: 1rem;
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        /* ================================================================
+           QUICK STATS ROW
+           GREEVER p.X: "Find out what the most important factors are for
+           your stakeholders"
+
+           This section answers: "How am I doing?" without requiring navigation.
+           ================================================================ */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.25rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--color-gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--color-gray-900);
+        }
+
+        .stat-change {
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .stat-change.positive {
+            color: var(--color-success);
+        }
+
+        .stat-change.neutral {
+            color: var(--color-gray-500);
+        }
+
+        .stat-change.warning {
+            color: var(--color-warning);
+        }
+
+        /* ================================================================
+           NEEDS ATTENTION SECTION
+           GREEVER p.X: "Don't overwhelm users with everything at once. Lead
+           them through information in a logical hierarchy."
+
+           This section answers: "What needs my attention NOW?"
+           Progressive disclosure Level 1 - Most urgent items surfaced.
+           ================================================================ */
+        .attention-section {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .attention-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--color-gray-200);
+        }
+
+        .attention-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .attention-badge {
+            background: var(--color-warning);
+            color: var(--white);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.125rem 0.5rem;
+            border-radius: 12px;
+        }
+
+        .attention-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--color-gray-100);
+            gap: 1rem;
+            transition: background 0.2s;
+        }
+
+        .attention-item:last-child {
+            border-bottom: none;
+        }
+
+        .attention-item:hover {
+            background: var(--color-gray-50);
+        }
+
+        .attention-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .attention-icon.request {
+            background: #EDE9FE;
+            color: var(--color-primary-light);
+        }
+
+        .attention-icon.payment {
+            background: #D1FAE5;
+            color: var(--color-success);
+        }
+
+        .attention-icon.incomplete {
+            background: #FEF3C7;
+            color: var(--color-warning);
+        }
+
+        .attention-content {
+            flex: 1;
+        }
+
+        .attention-item-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        /* GREEVER: "Understanding the root problem establishes context" */
+        .attention-item-detail {
+            font-size: 0.875rem;
+            color: var(--color-gray-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .attention-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: var(--color-gray-500);
+        }
+
+        .attention-deadline {
+            color: var(--color-warning);
+            font-weight: 500;
+        }
+
+        .attention-action {
+            background: var(--color-primary-light);
+            color: var(--white);
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            align-self: center;
+        }
+
+        .attention-action:hover {
+            background: var(--color-primary);
+        }
+
+        /* ================================================================
+           LISTINGS SECTION
+           GREEVER p.X: "It's too easy for designers to fall into vernacular
+           and unintentionally obscure what they're really trying to say."
+
+           Vocabulary changes applied:
+           - "Proposals" -> "Guest Requests"
+           - "Leases" -> "Active Bookings"
+           - "Manage Listing" -> "Edit Listing"
+           - "House Manual" -> "Guest Guide"
+           ================================================================ */
+        .section {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--color-gray-200);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: var(--white);
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            text-decoration: none;
+            font-size: 0.875rem;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--color-gray-700);
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            text-decoration: none;
+            font-size: 0.875rem;
+            border: 1px solid var(--color-gray-300);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-gray-50);
+            border-color: var(--color-gray-400);
+        }
+
+        /* Listing Cards */
+        .listing-card {
+            display: flex;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--color-gray-100);
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .listing-card:last-child {
+            border-bottom: none;
+        }
+
+        .listing-image {
+            width: 120px;
+            height: 80px;
+            background: var(--color-gray-200);
+            border-radius: var(--radius-md);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-gray-400);
+            font-size: 1.5rem;
+        }
+
+        .listing-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .listing-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .listing-status-badge {
+            font-size: 0.6875rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+        }
+
+        .status-live {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-draft {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .listing-location {
+            font-size: 0.875rem;
+            color: var(--color-gray-500);
+            margin-bottom: 0.5rem;
+        }
+
+        /*
+        GREEVER: "Clear intent - articulate why an element exists"
+        State badges communicate listing status at a glance
+        */
+        .listing-state {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8125rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 0.75rem;
+        }
+
+        .listing-state.has-requests {
+            background: #EDE9FE;
+            color: #5B21B6;
+        }
+
+        .listing-state.earning {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .listing-state.needs-attention {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .listing-state.quiet {
+            background: var(--color-gray-100);
+            color: var(--color-gray-600);
+        }
+
+        .listing-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8125rem;
+            color: var(--color-gray-500);
+        }
+
+        .listing-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+
+        /*
+        GREEVER: "Most people are predictable. They tend to react to the same things."
+        Primary action based on listing state - what host needs to do
+        */
+        .listing-primary-action {
+            background: var(--color-primary-light);
+            color: var(--white);
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            text-decoration: none;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .listing-primary-action:hover {
+            background: var(--color-primary);
+        }
+
+        .listing-secondary-action {
+            color: var(--color-gray-600);
+            font-size: 0.8125rem;
+            text-decoration: none;
+        }
+
+        .listing-secondary-action:hover {
+            color: var(--color-primary);
+            text-decoration: underline;
+        }
+
+        /* ================================================================
+           CONTEXTUAL HELP CARD
+           GREEVER p.X: "Don't assume that your design decisions are
+           self-explanatory."
+
+           Help shown based on context, not as generic banner.
+           ================================================================ */
+        .help-card {
+            background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%);
+            border: 1px solid #DDD6FE;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .help-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--color-primary-light);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .help-content {
+            flex: 1;
+        }
+
+        .help-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .help-detail {
+            font-size: 0.875rem;
+            color: var(--color-gray-600);
+        }
+
+        .help-action {
+            background: var(--white);
+            color: var(--color-primary-light);
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            text-decoration: none;
+            font-size: 0.875rem;
+            border: 1px solid var(--color-primary-light);
+            transition: all 0.2s;
+        }
+
+        .help-action:hover {
+            background: var(--color-primary-light);
+            color: var(--white);
+        }
+
+        /* ================================================================
+           NEW HOST ONBOARDING
+           GREEVER p.X: "Effective communication requires understanding your
+           audience's perspective."
+
+           New hosts need guidance - this explains Split Lease model.
+           ================================================================ */
+        .onboarding-section {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .onboarding-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .onboarding-subtitle {
+            color: var(--color-gray-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .onboarding-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .onboarding-step {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--color-gray-50);
+            border-radius: var(--radius-md);
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-desc {
+            font-size: 0.875rem;
+            color: var(--color-gray-600);
+        }
+
+        /* ================================================================
+           FOOTER
+           GREEVER: "When it comes to design, notes are critical"
+           Reference information for hosts to return to.
+           ================================================================ */
+        .footer {
+            background: var(--color-gray-800);
+            color: var(--color-gray-400);
+            padding: 2.5rem 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h4 {
+            color: var(--white);
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .footer-section a {
+            display: block;
+            color: var(--color-gray-400);
+            text-decoration: none;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            transition: color 0.2s;
+        }
+
+        .footer-section a:hover {
+            color: var(--white);
+        }
+
+        /* ================================================================
+           TOOLTIPS - On-demand clarification
+           GREEVER: "Notes are critical because opinions and ideas about
+           the right decision will change over time."
+           ================================================================ */
+        .term {
+            border-bottom: 1px dotted var(--color-gray-400);
+            cursor: help;
+            position: relative;
+        }
+
+        .term:hover::after {
+            content: attr(data-definition);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-gray-800);
+            color: var(--white);
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-md);
+            font-size: 0.75rem;
+            white-space: normal;
+            max-width: 200px;
+            z-index: 10;
+            margin-bottom: 0.25rem;
+            text-align: center;
+        }
+
+        /* ================================================================
+           DESIGN NOTES TOGGLE (Demo Only)
+           ================================================================ */
+        .annotation {
+            background: #FFFBEB;
+            border-left: 3px solid #F59E0B;
+            padding: 0.75rem 1rem;
+            margin: 1rem 0;
+            font-size: 0.8125rem;
+            color: #92400E;
+            display: none;
+        }
+
+        .annotation strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        body.show-annotations .annotation {
+            display: block;
+        }
+
+        .toggle-annotations {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background: #F59E0B;
+            color: var(--white);
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--radius-md);
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            font-size: 0.875rem;
+        }
+
+        /* ================================================================
+           RESPONSIVE DESIGN
+           ================================================================ */
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.75rem 1rem;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+
+            .hero-banner {
+                padding: 1.5rem;
+            }
+
+            .hero-message {
+                font-size: 1.375rem;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .attention-item {
+                flex-direction: column;
+            }
+
+            .attention-action {
+                width: 100%;
+                text-align: center;
+                margin-top: 0.75rem;
+            }
+
+            .listing-card {
+                flex-direction: column;
+            }
+
+            .listing-image {
+                width: 100%;
+                height: 160px;
+            }
+
+            .listing-actions {
+                flex-direction: row;
+                width: 100%;
+            }
+
+            .listing-primary-action {
+                flex: 1;
+                text-align: center;
+            }
+
+            .help-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .state-switcher {
+                padding: 0.625rem 1rem;
+            }
+        }
+
+        /* Accessibility */
+        a:focus, button:focus {
+            outline: 2px solid var(--color-primary-light);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!--
+    ================================================================================
+    STATE SWITCHER (Demo Only)
+    Demonstrates different host states based on Greever's:
+    "Most people are fairly predictable. They tend to obsess over and react
+    to the same kinds of things every single time."
+    ================================================================================
+    -->
+    <div class="state-switcher">
+        <span class="state-switcher-label">Demo Host State:</span>
+        <button class="state-btn" onclick="showState('new')">New Host</button>
+        <button class="state-btn active" onclick="showState('active')">Active Host</button>
+        <button class="state-btn" onclick="showState('earning')">Earning Host</button>
+    </div>
+
+    <!-- HEADER -->
+    <header class="header">
+        <a href="#" class="logo">
+            <div class="logo-icon">SL</div>
+            <span>Split Lease</span>
+        </a>
+
+        <nav class="header-nav">
+            <a href="#" class="nav-link">Host with Us</a>
+            <a href="#" class="nav-link active">Host Overview</a>
+        </nav>
+
+        <div class="header-actions">
+            <div class="header-icon" style="position: relative;">
+                <span>&#9993;</span>
+                <span class="notification-badge">2</span>
+            </div>
+            <div class="user-menu">
+                <div class="user-avatar">R</div>
+                <span>Rod</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- ================================================================
+             STATE: NEW HOST (0 Listings)
+             ================================================================
+             GREEVER p.X: "Effective communication requires understanding
+             your audience's perspective."
+
+             New hosts need:
+             1. Clear guidance on what to do
+             2. Understanding of how Split Lease works
+             3. Confidence that they can succeed
+             ================================================================ -->
+        <div class="state-content" id="state-new">
+            <!-- GREEVER: Contextual hero tells new hosts exactly what to do -->
+            <div class="hero-banner">
+                <div class="hero-content">
+                    <div class="hero-greeting">Welcome, Rod</div>
+                    <div class="hero-message">Let's create your first listing</div>
+                    <div class="hero-detail">It takes about 5 minutes. You can save and finish later. Most hosts start earning within 2 weeks.</div>
+                    <a href="#" class="hero-cta">
+                        <span>+</span> Create Your Listing
+                    </a>
+                    <a href="#" class="hero-secondary">Already listed elsewhere? Import instead</a>
+                </div>
+            </div>
+
+            <div class="annotation">
+                <strong>GREEVER Principle: Tailor Messages to Audience</strong>
+                New hosts see guidance, not tools. The hero tells them exactly what to do next and sets expectations ("5 minutes", "save and finish later").
+            </div>
+
+            <!-- How Split Lease Works - For New Hosts -->
+            <div class="onboarding-section">
+                <h2 class="onboarding-title">How Split Lease Works for Hosts</h2>
+                <p class="onboarding-subtitle">Split Lease connects you with guests for 1-6 month stays - longer than vacation rentals, more flexible than year-long leases.</p>
+
+                <div class="onboarding-steps">
+                    <div class="onboarding-step">
+                        <div class="step-number">1</div>
+                        <h3 class="step-title">Create Your Listing</h3>
+                        <p class="step-desc">Add photos, set your schedule, and define your price. We'll guide you through each step.</p>
+                    </div>
+                    <div class="onboarding-step">
+                        <div class="step-number">2</div>
+                        <!-- GREEVER: "Guest Requests" not "Proposals" -->
+                        <h3 class="step-title">Review Guest Requests</h3>
+                        <p class="step-desc">Guests browse and send you requests. You choose who to accept based on their profile.</p>
+                    </div>
+                    <div class="onboarding-step">
+                        <div class="step-number">3</div>
+                        <h3 class="step-title">Get Paid Reliably</h3>
+                        <p class="step-desc">Payments are guaranteed and deposited on a predictable schedule. No chasing rent.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="annotation">
+                <strong>GREEVER Principle: Anticipate Questions</strong>
+                New hosts ask "How does this work?" - we answer before they ask. Uses user-natural language: "Guest Requests" not "Proposals".
+            </div>
+
+            <!-- Help for New Hosts -->
+            <div class="help-card">
+                <div class="help-icon">?</div>
+                <div class="help-content">
+                    <div class="help-title">Not sure where to start?</div>
+                    <div class="help-detail">Our Setup Experts can guide you through creating your listing and help optimize it for more bookings. It's free.</div>
+                </div>
+                <a href="#" class="help-action">Talk to an Expert</a>
+            </div>
+
+            <div class="annotation">
+                <strong>GREEVER Principle: Avoid Jargon</strong>
+                Changed "Specialist Co-host" to "Setup Expert" - clearer role. Added "It's free" to remove barrier.
+            </div>
+        </div>
+
+        <!-- ================================================================
+             STATE: ACTIVE HOST (Has Pending Requests)
+             ================================================================
+             GREEVER p.X: "The most articulate person usually wins"
+
+             Active hosts need:
+             1. Immediate awareness of pending requests
+             2. Quick performance overview
+             3. Clear path to action
+             ================================================================ -->
+        <div class="state-content active" id="state-active">
+            <!-- GREEVER: Hero communicates most important message -->
+            <div class="hero-banner">
+                <div class="hero-content">
+                    <div class="hero-greeting">Welcome back, Rod</div>
+                    <div class="hero-message">2 guests want to book your place</div>
+                    <!-- GREEVER: "Start with why" - explain benefit of quick response -->
+                    <div class="hero-detail">Respond within 24 hours to keep them interested. Hosts who respond quickly get 3x more bookings.</div>
+                    <!-- GREEVER: "Guest Requests" not "Proposals" -->
+                    <a href="#" class="hero-cta">Review Guest Requests</a>
+                </div>
+            </div>
+
+            <div class="annotation">
+                <strong>GREEVER Principle: The Most Articulate Person Wins</strong>
+                Hero leads with impact ("2 guests want to book") not generic greeting. Includes benefit rationale ("3x more bookings").
+            </div>
+
+            <!-- Quick Stats -->
+            <!-- GREEVER: Answers "How am I doing?" without requiring navigation -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-label">Views This Month</div>
+                    <div class="stat-value">147</div>
+                    <div class="stat-change positive">+23% vs last month</div>
+                </div>
+                <div class="stat-card">
+                    <!-- GREEVER: "Pending Requests" not "Proposals" -->
+                    <div class="stat-label">Pending Requests</div>
+                    <div class="stat-value">2</div>
+                    <div class="stat-change warning">Oldest expires in 3 days</div>
+                </div>
+                <div class="stat-card">
+                    <!-- GREEVER: "Active Bookings" not "Leases" -->
+                    <div class="stat-label">Active Bookings</div>
+                    <div class="stat-value">1</div>
+                    <div class="stat-change neutral">Guest arrives Feb 10</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Earnings This Month</div>
+                    <div class="stat-value">$800</div>
+                    <div class="stat-change positive">Payout on Feb 15</div>
+                </div>
+            </div>
+
+            <div class="annotation">
+                <strong>GREEVER Principle: Reduce Cognitive Load</strong>
+                Stats answer key host questions at a glance: "How am I doing?", "What's urgent?", "When do I get paid?"
+            </div>
+
+            <!-- Needs Attention Section -->
+            <!-- GREEVER: Progressive disclosure Level 1 - Urgent items surfaced -->
+            <div class="attention-section">
+                <div class="attention-header">
+                    <div class="attention-title">
+                        Needs Your Attention
+                        <span class="attention-badge">2</span>
+                    </div>
+                </div>
+
+                <div class="attention-item">
+                    <div class="attention-icon request">
+                        <span>&#128100;</span>
+                    </div>
+                    <div class="attention-content">
+                        <div class="attention-item-title">Sarah wants to book your Manhattan listing</div>
+                        <!-- GREEVER: Provide context that helps host decide -->
+                        <div class="attention-item-detail">Looking for Sun-Wed nights starting Mar 1. Verified professional, 4.8 rating from previous hosts.</div>
+                        <div class="attention-meta">
+                            <span>$650/month</span>
+                            <span class="attention-deadline">Expires in 3 days</span>
+                        </div>
+                    </div>
+                    <a href="#" class="attention-action">Review Request</a>
+                </div>
+
+                <div class="attention-item">
+                    <div class="attention-icon request">
+                        <span>&#128100;</span>
+                    </div>
+                    <div class="attention-content">
+                        <div class="attention-item-title">Mike wants to book your Private Room</div>
+                        <div class="attention-item-detail">Looking for Thu-Sat nights starting Mar 15. New to Split Lease, works in finance.</div>
+                        <div class="attention-meta">
+                            <span>$400/month</span>
+                            <span class="attention-deadline">Expires in 5 days</span>
+                        </div>
+                    </div>
+                    <a href="#" class="attention-action">Review Request</a>
+                </div>
+            </div>
+
+            <div class="annotation">
+                <strong>GREEVER Principle: Progressive Disclosure</strong>
+                Urgent items get their own section with full context. Host can act immediately without clicking through multiple screens.
+            </div>
+
+            <!-- Listings Section -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">Your Listings</div>
+                    <div class="section-actions">
+                        <button class="btn-secondary">Import from Airbnb</button>
+                        <button class="btn-primary">+ Add New Listing</button>
+                    </div>
+                </div>
+
+                <div class="listing-card">
+                    <div class="listing-image">&#127968;</div>
+                    <div class="listing-info">
+                        <div class="listing-name">
+                            1 Bedroom Entire Place in Manhattan
+                            <span class="listing-status-badge status-live">Live</span>
+                        </div>
+                        <div class="listing-location">Manhattan, NY</div>
+                        <!-- GREEVER: State message uses user-natural language -->
+                        <div class="listing-state has-requests">
+                            <span>&#9679;</span> 1 guest request waiting for your response
+                        </div>
+                        <div class="listing-stats">
+                            <span>42 views this week</span>
+                            <span>1 active booking</span>
+                        </div>
+                    </div>
+                    <div class="listing-actions">
+                        <!-- GREEVER: Primary action based on listing state -->
+                        <a href="#" class="listing-primary-action">Review Request</a>
+                        <!-- GREEVER: "Edit Listing" not "Manage Listing" -->
+                        <a href="#" class="listing-secondary-action">Edit Listing</a>
+                    </div>
+                </div>
+
+                <div class="listing-card">
+                    <div class="listing-image">&#127968;</div>
+                    <div class="listing-info">
+                        <div class="listing-name">
+                            Stylish Private Room in Vibrant Neighborhood
+                            <span class="listing-status-badge status-live">Live</span>
+                        </div>
+                        <div class="listing-location">Williamsburg, Brooklyn</div>
+                        <div class="listing-state has-requests">
+                            <span>&#9679;</span> 1 guest request waiting for your response
+                        </div>
+                        <div class="listing-stats">
+                            <span>28 views this week</span>
+                            <span>No active bookings</span>
+                        </div>
+                    </div>
+                    <div class="listing-actions">
+                        <a href="#" class="listing-primary-action">Review Request</a>
+                        <a href="#" class="listing-secondary-action">Edit Listing</a>
+                    </div>
+                </div>
+
+                <div class="listing-card">
+                    <div class="listing-image" style="background: #FEF3C7; color: #92400E;">!</div>
+                    <div class="listing-info">
+                        <div class="listing-name">
+                            1 Bedroom Private Room in Manhattan
+                            <span class="listing-status-badge status-draft">Draft</span>
+                        </div>
+                        <div class="listing-location">Location not set</div>
+                        <!-- GREEVER: "Design is communication" - warning explains impact -->
+                        <div class="listing-state needs-attention">
+                            <span>&#9888;</span> Complete this listing to make it visible to guests
+                        </div>
+                        <div class="listing-stats">
+                            <span>80% complete</span>
+                            <span>Missing: location, photos</span>
+                        </div>
+                    </div>
+                    <div class="listing-actions">
+                        <a href="#" class="listing-primary-action">Complete Listing</a>
+                        <a href="#" class="listing-secondary-action">Delete Draft</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="annotation">
+                <strong>GREEVER Principle: Vocabulary Consistency</strong>
+                "Live" vs "Draft" status is clear. "Guest request" replaces "Proposal". Primary action changes based on listing state.
+            </div>
+
+            <!-- Contextual Tip -->
+            <div class="help-card">
+                <div class="help-icon">&#128161;</div>
+                <div class="help-content">
+                    <div class="help-title">Tip: Respond to requests quickly</div>
+                    <!-- GREEVER: Rationale with data -->
+                    <div class="help-detail">Guests often message multiple hosts. Responding within 24 hours increases your acceptance rate by 3x.</div>
+                </div>
+                <a href="#" class="help-action">View More Tips</a>
+            </div>
+        </div>
+
+        <!-- ================================================================
+             STATE: EARNING HOST (Confirmed Bookings)
+             ================================================================
+             GREEVER p.X: "Appeal to the Business" - host's financial interest
+
+             Earning hosts need:
+             1. Earnings visibility
+             2. Upcoming guest info
+             3. Reinforcement of success
+             ================================================================ -->
+        <div class="state-content" id="state-earning">
+            <!-- GREEVER: Hero celebrates success and answers "When do I get paid?" -->
+            <div class="hero-banner">
+                <div class="hero-content">
+                    <div class="hero-greeting">Welcome back, Rod</div>
+                    <div class="hero-message">You've earned $2,400 this month</div>
+                    <div class="hero-detail">Your next payout of $800 arrives on February 15. Sarah checks in on Feb 10.</div>
+                    <a href="#" class="hero-cta">View Earnings Dashboard</a>
+                </div>
+            </div>
+
+            <div class="annotation">
+                <strong>GREEVER Principle: Appeal to the Business</strong>
+                Earning hosts care about money. Hero leads with earnings and answers "When do I get paid?" immediately.
+            </div>
+
+            <!-- Quick Stats for Earning Hosts -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-label">Total Earnings</div>
+                    <div class="stat-value">$2,400</div>
+                    <div class="stat-change positive">February 2026</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Next Payout</div>
+                    <div class="stat-value">$800</div>
+                    <div class="stat-change neutral">Feb 15, 2026</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Active Bookings</div>
+                    <div class="stat-value">2</div>
+                    <div class="stat-change neutral">Next check-in: Feb 10</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Average Rating</div>
+                    <div class="stat-value">4.9</div>
+                    <div class="stat-change positive">From 8 reviews</div>
+                </div>
+            </div>
+
+            <!-- Upcoming Section -->
+            <div class="attention-section">
+                <div class="attention-header">
+                    <div class="attention-title">Upcoming</div>
+                </div>
+
+                <div class="attention-item">
+                    <div class="attention-icon payment">
+                        <span>&#128181;</span>
+                    </div>
+                    <div class="attention-content">
+                        <div class="attention-item-title">Payout arriving on Feb 15</div>
+                        <div class="attention-item-detail">$800 for Sarah's booking. Will be deposited to your bank account ending in 4521.</div>
+                    </div>
+                    <a href="#" class="attention-action">View Payment Details</a>
+                </div>
+
+                <div class="attention-item">
+                    <div class="attention-icon request">
+                        <span>&#128100;</span>
+                    </div>
+                    <div class="attention-content">
+                        <div class="attention-item-title">Sarah checks in on Feb 10</div>
+                        <div class="attention-item-detail">1 Bedroom Entire Place in Manhattan. She's booked Sun-Wed nights through April 30.</div>
+                    </div>
+                    <a href="#" class="attention-action">Send Welcome Message</a>
+                </div>
+            </div>
+
+            <div class="annotation">
+                <strong>GREEVER Principle: Design Is Communication</strong>
+                Section named "Upcoming" (not "Needs Attention") because these are positive events, not problems. Design communicates success.
+            </div>
+
+            <!-- Active Bookings -->
+            <div class="section">
+                <div class="section-header">
+                    <!-- GREEVER: "Active Bookings" not "Leases" -->
+                    <div class="section-title">Active Bookings</div>
+                </div>
+
+                <div class="listing-card">
+                    <div class="listing-image">&#128100;</div>
+                    <div class="listing-info">
+                        <div class="listing-name">
+                            Sarah M.
+                            <span class="listing-status-badge status-live">Confirmed</span>
+                        </div>
+                        <div class="listing-location">1 Bedroom Entire Place in Manhattan</div>
+                        <div class="listing-state earning">
+                            <span>&#10003;</span> Paying $800/month for Sun-Wed nights
+                        </div>
+                        <div class="listing-stats">
+                            <span>Booked through Apr 30</span>
+                            <span>Next check-in: Feb 10</span>
+                        </div>
+                    </div>
+                    <div class="listing-actions">
+                        <a href="#" class="listing-primary-action">View Booking</a>
+                        <a href="#" class="listing-secondary-action">Message Sarah</a>
+                    </div>
+                </div>
+
+                <div class="listing-card">
+                    <div class="listing-image">&#128100;</div>
+                    <div class="listing-info">
+                        <div class="listing-name">
+                            James T.
+                            <span class="listing-status-badge status-live">Active</span>
+                        </div>
+                        <div class="listing-location">Stylish Private Room in Vibrant Neighborhood</div>
+                        <div class="listing-state earning">
+                            <span>&#10003;</span> Paying $600/month for Tue-Thu nights
+                        </div>
+                        <div class="listing-stats">
+                            <span>Booked through Mar 31</span>
+                            <span>Currently staying</span>
+                        </div>
+                    </div>
+                    <div class="listing-actions">
+                        <a href="#" class="listing-primary-action">View Booking</a>
+                        <a href="#" class="listing-secondary-action">Message James</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guest Guide Prompt (Contextual) -->
+            <!-- GREEVER: "If you can't articulate why an element exists, it probably shouldn't exist" -->
+            <div class="help-card">
+                <div class="help-icon">&#128221;</div>
+                <div class="help-content">
+                    <!-- GREEVER: Guest Guide prompt shown only when relevant -->
+                    <div class="help-title">Create a Guest Guide for Sarah</div>
+                    <div class="help-detail">Help Sarah with check-in details, house rules, and local recommendations before she arrives on Feb 10.</div>
+                </div>
+                <a href="#" class="help-action">Create Guest Guide</a>
+            </div>
+
+            <div class="annotation">
+                <strong>GREEVER Principle: Progressive Disclosure</strong>
+                Guest Guide prompt shown ONLY when relevant (upcoming check-in), not as an empty state that creates guilt. Timing makes it helpful.
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Support</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Talk to an Expert</a>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <a href="#">How to List</a>
+                <a href="#">Pricing Guide</a>
+                <a href="#">Success Stories</a>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <a href="#">Terms of Service</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Guarantees</a>
+            </div>
+            <div class="footer-section">
+                <h4>Company</h4>
+                <a href="#">About Us</a>
+                <a href="#">Careers</a>
+                <a href="#">Blog</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toggle Design Notes Button -->
+    <button class="toggle-annotations" onclick="toggleAnnotations()">
+        Show Design Notes
+    </button>
+
+    <script>
+        // State switching for demo
+        function showState(state) {
+            // Hide all states
+            document.querySelectorAll('.state-content').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Show selected state
+            document.getElementById('state-' + state).classList.add('active');
+
+            // Update buttons
+            document.querySelectorAll('.state-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Toggle design annotations
+        function toggleAnnotations() {
+            document.body.classList.toggle('show-annotations');
+            const btn = document.querySelector('.toggle-annotations');
+            if (document.body.classList.contains('show-annotations')) {
+                btn.textContent = 'Hide Design Notes';
+            } else {
+                btn.textContent = 'Show Design Notes';
+            }
+        }
+    </script>
+</body>
+</html>

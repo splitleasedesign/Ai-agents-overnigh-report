@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Overview - Split Lease (Krug Redesign)</title>
+
+    <!--
+    =========================================================================
+    HOST OVERVIEW DASHBOARD REDESIGN
+    Based on Steve Krug's "Don't Make Me Think" - Chapter 3: Billboard Design 101
+
+    DESIGN PHILOSOPHY:
+    "Imagine that your site is a billboard. You know, the kind you're going by
+    at 60 miles an hour." (Krug, Page 27)
+
+    This redesign transforms the dashboard from a reading exercise to a scanning
+    exercise by implementing a task-based inbox pattern.
+    =========================================================================
+    -->
+
+    <style>
+        /* ===== DESIGN TOKENS =====
+           Unified design system per UI-Consistency-Audit-Final-Report.md
+        */
+        :root {
+          --color-primary: #31135D;
+          --color-primary-dark: #1F0D3D;
+          --color-primary-light: #5B5FCF;
+          --color-success: #5B5FCF;
+          --color-warning: #D97706;
+          --color-danger: #DC2626;
+          --color-gray-50: #F9FAFB;
+          --color-gray-100: #F3F4F6;
+          --color-gray-200: #E5E7EB;
+          --color-gray-300: #D1D5DB;
+          --color-gray-500: #6B7280;
+          --color-gray-700: #374151;
+          --color-gray-800: #1F2937;
+          --radius-sm: 4px;
+          --radius-md: 8px;
+          --radius-lg: 12px;
+          --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+          --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+          --shadow-lg: 0 8px 24px rgba(0,0,0,0.16);
+        }
+
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background-color: var(--color-gray-50);
+            color: var(--color-gray-800);
+            line-height: 1.5;
+        }
+
+        /* ===== TYPOGRAPHY =====
+           KRUG P.36: "Use plenty of headings... Make them useful."
+           All headings use #1F2937 (dark gray), NOT purple
+        */
+        h1 { font-size: 32px; font-weight: 700; color: var(--color-gray-800); }
+        h2 { font-size: 24px; font-weight: 600; color: var(--color-gray-800); }
+        h3 { font-size: 18px; font-weight: 600; color: var(--color-gray-800); }
+
+        /* ===== HEADER =====
+           KRUG P.29-30: "Conventions are your friends... logo top-left,
+           navigation top is conventional and expected."
+           Header background: Always #31135D (purple), NOT white
+        */
+        header {
+            background: var(--color-primary);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        /* Always show full logo with wordmark */
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-primary);
+            font-weight: bold;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .header-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .header-btn.active {
+            background: white;
+            color: var(--color-primary);
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.2s;
+            font-size: 1.25rem;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            transition: background 0.2s;
+        }
+
+        .user-menu:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* ===== NEEDS ATTENTION SECTION =====
+           KRUG P.31: "A good visual hierarchy saves us work by preprocessing
+           the page for us, organizing and prioritizing its contents in a way
+           that we can grasp almost instantly."
+
+           KRUG P.32: "The most important elements are either larger, bolder,
+           in a distinctive color, set off by more white space, nearer the
+           top of the page."
+
+           This section appears at TOP because urgent items are MOST IMPORTANT.
+           CARDS: Shadow-based elevation, no borders, 8px border-radius
+        */
+        .attention-section {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: none;
+        }
+
+        .attention-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .attention-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /*
+           KRUG P.32: "Things that are related logically are related visually."
+           The badge count is visually connected to the heading.
+        */
+        .attention-badge {
+            background: var(--color-danger);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.125rem 0.5rem;
+            border-radius: 10px;
+        }
+
+        /* ===== TASK LIST =====
+           KRUG P.24: "We don't make optimal choices. We choose the first
+           reasonable option, a strategy known as satisficing."
+
+           Each task has ONE clear action button - users don't need to evaluate
+           multiple options, they click the obvious action.
+        */
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--color-gray-50);
+            border-radius: var(--radius-md);
+            border-left: 4px solid transparent;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .task-item:hover {
+            background: var(--color-gray-100);
+        }
+
+        /*
+           KRUG P.32: "The more important something is, the more prominent it is."
+           Proposal tasks get warning color border (urgency indicator).
+           Lease tasks get primary color border (different category).
+        */
+        .task-item.proposal {
+            border-left-color: var(--color-warning);
+        }
+
+        .task-item.lease {
+            border-left-color: var(--color-primary);
+        }
+
+        .task-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .task-icon.proposal {
+            background: #fef3c7;
+            color: var(--color-warning);
+        }
+
+        .task-icon.lease {
+            background: #ede9fe;
+            color: var(--color-primary);
+        }
+
+        .task-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-title {
+            font-weight: 500;
+            margin-bottom: 0.125rem;
+        }
+
+        /*
+           KRUG P.36: "Highlight key terms."
+           The relative timestamp is highlighted for quick scanning.
+        */
+        .task-meta {
+            font-size: 0.875rem;
+            color: var(--color-gray-500);
+        }
+
+        .task-meta .time {
+            color: var(--color-gray-500);
+        }
+
+        /*
+           KRUG P.34: "Users need to know at a glance: 'Where can I click?'"
+           Action buttons are clearly styled as buttons - obvious clickability.
+           BUTTON COLORS: Primary #31135D, Secondary white+border
+        */
+        .task-action {
+            flex-shrink: 0;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-gray-50);
+        }
+
+        /* Success/confirm buttons: indigo */
+        .btn-success {
+            background: var(--color-success);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-success:hover {
+            background: #4A4AB8;
+        }
+
+        /* Destructive buttons: red outline */
+        .btn-destructive {
+            background: white;
+            color: var(--color-danger);
+            border: 1px solid var(--color-danger);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-destructive:hover {
+            background: #FEF2F2;
+        }
+
+        /* ===== EMPTY STATE =====
+           KRUG P.38: "Your goal should be for each page to be self-evident,
+           so that just by looking at it the average user will know what it is
+           and how to use it."
+
+           Empty state provides guidance, not just "nothing here."
+        */
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--color-gray-500);
+        }
+
+        .empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-title {
+            font-weight: 600;
+            color: var(--color-success);
+            margin-bottom: 0.25rem;
+        }
+
+        .empty-suggestion {
+            font-size: 0.875rem;
+            color: var(--color-gray-500);
+        }
+
+        /* ===== LISTINGS SECTION =====
+           KRUG P.33: "Dividing the page into clearly defined areas is important
+           because it allows users to decide quickly which areas of the page to
+           focus on and which areas they can safely ignore."
+
+           Listings are a SEPARATE area from tasks. Users can ignore this section
+           if they just want to handle urgent tasks.
+           CARDS: Shadow-based elevation, no borders, 8px border-radius
+        */
+        .listings-section {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: none;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .listing-count {
+            font-size: 0.875rem;
+            color: var(--color-gray-500);
+        }
+
+        /*
+           KRUG P.35: "My own rule of thumb is that a page is too busy if it's
+           going to distract or get in the way of the primary tasks."
+
+           Listings are COMPACT to reduce noise. They expand on interaction.
+        */
+        .listing-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .listing-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: var(--color-gray-50);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .listing-row:hover {
+            background: var(--color-gray-100);
+        }
+
+        .listing-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .listing-status.active {
+            background: var(--color-success);
+        }
+
+        .listing-status.pending {
+            background: var(--color-primary);
+        }
+
+        .listing-status.draft {
+            background: var(--color-gray-300);
+        }
+
+        .listing-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .listing-name {
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .listing-detail {
+            font-size: 0.875rem;
+            color: var(--color-gray-500);
+        }
+
+        .listing-badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .mini-badge {
+            font-size: 0.75rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+        }
+
+        .mini-badge.proposals {
+            background: #fef3c7;
+            color: var(--color-warning);
+        }
+
+        .mini-badge.lease {
+            background: #ede9fe;
+            color: var(--color-primary);
+        }
+
+        .expand-icon {
+            color: var(--color-gray-500);
+            transition: transform 0.2s;
+        }
+
+        .listing-row:hover .expand-icon {
+            color: var(--color-gray-700);
+        }
+
+        /* ===== NEW LISTING BUTTON =====
+           KRUG P.24: "As soon as we find a link that seems like it might lead
+           to what we're looking for, there's a very good chance that we'll
+           click it."
+
+           Single prominent button for the primary creation action.
+           KRUG P.35: Import option moved to menu to reduce noise.
+        */
+        .new-listing-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--color-gray-100);
+            border-radius: var(--radius-md);
+            margin-top: 1rem;
+        }
+
+        .new-listing-text {
+            color: var(--color-gray-500);
+            font-size: 0.875rem;
+        }
+
+        /* Success/confirm button: indigo (#5B5FCF) */
+        .btn-create {
+            background: var(--color-success);
+            color: white;
+            border: none;
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .btn-create:hover {
+            background: #4A4AB8;
+        }
+
+        /* ===== FOOTER =====
+           KRUG P.36-37: "Get rid of half the words on each page, then get rid
+           of half of what's left... Happy talk must die."
+
+           Footer is MINIMAL - essential links only.
+           Removed: Import form (duplicate), dense link lists, promotional content.
+        */
+        footer {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem 2rem;
+            border-top: 1px solid var(--color-gray-200);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--color-gray-500);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-primary);
+        }
+
+        .footer-copyright {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--color-gray-500);
+        }
+
+        /* ===== RESPONSIVE DESIGN =====
+           KRUG P.27: "If you design pages so that they work for people on
+           the run, they'll also work for those who aren't."
+
+           Mobile-first: works at 60mph on a phone.
+        */
+        @media (max-width: 640px) {
+            header {
+                padding: 0.5rem 1rem;
+            }
+
+            .header-btn {
+                display: none;
+            }
+
+            main {
+                padding: 1rem;
+            }
+
+            .task-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .task-action {
+                width: 100%;
+            }
+
+            .task-action .btn-primary {
+                width: 100%;
+            }
+
+            .listing-badges {
+                display: none;
+            }
+
+            .new-listing-bar {
+                flex-direction: column;
+                gap: 0.75rem;
+                text-align: center;
+            }
+
+            .btn-create {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* ===== ACCESSIBILITY ===== */
+        .btn-primary:focus,
+        .btn-secondary:focus,
+        .btn-success:focus,
+        .btn-destructive:focus,
+        .btn-create:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+
+        /* ===== DAY SELECTOR COMPONENT =====
+           Unified styling per design system
+           Selected: #31135D background, white text
+           Unselected: white bg, #D1D5DB border, #6B7280 text
+        */
+        .day-selector {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .day-selector-item {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .day-selector-item.unselected {
+            background: white;
+            border: 1px solid var(--color-gray-300);
+            color: var(--color-gray-500);
+        }
+
+        .day-selector-item.unselected:hover {
+            border-color: var(--color-primary-light);
+            color: var(--color-primary);
+        }
+
+        .day-selector-item.selected {
+            background: var(--color-primary);
+            border: none;
+            color: white;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <!--
+    =========================================================================
+    HEADER
+    KRUG P.29: "Conventions are your friends."
+    Standard header pattern: logo left, nav center, user right.
+    =========================================================================
+    -->
+    <header>
+        <div class="logo">
+            <div class="logo-icon">S</div>
+            <span>Split Lease</span>
+        </div>
+
+        <nav class="header-nav">
+            <button class="header-btn active" aria-current="page">Host Overview</button>
+        </nav>
+
+        <div class="header-icons">
+            <!--
+            KRUG P.35: Help moved to icon to reduce noise in main content area.
+            "A page is too busy if it's going to distract or get in the way."
+            -->
+            <button class="icon-btn" aria-label="Help" title="Need help?">?</button>
+            <button class="icon-btn" aria-label="Messages">&#9993;</button>
+            <div class="user-menu">
+                <div class="avatar">R</div>
+                <span>Rod</span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!--
+        =====================================================================
+        NEEDS ATTENTION SECTION
+
+        KRUG P.31: "A good visual hierarchy saves us work by preprocessing
+        the page for us, organizing and prioritizing its contents in a way
+        that we can grasp almost instantly."
+
+        This section is FIRST because urgent items are MOST IMPORTANT.
+        Users scanning at "60mph" (P.27) see "3 items need attention" instantly.
+        =====================================================================
+        -->
+        <section class="attention-section" aria-labelledby="attention-heading">
+            <div class="attention-header">
+                <div class="attention-title">
+                    <h2 id="attention-heading">Needs Your Attention</h2>
+                    <!--
+                    KRUG P.32: "Things that are related logically are related visually."
+                    Badge count is visually connected to heading.
+                    -->
+                    <span class="attention-badge" aria-label="3 items">3</span>
+                </div>
+            </div>
+
+            <!--
+            KRUG P.24: "We choose the first reasonable option."
+            Each task has ONE clear action - users satisfice by clicking it.
+            KRUG P.34: "Where can I click?" - Buttons are obviously clickable.
+            -->
+            <div class="task-list" role="list">
+                <!-- Task 1: Proposal -->
+                <div class="task-item proposal" role="listitem">
+                    <div class="task-icon proposal" aria-hidden="true">&#128196;</div>
+                    <div class="task-content">
+                        <div class="task-title">Review proposal from John D.</div>
+                        <!--
+                        KRUG P.36: "Highlight key terms."
+                        Relative timestamp shows urgency at a glance.
+                        -->
+                        <div class="task-meta">
+                            Stylish Private Room &middot; <span class="time">2 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="task-action">
+                        <button class="btn-primary">Review</button>
+                    </div>
+                </div>
+
+                <!-- Task 2: Proposal -->
+                <div class="task-item proposal" role="listitem">
+                    <div class="task-icon proposal" aria-hidden="true">&#128196;</div>
+                    <div class="task-content">
+                        <div class="task-title">Review proposal from Sarah M.</div>
+                        <div class="task-meta">
+                            Stylish Private Room &middot; <span class="time">5 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="task-action">
+                        <button class="btn-primary">Review</button>
+                    </div>
+                </div>
+
+                <!-- Task 3: Lease -->
+                <div class="task-item lease" role="listitem">
+                    <div class="task-icon lease" aria-hidden="true">&#128221;</div>
+                    <div class="task-content">
+                        <div class="task-title">Lease awaiting signature</div>
+                        <div class="task-meta">
+                            1BR Entire Place &middot; Tenant: Mike L. &middot; <span class="time">1 day ago</span>
+                        </div>
+                    </div>
+                    <div class="task-action">
+                        <button class="btn-secondary">View</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--
+        EMPTY STATE EXAMPLE (hidden by default, shown when no tasks)
+
+        KRUG P.38: "Your goal should be for each page to be self-evident."
+        Empty state provides guidance, not just "nothing here."
+
+        <section class="attention-section">
+            <div class="empty-state">
+                <div class="empty-icon">&#10003;</div>
+                <div class="empty-title">You're all caught up!</div>
+                <div class="empty-suggestion">Tip: Update your listing photos to attract more views</div>
+            </div>
+        </section>
+        -->
+
+        <!--
+        =====================================================================
+        LISTINGS SECTION
+
+        KRUG P.33: "Dividing the page into clearly defined areas is important
+        because it allows users to decide quickly which areas of the page to
+        focus on and which areas they can safely ignore."
+
+        Listings are a SEPARATE area. Users focused on tasks can ignore this.
+
+        KRUG P.35: "A page is too busy if it's going to distract."
+        Listings are COMPACT to reduce noise - expand on click.
+        =====================================================================
+        -->
+        <section class="listings-section" aria-labelledby="listings-heading">
+            <div class="section-header">
+                <h2 id="listings-heading">Your Listings</h2>
+                <span class="listing-count">4 listings</span>
+            </div>
+
+            <div class="listing-list" role="list">
+                <!--
+                KRUG P.32: Status dots use color to communicate state instantly.
+                Green = active, Purple = lease pending, Gray = draft
+                -->
+                <div class="listing-row" role="listitem" tabindex="0" aria-label="Stylish Private Room, Active, 2 pending proposals">
+                    <div class="listing-status active" aria-hidden="true" title="Active"></div>
+                    <div class="listing-info">
+                        <div class="listing-name">Stylish Private Room</div>
+                        <div class="listing-detail">Manhattan &middot; 45 views this week</div>
+                    </div>
+                    <div class="listing-badges">
+                        <span class="mini-badge proposals">2 proposals</span>
+                    </div>
+                    <span class="expand-icon" aria-hidden="true">&#8250;</span>
+                </div>
+
+                <div class="listing-row" role="listitem" tabindex="0" aria-label="1BR Entire Place, Lease pending">
+                    <div class="listing-status pending" aria-hidden="true" title="Lease Pending"></div>
+                    <div class="listing-info">
+                        <div class="listing-name">1BR Entire Place</div>
+                        <div class="listing-detail">Manhattan &middot; 32 views this week</div>
+                    </div>
+                    <div class="listing-badges">
+                        <span class="mini-badge lease">Lease pending</span>
+                    </div>
+                    <span class="expand-icon" aria-hidden="true">&#8250;</span>
+                </div>
+
+                <div class="listing-row" role="listitem" tabindex="0" aria-label="1BR Private Room, Active">
+                    <div class="listing-status active" aria-hidden="true" title="Active"></div>
+                    <div class="listing-info">
+                        <div class="listing-name">1BR Private Room</div>
+                        <div class="listing-detail">Manhattan &middot; 28 views this week</div>
+                    </div>
+                    <div class="listing-badges"></div>
+                    <span class="expand-icon" aria-hidden="true">&#8250;</span>
+                </div>
+
+                <div class="listing-row" role="listitem" tabindex="0" aria-label="Downtown Studio, Draft">
+                    <div class="listing-status draft" aria-hidden="true" title="Draft"></div>
+                    <div class="listing-info">
+                        <div class="listing-name">Downtown Studio</div>
+                        <div class="listing-detail">Draft &middot; Incomplete</div>
+                    </div>
+                    <div class="listing-badges"></div>
+                    <span class="expand-icon" aria-hidden="true">&#8250;</span>
+                </div>
+            </div>
+
+            <!--
+            KRUG P.24: "We choose the first reasonable option."
+            Single prominent button for primary action.
+            KRUG P.35: Import option not shown (reduces noise, available in menu).
+            -->
+            <div class="new-listing-bar">
+                <span class="new-listing-text">Have another property to list?</span>
+                <button class="btn-create">
+                    <span aria-hidden="true">+</span> New Listing
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!--
+    =========================================================================
+    FOOTER
+
+    KRUG P.36-37: "Get rid of half the words on each page, then get rid of
+    half of what's left... Happy talk must die."
+
+    Footer is MINIMAL - essential links only.
+    REMOVED: Import form (duplicate), dense link lists, promotional content.
+    =========================================================================
+    -->
+    <footer>
+        <nav class="footer-links" aria-label="Footer navigation">
+            <a href="#">About</a>
+            <a href="#">Help</a>
+            <a href="#">How to List</a>
+            <a href="#">Legal</a>
+            <a href="#">Refer a Friend</a>
+            <a href="#">Import Listing</a>
+        </nav>
+        <p class="footer-copyright">&copy; 2026 Split Lease. All rights reserved.</p>
+    </footer>
+
+    <!--
+    =========================================================================
+    DESIGN NOTES FOR DEVELOPERS
+
+    This redesign implements Steve Krug's Chapter 3 principles:
+
+    1. USERS SCAN (P.22): Task-based layout supports scanning for urgent items
+    2. SATISFICING (P.24): Each task has one clear action button
+    3. VISUAL HIERARCHY (P.31-33): Needs Attention section is most prominent
+    4. CONVENTIONS (P.29-30): Standard header, familiar button patterns
+    5. CLICKABILITY (P.34): All interactive elements are obviously clickable
+    6. MINIMIZE NOISE (P.35): Compact listings, simplified footer
+    7. MINIMIZE TEXT (P.36-37): Concise labels, no "happy talk"
+    8. SELF-EVIDENT (P.38): Empty states provide guidance
+    9. BILLBOARD DESIGN (P.27): Works at a glance, mobile-first
+
+    Every design decision in this file can be traced to a specific Krug quote.
+    =========================================================================
+    -->
+</body>
+</html>

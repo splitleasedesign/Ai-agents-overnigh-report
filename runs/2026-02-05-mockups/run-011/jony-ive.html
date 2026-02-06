@@ -1,0 +1,2186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Overview - Internal Trigger Connection Redesign | Split Lease</title>
+
+    <!--
+    ╔══════════════════════════════════════════════════════════════════════════════╗
+    ║                    HOST OVERVIEW REDESIGN - DEEP ANALYSIS                     ║
+    ║                                                                              ║
+    ║  Agent: Jony Ive (Mobile & Responsive Design)                                ║
+    ║  Run: 011 - 2026-02-05 (Deep Analysis)                                       ║
+    ║  Book: Nir Eyal, "Hooked: How to Build Habit-Forming Products"               ║
+    ║  Chapter: Chapter 2 - Trigger                                                ║
+    ║                                                                              ║
+    ║  Approach: B - Internal Trigger Connection                                    ║
+    ║  Primary Principle: "When a product becomes tightly coupled with a thought,  ║
+    ║  an emotion, or a preexisting routine, it leverages an internal trigger."    ║
+    ║  (Eyal, p.47)                                                                ║
+    ║                                                                              ║
+    ║  This mockup implements the selected approach from the deep analysis,        ║
+    ║  addressing host emotions (anxiety, hope, pride, fear, curiosity) with       ║
+    ║  specific design elements that create habit-forming associations.            ║
+    ╚══════════════════════════════════════════════════════════════════════════════╝
+    -->
+
+    <style>
+        /* ════════════════════════════════════════════════════════════════════════════
+           CSS DESIGN TOKENS
+           ════════════════════════════════════════════════════════════════════════════ */
+
+        :root {
+            /* ═══════════════════════════════════════════════════════════════════
+               UNIFIED DESIGN TOKENS (from UI-Consistency-Audit-Final-Report.md)
+               ═══════════════════════════════════════════════════════════════════ */
+
+            /* Brand Colors - Primary */
+            --color-primary: #31135D;
+            --color-primary-dark: #1F0D3D;
+            --color-primary-light: #5B5FCF;
+
+            /* Semantic Colors */
+            --color-success: #5B5FCF;
+            --color-warning: #D97706;
+            --color-danger: #DC2626;
+
+            /* Neutrals */
+            --color-gray-50: #F9FAFB;
+            --color-gray-100: #F3F4F6;
+            --color-gray-200: #E5E7EB;
+            --color-gray-300: #D1D5DB;
+            --color-gray-500: #6B7280;
+            --color-gray-700: #374151;
+            --color-gray-800: #1F2937;
+
+            /* Border Radius Scale */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-full: 9999px;
+
+            /* Shadows (Elevation System) */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.16);
+
+            /* ═══════════════════════════════════════════════════════════════════
+               LEGACY VARIABLES (mapped to unified tokens for backward compat)
+               ═══════════════════════════════════════════════════════════════════ */
+
+            /* Brand Colors - Legacy mappings */
+            --purple-primary: var(--color-primary);
+            --purple-dark: var(--color-primary-dark);
+            --purple-light: var(--color-primary-light);
+            --purple-50: #F3E8F3;
+            --white: #FFFFFF;
+
+            /* Neutral Colors - Legacy mappings */
+            --gray-50: var(--color-gray-50);
+            --gray-100: var(--color-gray-100);
+            --gray-200: var(--color-gray-200);
+            --gray-300: var(--color-gray-300);
+            --gray-400: #9CA3AF;
+            --gray-500: var(--color-gray-500);
+            --gray-600: #4B5563;
+            --gray-700: var(--color-gray-700);
+            --gray-800: var(--color-gray-800);
+            --gray-900: #111827;
+
+            /*
+             * TIME-DECAY URGENCY COLORS
+             * EYAL p.41: "External triggers are embedded with information which
+             * tells the user what to do next."
+             *
+             * Time context transforms static numbers into actionable urgency.
+             */
+            --trigger-fresh: #7375D8;      /* Indigo - New (<24h) */
+            --trigger-fresh-bg: #D1FAE5;
+            --trigger-waiting: #F59E0B;    /* Yellow - Waiting (1-3 days) */
+            --trigger-waiting-bg: #FEF3C7;
+            --trigger-urgent: #EF4444;     /* Red - Needs attention (>3 days) */
+            --trigger-urgent-bg: #FEE2E2;
+            --trigger-critical: var(--color-danger);   /* Pulsing Red - Expiring */
+
+            /* Reward/Success Colors */
+            --reward-green: var(--color-success);
+            --reward-green-bg: #ECFDF5;
+            --reward-gold: #F59E0B;
+            --reward-gold-bg: #FFFBEB;
+            --reward-blue: #3B82F6;
+            --reward-blue-bg: #DBEAFE;
+
+            /* Spacing System */
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-2xl: 48px;
+
+            /*
+             * TOUCH TARGETS
+             * All interactive elements must be minimum 44px for mobile compliance
+             * (Per previous Jony Ive mobile audits)
+             */
+            --touch-min: 44px;
+
+            /* Shadows - Legacy mappings */
+            --shadow-xl: 0 20px 25px rgba(0,0,0,0.15);
+            --shadow-trigger: 0 0 0 3px rgba(239, 68, 68, 0.3);
+        }
+
+        /* ════════════════════════════════════════════════════════════════════════════
+           CSS RESET & BASE
+           ════════════════════════════════════════════════════════════════════════════ */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ════════════════════════════════════════════════════════════════════════════
+           HEADER - OWNED TRIGGER ZONE
+
+           EYAL p.44: "Owned triggers consume a piece of real estate in the user's
+           environment. They consistently show up in daily life."
+
+           The header provides persistent owned triggers (notification badge,
+           navigation) that remain visible as the user scrolls.
+           ════════════════════════════════════════════════════════════════════════════ */
+
+        /* Header: Always purple background (per UI Consistency Audit) */
+        .header {
+            background: var(--color-primary);
+            padding: var(--space-md) var(--space-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            color: var(--white);
+            font-weight: 600;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+        /* Logo: Always show icon + wordmark (per UI Consistency Audit) */
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-primary);
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        /* Button: Navigation - Secondary style on header (per UI Consistency Audit) */
+        .nav-btn {
+            min-width: var(--touch-min);
+            min-height: var(--touch-min);
+            background: transparent;
+            border: 2px solid var(--white);
+            border-radius: var(--radius-md);
+            color: var(--white);
+            padding: var(--space-sm) var(--space-md);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .nav-btn:hover {
+            background: var(--white);
+            color: var(--color-primary);
+        }
+
+        .nav-btn.active {
+            background: var(--white);
+            color: var(--color-primary);
+        }
+
+        /*
+         * NOTIFICATION ICON WITH BADGE
+         * EYAL p.44: "Owned triggers prompt repeat engagement until a habit is formed."
+         *
+         * The badge shows unread count, addressing anxiety ("Did I miss messages?")
+         */
+        .notification-btn {
+            min-width: var(--touch-min);
+            min-height: var(--touch-min);
+            background: transparent;
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+            transition: background 0.2s ease;
+        }
+
+        .notification-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: var(--trigger-urgent);
+            color: var(--white);
+            font-size: 11px;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            animation: pulse-badge 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-badge {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            color: var(--white);
+            cursor: pointer;
+            min-height: var(--touch-min);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-md);
+            transition: background 0.2s ease;
+        }
+
+        .user-menu:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--gray-700);
+            font-size: 14px;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* ════════════════════════════════════════════════════════════════════════════
+           MAIN CONTAINER
+           ════════════════════════════════════════════════════════════════════════════ */
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-lg);
+        }
+
+        /* ════════════════════════════════════════════════════════════════════════════
+           WELCOME SECTION - PERSONALIZATION
+
+           EYAL p.47: "When a product becomes tightly coupled with a thought, an
+           emotion, or a preexisting routine, it leverages an internal trigger."
+
+           Personalized greeting + status creates immediate emotional context.
+           ════════════════════════════════════════════════════════════════════════════ */
+
+        .welcome-section {
+            margin-bottom: var(--space-lg);
+        }
+
+        /* Typography: H1 Page Title - 32px, weight 700, dark gray (per UI Consistency Audit) */
+        .welcome-text {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-xs);
+        }
+
+        .welcome-subtext {
+            color: var(--gray-500);
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .attention-indicator {
+            width: 8px;
+            height: 8px;
+            background: var(--trigger-urgent);
+            border-radius: 50%;
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+            50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+        }
+
+        /* ════════════════════════════════════════════════════════════════════════════
+           ACTION CENTER - PRIMARY TRIGGER AGGREGATION
+
+           EYAL p.41: "External triggers are embedded with information which tells
+           the user what to do next."
+
+           INTERNAL TRIGGER ADDRESSED: Anxiety ("Did I miss something?")
+
+           This aggregated view answers the host's anxious question immediately
+           upon page load, providing relief and clear next actions.
+           ════════════════════════════════════════════════════════════════════════════ */
+
+        /* Card: Action Center - Uses brand purple gradient, 8px radius (per UI Consistency Audit) */
+        .action-center {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            color: var(--white);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .action-center-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-md);
+        }
+
+        /* Typography: H2 title in action center - white on purple bg */
+        .action-center-title {
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .live-indicator {
+            width: 10px;
+            height: 10px;
+            background: var(--trigger-urgent);
+            border-radius: 50%;
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--space-md);
+        }
+
+        /*
+         * ACTION CARD - Individual Trigger Item
+         * Each card addresses a specific pending action with urgency context
+         * Uses 8px radius (per UI Consistency Audit)
+         */
+        .action-card {
+            background: rgba(255,255,255,0.15);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: var(--touch-min);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+            border: none;
+        }
+
+        .action-card:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        .action-card:focus {
+            outline: 2px solid var(--white);
+            outline-offset: 2px;
+        }
+
+        /*
+         * URGENT STATE
+         * EYAL p.17: "Habits are like pearls... this layering only occurs with
+         * the continuous presence of an irritant"
+         *
+         * Urgent triggers create the "irritant" that builds habit through repeated attention.
+         */
+        .action-card.urgent {
+            border-color: var(--trigger-urgent);
+            box-shadow: var(--shadow-trigger);
+        }
+
+        .action-card-number {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .action-card-label {
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0.95;
+        }
+
+        .action-card-meta {
+            font-size: 12px;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .urgency-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .urgency-dot.fresh { background: var(--trigger-fresh); }
+        .urgency-dot.waiting { background: var(--trigger-waiting); }
+        .urgency-dot.urgent {
+            background: var(--trigger-urgent);
+            animation: pulse-dot 1s ease-in-out infinite;
+        }
+
+        /* ════════════════════════════════════════════════════════════════════════════
+           EARNINGS CARD - VARIABLE REWARD + INTERNAL TRIGGER (HOPE/PRIDE)
+
+           EYAL p.79: "Variable rewards are one of the most powerful tools companies
+           use to hook users."
+
+           EYAL p.48: "The goal of a habit-forming product is to create an association
+           with a person's pain so that the user identifies the company's product or
+           service as the source of relief."
+
+           INTERNAL TRIGGER ADDRESSED: Hope ("Am I earning?"), Pride ("Am I doing well?")
+
+           Earnings visibility provides immediate positive reinforcement. The variable
+           nature (different each visit) creates curiosity and return behavior.
+           ════════════════════════════════════════════════════════════════════════════ */
+
+        /* Card: Earnings Card - Shadow-based elevation, 8px radius (per UI Consistency Audit) */
+        .earnings-card {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--space-lg);
+        }
+
+        .earnings-main {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .earnings-label {
+            font-size: 14px;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+
+        /* Earnings: Amount uses success indigo (per UI Consistency Audit) */
+        .earnings-amount {
+            font-size: 40px;
+            font-weight: 700;
+            color: var(--color-success);
+            display: flex;
+            align-items: baseline;
+            gap: var(--space-md);
+            line-height: 1;
+        }
+
+        .earnings-trend {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-success);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            background: var(--reward-green-bg);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-md);
+        }
+
+        /*
+         * PERFORMANCE METRICS - Variable Reward Elements
+         * These metrics change over time, creating curiosity and return visits.
+         */
+        .earnings-stats {
+            display: flex;
+            gap: var(--space-xl);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--gray-900);
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+
+        .stat-trend {
+            font-size: 11px;
+            color: var(--color-success);
+            font-weight: 600;
+        }
+
+        /* ════════════════════════════════════════════════════════════════════════════
+           PUSH NOTIFICATION OPT-IN
+
+           EYAL p.44: "Without owned triggers, and the user's tacit permission that
+           comes with them, companies must spend to acquire users every time they
+           want to engage them."
+
+           This banner requests permission to deliver external triggers (push
+           notifications) when the user is not on the dashboard. Essential for
+           habit formation as it extends reach beyond active sessions.
+           ════════════════════════════════════════════════════════════════════════════ */
+
+        /* Card: Notification Opt-in - Shadow-based, no border (per UI Consistency Audit) */
+        .notification-optin {
+            background: linear-gradient(135deg, var(--reward-blue-bg) 0%, var(--white) 100%);
+            border: none;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+            flex-wrap: wrap;
+        }
+
+        .notification-optin-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--reward-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .notification-optin-content {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* Typography: H3 title - 18px, weight 600, dark gray (per UI Consistency Audit) */
+        .notification-optin-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-xs);
+        }
+
+        .notification-optin-text {
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+
+        .notification-optin-text strong {
+            color: var(--reward-blue);
+        }
+
+        /* Button: Notification opt-in - Primary brand purple (per UI Consistency Audit) */
+        .notification-optin-btn {
+            background: var(--color-primary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-lg);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            min-height: var(--touch-min);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .notification-optin-btn:hover {
+            background: var(--color-primary-dark);
+            transform: scale(1.02);
+        }
+
+        /* ════════════════════════════════════════════════════════════════════════════
+           ACTIVITY FEED - VARIABLE REWARD
+
+           EYAL p.79: "Feedback loops are all around us, but predictable ones don't
+           create desire."
+
+           INTERNAL TRIGGER ADDRESSED: Curiosity ("What's happening with my listings?")
+
+           The activity feed provides unpredictable, variable content that creates
+           "pull to refresh" behavior. Each visit shows different activity, maintaining
+           curiosity and engagement.
+           ════════════════════════════════════════════════════════════════════════════ */
+
+        /* Card: Activity Feed - Shadow-based elevation, 8px radius (per UI Consistency Audit) */
+        .activity-feed {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: none;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-md);
+            padding-bottom: var(--space-sm);
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        /* Typography: H2 Section Title - 24px, weight 600, dark gray (per UI Consistency Audit) */
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        /* Link: Section link - Brand purple (per UI Consistency Audit) */
+        .section-link {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            min-height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            transition: background 0.2s ease;
+        }
+
+        .section-link:hover {
+            background: var(--purple-50);
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+            padding: var(--space-md) 0;
+            border-bottom: 1px solid var(--gray-100);
+            transition: background 0.2s ease;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .activity-item:hover {
+            background: var(--gray-50);
+            margin: 0 calc(var(--space-md) * -1);
+            padding-left: var(--space-md);
+            padding-right: var(--space-md);
+            border-radius: var(--radius-sm);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.proposal { background: var(--purple-50); color: var(--color-primary); }
+        .activity-icon.view { background: var(--reward-blue-bg); color: var(--reward-blue); }
+        .activity-icon.message { background: var(--reward-green-bg); color: var(--color-success); }
+        .activity-icon.booking { background: var(--reward-gold-bg); color: var(--reward-gold); }
+
+        .activity-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .activity-text {
+            font-size: 14px;
+            color: var(--gray-700);
+            line-height: 1.4;
+        }
+
+        .activity-text strong {
+            color: var(--gray-900);
+            font-weight: 600;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: var(--gray-400);
+            margin-top: var(--space-xs);
+        }
+
+        .activity-action {
+            flex-shrink: 0;
+        }
+
+        /* Button: Activity buttons - Primary uses brand purple (per UI Consistency Audit) */
+        .activity-btn {
+            background: var(--color-primary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-md);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            min-height: var(--touch-min);
+            min-width: 72px;
+            transition: all 0.2s ease;
+        }
+
+        .activity-btn:hover {
+            background: var(--color-primary-dark);
+        }
+
+        /* Button: Secondary - White bg + purple border (per UI Consistency Audit) */
+        .activity-btn.secondary {
+            background: var(--white);
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .activity-btn.secondary:hover {
+            background: var(--purple-50);
+        }
+
+        /* ════════════════════════════════════════════════════════════════════════════
+           CO-HOST BANNER - PERSISTENT OWNED TRIGGER
+
+           EYAL p.44: "Owned triggers consume a piece of real estate in the user's
+           environment."
+
+           This banner is NOT dismissible (collapses to icon instead). This maintains
+           the owned trigger "real estate" rather than giving it away permanently.
+           ════════════════════════════════════════════════════════════════════════════ */
+
+        /* Card: Co-host Banner - Highlighted card with left border accent (per UI Consistency Audit) */
+        .cohost-banner {
+            background: var(--purple-50);
+            border-radius: var(--radius-md);
+            padding: var(--space-md) var(--space-lg);
+            margin-bottom: var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            border-left: 4px solid var(--color-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .cohost-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .cohost-content {
+            flex: 1;
+        }
+
+        /* Typography: H3 title - 18px, weight 600, dark gray (per UI Consistency Audit) */
+        .cohost-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: 2px;
+        }
+
+        .cohost-text {
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+
+        /* Button: Co-host CTA - Primary brand purple (per UI Consistency Audit) */
+        .cohost-btn {
+            background: var(--color-primary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-md);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            min-height: var(--touch-min);
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .cohost-btn:hover {
+            background: var(--color-primary-dark);
+        }
+
+        /* ════════════════════════════════════════════════════════════════════════════
+           YOUR LISTINGS SECTION - ENHANCED TRIGGER BADGES
+
+           EYAL p.41: "External triggers are embedded with information which tells
+           the user what to do next."
+
+           Each listing card contains trigger badges with time-decay urgency context.
+           ════════════════════════════════════════════════════════════════════════════ */
+
+        /* Card: Listings Section - Shadow-based elevation, 8px radius (per UI Consistency Audit) */
+        .listings-section {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: none;
+        }
+
+        .listing-actions-top {
+            display: flex;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-lg);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            min-height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-lg);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            min-height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--purple-50);
+        }
+
+        /* Listing Card - Shadow-based elevation, no borders (per UI Consistency Audit) */
+        .listing-card {
+            border: none;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: var(--space-md);
+            margin-bottom: var(--space-md);
+            background: var(--white);
+            transition: all 0.2s ease;
+        }
+
+        .listing-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .listing-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        /*
+         * URGENT LISTING STATE
+         * Visual indicator that this listing has items requiring immediate attention
+         * Uses left border accent for highlighted/promotional content only
+         */
+        .listing-card.has-urgent {
+            border-left: 4px solid var(--trigger-urgent);
+        }
+
+        .listing-header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+
+        .listing-image {
+            width: 100px;
+            height: 75px;
+            background: var(--gray-200);
+            border-radius: var(--radius-sm);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-400);
+            overflow: hidden;
+        }
+
+        .listing-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .listing-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* Typography: H3 Card Title - 18px, weight 600, dark gray (per UI Consistency Audit) */
+        .listing-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-xs);
+            line-height: 1.3;
+        }
+
+        .listing-location {
+            font-size: 14px;
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        /*
+         * TIME-DECAY TRIGGER BADGES
+         * EYAL p.41: "External triggers are embedded with information which tells
+         * the user what to do next."
+         *
+         * Color-coding provides immediate urgency context:
+         * - Indigo: Fresh (<24h) - no urgency
+         * - Yellow: Waiting (1-3 days) - mild urgency
+         * - Red: Urgent (>3 days) - needs attention
+         * - Pulsing Red: Critical - expiring soon
+         */
+        .listing-triggers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+
+        /* Trigger Badge: Uses 8px radius (per UI Consistency Audit) */
+        .trigger-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 600;
+            min-height: var(--touch-min);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .trigger-badge:hover {
+            transform: translateY(-1px);
+        }
+
+        .trigger-badge:focus {
+            outline: 2px solid var(--color-gray-800);
+            outline-offset: 2px;
+        }
+
+        /* Fresh (<24h) */
+        .trigger-badge.fresh {
+            background: var(--trigger-fresh-bg);
+            color: #065F46;
+        }
+
+        /* Waiting (1-3 days) */
+        .trigger-badge.waiting {
+            background: var(--trigger-waiting-bg);
+            color: #92400E;
+        }
+
+        /* Urgent (>3 days) */
+        .trigger-badge.urgent {
+            background: var(--trigger-urgent-bg);
+            color: #991B1B;
+        }
+
+        /* Critical (expiring) */
+        .trigger-badge.critical {
+            background: var(--trigger-critical);
+            color: var(--white);
+            animation: pulse-critical 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-critical {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0); }
+        }
+
+        .trigger-count {
+            background: rgba(0,0,0,0.1);
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .trigger-badge.urgent .trigger-count,
+        .trigger-badge.critical .trigger-count {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .trigger-context {
+            font-size: 11px;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        /*
+         * POTENTIAL REVENUE INDICATOR
+         * Shows the dollar value of pending proposals, creating curiosity and urgency.
+         * This transforms "2 proposals" into "$1,200 potential" - much more motivating.
+         * Uses success indigo (per UI Consistency Audit)
+         */
+        .potential-revenue {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            color: var(--color-success);
+            font-size: 13px;
+            font-weight: 600;
+            padding: var(--space-xs) var(--space-sm);
+            background: var(--reward-green-bg);
+            border-radius: var(--radius-md);
+        }
+
+        /* Listing Action Buttons */
+        .listing-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+        }
+
+        /* Button: Listing action buttons (per UI Consistency Audit) */
+        .listing-btn {
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            min-height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            transition: all 0.2s ease;
+        }
+
+        /* Button: Primary - Brand purple (per UI Consistency Audit) */
+        .listing-btn.primary {
+            background: var(--color-primary);
+            color: var(--white);
+            border: none;
+        }
+
+        .listing-btn.primary:hover {
+            background: var(--color-primary-dark);
+        }
+
+        /* Button: Secondary - White bg + purple border (per UI Consistency Audit) */
+        .listing-btn.secondary {
+            background: var(--white);
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .listing-btn.secondary:hover {
+            background: var(--purple-50);
+        }
+
+        /* ════════════════════════════════════════════════════════════════════════════
+           REFERRAL CARD - RELATIONSHIP TRIGGER
+
+           EYAL p.43: "Relationship triggers can create the viral hyper-growth
+           entrepreneurs and investors lust after."
+
+           ELEVATED from footer to prominent dashboard position. Appears when hosts
+           are most likely to be feeling positive about their experience.
+           ════════════════════════════════════════════════════════════════════════════ */
+
+        /* Card: Referral Card - 8px radius, shadow-based elevation (per UI Consistency Audit) */
+        .referral-card {
+            background: linear-gradient(135deg, var(--reward-gold) 0%, #FBBF24 100%);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--space-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .referral-content {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* Typography: H2 title - 24px, weight 600, dark gray (per UI Consistency Audit) */
+        .referral-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+            margin-bottom: var(--space-xs);
+        }
+
+        .referral-subtitle {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        /* Button: Referral CTA - Dark for contrast on gold bg (per UI Consistency Audit) */
+        .referral-btn {
+            background: var(--gray-900);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--space-sm) var(--space-xl);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            min-height: var(--touch-min);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .referral-btn:hover {
+            background: var(--gray-700);
+            transform: scale(1.02);
+        }
+
+        /* ════════════════════════════════════════════════════════════════════════════
+           STATUS SUMMARY - FEAR RELIEF
+
+           EYAL p.48: "Emotions, particularly negative ones, are powerful internal
+           triggers."
+
+           INTERNAL TRIGGER ADDRESSED: Fear ("Is something wrong?")
+
+           Quick status indicator provides immediate relief ("Everything is okay")
+           or surfaces issues that need attention. Addresses fear-driven visits.
+           ════════════════════════════════════════════════════════════════════════════ */
+
+        /* Card: Status Summary - Shadow-based, no border (per UI Consistency Audit) */
+        .status-summary {
+            background: var(--reward-green-bg);
+            border: none;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: var(--space-md) var(--space-lg);
+            margin-bottom: var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .status-summary.warning {
+            background: var(--trigger-urgent-bg);
+        }
+
+        /* Status: Icon uses success indigo (per UI Consistency Audit) */
+        .status-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--color-success);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .status-summary.warning .status-icon {
+            background: var(--color-danger);
+        }
+
+        .status-text {
+            flex: 1;
+        }
+
+        /* Typography: H3 title - 18px, weight 600, dark gray (per UI Consistency Audit) */
+        .status-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-gray-800);
+        }
+
+        .status-detail {
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+
+        /* ════════════════════════════════════════════════════════════════════════════
+           FOOTER
+           ════════════════════════════════════════════════════════════════════════════ */
+
+        .footer {
+            background: var(--gray-100);
+            padding: var(--space-2xl) var(--space-lg);
+            margin-top: var(--space-2xl);
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--space-xl);
+        }
+
+        .footer-section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: var(--space-md);
+        }
+
+        .footer-section a {
+            display: block;
+            color: var(--gray-600);
+            text-decoration: none;
+            font-size: 14px;
+            padding: var(--space-xs) 0;
+            min-height: var(--touch-min);
+            display: flex;
+            align-items: center;
+            transition: color 0.2s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--color-primary);
+        }
+
+        /* ════════════════════════════════════════════════════════════════════════════
+           MOBILE RESPONSIVE STYLES
+           ════════════════════════════════════════════════════════════════════════════ */
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: var(--space-md);
+            }
+
+            .header {
+                padding: var(--space-sm) var(--space-md);
+            }
+
+            .nav-btn span {
+                display: none;
+            }
+
+            .user-name {
+                display: none;
+            }
+
+            .welcome-text {
+                font-size: 24px;
+            }
+
+            .action-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .action-card-number {
+                font-size: 24px;
+            }
+
+            .action-card-label {
+                font-size: 12px;
+            }
+
+            .earnings-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .earnings-amount {
+                font-size: 32px;
+                justify-content: center;
+            }
+
+            .earnings-stats {
+                width: 100%;
+                justify-content: space-around;
+            }
+
+            .notification-optin {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .activity-item {
+                flex-wrap: wrap;
+            }
+
+            .activity-action {
+                width: 100%;
+                margin-top: var(--space-sm);
+            }
+
+            .activity-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .listing-header {
+                flex-direction: column;
+            }
+
+            .listing-image {
+                width: 100%;
+                height: 160px;
+            }
+
+            .listing-triggers {
+                justify-content: flex-start;
+            }
+
+            .listing-actions {
+                flex-direction: column;
+            }
+
+            .listing-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .referral-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .cohost-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 375px) {
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .earnings-amount {
+                font-size: 28px;
+                flex-direction: column;
+                gap: var(--space-sm);
+            }
+
+            .earnings-stats {
+                flex-direction: column;
+                gap: var(--space-md);
+            }
+        }
+
+        /* ════════════════════════════════════════════════════════════════════════════
+           DESIGN ANNOTATION STYLES (for review only - remove in production)
+           ════════════════════════════════════════════════════════════════════════════ */
+
+        .design-annotation {
+            background: var(--reward-gold-bg);
+            border: 2px dashed var(--reward-gold);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            margin: var(--space-md) 0;
+            font-size: 13px;
+            color: #92400E;
+        }
+
+        .design-annotation strong {
+            display: block;
+            margin-bottom: var(--space-xs);
+            color: #78350F;
+        }
+
+        .design-annotation code {
+            background: rgba(0,0,0,0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ════════════════════════════════════════════════════════════════════════════
+         HEADER
+         EYAL p.44: "Owned triggers consume a piece of real estate in the user's environment."
+
+         The sticky header maintains owned trigger visibility (notification badge)
+         as the user scrolls through the dashboard.
+         ════════════════════════════════════════════════════════════════════════════ -->
+    <header class="header">
+        <a href="#" class="logo">
+            <div class="logo-icon">SL</div>
+            Split Lease
+        </a>
+
+        <nav class="header-nav">
+            <button class="nav-btn active">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                <span>Host Overview</span>
+            </button>
+
+            <!-- EYAL p.44: "Without owned triggers... companies must spend to acquire users every time" -->
+            <button class="notification-btn" aria-label="Messages - 3 unread">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                <span class="notification-badge">3</span>
+            </button>
+
+            <div class="user-menu" role="button" tabindex="0">
+                <div class="avatar">R</div>
+                <span class="user-name">Rod</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"/>
+                </svg>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ════════════════════════════════════════════════════════════════════════════
+         MAIN CONTENT
+         ════════════════════════════════════════════════════════════════════════════ -->
+    <main class="main-container">
+
+        <!-- WELCOME SECTION -->
+        <section class="welcome-section">
+            <h1 class="welcome-text">Welcome back, Rod</h1>
+            <p class="welcome-subtext">
+                <span class="attention-indicator"></span>
+                You have items that need your attention
+            </p>
+        </section>
+
+        <!-- ════════════════════════════════════════════════════════════════════════
+             ACTION CENTER
+             EYAL p.41: "External triggers are embedded with information which tells
+             the user what to do next."
+
+             INTERNAL TRIGGER: Anxiety - "Did I miss something?"
+             DESIGN RESPONSE: Aggregated view provides immediate clarity and relief.
+             ════════════════════════════════════════════════════════════════════════ -->
+        <section class="action-center" aria-label="Action Center">
+            <div class="action-center-header">
+                <h2 class="action-center-title">
+                    <span class="live-indicator"></span>
+                    Action Center
+                </h2>
+            </div>
+
+            <div class="action-grid">
+                <!-- EYAL p.17: "Habits are like pearls... continuous presence of an irritant" -->
+                <div class="action-card urgent" tabindex="0" role="button" aria-label="4 Proposals, 1 expiring in 3 hours">
+                    <div class="action-card-number">4</div>
+                    <div class="action-card-label">Proposals Awaiting</div>
+                    <div class="action-card-meta">
+                        <span class="urgency-dot urgent"></span>
+                        1 expires in 3 hours
+                    </div>
+                </div>
+
+                <div class="action-card" tabindex="0" role="button" aria-label="3 Unread Messages">
+                    <div class="action-card-number">3</div>
+                    <div class="action-card-label">Unread Messages</div>
+                    <div class="action-card-meta">
+                        <span class="urgency-dot waiting"></span>
+                        Oldest: 2 days ago
+                    </div>
+                </div>
+
+                <div class="action-card" tabindex="0" role="button" aria-label="1 Check-in Tomorrow">
+                    <div class="action-card-number">1</div>
+                    <div class="action-card-label">Check-in Tomorrow</div>
+                    <div class="action-card-meta">
+                        <span class="urgency-dot fresh"></span>
+                        Sarah M. at 3:00 PM
+                    </div>
+                </div>
+
+                <div class="action-card" tabindex="0" role="button" aria-label="1 Active Lease">
+                    <div class="action-card-number">1</div>
+                    <div class="action-card-label">Active Lease</div>
+                    <div class="action-card-meta">
+                        <span class="urgency-dot fresh"></span>
+                        All on track
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Design Annotation -->
+        <div class="design-annotation">
+            <strong>EYAL p.41: "External triggers are embedded with information which tells the user what to do next."</strong>
+            Action Center aggregates all triggers with urgency context. The pulsing red indicator and "1 expires in 3 hours" text creates FOMO, addressing the host's anxiety internal trigger.
+        </div>
+
+        <!-- ════════════════════════════════════════════════════════════════════════
+             EARNINGS CARD
+             EYAL p.79: "Variable rewards are one of the most powerful tools..."
+             EYAL p.48: "Create an association with a person's pain... source of relief."
+
+             INTERNAL TRIGGER: Hope - "Am I earning?"
+             INTERNAL TRIGGER: Pride - "Am I a good host?"
+             DESIGN RESPONSE: Prominent earnings + metrics create positive reinforcement.
+             ════════════════════════════════════════════════════════════════════════ -->
+        <section class="earnings-card" aria-label="This Month's Earnings">
+            <div class="earnings-main">
+                <div class="earnings-label">This Month's Earnings</div>
+                <div class="earnings-amount">
+                    $2,450
+                    <span class="earnings-trend">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                            <polyline points="17 6 23 6 23 12"/>
+                        </svg>
+                        +12% vs last month
+                    </span>
+                </div>
+            </div>
+
+            <div class="earnings-stats">
+                <div class="stat-item">
+                    <div class="stat-value">95%</div>
+                    <div class="stat-label">Response Rate</div>
+                    <div class="stat-trend">Top 10%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">4.9</div>
+                    <div class="stat-label">Rating</div>
+                    <div class="stat-trend">+0.1</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">142</div>
+                    <div class="stat-label">Profile Views</div>
+                    <div class="stat-trend">+23%</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Design Annotation -->
+        <div class="design-annotation">
+            <strong>EYAL p.79: "Variable rewards are one of the most powerful tools companies use to hook users."</strong>
+            Earnings and metrics change each visit, creating curiosity and "check back" behavior. The "+12%" trend and "Top 10%" badge address pride internal trigger.
+        </div>
+
+        <!-- ════════════════════════════════════════════════════════════════════════
+             STATUS SUMMARY
+             EYAL p.48: "Emotions, particularly negative ones, are powerful internal triggers."
+
+             INTERNAL TRIGGER: Fear - "Is something wrong?"
+             DESIGN RESPONSE: Quick status provides immediate relief.
+             ════════════════════════════════════════════════════════════════════════ -->
+        <section class="status-summary" aria-label="Listing Status">
+            <div class="status-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+            </div>
+            <div class="status-text">
+                <div class="status-title">All listings healthy</div>
+                <div class="status-detail">No issues requiring attention. Last checked 5 minutes ago.</div>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════════════════════════════════════════════
+             PUSH NOTIFICATION OPT-IN
+             EYAL p.44: "Without owned triggers, and the user's tacit permission..."
+
+             This banner enables future external triggers when user is not on dashboard.
+             ════════════════════════════════════════════════════════════════════════ -->
+        <section class="notification-optin" aria-label="Enable Notifications">
+            <div class="notification-optin-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+            </div>
+            <div class="notification-optin-content">
+                <h3 class="notification-optin-title">Never miss a proposal</h3>
+                <p class="notification-optin-text">
+                    Get instant notifications when guests send proposals.
+                    <strong>Hosts who respond within 1 hour get 3x more bookings.</strong>
+                </p>
+            </div>
+            <button class="notification-optin-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                </svg>
+                Enable Notifications
+            </button>
+        </section>
+
+        <!-- Design Annotation -->
+        <div class="design-annotation">
+            <strong>EYAL p.44: "Without owned triggers... companies must spend to acquire users every time they want to engage them."</strong>
+            Push notification opt-in extends trigger reach beyond dashboard visits. The "3x more bookings" stat creates motivation through potential earnings.
+        </div>
+
+        <!-- ════════════════════════════════════════════════════════════════════════
+             ACTIVITY FEED
+             EYAL p.79: "Feedback loops are all around us, but predictable ones
+             don't create desire."
+
+             INTERNAL TRIGGER: Curiosity - "What's happening?"
+             DESIGN RESPONSE: Variable content creates "pull to refresh" behavior.
+             ════════════════════════════════════════════════════════════════════════ -->
+        <section class="activity-feed" aria-label="Recent Activity">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                    </svg>
+                    Recent Activity
+                </h2>
+                <a href="#" class="section-link">View All</a>
+            </div>
+
+            <ul class="activity-list">
+                <li class="activity-item">
+                    <div class="activity-icon proposal">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                    </div>
+                    <div class="activity-content">
+                        <p class="activity-text"><strong>New proposal</strong> from Michael T. for Stylish Private Room - $600/month for 3 months</p>
+                        <p class="activity-time">2 minutes ago</p>
+                    </div>
+                    <div class="activity-action">
+                        <button class="activity-btn">View</button>
+                    </div>
+                </li>
+
+                <li class="activity-item">
+                    <div class="activity-icon view">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </div>
+                    <div class="activity-content">
+                        <p class="activity-text">Your listing <strong>1 Bedroom Entire Place</strong> got <strong>12 views</strong> today</p>
+                        <p class="activity-time">1 hour ago</p>
+                    </div>
+                </li>
+
+                <li class="activity-item">
+                    <div class="activity-icon message">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </div>
+                    <div class="activity-content">
+                        <p class="activity-text"><strong>Sarah M.</strong> sent a message about her upcoming check-in</p>
+                        <p class="activity-time">3 hours ago</p>
+                    </div>
+                    <div class="activity-action">
+                        <button class="activity-btn secondary">Reply</button>
+                    </div>
+                </li>
+
+                <li class="activity-item">
+                    <div class="activity-icon booking">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                    </div>
+                    <div class="activity-content">
+                        <p class="activity-text"><strong>Booking confirmed!</strong> James R. booked 1 Bedroom Private Room for $750/month</p>
+                        <p class="activity-time">Yesterday</p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- ════════════════════════════════════════════════════════════════════════
+             CO-HOST BANNER
+             EYAL p.44: "Owned triggers consume a piece of real estate..."
+
+             NON-DISMISSIBLE: Maintains owned trigger real estate. Collapses but
+             doesn't disappear permanently.
+             ════════════════════════════════════════════════════════════════════════ -->
+        <section class="cohost-banner" aria-label="Co-host Support">
+            <div class="cohost-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+            </div>
+            <div class="cohost-content">
+                <h3 class="cohost-title">Need help managing your listings?</h3>
+                <p class="cohost-text">Our Specialist Co-hosts can help with pricing, guest communication, and optimizing your earnings.</p>
+            </div>
+            <button class="cohost-btn">Learn More</button>
+        </section>
+
+        <!-- ════════════════════════════════════════════════════════════════════════
+             YOUR LISTINGS
+             EYAL p.41: "External triggers are embedded with information..."
+
+             Listing cards with time-decay urgency badges.
+             ════════════════════════════════════════════════════════════════════════ -->
+        <section class="listings-section" aria-label="Your Listings">
+            <div class="section-header">
+                <h2 class="section-title">Your Listings</h2>
+            </div>
+
+            <div class="listing-actions-top">
+                <button class="btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    Create New Listing
+                </button>
+                <button class="btn-secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    Import Listing
+                </button>
+            </div>
+
+            <!-- LISTING 1: Has urgent/critical trigger -->
+            <article class="listing-card has-urgent">
+                <div class="listing-header">
+                    <div class="listing-image">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                            <polyline points="21 15 16 10 5 21"/>
+                        </svg>
+                    </div>
+                    <div class="listing-info">
+                        <h3 class="listing-title">Stylish Private Room In Vibrant Neighborhood</h3>
+                        <p class="listing-location">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            Brooklyn, NY
+                        </p>
+                    </div>
+                </div>
+
+                <!-- EYAL p.41: Triggers with time-decay urgency context -->
+                <div class="listing-triggers">
+                    <span class="trigger-badge critical" tabindex="0" role="button">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        </svg>
+                        Proposals
+                        <span class="trigger-count">2</span>
+                        <span class="trigger-context">1 expires soon!</span>
+                    </span>
+
+                    <span class="trigger-badge fresh" tabindex="0" role="button">
+                        Leases
+                        <span class="trigger-count">0</span>
+                    </span>
+
+                    <span class="potential-revenue">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                        $1,200 potential
+                    </span>
+                </div>
+
+                <div class="listing-actions">
+                    <button class="listing-btn primary">Review Proposals</button>
+                    <button class="listing-btn secondary">Manage</button>
+                    <button class="listing-btn secondary">Preview</button>
+                    <button class="listing-btn secondary">House Manual</button>
+                </div>
+            </article>
+
+            <!-- LISTING 2: Has waiting trigger -->
+            <article class="listing-card">
+                <div class="listing-header">
+                    <div class="listing-image">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                            <polyline points="21 15 16 10 5 21"/>
+                        </svg>
+                    </div>
+                    <div class="listing-info">
+                        <h3 class="listing-title">1 Bedroom Entire Place in Manhattan</h3>
+                        <p class="listing-location">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            Manhattan, NY
+                        </p>
+                    </div>
+                </div>
+
+                <div class="listing-triggers">
+                    <span class="trigger-badge waiting" tabindex="0" role="button">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        </svg>
+                        Proposals
+                        <span class="trigger-count">1</span>
+                        <span class="trigger-context">2 days waiting</span>
+                    </span>
+
+                    <span class="trigger-badge fresh" tabindex="0" role="button">
+                        Leases
+                        <span class="trigger-count">1</span>
+                        <span class="trigger-context">Active</span>
+                    </span>
+
+                    <span class="potential-revenue">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                        $800 potential
+                    </span>
+                </div>
+
+                <div class="listing-actions">
+                    <button class="listing-btn primary">Review Proposals</button>
+                    <button class="listing-btn secondary">Manage</button>
+                    <button class="listing-btn secondary">Preview</button>
+                    <button class="listing-btn secondary">House Manual</button>
+                </div>
+            </article>
+
+            <!-- LISTING 3: Has fresh trigger -->
+            <article class="listing-card">
+                <div class="listing-header">
+                    <div class="listing-image">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                            <polyline points="21 15 16 10 5 21"/>
+                        </svg>
+                    </div>
+                    <div class="listing-info">
+                        <h3 class="listing-title">1 Bedroom Private Room in Manhattan</h3>
+                        <p class="listing-location">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            Manhattan, NY
+                        </p>
+                    </div>
+                </div>
+
+                <div class="listing-triggers">
+                    <span class="trigger-badge fresh" tabindex="0" role="button">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        </svg>
+                        Proposals
+                        <span class="trigger-count">1</span>
+                        <span class="trigger-context">New today!</span>
+                    </span>
+
+                    <span class="trigger-badge fresh" tabindex="0" role="button">
+                        Leases
+                        <span class="trigger-count">0</span>
+                    </span>
+
+                    <span class="potential-revenue">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                        $650 potential
+                    </span>
+                </div>
+
+                <div class="listing-actions">
+                    <button class="listing-btn primary">Review Proposals</button>
+                    <button class="listing-btn secondary">Manage</button>
+                    <button class="listing-btn secondary">Preview</button>
+                    <button class="listing-btn secondary">House Manual</button>
+                </div>
+            </article>
+        </section>
+
+        <!-- Design Annotation -->
+        <div class="design-annotation">
+            <strong>TIME-DECAY TRIGGER SYSTEM:</strong><br>
+            - <code style="color: #7375D8;">Indigo (Fresh)</code>: New today, no urgency<br>
+            - <code style="color: #F59E0B;">Yellow (Waiting)</code>: 1-3 days, mild urgency<br>
+            - <code style="color: #EF4444;">Red (Urgent)</code>: 3+ days, needs attention<br>
+            - <code style="color: #DC2626;">Pulsing Red (Critical)</code>: Expiring soon<br><br>
+            Potential revenue indicator transforms "2 proposals" into "$1,200 potential" - more emotionally motivating.
+        </div>
+
+        <!-- ════════════════════════════════════════════════════════════════════════
+             REFERRAL CARD
+             EYAL p.43: "Relationship triggers can create the viral hyper-growth..."
+
+             ELEVATED from footer to prominent position. Shows when hosts are
+             feeling positive about their hosting experience.
+             ════════════════════════════════════════════════════════════════════════ -->
+        <section class="referral-card" aria-label="Referral Program">
+            <div class="referral-content">
+                <h3 class="referral-title">Give $50, Get $50</h3>
+                <p class="referral-subtitle">Know someone who should list on Split Lease? Share your link and you both earn $50 when they book their first guest.</p>
+            </div>
+            <button class="referral-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="18" cy="5" r="3"/>
+                    <circle cx="6" cy="12" r="3"/>
+                    <circle cx="18" cy="19" r="3"/>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                </svg>
+                Invite Friends
+            </button>
+        </section>
+
+        <!-- Design Annotation -->
+        <div class="design-annotation">
+            <strong>EYAL p.43: "Relationship triggers can create the viral hyper-growth entrepreneurs and investors lust after."</strong>
+            Referral CTA elevated from buried footer position. Placed after earnings display when hosts are feeling positive about their experience and most likely to share.
+        </div>
+
+    </main>
+
+    <!-- ════════════════════════════════════════════════════════════════════════════
+         FOOTER
+         ════════════════════════════════════════════════════════════════════════════ -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h4>Company</h4>
+                <a href="#">About Periodic Tenancy</a>
+                <a href="#">About the Team</a>
+                <a href="#">Careers at Split Lease</a>
+                <a href="#">Blog</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>For Hosts</h4>
+                <a href="#">List Property Now</a>
+                <a href="#">How to List</a>
+                <a href="#">Success Stories</a>
+                <a href="#">Legal Section</a>
+                <a href="#">Guarantees</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Host Community</a>
+                <a href="#">Free House Manual</a>
+                <a href="#">Pricing Calculator</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>Get the App</h4>
+                <a href="#">Download on iOS</a>
+                <a href="#">Download on Android</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ════════════════════════════════════════════════════════════════════════════
+         DESIGN IMPLEMENTATION NOTES (Remove in production)
+         ════════════════════════════════════════════════════════════════════════════ -->
+    <section style="max-width: 1200px; margin: 40px auto; padding: 24px; background: #F0FDF4; border-radius: 16px; border: 2px solid #86EFAC;">
+        <h2 style="font-size: 20px; margin-bottom: 20px; color: #166534;">Implementation Notes: Approach B - Internal Trigger Connection</h2>
+
+        <h3 style="font-size: 16px; margin: 20px 0 12px; color: #166534;">Key Eyal Principles Applied:</h3>
+        <ol style="font-size: 14px; color: #166534; padding-left: 24px; line-height: 2;">
+            <li><strong>Action Center</strong> - EYAL p.41: "External triggers are embedded with information which tells the user what to do next."</li>
+            <li><strong>Time-Decay Badges</strong> - EYAL p.17: "Habits are like pearls... continuous presence of an irritant"</li>
+            <li><strong>Earnings Display</strong> - EYAL p.48: "Create an association with a person's pain... source of relief"</li>
+            <li><strong>Performance Metrics</strong> - EYAL p.79: "Variable rewards are one of the most powerful tools"</li>
+            <li><strong>Activity Feed</strong> - EYAL p.79: "Feedback loops... predictable ones don't create desire"</li>
+            <li><strong>Push Opt-In</strong> - EYAL p.44: "Without owned triggers... must spend to acquire users"</li>
+            <li><strong>Referral Card</strong> - EYAL p.43: "Relationship triggers can create viral hyper-growth"</li>
+            <li><strong>Co-Host Banner</strong> - EYAL p.44: "Owned triggers consume real estate in user's environment"</li>
+            <li><strong>Status Summary</strong> - EYAL p.48: "Emotions, particularly negative ones, are powerful internal triggers"</li>
+        </ol>
+
+        <h3 style="font-size: 16px; margin: 20px 0 12px; color: #166534;">Internal Triggers Addressed:</h3>
+        <table style="width: 100%; font-size: 14px; color: #166534; border-collapse: collapse;">
+            <tr style="background: rgba(0,0,0,0.05);">
+                <th style="text-align: left; padding: 8px;">Emotion</th>
+                <th style="text-align: left; padding: 8px;">Trigger Question</th>
+                <th style="text-align: left; padding: 8px;">Design Response</th>
+            </tr>
+            <tr>
+                <td style="padding: 8px;">Anxiety</td>
+                <td style="padding: 8px;">"Did I miss something?"</td>
+                <td style="padding: 8px;">Action Center (aggregated triggers)</td>
+            </tr>
+            <tr style="background: rgba(0,0,0,0.03);">
+                <td style="padding: 8px;">Hope</td>
+                <td style="padding: 8px;">"Am I earning?"</td>
+                <td style="padding: 8px;">Earnings Card ($2,450 + trend)</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px;">Pride</td>
+                <td style="padding: 8px;">"Am I a good host?"</td>
+                <td style="padding: 8px;">Performance Metrics (95%, 4.9, Top 10%)</td>
+            </tr>
+            <tr style="background: rgba(0,0,0,0.03);">
+                <td style="padding: 8px;">Fear</td>
+                <td style="padding: 8px;">"Is something wrong?"</td>
+                <td style="padding: 8px;">Status Summary ("All listings healthy")</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px;">Curiosity</td>
+                <td style="padding: 8px;">"What's happening?"</td>
+                <td style="padding: 8px;">Activity Feed (variable content)</td>
+            </tr>
+        </table>
+
+        <h3 style="font-size: 16px; margin: 20px 0 12px; color: #166534;">Habit Formation Prediction:</h3>
+        <ul style="font-size: 14px; color: #166534; padding-left: 24px; line-height: 2;">
+            <li><strong>Cycles to internal trigger:</strong> 3-5 weeks of daily exposure</li>
+            <li><strong>Target association:</strong> "When I feel anxious about my rentals, Split Lease makes me feel better"</li>
+            <li><strong>Sustainability:</strong> High - emotional connection creates strong habit loop</li>
+        </ul>
+
+        <h3 style="font-size: 16px; margin: 20px 0 12px; color: #166534;">Mobile Compliance:</h3>
+        <ul style="font-size: 14px; color: #166534; padding-left: 24px; line-height: 2;">
+            <li>All touch targets: 44px minimum (verified)</li>
+            <li>Responsive breakpoints: 375px, 768px, 1200px</li>
+            <li>Triggers visible and functional on mobile</li>
+            <li>Action buttons stack vertically on small screens</li>
+        </ul>
+
+        <p style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #86EFAC; font-size: 13px; color: #166534;">
+            <strong>Agent:</strong> Jony Ive (Mobile & Responsive Design) |
+            <strong>Run:</strong> 011 - 2026-02-05 (Deep Analysis) |
+            <strong>Source:</strong> Nir Eyal, "Hooked: How to Build Habit-Forming Products," Chapter 2: Trigger
+        </p>
+    </section>
+
+</body>
+</html>
